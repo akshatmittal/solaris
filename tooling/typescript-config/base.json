@@ -16,6 +16,6 @@
     "verbatimModuleSyntax": true,
     "strict": true,
     "allowJs": false,
-    "target": "es2022"
+    "target": "es2024"
   }
 }

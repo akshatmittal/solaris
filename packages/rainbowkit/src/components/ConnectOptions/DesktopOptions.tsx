@@ -20,25 +20,14 @@ import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { Text } from "../Text/Text";
 import {
   ConnectDetail,
-  DownloadDetail,
-  DownloadOptionsDetail,
-  GetDetail,
-  InstructionDesktopDetail,
-  InstructionExtensionDetail,
-  InstructionMobileDetail,
 } from "./ConnectDetails";
+import { GET_WALLET_URL } from "./constants";
 import { ScrollClassName, sidebar, sidebarCompactMode } from "./DesktopOptions.css";
 
 export enum WalletStep {
   None = "NONE",
   LearnCompact = "LEARN_COMPACT",
-  Get = "GET",
   Connect = "CONNECT",
-  DownloadOptions = "DOWNLOAD_OPTIONS",
-  Download = "DOWNLOAD",
-  InstructionsMobile = "INSTRUCTIONS_MOBILE",
-  InstructionsDesktop = "INSTRUCTIONS_DESKTOP",
-  InstructionsExtension = "INSTRUCTIONS_EXTENSION",
 }
 
 export function DesktopOptions({ onClose }: { onClose: () => void }) {
@@ -67,8 +56,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
     .filter((wallet) => wallet.ready || !!wallet.extensionDownloadUrl)
     .sort((a, b) => a.groupIndex - b.groupIndex);
-  const unfilteredWallets = useWalletConnectors();
-
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
 
   const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
@@ -137,25 +124,8 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     setSelectedOptionId(wallet.id);
 
     if (!wallet.ready) {
-      setSelectedWallet(wallet);
-      changeWalletStep(wallet?.extensionDownloadUrl ? WalletStep.DownloadOptions : WalletStep.Connect);
-    }
-  };
-
-  const getWalletDownload = (id: string) => {
-    const sWallet = unfilteredWallets.find((w) => id === w.id);
-    const isMobile = sWallet?.downloadUrls?.qrCode;
-    const isDesktop = !!sWallet?.desktopDownloadUrl;
-    const isExtension = !!sWallet?.extensionDownloadUrl;
-    setSelectedWallet(sWallet);
-    if (isMobile && (isExtension || isDesktop)) {
-      changeWalletStep(WalletStep.DownloadOptions);
-    } else if (isMobile) {
-      changeWalletStep(WalletStep.Download);
-    } else if (isDesktop) {
-      changeWalletStep(WalletStep.InstructionsDesktop);
-    } else {
-      changeWalletStep(WalletStep.InstructionsExtension);
+      window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer");
+      return;
     }
   };
 
@@ -164,17 +134,9 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     setSelectedWallet(undefined);
     setQrCodeUri(undefined);
   };
-  const changeWalletStep = (newWalletStep: WalletStep, isBack = false) => {
-    if (isBack && newWalletStep === WalletStep.Get && initialWalletStep === WalletStep.Get) {
-      clearSelectedWallet();
-    } else if (!isBack && newWalletStep === WalletStep.Get) {
-      setInitialWalletStep(WalletStep.Get);
-    } else if (!isBack && newWalletStep === WalletStep.Connect) {
-      setInitialWalletStep(WalletStep.Connect);
-    }
+  const changeWalletStep = (newWalletStep: WalletStep) => {
     setWalletStep(newWalletStep);
   };
-  const [initialWalletStep, setInitialWalletStep] = useState<WalletStep>(WalletStep.None);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
 
   let walletContent = null;
@@ -187,37 +149,27 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     setConnectionError(false);
   }, [walletStep, selectedWallet]);
 
-  const hasExtension = !!selectedWallet?.extensionDownloadUrl;
-  const hasExtensionAndMobile = !!(hasExtension && selectedWallet?.mobileDownloadUrl);
-
   switch (walletStep) {
     case WalletStep.None:
-      walletContent = <ConnectModalIntro getWallet={() => changeWalletStep(WalletStep.Get)} />;
+      walletContent = (
+        <ConnectModalIntro
+          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
+        />
+      );
       break;
     case WalletStep.LearnCompact:
       walletContent = (
         <ConnectModalIntro
           compactModeEnabled={compactModeEnabled}
-          getWallet={() => changeWalletStep(WalletStep.Get)}
+          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
         />
       );
       headerLabel = t("intro.title");
       headerBackButtonLink = WalletStep.None;
       break;
-    case WalletStep.Get:
-      walletContent = (
-        <GetDetail
-          getWalletDownload={getWalletDownload}
-          compactModeEnabled={compactModeEnabled}
-        />
-      );
-      headerLabel = t("get.title");
-      headerBackButtonLink = compactModeEnabled ? WalletStep.LearnCompact : WalletStep.None;
-      break;
     case WalletStep.Connect:
       walletContent = selectedWallet && (
         <ConnectDetail
-          changeWalletStep={changeWalletStep}
           compactModeEnabled={compactModeEnabled}
           connectionError={connectionError}
           onClose={onClose}
@@ -235,63 +187,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
             }));
       headerBackButtonLink = compactModeEnabled ? (connector ? null : WalletStep.None) : null;
       headerBackButtonCallback = compactModeEnabled ? (!connector ? clearSelectedWallet : () => {}) : () => {};
-      break;
-    case WalletStep.DownloadOptions:
-      walletContent = selectedWallet && (
-        <DownloadOptionsDetail
-          changeWalletStep={changeWalletStep}
-          wallet={selectedWallet}
-        />
-      );
-      headerLabel = selectedWallet && t("get_options.short_title", { wallet: selectedWallet.name });
-      headerBackButtonLink = connector ? WalletStep.Connect : compactModeEnabled ? WalletStep.None : initialWalletStep;
-      break;
-    case WalletStep.Download:
-      walletContent = selectedWallet && (
-        <DownloadDetail
-          changeWalletStep={changeWalletStep}
-          wallet={selectedWallet}
-        />
-      );
-      headerLabel = selectedWallet && t("get_mobile.title", { wallet: selectedWallet.name });
-      headerBackButtonLink = hasExtensionAndMobile ? WalletStep.DownloadOptions : initialWalletStep;
-      break;
-    case WalletStep.InstructionsMobile:
-      walletContent = selectedWallet && (
-        <InstructionMobileDetail
-          connectWallet={selectWallet}
-          wallet={selectedWallet}
-        />
-      );
-      headerLabel =
-        selectedWallet &&
-        t("get_options.title", {
-          wallet: compactModeEnabled ? selectedWallet.shortName || selectedWallet.name : selectedWallet.name,
-        });
-      headerBackButtonLink = WalletStep.Download;
-      break;
-    case WalletStep.InstructionsExtension:
-      walletContent = selectedWallet && <InstructionExtensionDetail wallet={selectedWallet} />;
-      headerLabel =
-        selectedWallet &&
-        t("get_options.title", {
-          wallet: compactModeEnabled ? selectedWallet.shortName || selectedWallet.name : selectedWallet.name,
-        });
-      headerBackButtonLink = WalletStep.DownloadOptions;
-      break;
-    case WalletStep.InstructionsDesktop:
-      walletContent = selectedWallet && (
-        <InstructionDesktopDetail
-          connectWallet={selectWallet}
-          wallet={selectedWallet}
-        />
-      );
-      headerLabel =
-        selectedWallet &&
-        t("get_options.title", {
-          wallet: compactModeEnabled ? selectedWallet.shortName || selectedWallet.name : selectedWallet.name,
-        });
-      headerBackButtonLink = WalletStep.DownloadOptions;
       break;
     default:
       break;
@@ -500,7 +395,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                     })}
                     color="accentColor"
                     onClick={() => {
-                      headerBackButtonLink && changeWalletStep(headerBackButtonLink, true);
+                      headerBackButtonLink && changeWalletStep(headerBackButtonLink);
                       headerBackButtonCallback?.();
                     }}
                     paddingX="8"

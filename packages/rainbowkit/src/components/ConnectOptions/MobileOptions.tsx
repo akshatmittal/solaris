@@ -1,8 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
-import { isIOS } from "../../utils/isMobile";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Box } from "../Box/Box";
@@ -10,10 +8,10 @@ import { ActionButton } from "../Button/ActionButton";
 import { CloseButton } from "../CloseButton/CloseButton";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
-import { BackIcon } from "../Icons/Back";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { Text } from "../Text/Text";
+import { GET_WALLET_URL } from "./constants";
 import * as styles from "./MobileOptions.css";
 
 const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
@@ -195,256 +193,117 @@ export function WalletButton({
   );
 }
 
-enum MobileWalletStep {
-  Connect = "CONNECT",
-  Get = "GET",
-}
-
 export function MobileOptions({ onClose }: { onClose: () => void }) {
   const titleId = "rk_connect_title";
   const wallets = useWalletConnectors().filter((wallet) => wallet.isRainbowKitConnector);
   const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
-  let headerLabel = null;
-  let walletContent = null;
-  let headerBackgroundContrast = false;
-  let headerBackButtonLink: MobileWalletStep | null = null;
+  const headerLabel = t("connect.title");
+  const headerBackgroundContrast = true;
+  const walletContent = (
+    <Box>
+      <Box
+        background="profileForeground"
+        className={styles.scroll}
+        display="flex"
+        paddingBottom="20"
+        paddingTop="6"
+        paddingX="20"
+        style={{
+          gap: "calc((100% - 40px - 240px + 47px) / 4)",
+        }}
+      >
+        {wallets
+          .filter((wallet) => wallet.ready)
+          .map((wallet) => {
+            return (
+              <Box
+                key={wallet.id}
+                width="60"
+              >
+                <WalletButton
+                  onClose={onClose}
+                  wallet={wallet}
+                />
+              </Box>
+            );
+          })}
+      </Box>
 
-  const [walletStep, setWalletStep] = useState<MobileWalletStep>(MobileWalletStep.Connect);
+      <Box
+        background="generalBorder"
+        height="1"
+        marginBottom="32"
+        marginTop="-1"
+      />
 
-  const ios = isIOS();
-
-  switch (walletStep) {
-    case MobileWalletStep.Connect: {
-      headerLabel = t("connect.title");
-      headerBackgroundContrast = true;
-      walletContent = (
-        <Box>
-          <Box
-            background="profileForeground"
-            className={styles.scroll}
-            display="flex"
-            paddingBottom="20"
-            paddingTop="6"
-            paddingX="20"
-            style={{
-              // Dynamic gap to show ~13px of 5th wallet as scroll hint
-              gap: "calc((100% - 40px - 240px + 47px) / 4)",
-            }}
+      <Box
+        alignItems="center"
+        display="flex"
+        flexDirection="column"
+        gap="32"
+        paddingX="32"
+        style={{ textAlign: "center" }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap="8"
+          textAlign="center"
+        >
+          <Text
+            color="modalText"
+            size="16"
+            weight="bold"
           >
-            {wallets
-              .filter((wallet) => wallet.ready)
-              .map((wallet) => {
-                return (
-                  <Box
-                    key={wallet.id}
-                    width="60"
-                  >
-                    <WalletButton
-                      onClose={onClose}
-                      wallet={wallet}
-                    />
-                  </Box>
-                );
-              })}
-          </Box>
+            {t("intro.title")}
+          </Text>
+          <Text
+            color="modalTextSecondary"
+            size="16"
+          >
+            {t("intro.description")}
+          </Text>
+        </Box>
+      </Box>
 
-          <Box
-            background="generalBorder"
-            height="1"
-            marginBottom="32"
-            marginTop="-1"
+      <Box
+        paddingTop="32"
+        paddingX="20"
+      >
+        <Box
+          display="flex"
+          gap="14"
+          justifyContent="center"
+        >
+          <ActionButton
+            href={GET_WALLET_URL}
+            label={t("intro.get.label")}
+            size="large"
+            type="secondary"
           />
-
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap="32"
-            paddingX="32"
-            style={{ textAlign: "center" }}
-          >
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="8"
-              textAlign="center"
-            >
-              <Text
-                color="modalText"
-                size="16"
-                weight="bold"
-              >
-                {t("intro.title")}
-              </Text>
-              <Text
-                color="modalTextSecondary"
-                size="16"
-              >
-                {t("intro.description")}
-              </Text>
-            </Box>
-          </Box>
-
-          <Box
-            paddingTop="32"
-            paddingX="20"
-          >
-            <Box
-              display="flex"
-              gap="14"
-              justifyContent="center"
-            >
-              <ActionButton
-                label={t("intro.get.label")}
-                onClick={() => setWalletStep(MobileWalletStep.Get)}
-                size="large"
-                type="secondary"
-              />
-              <ActionButton
-                href={learnMoreUrl}
-                label={t("intro.learn_more.label")}
-                size="large"
-                type="secondary"
-              />
-            </Box>
-          </Box>
-          {Disclaimer && (
-            <Box
-              marginTop="28"
-              marginX="32"
-              textAlign="center"
-            >
-              <Disclaimer
-                Link={DisclaimerLink}
-                Text={DisclaimerText}
-              />
-            </Box>
-          )}
+          <ActionButton
+            href={learnMoreUrl}
+            label={t("intro.learn_more.label")}
+            size="large"
+            type="secondary"
+          />
         </Box>
-      );
-      break;
-    }
-    case MobileWalletStep.Get: {
-      headerLabel = t("get.title");
-      headerBackButtonLink = MobileWalletStep.Connect;
-
-      const mobileWallets = wallets
-        ?.filter((wallet) => wallet.downloadUrls?.ios || wallet.downloadUrls?.android || wallet.downloadUrls?.mobile)
-        ?.splice(0, 3);
-
-      walletContent = (
-        <Box>
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            height="full"
-            marginBottom="36"
-            marginTop="5"
-            paddingTop="12"
-            width="full"
-          >
-            {mobileWallets.map((wallet, index) => {
-              const { downloadUrls, iconBackground, iconUrl, name } = wallet;
-
-              if (!downloadUrls?.ios && !downloadUrls?.android && !downloadUrls?.mobile) {
-                return null;
-              }
-
-              return (
-                <Box
-                  display="flex"
-                  gap="16"
-                  key={wallet.id}
-                  paddingX="20"
-                  width="full"
-                >
-                  <Box style={{ minHeight: 48, minWidth: 48 }}>
-                    <AsyncImage
-                      background={iconBackground}
-                      borderColor="generalBorder"
-                      borderRadius="10"
-                      height="48"
-                      src={iconUrl}
-                      width="48"
-                    />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    width="full"
-                  >
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                      height="48"
-                    >
-                      <Box width="full">
-                        <Text
-                          color="modalText"
-                          size="18"
-                          weight="bold"
-                        >
-                          {name}
-                        </Text>
-                      </Box>
-                      <ActionButton
-                        href={(ios ? downloadUrls?.ios : downloadUrls?.android) || downloadUrls?.mobile}
-                        label={t("get.action.label")}
-                        size="small"
-                        type="secondary"
-                      />
-                    </Box>
-                    {index < mobileWallets.length - 1 && (
-                      <Box
-                        background="generalBorderDim"
-                        height="1"
-                        marginY="10"
-                        width="full"
-                      />
-                    )}
-                  </Box>
-                </Box>
-              );
-            })}
-          </Box>
-          {/* spacer */}
-          <Box style={{ marginBottom: "42px" }} />
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap="36"
-            paddingX="36"
-            style={{ textAlign: "center" }}
-          >
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="12"
-              textAlign="center"
-            >
-              <Text
-                color="modalText"
-                size="16"
-                weight="bold"
-              >
-                {t("get.looking_for.title")}
-              </Text>
-              <Text
-                color="modalTextSecondary"
-                size="16"
-              >
-                {t("get.looking_for.mobile.description")}
-              </Text>
-            </Box>
-          </Box>
+      </Box>
+      {Disclaimer && (
+        <Box
+          marginTop="28"
+          marginX="32"
+          textAlign="center"
+        >
+          <Disclaimer
+            Link={DisclaimerLink}
+            Text={DisclaimerText}
+          />
         </Box>
-      );
-      break;
-    }
-  }
+      )}
+    </Box>
+  );
 
   return (
     <Box
@@ -467,38 +326,6 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
           paddingX="20"
           position="relative"
         >
-          {headerBackButtonLink && (
-            <Box
-              display="flex"
-              position="absolute"
-              style={{
-                left: 0,
-                marginBottom: -20,
-                marginTop: -20,
-              }}
-            >
-              <Box
-                alignItems="center"
-                as="button"
-                className={touchableStyles({
-                  active: "shrinkSm",
-                  hover: "growLg",
-                })}
-                color="accentColor"
-                display="flex"
-                marginLeft="4"
-                marginTop="20"
-                onClick={() => setWalletStep(headerBackButtonLink!)}
-                padding="16"
-                style={{ height: 17, willChange: "transform" }}
-                transition="default"
-                type="button"
-              >
-                <BackIcon />
-              </Box>
-            </Box>
-          )}
-
           <Box
             marginTop="4"
             textAlign="center"

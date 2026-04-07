@@ -1,12 +1,13 @@
 {
-  "extends": "@workspace/typescript-config/react-library.json",
+  "extends": "@workspace/typescript-config/config.json",
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "dist",
+    "noEmit": false,
     "outDir": "dist",
     "preserveSymlinks": false,
     "rootDir": "src",
-    "target": "es2022"
+    "target": "es2024"
   },
   "exclude": ["dist", "node_modules", "src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*"],
   "include": ["src"]
