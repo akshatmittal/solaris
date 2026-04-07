@@ -1,37 +1,37 @@
-import type { Transport } from 'viem';
-import { http, type CreateConfigParameters } from 'wagmi';
-import { createConfig } from 'wagmi';
-import type { RainbowKitChain } from '../components/RainbowKitProvider/RainbowKitChainContext';
+import type { Transport } from "viem";
+import { http, type CreateConfigParameters } from "wagmi";
+import { createConfig } from "wagmi";
+import type { RainbowKitChain } from "../components/RainbowKitProvider/RainbowKitChainContext";
 import type {
   RainbowKitWalletConnectParameters,
   WalletList,
-} from '../wallets/Wallet';
-import { computeWalletConnectMetaData } from '../wallets/computeWalletConnectMetaData';
-import { connectorsForWallets } from '../wallets/connectorsForWallets';
+} from "../wallets/Wallet";
+import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
+import { connectorsForWallets } from "../wallets/connectorsForWallets";
 import {
   baseAccount,
+  injectedWallet,
   metaMaskWallet,
-  rainbowWallet,
   safeWallet,
   walletConnectWallet,
-} from '../wallets/walletConnectors';
+} from "../wallets/walletConnectors";
 
 export type _chains = readonly [RainbowKitChain, ...RainbowKitChain[]];
 
 // Define the '_transports' type as a Record
 // It maps each 'Chain' id to a 'Transport'
-export type _transports = Record<_chains[number]['id'], Transport>;
+export type _transports = Record<_chains[number]["id"], Transport>;
 
 interface GetDefaultConfigParameters<
   chains extends _chains,
   transports extends _transports,
 > extends Omit<
-    CreateConfigParameters<chains, transports>,
-    // If you use 'client' you can't use 'transports' (we force to use 'transports')
-    // More info here https://wagmi.sh/core/api/createConfig#client
-    // We will also use our own 'connectors' instead of letting user specifying it
-    'client' | 'connectors'
-  > {
+  CreateConfigParameters<chains, transports>,
+  // If you use 'client' you can't use 'transports' (we force to use 'transports')
+  // More info here https://wagmi.sh/core/api/createConfig#client
+  // We will also use our own 'connectors' instead of letting user specifying it
+  "client" | "connectors"
+> {
   appName: string;
   appDescription?: string;
   appUrl?: string;
@@ -81,10 +81,10 @@ export const getDefaultConfig = <
   const connectors = connectorsForWallets(
     wallets || [
       {
-        groupName: 'Popular',
+        groupName: "Popular",
         wallets: [
           safeWallet,
-          rainbowWallet,
+          injectedWallet,
           baseAccount,
           metaMaskWallet,
           walletConnectWallet,

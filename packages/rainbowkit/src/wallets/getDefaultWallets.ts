@@ -4,8 +4,8 @@ import {
   type ConnectorsForWalletsParameters,
   connectorsForWallets,
 } from './connectorsForWallets';
+import { injectedWallet } from './walletConnectors/injectedWallet/injectedWallet';
 import { metaMaskWallet } from './walletConnectors/metaMaskWallet/metaMaskWallet';
-import { rainbowWallet } from './walletConnectors/rainbowWallet/rainbowWallet';
 import { safeWallet } from './walletConnectors/safeWallet/safeWallet';
 import { walletConnectWallet } from './walletConnectors/walletConnectWallet/walletConnectWallet';
 import { baseAccount } from './walletConnectors/baseAccount/baseAccount';
@@ -23,7 +23,7 @@ export function getDefaultWallets(parameters?: ConnectorsForWalletsParameters) {
       groupName: 'Popular',
       wallets: [
         safeWallet,
-        rainbowWallet,
+        injectedWallet,
         baseAccount,
         metaMaskWallet,
         walletConnectWallet,

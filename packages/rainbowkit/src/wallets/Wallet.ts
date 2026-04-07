@@ -1,6 +1,5 @@
 import type { Connector, CreateConnectorFn } from 'wagmi';
 import type { WalletConnectParameters } from 'wagmi/connectors';
-import type { CoinbaseWalletOptions } from './walletConnectors/coinbaseWallet/coinbaseWallet';
 import type { WalletConnectWalletOptions } from './walletConnectors/walletConnectWallet/walletConnectWallet';
 
 export type InstructionStepName =
@@ -82,10 +81,15 @@ export interface DefaultWalletOptions {
   walletConnectParameters?: RainbowKitWalletConnectParameters;
 }
 
+type WalletAppOptions = {
+  appName: string;
+  appIcon?: string;
+};
+
 export type CreateWalletFn = (
   // These parameters will be used when creating a wallet. If injected
   // wallet doesn't have parameters it will just ignore these passed in parameters
-  createWalletParams: CoinbaseWalletOptions &
+  createWalletParams: WalletAppOptions &
     Omit<WalletConnectWalletOptions, 'projectId'> &
     DefaultWalletOptions,
 ) => Wallet;
