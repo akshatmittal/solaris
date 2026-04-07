@@ -1,20 +1,12 @@
-import React, { useMemo } from 'react';
-import { SpinnerIconClassName, SpinnerIconPathClassName } from './Icons.css';
+import React, { useMemo } from "react";
+
+import { SpinnerIconClassName, SpinnerIconPathClassName } from "./Icons.css";
 
 const useRandomId = (prefix: string) =>
-  useMemo(
-    () => `${prefix}_${Math.round(Math.random() * 1_000_000_000)}`,
-    [prefix],
-  );
+  useMemo(() => `${prefix}_${Math.round(Math.random() * 1_000_000_000)}`, [prefix]);
 
-export const SpinnerIcon = ({
-  height = 21,
-  width = 21,
-}: {
-  width?: string | number;
-  height?: string | number;
-}) => {
-  const id = useRandomId('spinner');
+export const SpinnerIcon = ({ height = 21, width = 21 }: { width?: string | number; height?: string | number }) => {
+  const id = useRandomId("spinner");
 
   return (
     <svg

@@ -1,4 +1,4 @@
-import type { EIP1193Provider } from 'viem';
+import type { EIP1193Provider } from "viem";
 
 /** Combines members of an intersection into a readable type. */
 export type Evaluate<type> = { [key in keyof type]: type[key] } & unknown;
@@ -9,65 +9,62 @@ export type Mutable<type extends object> = {
 };
 
 /** Strict version of built-in Omit type */
-export type Omit<type, keys extends keyof type> = Pick<
-  type,
-  Exclude<keyof type, keys>
->;
+export type Omit<type, keys extends keyof type> = Pick<type, Exclude<keyof type, keys>>;
 
 // window.ethereum types
 
 export type WalletProviderFlags =
-  | 'isApexWallet'
-  | 'isAvalanche'
-  | 'isBackpack'
-  | 'isBifrost'
-  | 'isBitKeep'
-  | 'isBitski'
-  | 'isBinance'
-  | 'isBlockWallet'
-  | 'isBraveWallet'
-  | 'isCoinbaseWallet'
-  | 'isDawn'
-  | 'isEnkrypt'
-  | 'isExodus'
-  | 'isFrame'
-  | 'isFrontier'
-  | 'isGamestop'
-  | 'isHyperPay'
-  | 'isImToken'
-  | 'isKuCoinWallet'
-  | 'isMathWallet'
-  | 'isMetaMask'
-  | 'isNestWallet'
-  | 'isOkxWallet'
-  | 'isOKExWallet'
-  | 'isOneInchAndroidWallet'
-  | 'isOneInchIOSWallet'
-  | 'isOpera'
-  | 'isPhantom'
-  | 'isZilPay'
-  | 'isPortal'
-  | 'isxPortal'
-  | 'isRabby'
-  | 'isRainbow'
-  | 'isStatus'
-  | 'isTally'
-  | 'isTokenPocket'
-  | 'isTokenary'
-  | 'isTrust'
-  | 'isTrustWallet'
-  | 'isCTRL'
-  | 'isZerion'
-  | 'isTalisman'
-  | 'isNovaWallet'
-  | 'isZeal'
-  | 'isCoin98'
-  | 'isMEWwallet'
-  | 'isSafeheron'
-  | 'isSafePal'
-  | 'isWigwam'
-  | 'isMeCoWallet'
-  | '__seif';
+  | "isApexWallet"
+  | "isAvalanche"
+  | "isBackpack"
+  | "isBifrost"
+  | "isBitKeep"
+  | "isBitski"
+  | "isBinance"
+  | "isBlockWallet"
+  | "isBraveWallet"
+  | "isCoinbaseWallet"
+  | "isDawn"
+  | "isEnkrypt"
+  | "isExodus"
+  | "isFrame"
+  | "isFrontier"
+  | "isGamestop"
+  | "isHyperPay"
+  | "isImToken"
+  | "isKuCoinWallet"
+  | "isMathWallet"
+  | "isMetaMask"
+  | "isNestWallet"
+  | "isOkxWallet"
+  | "isOKExWallet"
+  | "isOneInchAndroidWallet"
+  | "isOneInchIOSWallet"
+  | "isOpera"
+  | "isPhantom"
+  | "isZilPay"
+  | "isPortal"
+  | "isxPortal"
+  | "isRabby"
+  | "isRainbow"
+  | "isStatus"
+  | "isTally"
+  | "isTokenPocket"
+  | "isTokenary"
+  | "isTrust"
+  | "isTrustWallet"
+  | "isCTRL"
+  | "isZerion"
+  | "isTalisman"
+  | "isNovaWallet"
+  | "isZeal"
+  | "isCoin98"
+  | "isMEWwallet"
+  | "isSafeheron"
+  | "isSafePal"
+  | "isWigwam"
+  | "isMeCoWallet"
+  | "__seif";
 
 export type WalletProvider = Evaluate<
   EIP1193Provider & {

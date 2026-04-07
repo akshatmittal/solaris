@@ -1,11 +1,11 @@
-import React from 'react';
-import type { PublicClient, TransactionReceipt } from 'viem';
-import { useAccount, useBalance, usePublicClient } from 'wagmi';
-import { useChainId } from '../hooks/useChainId';
-import {
-  type TransactionStore,
-  createTransactionStore,
-} from './transactionStore';
+import React from "react";
+
+import type { PublicClient, TransactionReceipt } from "viem";
+
+import { useAccount, useBalance, usePublicClient } from "wagmi";
+
+import { useChainId } from "../hooks/useChainId";
+import { type TransactionStore, createTransactionStore } from "./transactionStore";
 
 // Only allow a single instance of the store to exist at once
 // so that multiple RainbowKitProvider instances can share the same store.
@@ -13,15 +13,9 @@ import {
 // so that it always has access to a provider.
 let storeSingleton: ReturnType<typeof createTransactionStore> | undefined;
 
-const TransactionStoreContext = React.createContext<TransactionStore | null>(
-  null,
-);
+const TransactionStoreContext = React.createContext<TransactionStore | null>(null);
 
-export function TransactionStoreProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function TransactionStoreProvider({ children }: { children: React.ReactNode }) {
   const provider = usePublicClient() as PublicClient;
   const { address } = useAccount();
   const chainId = useChainId();
@@ -33,14 +27,11 @@ export function TransactionStoreProvider({
   });
 
   // Use existing store if it exists, or lazily create one
-  const [store] = React.useState(
-    () =>
-      storeSingleton ?? (storeSingleton = createTransactionStore({ provider })),
-  );
+  const [store] = React.useState(() => storeSingleton ?? (storeSingleton = createTransactionStore({ provider })));
 
   const onTransactionStatus = React.useCallback(
-    (txStatus: TransactionReceipt['status']) => {
-      if (txStatus === 'success') refetch();
+    (txStatus: TransactionReceipt["status"]) => {
+      if (txStatus === "success") refetch();
     },
     [refetch],
   );
@@ -63,18 +54,14 @@ export function TransactionStoreProvider({
     }
   }, [store, address, chainId, onTransactionStatus]);
 
-  return (
-    <TransactionStoreContext.Provider value={store}>
-      {children}
-    </TransactionStoreContext.Provider>
-  );
+  return <TransactionStoreContext.Provider value={store}>{children}</TransactionStoreContext.Provider>;
 }
 
 export function useTransactionStore(): TransactionStore {
   const store = React.useContext(TransactionStoreContext);
 
   if (!store) {
-    throw new Error('Transaction hooks must be used within RainbowKitProvider');
+    throw new Error("Transaction hooks must be used within RainbowKitProvider");
   }
 
   return store;

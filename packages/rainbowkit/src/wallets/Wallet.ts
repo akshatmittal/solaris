@@ -1,13 +1,9 @@
-import type { Connector, CreateConnectorFn } from 'wagmi';
-import type { WalletConnectParameters } from 'wagmi/connectors';
-import type { WalletConnectWalletOptions } from './walletConnectors/walletConnectWallet/walletConnectWallet';
+import type { Connector, CreateConnectorFn } from "wagmi";
+import type { WalletConnectParameters } from "wagmi/connectors";
 
-export type InstructionStepName =
-  | 'install'
-  | 'create'
-  | 'scan'
-  | 'connect'
-  | 'refresh';
+import type { WalletConnectWalletOptions } from "./walletConnectors/walletConnectWallet/walletConnectWallet";
+
+export type InstructionStepName = "install" | "create" | "scan" | "connect" | "refresh";
 
 type RainbowKitConnector = {
   mobile?: {
@@ -89,9 +85,7 @@ type WalletAppOptions = {
 export type CreateWalletFn = (
   // These parameters will be used when creating a wallet. If injected
   // wallet doesn't have parameters it will just ignore these passed in parameters
-  createWalletParams: WalletAppOptions &
-    Omit<WalletConnectWalletOptions, 'projectId'> &
-    DefaultWalletOptions,
+  createWalletParams: WalletAppOptions & Omit<WalletConnectWalletOptions, "projectId"> & DefaultWalletOptions,
 ) => Wallet;
 
 export type WalletList = {
@@ -102,12 +96,9 @@ export type WalletList = {
 // We don't want users to pass in `showQrModal` or `projectId`.
 // Those two values are handled by rainbowkit. The rest of WalletConnect
 // parameters can be passed with no issue
-export type RainbowKitWalletConnectParameters = Omit<
-  WalletConnectParameters,
-  'showQrModal' | 'projectId'
->;
+export type RainbowKitWalletConnectParameters = Omit<WalletConnectParameters, "showQrModal" | "projectId">;
 
-export type RainbowKitDetails = Omit<Wallet, 'createConnector' | 'hidden'> & {
+export type RainbowKitDetails = Omit<Wallet, "createConnector" | "hidden"> & {
   index: number;
   groupIndex: number;
   groupName: string;
@@ -121,9 +112,7 @@ export type RainbowKitDetails = Omit<Wallet, 'createConnector' | 'hidden'> & {
 
 export type WalletDetailsParams = { rkDetails: RainbowKitDetails };
 
-export type CreateConnector = (walletDetails: {
-  rkDetails: RainbowKitDetails;
-}) => CreateConnectorFn;
+export type CreateConnector = (walletDetails: { rkDetails: RainbowKitDetails }) => CreateConnectorFn;
 
 // This is the default connector you get at first from wagmi
 // "Connector" + rainbowkit details we inject into the connector

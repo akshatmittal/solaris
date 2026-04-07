@@ -13,23 +13,33 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node: [24]
-
     steps:
-      - uses: actions/checkout@v4
-      - run: corepack enable pnpm
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version: "24"
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Lint and format
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Formatting
+        run: pnpm format:check
+
+      - name: Lint
         run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
       - name: Run tests
         run: pnpm test
-      - name: Build package
+
+      - name: Build Workspace
         run: pnpm build

@@ -1,8 +1,8 @@
-import { assignInlineVars } from '@vanilla-extract/dynamic';
-import { type ThemeVars, themeVars } from './sprinkles.css';
+import { assignInlineVars } from "@vanilla-extract/dynamic";
 
-const resolveThemeVars = (theme: ThemeVars | (() => ThemeVars)) =>
-  typeof theme === 'function' ? theme() : theme;
+import { type ThemeVars, themeVars } from "./sprinkles.css";
+
+const resolveThemeVars = (theme: ThemeVars | (() => ThemeVars)) => (typeof theme === "function" ? theme() : theme);
 
 export function cssObjectFromTheme(
   theme: ThemeVars | (() => ThemeVars),
@@ -20,15 +20,10 @@ export function cssObjectFromTheme(
     return resolvedThemeVars;
   }
 
-  const resolvedBaseThemeVars = assignInlineVars(
-    themeVars,
-    resolveThemeVars(baseTheme),
-  );
+  const resolvedBaseThemeVars = assignInlineVars(themeVars, resolveThemeVars(baseTheme));
 
   const filteredVars = Object.fromEntries(
-    Object.entries(resolvedThemeVars).filter(
-      ([varName, value]) => value !== resolvedBaseThemeVars[varName],
-    ),
+    Object.entries(resolvedThemeVars).filter(([varName, value]) => value !== resolvedBaseThemeVars[varName]),
   );
 
   return filteredVars;

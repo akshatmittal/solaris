@@ -1,12 +1,10 @@
-import React, {
-  type ReactNode,
-  createContext,
-  useContext,
-  useMemo,
-} from 'react';
-import { useConfig } from 'wagmi';
-import type { Chain } from 'wagmi/chains';
-import { provideRainbowKitChains } from './provideRainbowKitChains';
+import React, { type ReactNode, createContext, useContext, useMemo } from "react";
+
+import type { Chain } from "wagmi/chains";
+
+import { useConfig } from "wagmi";
+
+import { provideRainbowKitChains } from "./provideRainbowKitChains";
 
 export interface RainbowKitChain extends Chain {
   iconUrl?: string | (() => Promise<string>) | null;
@@ -27,10 +25,7 @@ interface RainbowKitChainProviderProps {
   children: ReactNode;
 }
 
-export function RainbowKitChainProvider({
-  children,
-  initialChain,
-}: RainbowKitChainProviderProps) {
+export function RainbowKitChainProvider({ children, initialChain }: RainbowKitChainProviderProps) {
   const { chains } = useConfig();
 
   return (
@@ -38,8 +33,7 @@ export function RainbowKitChainProvider({
       value={useMemo(
         () => ({
           chains: provideRainbowKitChains(chains),
-          initialChainId:
-            typeof initialChain === 'number' ? initialChain : initialChain?.id,
+          initialChainId: typeof initialChain === "number" ? initialChain : initialChain?.id,
         }),
         [chains, initialChain],
       )}
@@ -49,11 +43,9 @@ export function RainbowKitChainProvider({
   );
 }
 
-export const useRainbowKitChains = () =>
-  useContext(RainbowKitChainContext).chains;
+export const useRainbowKitChains = () => useContext(RainbowKitChainContext).chains;
 
-export const useInitialChainId = () =>
-  useContext(RainbowKitChainContext).initialChainId;
+export const useInitialChainId = () => useContext(RainbowKitChainContext).initialChainId;
 
 export const useRainbowKitChainsById = () => {
   const rainbowkitChains = useRainbowKitChains();

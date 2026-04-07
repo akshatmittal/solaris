@@ -1,5 +1,5 @@
-import type React from 'react';
-import { type ReactNode, createContext } from 'react';
+import type React from "react";
+import { type ReactNode, createContext } from "react";
 
 export type DisclaimerComponent = React.FunctionComponent<{
   Text: React.FunctionComponent<{ children: ReactNode }>;
@@ -9,8 +9,7 @@ export type DisclaimerComponent = React.FunctionComponent<{
 export const defaultAppInfo = {
   appName: undefined,
   disclaimer: undefined,
-  learnMoreUrl:
-    'https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore',
+  learnMoreUrl: "https://learn.rainbow.me/understanding-web3?utm_source=rainbowkit&utm_campaign=learnmore",
 };
 
 export const AppContext = createContext<{

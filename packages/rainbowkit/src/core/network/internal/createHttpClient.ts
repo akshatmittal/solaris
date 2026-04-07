@@ -1,7 +1,4 @@
-import {
-  RainbowFetchClient,
-  type RainbowFetchRequestOpts,
-} from './rainbowFetch';
+import { RainbowFetchClient, type RainbowFetchRequestOpts } from "./rainbowFetch";
 
 export function createHttpClient({
   baseUrl,

@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Box } from '../Box/Box';
-import { SpinnerIcon } from '../Icons/Spinner';
-import type { AvatarComponent } from '../RainbowKitProvider/AvatarContext';
-import { emojiAvatarForAddress } from './emojiAvatarForAddress';
+import React, { useEffect, useMemo, useState } from "react";
+
+import type { AvatarComponent } from "../RainbowKitProvider/AvatarContext";
+
+import { Box } from "../Box/Box";
+import { SpinnerIcon } from "../Icons/Spinner";
+import { emojiAvatarForAddress } from "./emojiAvatarForAddress";
 
 export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   const [loaded, setLoaded] = useState(false);
@@ -14,10 +16,7 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
     }
   }, [ensImage]);
 
-  const { color: backgroundColor, emoji } = useMemo(
-    () => emojiAvatarForAddress(address),
-    [address],
-  );
+  const { color: backgroundColor, emoji } = useMemo(() => emojiAvatarForAddress(address), [address]);
   return ensImage ? (
     loaded ? (
       <Box
@@ -26,7 +25,7 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
         position="absolute"
         style={{
           backgroundImage: `url(${ensImage})`,
-          backgroundPosition: 'center',
+          backgroundPosition: "center",
           height: size,
           width: size,
         }}

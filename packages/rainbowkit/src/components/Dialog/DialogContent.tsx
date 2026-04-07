@@ -1,18 +1,16 @@
-import React, { type ReactNode, useContext } from 'react';
-import { isMobile } from '../../utils/isMobile';
-import { Box, type BoxProps } from '../Box/Box';
-import {
-  ModalSizeContext,
-  ModalSizeOptions,
-} from '../RainbowKitProvider/ModalSizeContext';
-import * as styles from './DialogContent.css';
+import React, { type ReactNode, useContext } from "react";
+
+import { isMobile } from "../../utils/isMobile";
+import { Box, type BoxProps } from "../Box/Box";
+import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
+import * as styles from "./DialogContent.css";
 
 interface DialogContentProps {
   children: ReactNode;
   bottomSheetOnMobile?: boolean;
-  padding?: BoxProps['padding'];
-  paddingBottom?: BoxProps['paddingBottom'];
-  marginTop?: BoxProps['marginTop'];
+  padding?: BoxProps["padding"];
+  paddingBottom?: BoxProps["paddingBottom"];
+  marginTop?: BoxProps["marginTop"];
   wide?: boolean;
 }
 
@@ -20,7 +18,7 @@ export function DialogContent({
   bottomSheetOnMobile = false,
   children,
   marginTop,
-  padding = '16',
+  padding = "16",
   paddingBottom,
   wide = false,
 }: DialogContentProps) {
@@ -40,9 +38,12 @@ export function DialogContent({
             : styles.dialogContent,
           mobile ? styles.dialogContentMobile : null,
           mobile && bottomSheetOnMobile ? styles.bottomSheetOverrides : null,
-        ].join(' ')}
+        ].join(" ")}
       >
-        <Box padding={padding} paddingBottom={paddingBottom ?? padding}>
+        <Box
+          padding={padding}
+          paddingBottom={paddingBottom ?? padding}
+        >
           {children}
         </Box>
       </Box>

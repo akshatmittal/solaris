@@ -1,27 +1,21 @@
-import React, { type ReactNode, useContext } from 'react';
-import { useAccount, useConfig } from 'wagmi';
-import { normalizeResponsiveValue } from '../../css/sprinkles.css';
-import { useIsMounted } from '../../hooks/useIsMounted';
-import { useProfile } from '../../hooks/useProfile';
-import { useRecentTransactions } from '../../transactions/useRecentTransactions';
-import { isMobile } from '../../utils/isMobile';
-import { useAsyncImage } from '../AsyncImage/useAsyncImage';
-import {
-  type AuthenticationStatus,
-  useAuthenticationStatus,
-} from '../RainbowKitProvider/AuthenticationContext';
-import {
-  useAccountModal,
-  useChainModal,
-  useConnectModal,
-  useModalState,
-} from '../RainbowKitProvider/ModalContext';
-import { useRainbowKitChainsById } from '../RainbowKitProvider/RainbowKitChainContext';
-import { useShowBalance } from '../RainbowKitProvider/ShowBalanceContext';
-import { ShowRecentTransactionsContext } from '../RainbowKitProvider/ShowRecentTransactionsContext';
-import { abbreviateETHBalance } from './abbreviateETHBalance';
-import { formatAddress } from './formatAddress';
-import { formatENS } from './formatENS';
+import React, { type ReactNode, useContext } from "react";
+
+import { useAccount, useConfig } from "wagmi";
+
+import { normalizeResponsiveValue } from "../../css/sprinkles.css";
+import { useIsMounted } from "../../hooks/useIsMounted";
+import { useProfile } from "../../hooks/useProfile";
+import { useRecentTransactions } from "../../transactions/useRecentTransactions";
+import { isMobile } from "../../utils/isMobile";
+import { useAsyncImage } from "../AsyncImage/useAsyncImage";
+import { type AuthenticationStatus, useAuthenticationStatus } from "../RainbowKitProvider/AuthenticationContext";
+import { useAccountModal, useChainModal, useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
+import { useRainbowKitChainsById } from "../RainbowKitProvider/RainbowKitChainContext";
+import { useShowBalance } from "../RainbowKitProvider/ShowBalanceContext";
+import { ShowRecentTransactionsContext } from "../RainbowKitProvider/ShowRecentTransactionsContext";
+import { abbreviateETHBalance } from "./abbreviateETHBalance";
+import { formatAddress } from "./formatAddress";
+import { formatENS } from "./formatENS";
 
 const noop = () => {};
 
@@ -57,17 +51,13 @@ export interface ConnectButtonRendererProps {
   }) => ReactNode;
 }
 
-export function ConnectButtonRenderer({
-  children,
-}: ConnectButtonRendererProps) {
+export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) {
   const isMounted = useIsMounted();
   const { address } = useAccount();
 
   const { chainId } = useAccount();
   const { chains: wagmiChains } = useConfig();
-  const isCurrentChainSupported = wagmiChains.some(
-    (chain) => chain.id === chainId,
-  );
+  const isCurrentChainSupported = wagmiChains.some((chain) => chain.id === chainId);
 
   const rainbowkitChainsById = useRainbowKitChainsById();
   const authenticationStatus = useAuthenticationStatus() ?? undefined;
@@ -79,20 +69,17 @@ export function ConnectButtonRenderer({
 
   const showRecentTransactions = useContext(ShowRecentTransactionsContext);
   const hasPendingTransactions =
-    useRecentTransactions().some(({ status }) => status === 'pending') &&
-    showRecentTransactions;
+    useRecentTransactions().some(({ status }) => status === "pending") && showRecentTransactions;
 
   const { showBalance } = useShowBalance();
 
   const computeShouldShowBalance = () => {
-    if (typeof showBalance === 'boolean') {
+    if (typeof showBalance === "boolean") {
       return showBalance;
     }
 
     if (showBalance) {
-      return normalizeResponsiveValue(showBalance)[
-        isMobile() ? 'smallScreen' : 'largeScreen'
-      ];
+      return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
     }
 
     return true;
@@ -112,8 +99,7 @@ export function ConnectButtonRenderer({
   const { openConnectModal } = useConnectModal();
   const { openChainModal } = useChainModal();
   const { openAccountModal } = useAccountModal();
-  const { accountModalOpen, chainModalOpen, connectModalOpen } =
-    useModalState();
+  const { accountModalOpen, chainModalOpen, connectModalOpen } = useModalState();
 
   return (
     <>
@@ -125,9 +111,7 @@ export function ConnectButtonRenderer({
               balanceFormatted: balance?.formatted,
               balanceSymbol: balance?.symbol,
               displayBalance,
-              displayName: ensName
-                ? formatENS(ensName)
-                : formatAddress(address),
+              displayName: ensName ? formatENS(ensName) : formatAddress(address),
               ensAvatar: ensAvatar ?? undefined,
               ensName: ensName ?? undefined,
               hasPendingTransactions,
@@ -156,4 +140,4 @@ export function ConnectButtonRenderer({
   );
 }
 
-ConnectButtonRenderer.displayName = 'ConnectButton.Custom';
+ConnectButtonRenderer.displayName = "ConnectButton.Custom";

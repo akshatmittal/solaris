@@ -1,7 +1,4 @@
-export function groupBy<Item>(
-  items: Item[],
-  getKey: (item: Item) => string,
-): Record<string, Item[]> {
+export function groupBy<Item>(items: Item[], getKey: (item: Item) => string): Record<string, Item[]> {
   const groupedItems: Record<string, Item[]> = {};
 
   for (const item of items) {

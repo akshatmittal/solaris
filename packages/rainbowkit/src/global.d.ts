@@ -1,9 +1,9 @@
-declare module '*.svg' {
+declare module "*.svg" {
   const dataUrl: string;
   export default dataUrl;
 }
 
-declare module '*.png' {
+declare module "*.png" {
   const dataUrl: string;
   export default dataUrl;
 }

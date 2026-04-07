@@ -1,28 +1,24 @@
-import { type Connector, useConnect } from 'wagmi';
-import { useWalletConnectOpenState } from '../components/RainbowKitProvider/ModalContext';
-import { indexBy } from '../utils/indexBy';
-import {
-  useInitialChainId,
-  useRainbowKitChains,
-} from './../components/RainbowKitProvider/RainbowKitChainContext';
-import type { WagmiConnectorInstance, WalletInstance } from './Wallet';
-import {
-  getDesktopDownloadUrl,
-  getExtensionDownloadUrl,
-  getMobileDownloadUrl,
-} from './downloadUrls';
+import { type Connector, useConnect } from "wagmi";
+
+import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
+
+import { useWalletConnectOpenState } from "../components/RainbowKitProvider/ModalContext";
+import { indexBy } from "../utils/indexBy";
+import { isNotNullish } from "../utils/isNotNullish";
+import { useInitialChainId, useRainbowKitChains } from "./../components/RainbowKitProvider/RainbowKitChainContext";
+import { getDesktopDownloadUrl, getExtensionDownloadUrl, getMobileDownloadUrl } from "./downloadUrls";
 import {
   connectorsWithRecentWallets,
   isEIP6963Connector,
   isRainbowKitConnector,
   isRecentWallet,
   rainbowKitConnectorWithWalletConnect,
-} from './groupedWallets';
-import { addRecentWalletId, getRecentWalletIds } from './recentWalletIds';
+} from "./groupedWallets";
+import { addRecentWalletId, getRecentWalletIds } from "./recentWalletIds";
 
 export interface WalletConnector extends WalletInstance {
   ready?: boolean;
-  connect: WalletInstance['connect'];
+  connect: WalletInstance["connect"];
   showWalletConnectModal?: () => void;
   recent: boolean;
   mobileDownloadUrl?: string;
@@ -33,14 +29,11 @@ export interface WalletConnector extends WalletInstance {
   getMobileUri?: () => Promise<string>;
 }
 
-export function useWalletConnectors(
-  mergeEIP6963WithRkConnectors = false,
-): WalletConnector[] {
+export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): WalletConnector[] {
   const rainbowKitChains = useRainbowKitChains();
   const intialChainId = useInitialChainId();
   const { connectAsync, connectors: defaultConnectors_untyped } = useConnect();
-  const defaultCreatedConnectors =
-    defaultConnectors_untyped as WagmiConnectorInstance[];
+  const defaultCreatedConnectors = defaultConnectors_untyped as WagmiConnectorInstance[];
 
   const { setIsWalletConnectModalOpen } = useWalletConnectOpenState();
 
@@ -54,8 +47,8 @@ export function useWalletConnectors(
 
   async function connectWallet(
     connector: Connector,
-    parameters?: Parameters<WalletInstance['connect']>[0],
-  ): ReturnType<WalletInstance['connect']> {
+    parameters?: Parameters<WalletInstance["connect"]>[0],
+  ): ReturnType<WalletInstance["connect"]> {
     const walletChainId = await connector.getChainId();
     const result = await connectAsync({
       ...parameters,
@@ -75,12 +68,10 @@ export function useWalletConnectors(
       addRecentWalletId(connector.id);
     }
 
-    return result as Awaited<ReturnType<WalletInstance['connect']>>;
+    return result as Awaited<ReturnType<WalletInstance["connect"]>>;
   }
 
-  async function connectToWalletConnectModal(
-    walletConnectModalConnector: Connector,
-  ) {
+  async function connectToWalletConnectModal(walletConnectModalConnector: Connector) {
     try {
       setIsWalletConnectModalOpen(true);
       await connectWallet(walletConnectModalConnector);
@@ -88,9 +79,9 @@ export function useWalletConnectors(
     } catch (err) {
       const isUserRejection =
         // @ts-expect-error - Web3Modal v1 error name
-        err.name === 'UserRejectedRequestError' ||
+        err.name === "UserRejectedRequestError" ||
         // @ts-expect-error - Web3Modal v2 error message on desktop
-        err.message === 'Connection request reset. Please try again.';
+        err.message === "Connection request reset. Please try again.";
 
       setIsWalletConnectModalOpen(false);
 
@@ -100,13 +91,10 @@ export function useWalletConnectors(
     }
   }
 
-  const getWalletConnectUri = async (
-    connector: Connector,
-    uriConverter: (uri: string) => string,
-  ): Promise<string> => {
+  const getWalletConnectUri = async (connector: Connector, uriConverter: (uri: string) => string): Promise<string> => {
     const provider = await connector.getProvider();
 
-    if (connector.id === 'coinbase') {
+    if (connector.id === "coinbase") {
       // @ts-expect-error
       return provider.qrUrl;
     }
@@ -114,26 +102,22 @@ export function useWalletConnectors(
     return new Promise<string>((resolve) =>
       // Wagmi v2 doesn't have a return type for provider yet
       // @ts-expect-error
-      provider.once('display_uri', (uri) => {
+      provider.once("display_uri", (uri) => {
         resolve(uriConverter(uri));
       }),
     );
   };
 
   const walletConnectModalConnector = defaultConnectors.find(
-    (connector) =>
-      connector.id === 'walletConnect' &&
-      connector.isWalletConnectModalConnector,
+    (connector) => connector.id === "walletConnect" && connector.isWalletConnectModalConnector,
   );
 
-  const eip6963Connectors = defaultConnectors
-    .filter(isEIP6963Connector)
-    .map((connector) => {
-      return {
-        ...connector,
-        groupIndex: 0,
-      };
-    });
+  const eip6963Connectors = defaultConnectors.filter(isEIP6963Connector).map((connector) => {
+    return {
+      ...connector,
+      groupIndex: 0,
+    };
+  });
 
   const rainbowKitConnectors = defaultConnectors
     .filter(isRainbowKitConnector)
@@ -141,31 +125,21 @@ export function useWalletConnectors(
     .filter((wallet) => {
       if (!mergeEIP6963WithRkConnectors) return true;
 
-      const existsInEIP6963Connectors = eip6963Connectors.some(
-        (eip6963) => eip6963.id === wallet.rdns,
-      );
+      const existsInEIP6963Connectors = eip6963Connectors.some((eip6963) => eip6963.id === wallet.rdns);
 
       return !existsInEIP6963Connectors;
     })
-    .map((wallet) =>
-      rainbowKitConnectorWithWalletConnect(
-        wallet,
-        walletConnectModalConnector!,
-      ),
-    );
+    .map((wallet) => rainbowKitConnectorWithWalletConnect(wallet, walletConnectModalConnector!));
 
   const combinedConnectors = [...eip6963Connectors, ...rainbowKitConnectors];
 
-  const walletInstanceById = indexBy(
-    combinedConnectors,
-    (walletInstance) => walletInstance.id,
-  );
+  const walletInstanceById = indexBy(combinedConnectors, (walletInstance) => walletInstance.id);
 
   const MAX_RECENT_WALLETS = 3;
 
   const recentWallets: WalletInstance[] = getRecentWalletIds()
     .map((walletId) => walletInstanceById[walletId])
-    .filter(Boolean)
+    .filter(isNotNullish)
     .slice(0, MAX_RECENT_WALLETS);
 
   const walletConnectors: WalletConnector[] = [];
@@ -187,8 +161,8 @@ export function useWalletConnectors(
         ...wallet,
         iconUrl: wallet.icon!,
         ready: true,
-        connect: connectWallet.bind(null, wallet) as WalletInstance['connect'],
-        groupName: 'Installed',
+        connect: connectWallet.bind(null, wallet) as WalletInstance["connect"],
+        groupName: "Installed",
         recent,
       });
 
@@ -198,20 +172,14 @@ export function useWalletConnectors(
     walletConnectors.push({
       ...wallet,
       ready: wallet.installed ?? true,
-      connect: connectWallet.bind(null, wallet) as WalletInstance['connect'],
+      connect: connectWallet.bind(null, wallet) as WalletInstance["connect"],
       desktopDownloadUrl: getDesktopDownloadUrl(wallet),
       extensionDownloadUrl: getExtensionDownloadUrl(wallet),
       groupName: wallet.groupName,
       mobileDownloadUrl: getMobileDownloadUrl(wallet),
-      getQrCodeUri: wallet.qrCode?.getUri
-        ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri!)
-        : undefined,
-      getDesktopUri: wallet.desktop?.getUri
-        ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!)
-        : undefined,
-      getMobileUri: wallet.mobile?.getUri
-        ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!)
-        : undefined,
+      getQrCodeUri: wallet.qrCode?.getUri ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri!) : undefined,
+      getDesktopUri: wallet.desktop?.getUri ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!) : undefined,
+      getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
       recent,
       showWalletConnectModal: wallet.walletConnectModalConnector
         ? () => connectToWalletConnectModal(wallet.walletConnectModalConnector!)

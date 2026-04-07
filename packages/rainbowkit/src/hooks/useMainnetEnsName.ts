@@ -1,14 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import type { Address } from 'viem';
-import { useEnsName } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import {
-  ENHANCED_PROVIDER_ENABLED,
-  enhancedProviderHttp,
-} from '../core/network/enhancedProvider';
-import { createQueryKey } from '../core/react-query/createQuery';
-import { addEnsName, getEnsName } from '../utils/ens';
-import { useIsMainnetConfigured } from './useIsMainnetConfigured';
+import type { Address } from "viem";
+
+import { useQuery } from "@tanstack/react-query";
+import { useEnsName } from "wagmi";
+import { mainnet } from "wagmi/chains";
+
+import { ENHANCED_PROVIDER_ENABLED, enhancedProviderHttp } from "../core/network/enhancedProvider";
+import { createQueryKey } from "../core/react-query/createQuery";
+import { addEnsName, getEnsName } from "../utils/ens";
+import { useIsMainnetConfigured } from "./useIsMainnetConfigured";
 
 async function getEnhancedProviderEnsName({ address }: { address: Address }) {
   const ensName = getEnsName(address);
@@ -17,7 +16,7 @@ async function getEnhancedProviderEnsName({ address }: { address: Address }) {
 
   const response = await enhancedProviderHttp.get<{
     data: Address | null;
-  }>('/v1/resolve-ens', { params: { address } });
+  }>("/v1/resolve-ens", { params: { address } });
 
   const enhancedProviderEnsName = response.data.data;
 
@@ -42,7 +41,7 @@ export function useMainnetEnsName(address?: Address) {
 
   // Fetch ens name from enhanced provider if mainnet isn't configured
   const { data: enhancedProviderEnsName } = useQuery({
-    queryKey: createQueryKey('address', address),
+    queryKey: createQueryKey("address", address),
     queryFn: () => getEnhancedProviderEnsName({ address: address! }),
     enabled: !mainnetConfigured && !!address && ENHANCED_PROVIDER_ENABLED,
     staleTime: 10 * (60 * 1_000), // 10 minutes

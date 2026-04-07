@@ -1,8 +1,9 @@
-import React from 'react';
-import { touchableStyles } from '../../css/touchableStyles';
-import { isMobile } from '../../utils/isMobile';
-import { Box } from '../Box/Box';
-import * as styles from './MenuButton.css';
+import React from "react";
+
+import { touchableStyles } from "../../css/touchableStyles";
+import { isMobile } from "../../utils/isMobile";
+import { Box } from "../Box/Box";
+import * as styles from "./MenuButton.css";
 
 type Props = {
   children?: React.ReactNode;
@@ -12,16 +13,7 @@ type Props = {
 };
 
 export const MenuButton = React.forwardRef(
-  (
-    {
-      children,
-      currentlySelected = false,
-      onClick,
-      testId,
-      ...urlProps
-    }: Props,
-    ref: React.Ref<HTMLElement>,
-  ) => {
+  ({ children, currentlySelected = false, onClick, testId, ...urlProps }: Props, ref: React.Ref<HTMLElement>) => {
     const mobile = isMobile();
     return (
       <Box
@@ -38,24 +30,24 @@ export const MenuButton = React.forwardRef(
           borderRadius="menuButton"
           className={[
             mobile ? styles.unsetBackgroundOnHover : undefined,
-            !currentlySelected && touchableStyles({ active: 'shrink' }),
+            !currentlySelected && touchableStyles({ active: "shrink" }),
           ]}
-          padding={mobile ? '8' : '6'}
+          padding={mobile ? "8" : "6"}
           transition="default"
           width="full"
           {...(currentlySelected
             ? {
-                background: 'accentColor',
-                borderColor: 'selectedOptionBorder',
-                borderStyle: 'solid',
-                borderWidth: '1',
-                boxShadow: 'selectedOption',
-                color: 'accentColorForeground',
+                background: "accentColor",
+                borderColor: "selectedOptionBorder",
+                borderStyle: "solid",
+                borderWidth: "1",
+                boxShadow: "selectedOption",
+                color: "accentColorForeground",
               }
             : {
-                background: { hover: 'menuItemBackground' },
-                color: 'modalText',
-                transition: 'default',
+                background: { hover: "menuItemBackground" },
+                color: "modalText",
+                transition: "default",
               })}
           {...urlProps}
         >
@@ -66,4 +58,4 @@ export const MenuButton = React.forwardRef(
   },
 );
 
-MenuButton.displayName = 'MenuButton';
+MenuButton.displayName = "MenuButton";

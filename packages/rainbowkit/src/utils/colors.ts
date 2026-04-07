@@ -1,5 +1,5 @@
 export const convertHexToRGBA = (hexCode: string, opacity = 1): string => {
-  let hex = hexCode.replace('#', '');
+  let hex = hexCode.replace("#", "");
 
   if (hex.length === 3) {
     hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
@@ -20,11 +20,7 @@ export const convertHexToRGBA = (hexCode: string, opacity = 1): string => {
 
 export const getGradientRGBAs = (hexColor?: string): string[] | null => {
   if (!hexColor) return null;
-  return [
-    convertHexToRGBA(hexColor, 0.2),
-    convertHexToRGBA(hexColor, 0.14),
-    convertHexToRGBA(hexColor, 0.1),
-  ];
+  return [convertHexToRGBA(hexColor, 0.2), convertHexToRGBA(hexColor, 0.14), convertHexToRGBA(hexColor, 0.1)];
 };
 
 export const isHexString = (color: string): boolean => {

@@ -9,37 +9,37 @@
  * Following Wagmi's approach: https://github.com/wevm/wagmi/blob/main/packages/connectors/src/walletConnect.test.ts
  */
 
-import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
-import { vi } from 'vitest';
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
+import { vi } from "vitest";
 
 // WalletConnect relay and API mock handlers
 const handlers = [
   // Mock WalletConnect relay endpoint
-  http.get('https://relay.walletconnect.com', async () =>
+  http.get("https://relay.walletconnect.com", async () =>
     HttpResponse.json(
       {
-        topic: '222781e3-3fad-4184-acde-077796bf0d3d',
-        type: 'sub',
-        payload: '',
+        topic: "222781e3-3fad-4184-acde-077796bf0d3d",
+        type: "sub",
+        payload: "",
         silent: true,
       },
       { status: 200 },
     ),
   ),
-  http.get('https://relay.walletconnect.org', async () =>
+  http.get("https://relay.walletconnect.org", async () =>
     HttpResponse.json(
       {
-        topic: '222781e3-3fad-4184-acde-077796bf0d3d',
-        type: 'sub',
-        payload: '',
+        topic: "222781e3-3fad-4184-acde-077796bf0d3d",
+        type: "sub",
+        payload: "",
         silent: true,
       },
       { status: 200 },
     ),
   ),
   // Mock WalletConnect registry/explorer API
-  http.get('https://api.web3modal.com/*', async () =>
+  http.get("https://api.web3modal.com/*", async () =>
     HttpResponse.json(
       {
         count: 0,
@@ -49,7 +49,7 @@ const handlers = [
     ),
   ),
   // Mock WalletConnect keys server
-  http.get('https://keys.walletconnect.com/*', async () =>
+  http.get("https://keys.walletconnect.com/*", async () =>
     HttpResponse.json(
       {
         keys: [],
@@ -79,7 +79,7 @@ export const setupMatchMedia = () => {
       dispatchEvent: vi.fn(),
     };
   });
-  vi.stubGlobal('matchMedia', matchMedia);
+  vi.stubGlobal("matchMedia", matchMedia);
   return matchMedia;
 };
 
@@ -103,7 +103,7 @@ export const setupLocalStorage = () => {
       },
     };
   })();
-  Object.defineProperty(window, 'localStorage', {
+  Object.defineProperty(window, "localStorage", {
     value: localStorageMock,
     writable: true,
   });
@@ -116,7 +116,7 @@ export const setupLocalStorage = () => {
  */
 export const setupWalletConnectMocks = () => {
   walletConnectServer.listen({
-    onUnhandledRequest: 'warn',
+    onUnhandledRequest: "warn",
   });
   setupMatchMedia();
   setupLocalStorage();

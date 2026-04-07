@@ -1,10 +1,12 @@
-import React from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
-import { useConnectionStatus } from '../../hooks/useConnectionStatus';
-import ConnectOptions from '../ConnectOptions/ConnectOptions';
-import { Dialog } from '../Dialog/Dialog';
-import { DialogContent } from '../Dialog/DialogContent';
-import { SignIn } from '../SignIn/SignIn';
+import React from "react";
+
+import { useAccount, useDisconnect } from "wagmi";
+
+import { useConnectionStatus } from "../../hooks/useConnectionStatus";
+import ConnectOptions from "../ConnectOptions/ConnectOptions";
+import { Dialog } from "../Dialog/Dialog";
+import { DialogContent } from "../Dialog/DialogContent";
+import { SignIn } from "../SignIn/SignIn";
 
 export interface ConnectModalProps {
   open: boolean;
@@ -12,7 +14,7 @@ export interface ConnectModalProps {
 }
 
 export function ConnectModal({ onClose, open }: ConnectModalProps) {
-  const titleId = 'rk_connect_title';
+  const titleId = "rk_connect_title";
   const connectionStatus = useConnectionStatus();
 
   const { disconnect } = useDisconnect();
@@ -33,21 +35,39 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
     onClose();
   }, [onClose, disconnect, isConnecting]);
 
-  if (connectionStatus === 'disconnected') {
+  if (connectionStatus === "disconnected") {
     return (
-      <Dialog onClose={onConnectModalCancel} open={open} titleId={titleId}>
-        <DialogContent bottomSheetOnMobile padding="0" wide>
+      <Dialog
+        onClose={onConnectModalCancel}
+        open={open}
+        titleId={titleId}
+      >
+        <DialogContent
+          bottomSheetOnMobile
+          padding="0"
+          wide
+        >
           <ConnectOptions onClose={onConnectModalCancel} />
         </DialogContent>
       </Dialog>
     );
   }
 
-  if (connectionStatus === 'unauthenticated') {
+  if (connectionStatus === "unauthenticated") {
     return (
-      <Dialog onClose={onAuthCancel} open={open} titleId={titleId}>
-        <DialogContent bottomSheetOnMobile padding="0">
-          <SignIn onClose={onAuthCancel} onCloseModal={onClose} />
+      <Dialog
+        onClose={onAuthCancel}
+        open={open}
+        titleId={titleId}
+      >
+        <DialogContent
+          bottomSheetOnMobile
+          padding="0"
+        >
+          <SignIn
+            onClose={onAuthCancel}
+            onCloseModal={onClose}
+          />
         </DialogContent>
       </Dialog>
     );

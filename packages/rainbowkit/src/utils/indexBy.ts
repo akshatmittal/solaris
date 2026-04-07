@@ -1,7 +1,4 @@
-export function indexBy<Item>(
-  items: Item[],
-  getKey: (item: Item) => string,
-): Record<string, Item> {
+export function indexBy<Item>(items: Item[], getKey: (item: Item) => string): Record<string, Item> {
   const indexedItems: Record<string, Item> = {};
 
   for (const item of items) {

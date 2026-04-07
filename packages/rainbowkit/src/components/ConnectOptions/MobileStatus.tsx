@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
-import { t } from '../../translations';
-import { Box } from '../Box/Box';
-import { CloseButton } from '../CloseButton/CloseButton';
-import { WalletButtonContext } from '../RainbowKitProvider/WalletButtonContext';
-import { Text } from '../Text/Text';
-import { WalletButton } from './MobileOptions';
+import React, { useContext } from "react";
+
+import { t } from "../../translations";
+import { Box } from "../Box/Box";
+import { CloseButton } from "../CloseButton/CloseButton";
+import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { Text } from "../Text/Text";
+import { WalletButton } from "./MobileOptions";
 
 export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
   const { connector } = useContext(WalletButtonContext);
-  const connectorName = connector?.name || '';
+  const connectorName = connector?.name || "";
 
   return (
     <Box>
@@ -30,7 +31,11 @@ export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
           <CloseButton onClose={onClose} />
         </Box>
         <Box width="60">
-          <WalletButton onClose={onClose} wallet={connector!} connecting />
+          <WalletButton
+            onClose={onClose}
+            wallet={connector!}
+            connecting
+          />
         </Box>
         <Box marginTop="20">
           <Text
@@ -39,15 +44,23 @@ export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
             size="18"
             weight="semibold"
           >
-            {t('connect.status.connect_mobile', {
+            {t("connect.status.connect_mobile", {
               wallet: connectorName,
             })}
           </Text>
         </Box>
 
-        <Box maxWidth="full" marginTop="8">
-          <Text textAlign="center" color="modalText" size="16" weight="medium">
-            {t('connect.status.confirm_mobile', {
+        <Box
+          maxWidth="full"
+          marginTop="8"
+        >
+          <Text
+            textAlign="center"
+            color="modalText"
+            size="16"
+            weight="medium"
+          >
+            {t("connect.status.confirm_mobile", {
               wallet: connectorName,
             })}
           </Text>

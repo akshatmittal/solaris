@@ -1,28 +1,14 @@
-import React, {
-  type ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { useAccount, useAccountEffect } from 'wagmi';
-import { useConnectionStatus } from '../../hooks/useConnectionStatus';
-import { useIsMounted } from '../../hooks/useIsMounted';
-import { isMobile } from '../../utils/isMobile';
-import {
-  addLatestWalletId,
-  clearLatestWalletId,
-  getLatestWalletId,
-} from '../../wallets/latestWalletId';
-import {
-  type WalletConnector,
-  useWalletConnectors,
-} from '../../wallets/useWalletConnectors';
-import {
-  useConnectModal,
-  useModalState,
-} from '../RainbowKitProvider/ModalContext';
-import { WalletButtonContext } from '../RainbowKitProvider/WalletButtonContext';
+import React, { type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+
+import { useAccount, useAccountEffect } from "wagmi";
+
+import { useConnectionStatus } from "../../hooks/useConnectionStatus";
+import { useIsMounted } from "../../hooks/useIsMounted";
+import { isMobile } from "../../utils/isMobile";
+import { addLatestWalletId, clearLatestWalletId, getLatestWalletId } from "../../wallets/latestWalletId";
+import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
+import { useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
+import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 
 export interface WalletButtonRendererProps {
   wallet?: string;
@@ -40,7 +26,7 @@ export interface WalletButtonRendererProps {
 export function WalletButtonRenderer({
   // Wallet is the same as `connector.id` which is injected into
   // wagmi connectors
-  wallet = 'rainbow',
+  wallet = "rainbow",
   children,
 }: WalletButtonRendererProps) {
   const isMounted = useIsMounted();
@@ -55,7 +41,7 @@ export function WalletButtonRenderer({
     .sort((a, b) => a.groupIndex - b.groupIndex);
 
   if (!firstConnector) {
-    throw new Error('Connector not found');
+    throw new Error("Connector not found");
   }
 
   const connectionStatus = useConnectionStatus();
@@ -112,9 +98,8 @@ export function WalletButtonRenderer({
 
   // If anyone uses SIWE then we don't want them to be able to connect
   // if they are in a process of authentication
-  const isStatusLoading = connectionStatus === 'loading';
-  const ready =
-    !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading;
+  const isStatusLoading = connectionStatus === "loading";
+  const ready = !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading;
 
   const isNotSupported = !firstConnector?.installed || !firstConnector?.ready;
 
@@ -131,7 +116,7 @@ export function WalletButtonRenderer({
           // Used to track which last wallet user has clicked
           // we can then use this value to show connected green badge
           // for our custom Wallet Button API
-          addLatestWalletId(firstConnector?.id || '');
+          addLatestWalletId(firstConnector?.id || "");
 
           // If openConnectModal is true and user is on mobile or
           // if user hasn't installed the connector then we prompt them

@@ -1,4 +1,37 @@
 packages:
   - "packages/*"
+  - "tooling/*"
+blockExoticSubdeps: true
 
-minimumReleaseAge: 1440
+catalog:
+  "@tanstack/react-query": ^5.96.2
+  "@testing-library/dom": ^10.4.1
+  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/react": ^16.3.2
+  "@testing-library/user-event": ^14.6.1
+  "@types/node": ^24.12.2
+  "@types/react": ^19.2.14
+  "@types/react-dom": ^19.2.3
+  "@vanilla-extract/esbuild-plugin": ^2.3.22
+  "@vanilla-extract/vite-plugin": ^5.2.2
+  autoprefixer: ^10.4.27
+  dotenv: ^16.6.1
+  esbuild: ^0.25.12
+  esbuild-plugin-replace: ^1.4.0
+  jsdom: ^25.0.1
+  oxfmt: ^0.43.0
+  oxlint: ^1.59.0
+  postcss: ^8.5.9
+  postcss-prefix-selector: ^2.1.1
+  react: ^19.2.4
+  react-dom: ^19.2.4
+  recursive-readdir-files: ^2.3.2
+  typescript: ^6.0.2
+  viem: ^2.47.10
+  vite: ^7.3.2
+  vitest: ^2.1.9
+  wagmi: ^2.19.5
+
+catalogMode: manual
+cleanupUnusedCatalogs: true
+dedupePeers: true

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { debounce } from '../utils/debounce';
+import { useEffect, useState } from "react";
+
+import { debounce } from "../utils/debounce";
 
 export const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState<{
@@ -17,9 +18,9 @@ export const useWindowSize = () => {
         width: window.innerWidth,
       });
     }, 500); // 500ms debounce by default
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   return windowSize;
 };

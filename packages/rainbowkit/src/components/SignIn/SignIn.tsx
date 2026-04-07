@@ -1,30 +1,26 @@
-import React, { useCallback, useRef } from 'react';
-import { UserRejectedRequestError } from 'viem';
-import { useAccount, useSignMessage } from 'wagmi';
-import { t } from '../../translations';
-import { touchableStyles } from '../../css/touchableStyles';
-import { isMobile } from '../../utils/isMobile';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { ActionButton } from '../Button/ActionButton';
-import { CloseButton } from '../CloseButton/CloseButton';
-import { useAuthenticationAdapter } from '../RainbowKitProvider/AuthenticationContext';
-import { Text } from '../Text/Text';
+import React, { useCallback, useRef } from "react";
 
-export const signInIcon = async () => (await import('./sign.png')).default;
+import { UserRejectedRequestError } from "viem";
+import { useAccount, useSignMessage } from "wagmi";
 
-export function SignIn({
-  onClose,
-  onCloseModal,
-}: {
-  onClose: () => void;
-  onCloseModal: () => void;
-}) {
+import { touchableStyles } from "../../css/touchableStyles";
+import { t } from "../../translations";
+import { isMobile } from "../../utils/isMobile";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { ActionButton } from "../Button/ActionButton";
+import { CloseButton } from "../CloseButton/CloseButton";
+import { useAuthenticationAdapter } from "../RainbowKitProvider/AuthenticationContext";
+import { Text } from "../Text/Text";
+
+export const signInIcon = async () => (await import("./sign.png")).default;
+
+export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onCloseModal: () => void }) {
   const [{ status, ...state }, setState] = React.useState<{
-    status: 'idle' | 'signing' | 'verifying';
+    status: "idle" | "signing" | "verifying";
     errorMessage?: string;
     nonce?: string;
-  }>({ status: 'idle' });
+  }>({ status: "idle" });
 
   const authAdapter = useAuthenticationAdapter();
 
@@ -35,8 +31,8 @@ export function SignIn({
     } catch {
       setState((x) => ({
         ...x,
-        errorMessage: t('sign_in.message.preparing_error'),
-        status: 'idle',
+        errorMessage: t("sign_in.message.preparing_error"),
+        status: "idle",
       }));
     }
   }, [authAdapter]);
@@ -68,7 +64,7 @@ export function SignIn({
       setState((x) => ({
         ...x,
         errorMessage: undefined,
-        status: 'signing',
+        status: "signing",
       }));
 
       const message = authAdapter.createMessage({ address, chainId, nonce });
@@ -83,18 +79,18 @@ export function SignIn({
           // It's not really an "error" so we silently ignore and reset to idle state
           return setState((x) => ({
             ...x,
-            status: 'idle',
+            status: "idle",
           }));
         }
 
         return setState((x) => ({
           ...x,
-          errorMessage: t('sign_in.signature.signing_error'),
-          status: 'idle',
+          errorMessage: t("sign_in.signature.signing_error"),
+          status: "idle",
         }));
       }
 
-      setState((x) => ({ ...x, status: 'verifying' }));
+      setState((x) => ({ ...x, status: "verifying" }));
 
       try {
         const verified = await authAdapter.verify({ message, signature });
@@ -110,14 +106,14 @@ export function SignIn({
       } catch {
         return setState((x) => ({
           ...x,
-          errorMessage: t('sign_in.signature.verifying_error'),
-          status: 'idle',
+          errorMessage: t("sign_in.signature.verifying_error"),
+          status: "idle",
         }));
       }
     } catch {
       setState({
-        errorMessage: t('sign_in.signature.oops_error'),
-        status: 'idle',
+        errorMessage: t("sign_in.signature.oops_error"),
+        status: "idle",
       });
     }
   };
@@ -137,51 +133,55 @@ export function SignIn({
         alignItems="center"
         display="flex"
         flexDirection="column"
-        gap={mobile ? '32' : '24'}
+        gap={mobile ? "32" : "24"}
         padding="24"
         paddingX="18"
-        style={{ paddingTop: mobile ? '60px' : '36px' }}
+        style={{ paddingTop: mobile ? "60px" : "36px" }}
       >
         <Box
           alignItems="center"
           display="flex"
           flexDirection="column"
-          gap={mobile ? '6' : '4'}
+          gap={mobile ? "6" : "4"}
           style={{ maxWidth: mobile ? 320 : 280 }}
         >
           <Box
             alignItems="center"
             display="flex"
             flexDirection="column"
-            gap={mobile ? '32' : '16'}
+            gap={mobile ? "32" : "16"}
           >
-            <AsyncImage height={40} src={signInIcon} width={40} />
+            <AsyncImage
+              height={40}
+              src={signInIcon}
+              width={40}
+            />
             <Text
               color="modalText"
-              size={mobile ? '20' : '18'}
+              size={mobile ? "20" : "18"}
               textAlign="center"
               weight="heavy"
             >
-              {t('sign_in.label')}
+              {t("sign_in.label")}
             </Text>
           </Box>
           <Box
             alignItems="center"
             display="flex"
             flexDirection="column"
-            gap={mobile ? '16' : '12'}
+            gap={mobile ? "16" : "12"}
           >
             <Text
               color="modalTextSecondary"
-              size={mobile ? '16' : '14'}
+              size={mobile ? "16" : "14"}
               textAlign="center"
             >
-              {t('sign_in.description')}
+              {t("sign_in.description")}
             </Text>
-            {status === 'idle' && state.errorMessage ? (
+            {status === "idle" && state.errorMessage ? (
               <Text
                 color="error"
-                size={mobile ? '16' : '14'}
+                size={mobile ? "16" : "14"}
                 textAlign="center"
                 weight="bold"
               >
@@ -192,27 +192,25 @@ export function SignIn({
         </Box>
 
         <Box
-          alignItems={!mobile ? 'center' : undefined}
+          alignItems={!mobile ? "center" : undefined}
           display="flex"
           flexDirection="column"
           gap="8"
           width="full"
         >
           <ActionButton
-            disabled={
-              !state.nonce || status === 'signing' || status === 'verifying'
-            }
+            disabled={!state.nonce || status === "signing" || status === "verifying"}
             label={
               !state.nonce
-                ? t('sign_in.message.preparing')
-                : status === 'signing'
-                  ? t('sign_in.signature.waiting')
-                  : status === 'verifying'
-                    ? t('sign_in.signature.verifying')
-                    : t('sign_in.message.send')
+                ? t("sign_in.message.preparing")
+                : status === "signing"
+                  ? t("sign_in.signature.waiting")
+                  : status === "verifying"
+                    ? t("sign_in.signature.verifying")
+                    : t("sign_in.message.send")
             }
             onClick={signIn}
-            size={mobile ? 'large' : 'medium'}
+            size={mobile ? "large" : "medium"}
             testId="auth-message-button"
           />
           {mobile ? (
@@ -226,22 +224,22 @@ export function SignIn({
             <Box
               as="button"
               borderRadius="full"
-              className={touchableStyles({ active: 'shrink', hover: 'grow' })}
+              className={touchableStyles({ active: "shrink", hover: "grow" })}
               display="block"
               onClick={onClose}
               paddingX="10"
               paddingY="5"
               rel="noreferrer"
-              style={{ willChange: 'transform' }}
+              style={{ willChange: "transform" }}
               target="_blank"
               transition="default"
             >
               <Text
                 color="closeButton"
-                size={mobile ? '16' : '14'}
+                size={mobile ? "16" : "14"}
                 weight="bold"
               >
-                {t('sign_in.message.cancel')}
+                {t("sign_in.message.cancel")}
               </Text>
             </Box>
           )}

@@ -1,7 +1,8 @@
-import { type GetEnsNameReturnType, normalize } from 'viem/ens';
-import { useEnsAvatar } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
-import { useIsMainnetConfigured } from './useIsMainnetConfigured';
+import { type GetEnsNameReturnType, normalize } from "viem/ens";
+import { useEnsAvatar } from "wagmi";
+import { mainnet } from "wagmi/chains";
+
+import { useIsMainnetConfigured } from "./useIsMainnetConfigured";
 
 export function useMainnetEnsAvatar(name: GetEnsNameReturnType | undefined) {
   const mainnetConfigured = useIsMainnetConfigured();

@@ -1,12 +1,13 @@
-import { useCallback } from 'react';
-import { useAccount } from 'wagmi';
-import { useChainId } from '../hooks/useChainId';
-import { useTransactionStore } from './TransactionStoreContext';
-import type { NewTransaction } from './transactionStore';
+import { useCallback } from "react";
 
-export function useAddRecentTransaction(): (
-  transaction: NewTransaction,
-) => void {
+import { useAccount } from "wagmi";
+
+import type { NewTransaction } from "./transactionStore";
+
+import { useChainId } from "../hooks/useChainId";
+import { useTransactionStore } from "./TransactionStoreContext";
+
+export function useAddRecentTransaction(): (transaction: NewTransaction) => void {
   const store = useTransactionStore();
   const { address } = useAccount();
   const chainId = useChainId();
@@ -14,7 +15,7 @@ export function useAddRecentTransaction(): (
   return useCallback(
     (transaction: NewTransaction) => {
       if (!address || !chainId) {
-        throw new Error('No address or chain ID found');
+        throw new Error("No address or chain ID found");
       }
 
       store.addTransaction(address, chainId, transaction);

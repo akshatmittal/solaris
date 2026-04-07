@@ -1,39 +1,31 @@
-import React, { type ReactNode, createContext, useContext } from 'react';
-import { useAccountEffect } from 'wagmi';
-import type { Chain } from 'wagmi/chains';
-import { cssStringFromTheme } from '../../css/cssStringFromTheme';
-import type { ThemeVars } from '../../css/sprinkles.css';
-import { lightTheme } from '../../themes/lightTheme';
-import { TransactionStoreProvider } from '../../transactions/TransactionStoreContext';
-import {
-  AppContext,
-  type DisclaimerComponent,
-  defaultAppInfo,
-} from './AppContext';
-import {
-  type AvatarComponent,
-  AvatarContext,
-  defaultAvatar,
-} from './AvatarContext';
-import { ModalProvider } from './ModalContext';
-import {
-  ModalSizeOptions,
-  ModalSizeProvider,
-  type ModalSizes,
-} from './ModalSizeContext';
-import { RainbowKitChainProvider } from './RainbowKitChainContext';
-import { ShowBalanceProvider } from './ShowBalanceContext';
-import { ShowRecentTransactionsContext } from './ShowRecentTransactionsContext';
-import { WalletButtonProvider } from './WalletButtonContext';
-import { useFingerprint } from './useFingerprint';
-import { usePreloadImages } from './usePreloadImages';
-import { clearWalletConnectDeepLink } from './walletConnectDeepLink';
+import React, { type ReactNode, createContext, useContext } from "react";
+
+import type { Chain } from "wagmi/chains";
+
+import { useAccountEffect } from "wagmi";
+
+import type { ThemeVars } from "../../css/sprinkles.css";
+
+import { cssStringFromTheme } from "../../css/cssStringFromTheme";
+import { lightTheme } from "../../themes/lightTheme";
+import { TransactionStoreProvider } from "../../transactions/TransactionStoreContext";
+import { AppContext, type DisclaimerComponent, defaultAppInfo } from "./AppContext";
+import { type AvatarComponent, AvatarContext, defaultAvatar } from "./AvatarContext";
+import { ModalProvider } from "./ModalContext";
+import { ModalSizeOptions, ModalSizeProvider, type ModalSizes } from "./ModalSizeContext";
+import { RainbowKitChainProvider } from "./RainbowKitChainContext";
+import { ShowBalanceProvider } from "./ShowBalanceContext";
+import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
+import { useFingerprint } from "./useFingerprint";
+import { usePreloadImages } from "./usePreloadImages";
+import { WalletButtonProvider } from "./WalletButtonContext";
+import { clearWalletConnectDeepLink } from "./walletConnectDeepLink";
 
 const ThemeIdContext = createContext<string | undefined>(undefined);
 
-const attr = 'data-rk';
+const attr = "data-rk";
 
-const createThemeRootProps = (id: string | undefined) => ({ [attr]: id || '' });
+const createThemeRootProps = (id: string | undefined) => ({ [attr]: id || "" });
 
 const createThemeRootSelector = (id: string | undefined) => {
   if (id && !/^[a-zA-Z0-9_]+$/.test(id)) {
@@ -87,7 +79,7 @@ export function RainbowKitProvider({
 
   useAccountEffect({ onDisconnect: clearWalletConnectDeepLink });
 
-  if (typeof theme === 'function') {
+  if (typeof theme === "function") {
     throw new Error(
       'A theme function was provided to the "theme" prop instead of a theme object. You must execute this function to get the resulting theme object.',
     );
@@ -106,9 +98,7 @@ export function RainbowKitProvider({
     <RainbowKitChainProvider initialChain={initialChain}>
       <WalletButtonProvider>
         <ModalSizeProvider modalSize={modalSize}>
-          <ShowRecentTransactionsContext.Provider
-            value={showRecentTransactions}
-          >
+          <ShowRecentTransactionsContext.Provider value={showRecentTransactions}>
             <TransactionStoreProvider>
               <AvatarContext.Provider value={avatarContext}>
                 <AppContext.Provider value={appContext}>
@@ -125,17 +115,15 @@ export function RainbowKitProvider({
                                 // cssStringFromTheme are sanitized, removing
                                 // characters that terminate values / HTML tags.
                                 __html: [
-                                  `${selector}{${cssStringFromTheme(
-                                    'lightMode' in theme ? theme.lightMode : theme,
-                                  )}}`,
+                                  `${selector}{${cssStringFromTheme("lightMode" in theme ? theme.lightMode : theme)}}`,
 
-                                  'darkMode' in theme
+                                  "darkMode" in theme
                                     ? `@media(prefers-color-scheme:dark){${selector}{${cssStringFromTheme(
                                         theme.darkMode,
                                         { extends: theme.lightMode },
                                       )}}}`
                                     : null,
-                                ].join(''),
+                                ].join(""),
                               }}
                             />
                             {children}

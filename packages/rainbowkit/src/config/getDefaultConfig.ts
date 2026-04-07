@@ -1,11 +1,11 @@
 import type { Transport } from "viem";
+
 import { http, type CreateConfigParameters } from "wagmi";
 import { createConfig } from "wagmi";
+
 import type { RainbowKitChain } from "../components/RainbowKitProvider/RainbowKitChainContext";
-import type {
-  RainbowKitWalletConnectParameters,
-  WalletList,
-} from "../wallets/Wallet";
+import type { RainbowKitWalletConnectParameters, WalletList } from "../wallets/Wallet";
+
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
 import {
@@ -22,10 +22,7 @@ export type _chains = readonly [RainbowKitChain, ...RainbowKitChain[]];
 // It maps each 'Chain' id to a 'Transport'
 export type _transports = Record<_chains[number]["id"], Transport>;
 
-interface GetDefaultConfigParameters<
-  chains extends _chains,
-  transports extends _transports,
-> extends Omit<
+interface GetDefaultConfigParameters<chains extends _chains, transports extends _transports> extends Omit<
   CreateConfigParameters<chains, transports>,
   // If you use 'client' you can't use 'transports' (we force to use 'transports')
   // More info here https://wagmi.sh/core/api/createConfig#client
@@ -41,10 +38,7 @@ interface GetDefaultConfigParameters<
   walletConnectParameters?: RainbowKitWalletConnectParameters;
 }
 
-const createDefaultTransports = <
-  chains extends _chains,
-  transports extends _transports,
->(
+const createDefaultTransports = <chains extends _chains, transports extends _transports>(
   chains: chains,
 ): transports => {
   const transportsObject = chains.reduce((acc: transports, chain) => {
@@ -56,10 +50,7 @@ const createDefaultTransports = <
   return transportsObject;
 };
 
-export const getDefaultConfig = <
-  chains extends _chains,
-  transports extends _transports,
->({
+export const getDefaultConfig = <chains extends _chains, transports extends _transports>({
   appName,
   appDescription,
   appUrl,
@@ -82,13 +73,7 @@ export const getDefaultConfig = <
     wallets || [
       {
         groupName: "Popular",
-        wallets: [
-          safeWallet,
-          injectedWallet,
-          baseAccount,
-          metaMaskWallet,
-          walletConnectWallet,
-        ],
+        wallets: [safeWallet, injectedWallet, baseAccount, metaMaskWallet, walletConnectWallet],
       },
     ],
     {
@@ -104,8 +89,7 @@ export const getDefaultConfig = <
   return createConfig({
     connectors,
     chains,
-    transports:
-      transports || createDefaultTransports<chains, transports>(chains),
+    transports: transports || createDefaultTransports<chains, transports>(chains),
     ...restWagmiParameters,
   });
 };

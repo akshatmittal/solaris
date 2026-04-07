@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from "react";
 
 export type AsyncImageSrc = () => Promise<string>;
 
@@ -47,9 +47,7 @@ async function loadAsyncImage(asyncImage: () => Promise<string>) {
 }
 
 export async function loadImages(...urls: (string | AsyncImageSrc)[]) {
-  return await Promise.all(
-    urls.map((url) => (typeof url === 'function' ? loadAsyncImage(url) : url)),
-  );
+  return await Promise.all(urls.map((url) => (typeof url === "function" ? loadAsyncImage(url) : url)));
 }
 
 function useForceUpdate() {
@@ -58,17 +56,15 @@ function useForceUpdate() {
   return forceUpdate;
 }
 
-export function useAsyncImage(
-  url?: string | AsyncImageSrc,
-): string | undefined {
-  const cachedUrl = typeof url === 'function' ? cachedUrls.get(url) : undefined;
+export function useAsyncImage(url?: string | AsyncImageSrc): string | undefined {
+  const cachedUrl = typeof url === "function" ? cachedUrls.get(url) : undefined;
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    if (typeof url === 'function' && !cachedUrl) {
+    if (typeof url === "function" && !cachedUrl) {
       loadAsyncImage(url).then(forceUpdate);
     }
   }, [url, cachedUrl, forceUpdate]);
 
-  return typeof url === 'function' ? cachedUrl : url;
+  return typeof url === "function" ? cachedUrl : url;
 }

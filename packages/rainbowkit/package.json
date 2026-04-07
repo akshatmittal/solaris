@@ -2,68 +2,48 @@
   "name": "@rainbow-me/rainbowkit",
   "version": "2.2.10",
   "description": "The best way to connect a wallet",
+  "keywords": [
+    "blockchain",
+    "ens",
+    "ethereum",
+    "hooks",
+    "react",
+    "react-hook"
+  ],
+  "license": "MIT",
+  "author": "Rainbow",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rainbow-me/rainbowkit.git",
+    "directory": "packages/rainbowkit"
+  },
   "files": [
     "dist",
     "styles.css",
     "wallets"
   ],
   "type": "module",
+  "sideEffects": [
+    "src/css/reset.css.ts"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./styles.css": "./dist/index.css",
     "./wallets": "./dist/wallets/walletConnectors/index.js"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "sideEffects": [
-    "src/css/reset.css.ts"
-  ],
-  "engines": {
-    "node": ">=12.4"
-  },
   "scripts": {
     "build": "node build.js",
     "build:watch": "node build.js --watch",
-    "dev": "pnpm build:watch & pnpm typegen:watch",
-    "prepare": "MINIFY_CSS=true pnpm build",
+    "clean": "rm -rf .turbo dist",
+    "dev": "pnpm run build:watch & pnpm run typegen:watch",
     "prebuild": "pnpm typegen",
+    "prepack": "MINIFY_CSS=true pnpm run build",
+    "test": "vitest run --config vitest.config.ts",
     "typecheck": "pnpm tsc --noEmit",
-    "typegen": "tsc --emitDeclarationOnly || true",
+    "typegen": "tsc --emitDeclarationOnly",
     "typegen:watch": "tsc --emitDeclarationOnly --watch"
-  },
-  "keywords": [
-    "ens",
-    "ethereum",
-    "react",
-    "react-hook",
-    "hooks",
-    "blockchain"
-  ],
-  "author": "Rainbow",
-  "license": "MIT",
-  "peerDependencies": {
-    "@tanstack/react-query": ">=5.0.0",
-    "react": ">=18",
-    "react-dom": ">=18",
-    "viem": "2.x",
-    "wagmi": "^2.9.0"
-  },
-  "devDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/ua-parser-js": "^0.7.39",
-    "@vanilla-extract/css-utils": "0.1.6",
-    "@vanilla-extract/private": "1.0.9",
-    "autoprefixer": "^10.4.21",
-    "dotenv": "^16.4.5",
-    "jsdom": "^25.0.0",
-    "msw": "^2.11.2",
-    "nock": "^13.4.0",
-    "postcss": "^8.5.5",
-    "react": "^19.2.3",
-    "vitest": "2.1.9"
   },
   "dependencies": {
     "@vanilla-extract/css": "1.18.0",
@@ -72,11 +52,49 @@
     "clsx": "2.1.1",
     "cuer": "0.0.3",
     "react-remove-scroll": "2.6.2",
-    "ua-parser-js": "^1.0.37"
+    "ua-parser-js": "^1.0.41"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rainbow-me/rainbowkit.git",
-    "directory": "packages/rainbowkit"
+  "devDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/ua-parser-js": "^0.7.39",
+    "@vanilla-extract/css-utils": "0.1.6",
+    "@vanilla-extract/esbuild-plugin": "catalog:",
+    "@vanilla-extract/private": "1.0.9",
+    "@vanilla-extract/vite-plugin": "catalog:",
+    "@workspace/typescript-config": "workspace:*",
+    "autoprefixer": "catalog:",
+    "dotenv": "catalog:",
+    "esbuild": "catalog:",
+    "esbuild-plugin-replace": "catalog:",
+    "jsdom": "catalog:",
+    "msw": "^2.13.1",
+    "nock": "^13.5.6",
+    "postcss": "catalog:",
+    "postcss-prefix-selector": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "recursive-readdir-files": "catalog:",
+    "typescript": "catalog:",
+    "viem": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "wagmi": "catalog:"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": ">=5.0.0",
+    "react": ">=18",
+    "react-dom": ">=18",
+    "viem": "2.x",
+    "wagmi": "^2.9.0"
+  },
+  "engines": {
+    "node": ">=12.4"
   }
 }

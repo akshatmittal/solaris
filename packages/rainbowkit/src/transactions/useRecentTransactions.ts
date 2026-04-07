@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
-import { useChainId } from '../hooks/useChainId';
-import { useTransactionStore } from './TransactionStoreContext';
-import type { Transaction } from './transactionStore';
+import { useEffect, useState } from "react";
+
+import { useAccount } from "wagmi";
+
+import type { Transaction } from "./transactionStore";
+
+import { useChainId } from "../hooks/useChainId";
+import { useTransactionStore } from "./TransactionStoreContext";
 
 export function useRecentTransactions(): Transaction[] {
   const store = useTransactionStore();

@@ -3,15 +3,17 @@
 Solaris is a pared-down RainbowKit fork focused on the core
 `@rainbow-me/rainbowkit` package.
 
-This repo intentionally keeps a single package workspace and trims upstream
-scaffolding such as example app workflows, generated wallet registry assets,
-and non-English locale files.
+This repo intentionally keeps a lean monorepo around the core
+`@rainbow-me/rainbowkit` package, with shared workspace tooling for builds,
+linting, formatting, and releases.
 
 ## Development
 
 ```bash
 pnpm install
 pnpm build
+pnpm format:check
+pnpm typecheck
 pnpm test
 pnpm lint
 ```

@@ -1,18 +1,19 @@
-import React from 'react';
-import { t } from '../../translations';
-import { touchableStyles } from '../../css/touchableStyles';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { SpinnerIcon } from '../Icons/Spinner';
-import * as styles from './WalletButton.css';
-import { WalletButtonRenderer } from './WalletButtonRenderer';
+import React from "react";
+
+import { touchableStyles } from "../../css/touchableStyles";
+import { t } from "../../translations";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { SpinnerIcon } from "../Icons/Spinner";
+import * as styles from "./WalletButton.css";
+import { WalletButtonRenderer } from "./WalletButtonRenderer";
 
 export const WalletButton = ({ wallet }: { wallet?: string }) => {
   return (
     <WalletButtonRenderer wallet={wallet}>
       {({ ready, connect, connected, mounted, connector, loading }) => {
         const isDisabled = !ready || loading;
-        const connectorName = connector?.name || '';
+        const connectorName = connector?.name || "";
 
         // SSR mismatch issue in next.js:
         // By default, "rainbow wallet" text is expected.
@@ -26,7 +27,7 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
             flexDirection="column"
             alignItems="center"
             disabled={isDisabled}
-            pointerEvents={isDisabled ? 'none' : 'all'}
+            pointerEvents={isDisabled ? "none" : "all"}
           >
             <Box
               as="button"
@@ -37,16 +38,16 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
                 styles.maxWidth,
                 styles.border,
                 touchableStyles({
-                  active: 'shrink',
-                  hover: 'grow',
+                  active: "shrink",
+                  hover: "grow",
                 }),
               ]}
               minHeight="44"
               onClick={connect}
               disabled={!ready || loading}
               padding="6"
-              style={{ willChange: 'transform' }}
-              testId={`wallet-button-${connector?.id || ''}`}
+              style={{ willChange: "transform" }}
+              testId={`wallet-button-${connector?.id || ""}`}
               transition="default"
               width="full"
               background="connectButtonBackground"
@@ -86,9 +87,9 @@ export const WalletButton = ({ wallet }: { wallet?: string }) => {
                     flexDirection="column"
                     color="modalText"
                   >
-                    <Box testId={`wallet-button-label-${connector?.id || ''}`}>
+                    <Box testId={`wallet-button-label-${connector?.id || ""}`}>
                       {loading
-                        ? t('connect.status.connecting', {
+                        ? t("connect.status.connecting", {
                             wallet: connectorName,
                           })
                         : connectorName}

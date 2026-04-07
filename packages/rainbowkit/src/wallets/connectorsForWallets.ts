@@ -1,14 +1,11 @@
-import type { CreateConnectorFn } from 'wagmi';
-import { isHexString } from '../utils/colors';
-import { omitUndefinedValues } from '../utils/omitUndefinedValues';
-import { uniqueBy } from '../utils/uniqueBy';
-import type {
-  RainbowKitWalletConnectParameters,
-  Wallet,
-  WalletDetailsParams,
-  WalletList,
-} from './Wallet';
-import { computeWalletConnectMetaData } from './computeWalletConnectMetaData';
+import type { CreateConnectorFn } from "wagmi";
+
+import type { RainbowKitWalletConnectParameters, Wallet, WalletDetailsParams, WalletList } from "./Wallet";
+
+import { isHexString } from "../utils/colors";
+import { omitUndefinedValues } from "../utils/omitUndefinedValues";
+import { uniqueBy } from "../utils/uniqueBy";
+import { computeWalletConnectMetaData } from "./computeWalletConnectMetaData";
 
 interface WalletListItem extends Wallet {
   index: number;
@@ -27,17 +24,10 @@ export interface ConnectorsForWalletsParameters {
 
 export const connectorsForWallets = (
   walletList: WalletList,
-  {
-    projectId,
-    walletConnectParameters,
-    appName,
-    appDescription,
-    appUrl,
-    appIcon,
-  }: ConnectorsForWalletsParameters,
+  { projectId, walletConnectParameters, appName, appDescription, appUrl, appIcon }: ConnectorsForWalletsParameters,
 ): CreateConnectorFn[] => {
   if (!walletList.length) {
-    throw new Error('No wallet list was provided');
+    throw new Error("No wallet list was provided");
   }
 
   for (const { wallets, groupName } of walletList) {
@@ -82,9 +72,7 @@ export const connectorsForWallets = (
 
       // guard against non-hex values for `iconAccent`
       if (wallet?.iconAccent && !isHexString(wallet?.iconAccent)) {
-        throw new Error(
-          `Property \`iconAccent\` is not a hex value for wallet: ${wallet.name}`,
-        );
+        throw new Error(`Property \`iconAccent\` is not a hex value for wallet: ${wallet.name}`);
       }
 
       const walletListItem = {
@@ -94,7 +82,7 @@ export const connectorsForWallets = (
         index,
       };
 
-      if (typeof wallet.hidden === 'function') {
+      if (typeof wallet.hidden === "function") {
         potentiallyHiddenWallets.push(walletListItem);
       } else {
         visibleWallets.push(walletListItem);
@@ -105,19 +93,10 @@ export const connectorsForWallets = (
   // Filtering out duplicated wallets in case there is any.
   // We process the known visible wallets first so that the potentially
   // hidden wallets have access to the complete list of resolved wallets
-  const walletListItems: WalletListItem[] = uniqueBy(
-    [...visibleWallets, ...potentiallyHiddenWallets],
-    'id',
-  );
+  const walletListItems: WalletListItem[] = uniqueBy([...visibleWallets, ...potentiallyHiddenWallets], "id");
 
-  for (const {
-    createConnector,
-    groupIndex,
-    groupName,
-    hidden,
-    ...walletMeta
-  } of walletListItems) {
-    if (typeof hidden === 'function') {
+  for (const { createConnector, groupIndex, groupName, hidden, ...walletMeta } of walletListItems) {
+    if (typeof hidden === "function") {
       // Run the function to check if the wallet needs to be hidden
       const isHidden = hidden();
 
@@ -129,10 +108,7 @@ export const connectorsForWallets = (
 
     const walletMetaData = (
       // For now we should only use these as the additional parameters
-      additionalRkParams?: Pick<
-        WalletDetailsParams['rkDetails'],
-        'isWalletConnectModalConnector' | 'showQrModal'
-      >,
+      additionalRkParams?: Pick<WalletDetailsParams["rkDetails"], "isWalletConnectModalConnector" | "showQrModal">,
     ) => {
       return {
         rkDetails: omitUndefinedValues({
@@ -149,7 +125,7 @@ export const connectorsForWallets = (
       };
     };
 
-    const isWalletConnectConnector = walletMeta.id === 'walletConnect';
+    const isWalletConnectConnector = walletMeta.id === "walletConnect";
 
     if (isWalletConnectConnector) {
       connectors.push(

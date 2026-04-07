@@ -1,4 +1,4 @@
-export const RAINBOW_FETCH_ERROR = 'rainbowFetchError';
+export const RAINBOW_FETCH_ERROR = "rainbowFetchError";
 
 export interface RainbowFetchRequestOpts extends RequestInit {
   params?: ConstructorParameters<typeof URLSearchParams>[0]; // type of first argument of URLSearchParams constructor.
@@ -8,34 +8,30 @@ export interface RainbowFetchRequestOpts extends RequestInit {
 /**
  * rainbowFetch fetches data and handles response edge cases and error handling.
  */
-export async function rainbowFetch<TData>(
-  url: RequestInfo,
-  opts: RainbowFetchRequestOpts,
-) {
+export async function rainbowFetch<TData>(url: RequestInfo, opts: RainbowFetchRequestOpts) {
   // biome-ignore lint/style/noParameterAssign: ignore
   opts = {
     headers: {},
-    method: 'get',
+    method: "get",
     ...opts, // Any other fetch options
     timeout: opts.timeout ?? 10_000, // 10 secs
   };
 
-  if (!url) throw new Error('rainbowFetch: Missing url argument');
+  if (!url) throw new Error("rainbowFetch: Missing url argument");
 
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), opts.timeout);
 
   const { body, params, headers, ...otherOpts } = opts;
 
-  const requestBody =
-    body && typeof body === 'object' ? JSON.stringify(opts.body) : opts.body;
+  const requestBody = body && typeof body === "object" ? JSON.stringify(opts.body) : opts.body;
 
   const response = await fetch(`${url}${createParams(params)}`, {
     ...otherOpts,
     body: requestBody,
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       ...headers,
     },
     signal: controller.signal,
@@ -49,8 +45,7 @@ export async function rainbowFetch<TData>(
     const { headers, status } = response;
     return { data: responseBody, headers, status };
   }
-  const errorResponseBody =
-    typeof responseBody === 'string' ? { error: responseBody } : responseBody;
+  const errorResponseBody = typeof responseBody === "string" ? { error: responseBody } : responseBody;
 
   const error = generateError({
     requestBody: body,
@@ -62,23 +57,21 @@ export async function rainbowFetch<TData>(
 }
 
 function getBody(response: Response) {
-  const contentType = response.headers.get('Content-Type');
-  if (contentType?.startsWith('application/json')) {
+  const contentType = response.headers.get("Content-Type");
+  if (contentType?.startsWith("application/json")) {
     return response.json();
   }
   return response.text();
 }
 
-function createParams(params: RainbowFetchRequestOpts['params']) {
-  return params && Object.keys(params).length
-    ? `?${new URLSearchParams(params)}`
-    : '';
+function createParams(params: RainbowFetchRequestOpts["params"]) {
+  return params && Object.keys(params).length ? `?${new URLSearchParams(params)}` : "";
 }
 
 interface RainbowFetchError extends Error {
   response?: Response;
   responseBody?: any;
-  requestBody?: RequestInit['body'];
+  requestBody?: RequestInit["body"];
 }
 
 function generateError({
@@ -86,14 +79,11 @@ function generateError({
   response,
   responseBody,
 }: {
-  requestBody: RequestInit['body'];
+  requestBody: RequestInit["body"];
   response: Response;
   responseBody: any;
 }) {
-  const message =
-    responseBody?.error ||
-    response?.statusText ||
-    'There was an error with the request.';
+  const message = responseBody?.error || response?.statusText || "There was an error with the request.";
 
   const error: RainbowFetchError = new Error(message);
 
@@ -113,7 +103,7 @@ export class RainbowFetchClient {
   opts: RainbowFetchRequestOpts;
 
   constructor(opts: RainbowFetchClientOpts = {}) {
-    const { baseUrl = '', ...otherOpts } = opts;
+    const { baseUrl = "", ...otherOpts } = opts;
     this.baseUrl = baseUrl;
     this.opts = otherOpts;
   }
@@ -125,7 +115,7 @@ export class RainbowFetchClient {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...(opts || {}),
-      method: 'get',
+      method: "get",
     });
   }
 
@@ -136,7 +126,7 @@ export class RainbowFetchClient {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...(opts || {}),
-      method: 'delete',
+      method: "delete",
     });
   }
 
@@ -147,7 +137,7 @@ export class RainbowFetchClient {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...(opts || {}),
-      method: 'head',
+      method: "head",
     });
   }
 
@@ -158,7 +148,7 @@ export class RainbowFetchClient {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...(opts || {}),
-      method: 'options',
+      method: "options",
     });
   }
 
@@ -170,7 +160,7 @@ export class RainbowFetchClient {
       ...this.opts,
       ...(opts || {}),
       body,
-      method: 'post',
+      method: "post",
     });
   }
 
@@ -182,7 +172,7 @@ export class RainbowFetchClient {
       ...this.opts,
       ...(opts || {}),
       body,
-      method: 'put',
+      method: "put",
     });
   }
 
@@ -194,7 +184,7 @@ export class RainbowFetchClient {
       ...this.opts,
       ...(opts || {}),
       body,
-      method: 'patch',
+      method: "patch",
     });
   }
 }

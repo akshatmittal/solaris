@@ -1,13 +1,8 @@
-import React, { type ReactNode } from 'react';
-import { Box } from '../Box/Box';
+import React, { type ReactNode } from "react";
 
-export const DisclaimerLink = ({
-  children,
-  href,
-}: {
-  children: ReactNode;
-  href: string;
-}) => {
+import { Box } from "../Box/Box";
+
+export const DisclaimerLink = ({ children, href }: { children: ReactNode; href: string }) => {
   return (
     <Box
       as="a"

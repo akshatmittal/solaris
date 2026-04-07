@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { metaMaskWallet } from './metaMaskWallet';
+import { describe, expect, it } from "vitest";
 
-const projectId = 'test-id';
+import { metaMaskWallet } from "./metaMaskWallet";
 
-describe('isMetaMask', () => {
-  it('returns undefined for impersonating wallet flags', () => {
+const projectId = "test-id";
+
+describe("isMetaMask", () => {
+  it("returns undefined for impersonating wallet flags", () => {
     window.ethereum = { isMetaMask: true, isSafePal: true } as any;
     const wallet = metaMaskWallet({ projectId });
     expect(wallet.installed).toBeUndefined();

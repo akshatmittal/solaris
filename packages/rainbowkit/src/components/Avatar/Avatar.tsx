@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
-import { Box } from '../Box/Box';
-import { SpinnerIcon } from '../Icons/Spinner';
-import { AvatarContext } from '../RainbowKitProvider/AvatarContext';
+import React, { useContext } from "react";
+
+import { Box } from "../Box/Box";
+import { SpinnerIcon } from "../Icons/Spinner";
+import { AvatarContext } from "../RainbowKitProvider/AvatarContext";
 
 interface AvatarProps {
   address: string;
@@ -35,15 +36,19 @@ export function Avatar({ address, imageUrl, loading, size }: AvatarProps) {
         style={{
           fontSize: `${Math.round(size * 0.55)}px`,
           height: `${size}px`,
-          transform: loading ? 'scale(0.72)' : undefined,
-          transition: '.25s ease',
-          transitionDelay: loading ? undefined : '.1s',
+          transform: loading ? "scale(0.72)" : undefined,
+          transition: ".25s ease",
+          transitionDelay: loading ? undefined : ".1s",
           width: `${size}px`,
-          willChange: 'transform',
+          willChange: "transform",
         }}
         userSelect="none"
       >
-        <AvatarComponent address={address} ensImage={imageUrl} size={size} />
+        <AvatarComponent
+          address={address}
+          ensImage={imageUrl}
+          size={size}
+        />
       </Box>
       {loading && (
         <Box
@@ -53,7 +58,10 @@ export function Avatar({ address, imageUrl, loading, size }: AvatarProps) {
           position="absolute"
           width="full"
         >
-          <SpinnerIcon height="100%" width="100%" />
+          <SpinnerIcon
+            height="100%"
+            width="100%"
+          />
         </Box>
       )}
     </Box>

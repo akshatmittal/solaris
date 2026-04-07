@@ -1,28 +1,20 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { t } from '../../translations';
-import { touchableStyles } from '../../css/touchableStyles';
-import { isIOS } from '../../utils/isMobile';
-import {
-  type WalletConnector,
-  useWalletConnectors,
-} from '../../wallets/useWalletConnectors';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { ActionButton } from '../Button/ActionButton';
-import { CloseButton } from '../CloseButton/CloseButton';
-import { DisclaimerLink } from '../Disclaimer/DisclaimerLink';
-import { DisclaimerText } from '../Disclaimer/DisclaimerText';
-import { BackIcon } from '../Icons/Back';
-import { AppContext } from '../RainbowKitProvider/AppContext';
-import { setWalletConnectDeepLink } from '../RainbowKitProvider/walletConnectDeepLink';
-import { Text } from '../Text/Text';
-import * as styles from './MobileOptions.css';
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+
+import { touchableStyles } from "../../css/touchableStyles";
+import { t } from "../../translations";
+import { isIOS } from "../../utils/isMobile";
+import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { ActionButton } from "../Button/ActionButton";
+import { CloseButton } from "../CloseButton/CloseButton";
+import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
+import { DisclaimerText } from "../Disclaimer/DisclaimerText";
+import { BackIcon } from "../Icons/Back";
+import { AppContext } from "../RainbowKitProvider/AppContext";
+import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
+import { Text } from "../Text/Text";
+import * as styles from "./MobileOptions.css";
 
 const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
   const width = 80;
@@ -32,7 +24,12 @@ const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
   const perimeter = 2 * (width + height - 4 * radiusFactor);
 
   return (
-    <svg className={styles.spinner} viewBox="0 0 86 86" width="86" height="86">
+    <svg
+      className={styles.spinner}
+      viewBox="0 0 86 86"
+      width="86"
+      height="86"
+    >
       <title>Loading</title>
       <rect
         x="3"
@@ -48,7 +45,7 @@ const LoadingSpinner = ({ wallet }: { wallet: WalletConnector }) => {
           // Prop style passing works only in `@vanilla-extract/recipes`.
           // Instead downloading packages we can do this
           // manually without passing props
-          stroke: wallet?.iconAccent || '#0D3887',
+          stroke: wallet?.iconAccent || "#0D3887",
         }}
       />
     </svg>
@@ -64,17 +61,7 @@ export function WalletButton({
   onClose: () => void;
   connecting?: boolean;
 }) {
-  const {
-    connect,
-    iconBackground,
-    iconUrl,
-    id,
-    name,
-    getMobileUri,
-    ready,
-    shortName,
-    showWalletConnectModal,
-  } = wallet;
+  const { connect, iconBackground, iconUrl, id, name, getMobileUri, ready, shortName, showWalletConnectModal } = wallet;
 
   const initialized = useRef(false);
 
@@ -88,7 +75,7 @@ export function WalletButton({
         setWalletConnectDeepLink({ mobileUri, name });
       }
 
-      if (mobileUri.startsWith('http')) {
+      if (mobileUri.startsWith("http")) {
         // Workaround for https://github.com/rainbow-me/rainbowkit/issues/524.
         // Using 'window.open' causes issues on iOS in non-Safari browsers and
         // WebViews where a blank tab is left behind after connecting.
@@ -98,17 +85,17 @@ export function WalletButton({
         // For whatever reason, links with a target of "_blank" don't suffer
         // from this problem, and programmatically clicking a detached link
         // element with the same attributes also avoids the issue.
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = mobileUri;
-        link.target = '_blank';
-        link.rel = 'noreferrer noopener';
+        link.target = "_blank";
+        link.rel = "noreferrer noopener";
         link.click();
       } else {
         window.location.href = mobileUri;
       }
     };
 
-    if (id !== 'walletConnect') onMobileUri();
+    if (id !== "walletConnect") onMobileUri();
 
     // If the id is "walletConnect" then "showWalletConnectModal" will always be true
     if (showWalletConnectModal) {
@@ -136,12 +123,12 @@ export function WalletButton({
   return (
     <Box
       as="button"
-      color={ready ? 'modalText' : 'modalTextSecondary'}
+      color={ready ? "modalText" : "modalTextSecondary"}
       disabled={!ready}
       fontFamily="body"
       key={id}
       onClick={onConnect}
-      style={{ overflow: 'visible', textAlign: 'center' }}
+      style={{ overflow: "visible", textAlign: "center" }}
       testId={`wallet-option-${id}`}
       type="button"
       width="full"
@@ -171,23 +158,34 @@ export function WalletButton({
           />
         </Box>
         {!connecting ? (
-          <Box display="flex" flexDirection="column" textAlign="center">
+          <Box
+            display="flex"
+            flexDirection="column"
+            textAlign="center"
+          >
             <Text
               as="h2"
-              color={wallet.ready ? 'modalText' : 'modalTextSecondary'}
+              color={wallet.ready ? "modalText" : "modalTextSecondary"}
               size="13"
               weight="medium"
             >
               {/* Fix button text clipping in Safari: https://stackoverflow.com/questions/41100273/overflowing-button-text-is-being-clipped-in-safari */}
-              <Box as="span" position="relative">
+              <Box
+                as="span"
+                position="relative"
+              >
                 {shortName ?? name}
-                {!wallet.ready && ' (unsupported)'}
+                {!wallet.ready && " (unsupported)"}
               </Box>
             </Text>
 
             {wallet.recent && (
-              <Text color="accentColor" size="12" weight="medium">
-                {t('connect.recent')}
+              <Text
+                color="accentColor"
+                size="12"
+                weight="medium"
+              >
+                {t("connect.recent")}
               </Text>
             )}
           </Box>
@@ -198,15 +196,13 @@ export function WalletButton({
 }
 
 enum MobileWalletStep {
-  Connect = 'CONNECT',
-  Get = 'GET',
+  Connect = "CONNECT",
+  Get = "GET",
 }
 
 export function MobileOptions({ onClose }: { onClose: () => void }) {
-  const titleId = 'rk_connect_title';
-  const wallets = useWalletConnectors().filter(
-    (wallet) => wallet.isRainbowKitConnector,
-  );
+  const titleId = "rk_connect_title";
+  const wallets = useWalletConnectors().filter((wallet) => wallet.isRainbowKitConnector);
   const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
   let headerLabel = null;
@@ -214,15 +210,13 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
   let headerBackgroundContrast = false;
   let headerBackButtonLink: MobileWalletStep | null = null;
 
-  const [walletStep, setWalletStep] = useState<MobileWalletStep>(
-    MobileWalletStep.Connect,
-  );
+  const [walletStep, setWalletStep] = useState<MobileWalletStep>(MobileWalletStep.Connect);
 
   const ios = isIOS();
 
   switch (walletStep) {
     case MobileWalletStep.Connect: {
-      headerLabel = t('connect.title');
+      headerLabel = t("connect.title");
       headerBackgroundContrast = true;
       walletContent = (
         <Box>
@@ -235,15 +229,21 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             paddingX="20"
             style={{
               // Dynamic gap to show ~13px of 5th wallet as scroll hint
-              gap: 'calc((100% - 40px - 240px + 47px) / 4)',
+              gap: "calc((100% - 40px - 240px + 47px) / 4)",
             }}
           >
             {wallets
               .filter((wallet) => wallet.ready)
               .map((wallet) => {
                 return (
-                  <Box key={wallet.id} width="60">
-                    <WalletButton onClose={onClose} wallet={wallet} />
+                  <Box
+                    key={wallet.id}
+                    width="60"
+                  >
+                    <WalletButton
+                      onClose={onClose}
+                      wallet={wallet}
+                    />
                   </Box>
                 );
               })}
@@ -262,7 +262,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             flexDirection="column"
             gap="32"
             paddingX="32"
-            style={{ textAlign: 'center' }}
+            style={{ textAlign: "center" }}
           >
             <Box
               display="flex"
@@ -270,34 +270,55 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
               gap="8"
               textAlign="center"
             >
-              <Text color="modalText" size="16" weight="bold">
-                {t('intro.title')}
+              <Text
+                color="modalText"
+                size="16"
+                weight="bold"
+              >
+                {t("intro.title")}
               </Text>
-              <Text color="modalTextSecondary" size="16">
-                {t('intro.description')}
+              <Text
+                color="modalTextSecondary"
+                size="16"
+              >
+                {t("intro.description")}
               </Text>
             </Box>
           </Box>
 
-          <Box paddingTop="32" paddingX="20">
-            <Box display="flex" gap="14" justifyContent="center">
+          <Box
+            paddingTop="32"
+            paddingX="20"
+          >
+            <Box
+              display="flex"
+              gap="14"
+              justifyContent="center"
+            >
               <ActionButton
-                label={t('intro.get.label')}
+                label={t("intro.get.label")}
                 onClick={() => setWalletStep(MobileWalletStep.Get)}
                 size="large"
                 type="secondary"
               />
               <ActionButton
                 href={learnMoreUrl}
-                label={t('intro.learn_more.label')}
+                label={t("intro.learn_more.label")}
                 size="large"
                 type="secondary"
               />
             </Box>
           </Box>
           {Disclaimer && (
-            <Box marginTop="28" marginX="32" textAlign="center">
-              <Disclaimer Link={DisclaimerLink} Text={DisclaimerText} />
+            <Box
+              marginTop="28"
+              marginX="32"
+              textAlign="center"
+            >
+              <Disclaimer
+                Link={DisclaimerLink}
+                Text={DisclaimerText}
+              />
             </Box>
           )}
         </Box>
@@ -305,16 +326,11 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
       break;
     }
     case MobileWalletStep.Get: {
-      headerLabel = t('get.title');
+      headerLabel = t("get.title");
       headerBackButtonLink = MobileWalletStep.Connect;
 
       const mobileWallets = wallets
-        ?.filter(
-          (wallet) =>
-            wallet.downloadUrls?.ios ||
-            wallet.downloadUrls?.android ||
-            wallet.downloadUrls?.mobile,
-        )
+        ?.filter((wallet) => wallet.downloadUrls?.ios || wallet.downloadUrls?.android || wallet.downloadUrls?.mobile)
         ?.splice(0, 3);
 
       walletContent = (
@@ -332,11 +348,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             {mobileWallets.map((wallet, index) => {
               const { downloadUrls, iconBackground, iconUrl, name } = wallet;
 
-              if (
-                !downloadUrls?.ios &&
-                !downloadUrls?.android &&
-                !downloadUrls?.mobile
-              ) {
+              if (!downloadUrls?.ios && !downloadUrls?.android && !downloadUrls?.mobile) {
                 return null;
               }
 
@@ -358,19 +370,28 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                       width="48"
                     />
                   </Box>
-                  <Box display="flex" flexDirection="column" width="full">
-                    <Box alignItems="center" display="flex" height="48">
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    width="full"
+                  >
+                    <Box
+                      alignItems="center"
+                      display="flex"
+                      height="48"
+                    >
                       <Box width="full">
-                        <Text color="modalText" size="18" weight="bold">
+                        <Text
+                          color="modalText"
+                          size="18"
+                          weight="bold"
+                        >
                           {name}
                         </Text>
                       </Box>
                       <ActionButton
-                        href={
-                          (ios ? downloadUrls?.ios : downloadUrls?.android) ||
-                          downloadUrls?.mobile
-                        }
-                        label={t('get.action.label')}
+                        href={(ios ? downloadUrls?.ios : downloadUrls?.android) || downloadUrls?.mobile}
+                        label={t("get.action.label")}
                         size="small"
                         type="secondary"
                       />
@@ -389,14 +410,14 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             })}
           </Box>
           {/* spacer */}
-          <Box style={{ marginBottom: '42px' }} />
+          <Box style={{ marginBottom: "42px" }} />
           <Box
             alignItems="center"
             display="flex"
             flexDirection="column"
             gap="36"
             paddingX="36"
-            style={{ textAlign: 'center' }}
+            style={{ textAlign: "center" }}
           >
             <Box
               display="flex"
@@ -404,11 +425,18 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
               gap="12"
               textAlign="center"
             >
-              <Text color="modalText" size="16" weight="bold">
-                {t('get.looking_for.title')}
+              <Text
+                color="modalText"
+                size="16"
+                weight="bold"
+              >
+                {t("get.looking_for.title")}
               </Text>
-              <Text color="modalTextSecondary" size="16">
-                {t('get.looking_for.mobile.description')}
+              <Text
+                color="modalTextSecondary"
+                size="16"
+              >
+                {t("get.looking_for.mobile.description")}
               </Text>
             </Box>
           </Box>
@@ -419,12 +447,14 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Box display="flex" flexDirection="column" paddingBottom="36">
+    <Box
+      display="flex"
+      flexDirection="column"
+      paddingBottom="36"
+    >
       {/* header section */}
       <Box
-        background={
-          headerBackgroundContrast ? 'profileForeground' : 'modalBackground'
-        }
+        background={headerBackgroundContrast ? "profileForeground" : "modalBackground"}
         display="flex"
         flexDirection="column"
         paddingBottom="4"
@@ -451,8 +481,8 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                 alignItems="center"
                 as="button"
                 className={touchableStyles({
-                  active: 'shrinkSm',
-                  hover: 'growLg',
+                  active: "shrinkSm",
+                  hover: "growLg",
                 })}
                 color="accentColor"
                 display="flex"
@@ -460,7 +490,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                 marginTop="20"
                 onClick={() => setWalletStep(headerBackButtonLink!)}
                 padding="16"
-                style={{ height: 17, willChange: 'transform' }}
+                style={{ height: 17, willChange: "transform" }}
                 transition="default"
                 type="button"
               >
@@ -469,7 +499,11 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
             </Box>
           )}
 
-          <Box marginTop="4" textAlign="center" width="full">
+          <Box
+            marginTop="4"
+            textAlign="center"
+            width="full"
+          >
             <Text
               as="h1"
               color="modalText"
@@ -497,7 +531,10 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
           </Box>
         </Box>
       </Box>
-      <Box display="flex" flexDirection="column">
+      <Box
+        display="flex"
+        flexDirection="column"
+      >
         {walletContent}
       </Box>
     </Box>

@@ -1,16 +1,10 @@
-const storageKey = 'WALLETCONNECT_DEEPLINK_CHOICE';
+const storageKey = "WALLETCONNECT_DEEPLINK_CHOICE";
 
-export function setWalletConnectDeepLink({
-  mobileUri,
-  name,
-}: {
-  mobileUri: string;
-  name: string;
-}) {
+export function setWalletConnectDeepLink({ mobileUri, name }: { mobileUri: string; name: string }) {
   localStorage.setItem(
     storageKey,
     JSON.stringify({
-      href: mobileUri.split('?')[0],
+      href: mobileUri.split("?")[0],
       name,
     }),
   );

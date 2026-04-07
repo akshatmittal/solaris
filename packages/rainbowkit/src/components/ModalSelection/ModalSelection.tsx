@@ -1,10 +1,11 @@
-import React from 'react';
-import { t } from '../../translations';
-import { touchableStyles } from '../../css/touchableStyles';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { Box } from '../Box/Box';
-import { Text } from '../Text/Text';
-import * as styles from './ModalSelection.css';
+import React from "react";
+
+import { touchableStyles } from "../../css/touchableStyles";
+import { t } from "../../translations";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box } from "../Box/Box";
+import { Text } from "../Text/Text";
+import * as styles from "./ModalSelection.css";
 
 type Props = {
   onClick?: React.MouseEventHandler<HTMLElement> | undefined;
@@ -20,7 +21,7 @@ type Props = {
 };
 
 export const ModalSelection = ({
-  as = 'button',
+  as = "button",
   currentlySelected = false,
   iconBackground,
   iconUrl,
@@ -51,7 +52,7 @@ export const ModalSelection = ({
             ? [
                 styles.transparentBorder,
                 touchableStyles({
-                  active: 'shrink',
+                  active: "shrink",
                 }),
               ]
             : undefined
@@ -59,35 +60,38 @@ export const ModalSelection = ({
         disabled={currentlySelected}
         onClick={onClick}
         padding="5"
-        style={{ willChange: 'transform' }}
+        style={{ willChange: "transform" }}
         testId={testId}
         transition="default"
         width="full"
         {...(currentlySelected
           ? {
-              background: 'accentColor',
-              borderColor: 'selectedOptionBorder',
-              boxShadow: 'selectedWallet',
+              background: "accentColor",
+              borderColor: "selectedOptionBorder",
+              boxShadow: "selectedWallet",
             }
           : {
-              background: { hover: 'menuItemBackground' },
+              background: { hover: "menuItemBackground" },
             })}
         {...urlProps}
       >
         <Box
-          color={currentlySelected ? 'accentColorForeground' : 'modalText'}
+          color={currentlySelected ? "accentColorForeground" : "modalText"}
           disabled={!ready}
           fontFamily="body"
           fontSize="16"
           fontWeight="bold"
           transition="default"
         >
-          <Box alignItems="center" display="flex" flexDirection="row" gap="12">
+          <Box
+            alignItems="center"
+            display="flex"
+            flexDirection="row"
+            gap="12"
+          >
             <AsyncImage
               background={iconBackground}
-              {...(!isMouseOver && isRainbowKitConnector
-                ? { borderColor: 'actionButtonBorder' }
-                : {})}
+              {...(!isMouseOver && isRainbowKitConnector ? { borderColor: "actionButtonBorder" } : {})}
               // We want to use pure <img /> element
               // to avoid bugs with eip6963 icons as sometimes
               // background: url(...) does not work
@@ -106,14 +110,12 @@ export const ModalSelection = ({
               </Box>
               {recent && (
                 <Text
-                  color={
-                    currentlySelected ? 'accentColorForeground' : 'accentColor'
-                  }
+                  color={currentlySelected ? "accentColorForeground" : "accentColor"}
                   size="12"
                   style={{ lineHeight: 1, marginTop: -1 }}
                   weight="medium"
                 >
-                  {t('connect.recent')}
+                  {t("connect.recent")}
                 </Text>
               )}
             </Box>
@@ -124,4 +126,4 @@ export const ModalSelection = ({
   );
 };
 
-ModalSelection.displayName = 'ModalSelection';
+ModalSelection.displayName = "ModalSelection";

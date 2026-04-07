@@ -1,8 +1,9 @@
-import React from 'react';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import { loadImages } from '../AsyncImage/useAsyncImage';
+import React from "react";
 
-const src = async () => (await import('./connect.svg')).default;
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { loadImages } from "../AsyncImage/useAsyncImage";
+
+const src = async () => (await import("./connect.svg")).default;
 
 export const preloadConnectIcon = () => loadImages(src);
 

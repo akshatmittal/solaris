@@ -1,26 +1,14 @@
-import React, {
-  type ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import type { Address } from 'viem';
-import { type Config, useAccount, useAccountEffect } from 'wagmi';
+import React, { type ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type AuthenticationStatus =
-  | 'loading'
-  | 'unauthenticated'
-  | 'authenticated';
+import type { Address } from "viem";
+
+import { type Config, useAccount, useAccountEffect } from "wagmi";
+
+export type AuthenticationStatus = "loading" | "unauthenticated" | "authenticated";
 
 export interface AuthenticationAdapter<Message> {
   getNonce: () => Promise<string>;
-  createMessage: (args: {
-    nonce: string;
-    address: Address;
-    chainId: number;
-  }) => Message;
+  createMessage: (args: { nonce: string; address: Address; chainId: number }) => Message;
   verify: (args: { message: Message; signature: string }) => Promise<boolean>;
   signOut: () => Promise<void>;
 }
@@ -31,18 +19,13 @@ export interface AuthenticationConfig<Message> {
 }
 
 // Right now this function only serves to infer the generic Message type
-export function createAuthenticationAdapter<Message>(
-  adapter: AuthenticationAdapter<Message>,
-) {
+export function createAuthenticationAdapter<Message>(adapter: AuthenticationAdapter<Message>) {
   return adapter;
 }
 
-const AuthenticationContext = createContext<AuthenticationConfig<any> | null>(
-  null,
-);
+const AuthenticationContext = createContext<AuthenticationConfig<any> | null>(null);
 
-interface RainbowKitAuthenticationProviderProps<Message>
-  extends AuthenticationConfig<Message> {
+interface RainbowKitAuthenticationProviderProps<Message> extends AuthenticationConfig<Message> {
   enabled?: boolean;
   children: ReactNode;
 }
@@ -67,9 +50,7 @@ export function RainbowKitAuthenticationProvider<Message = unknown>({
     },
   });
 
-  const handleChangedAccount = (
-    data: Parameters<Config['_internal']['events']['change']>[0],
-  ) => {
+  const handleChangedAccount = (data: Parameters<Config["_internal"]["events"]["change"]>[0]) => {
     // Only if account changes
     if (data.accounts) {
       // If account is changed we automatically log user out.
@@ -86,30 +67,23 @@ export function RainbowKitAuthenticationProvider<Message = unknown>({
   useEffect(() => {
     // Wagmi renders emitter's partially on page load. We wanna make sure
     // the event emitters gets updated before proceeding
-    if (
-      typeof connector?.emitter?.on === 'function' &&
-      status === 'authenticated'
-    ) {
+    if (typeof connector?.emitter?.on === "function" && status === "authenticated") {
       // Set current connector uid
       setCurrentConnectorUid(connector?.uid);
 
       // Attach the event listener when status is 'authenticated'
-      connector.emitter.on('change', handleChangedAccount);
+      connector.emitter.on("change", handleChangedAccount);
 
       // Cleanup function to remove the event listener
       return () => {
-        connector.emitter.off('change', handleChangedAccount);
+        connector.emitter.off("change", handleChangedAccount);
       };
     }
   }, [connector?.emitter, status]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (
-      currentConnectorUid &&
-      typeof connector?.emitter?.on === 'function' &&
-      status === 'authenticated'
-    ) {
+    if (currentConnectorUid && typeof connector?.emitter?.on === "function" && status === "authenticated") {
       // If the current connector is not
       // equal to previous connector then logout
       if (connector?.uid !== currentConnectorUid) {
@@ -121,10 +95,7 @@ export function RainbowKitAuthenticationProvider<Message = unknown>({
 
   return (
     <AuthenticationContext.Provider
-      value={useMemo(
-        () => (enabled ? { adapter, status } : null),
-        [enabled, adapter, status],
-      )}
+      value={useMemo(() => (enabled ? { adapter, status } : null), [enabled, adapter, status])}
     >
       {children}
     </AuthenticationContext.Provider>
@@ -135,7 +106,7 @@ export function useAuthenticationAdapter() {
   const { adapter } = useContext(AuthenticationContext) ?? {};
 
   if (!adapter) {
-    throw new Error('No authentication adapter found');
+    throw new Error("No authentication adapter found");
   }
 
   return adapter;

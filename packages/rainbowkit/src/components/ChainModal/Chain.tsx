@@ -1,19 +1,22 @@
-import React, { Fragment } from 'react';
-import type { useSwitchChain } from 'wagmi';
-import { isMobile } from '../../utils/isMobile';
-import { t } from '../../translations';
-import { AsyncImage } from '../AsyncImage/AsyncImage';
-import type { AsyncImageSrc } from '../AsyncImage/useAsyncImage';
-import { Box, type BoxProps } from '../Box/Box';
-import { MenuButton } from '../MenuButton/MenuButton';
-import { useRainbowKitChains } from '../RainbowKitProvider/RainbowKitChainContext';
-import { Text } from '../Text/Text';
+import React, { Fragment } from "react";
+
+import type { useSwitchChain } from "wagmi";
+
+import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
+
+import { t } from "../../translations";
+import { isMobile } from "../../utils/isMobile";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { Box, type BoxProps } from "../Box/Box";
+import { MenuButton } from "../MenuButton/MenuButton";
+import { useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
+import { Text } from "../Text/Text";
 
 interface ChainProps {
   chainId: number;
   currentChainId: number;
-  switchChain: ReturnType<typeof useSwitchChain>['switchChain'];
-  chainIconSize: BoxProps['height'];
+  switchChain: ReturnType<typeof useSwitchChain>["switchChain"];
+  chainIconSize: BoxProps["height"];
   name: string | undefined;
   isLoading: boolean;
   iconBackground: string | undefined;
@@ -44,7 +47,11 @@ const Chain = ({
         onClick={isCurrentChain ? undefined : () => switchChain({ chainId })}
         testId={`chain-option-${chainId}`}
       >
-        <Box fontFamily="body" fontSize="16" fontWeight="bold">
+        <Box
+          fontFamily="body"
+          fontSize="16"
+          fontWeight="bold"
+        >
           <Box
             alignItems="center"
             display="flex"
@@ -59,7 +66,10 @@ const Chain = ({
               height={chainIconSize}
             >
               {src && (
-                <Box height="full" marginRight="8">
+                <Box
+                  height="full"
+                  marginRight="8"
+                >
                   <AsyncImage
                     alt={name}
                     background={iconBackground}
@@ -80,8 +90,12 @@ const Chain = ({
                 flexDirection="row"
                 marginRight="6"
               >
-                <Text color="accentColorForeground" size="14" weight="medium">
-                  {t('chains.connected')}
+                <Text
+                  color="accentColorForeground"
+                  size="14"
+                  weight="medium"
+                >
+                  {t("chains.connected")}
                 </Text>
                 <Box
                   background="connectionIndicator"
@@ -102,8 +116,12 @@ const Chain = ({
                 flexDirection="row"
                 marginRight="6"
               >
-                <Text color="modalText" size="14" weight="medium">
-                  {t('chains.confirm')}
+                <Text
+                  color="modalText"
+                  size="14"
+                  weight="medium"
+                >
+                  {t("chains.confirm")}
                 </Text>
                 <Box
                   background="standby"
@@ -118,7 +136,11 @@ const Chain = ({
         </Box>
       </MenuButton>
       {mobile && idx < rainbowkitChains.length - 1 && (
-        <Box background="generalBorderDim" height="1" marginX="8" />
+        <Box
+          background="generalBorderDim"
+          height="1"
+          marginX="8"
+        />
       )}
     </Fragment>
   );

@@ -1,10 +1,6 @@
-import React, {
-  type ReactNode,
-  createContext,
-  useContext,
-  useState,
-} from 'react';
-import type { ResponsiveValue } from '../../css/sprinkles.css';
+import React, { type ReactNode, createContext, useContext, useState } from "react";
+
+import type { ResponsiveValue } from "../../css/sprinkles.css";
 
 interface ShowBalanceContextValue {
   showBalance: ResponsiveValue<boolean> | undefined;
@@ -23,11 +19,7 @@ interface ShowBalanceProviderProps {
 export function ShowBalanceProvider({ children }: ShowBalanceProviderProps) {
   const [showBalance, setShowBalance] = useState<ResponsiveValue<boolean>>();
 
-  return (
-    <ShowBalanceContext.Provider value={{ showBalance, setShowBalance }}>
-      {children}
-    </ShowBalanceContext.Provider>
-  );
+  return <ShowBalanceContext.Provider value={{ showBalance, setShowBalance }}>{children}</ShowBalanceContext.Provider>;
 }
 
 export const useShowBalance = () => useContext(ShowBalanceContext);
