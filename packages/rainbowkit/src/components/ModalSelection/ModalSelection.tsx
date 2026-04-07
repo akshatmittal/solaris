@@ -3,7 +3,6 @@ import { t } from '../../translations';
 import { touchableStyles } from '../../css/touchableStyles';
 import { AsyncImage } from '../AsyncImage/AsyncImage';
 import { Box } from '../Box/Box';
-import { useCoolMode } from '../RainbowKitProvider/useCoolMode';
 import { Text } from '../Text/Text';
 import * as styles from './ModalSelection.css';
 
@@ -33,7 +32,6 @@ export const ModalSelection = ({
   isRainbowKitConnector,
   ...urlProps
 }: Props) => {
-  const coolModeRef = useCoolMode(iconUrl);
   const [isMouseOver, setIsMouseOver] = React.useState<boolean>(false);
 
   return (
@@ -42,7 +40,6 @@ export const ModalSelection = ({
       flexDirection="column"
       onMouseEnter={() => setIsMouseOver(true)}
       onMouseLeave={() => setIsMouseOver(false)}
-      ref={coolModeRef}
     >
       <Box
         as={as}
