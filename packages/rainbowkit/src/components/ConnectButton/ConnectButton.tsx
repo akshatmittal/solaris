@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   type ResponsiveValue,
   mapResponsiveValue,
@@ -11,9 +11,9 @@ import { AsyncImage } from '../AsyncImage/AsyncImage';
 import { Avatar } from '../Avatar/Avatar';
 import { Box } from '../Box/Box';
 import { DropdownIcon } from '../Icons/Dropdown';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { useRainbowKitChains } from '../RainbowKitProvider/RainbowKitChainContext';
 import { useShowBalance } from '../RainbowKitProvider/ShowBalanceContext';
+import { t } from '../../translations';
 import { ConnectButtonRenderer } from './ConnectButtonRenderer';
 
 type AccountStatus = 'full' | 'avatar' | 'address';
@@ -43,8 +43,6 @@ export function ConnectButton({
   const connectionStatus = useConnectionStatus();
   const { setShowBalance } = useShowBalance();
   const [ready, setReady] = useState(false);
-
-  const { i18n } = useContext(I18nContext);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -127,7 +125,7 @@ export function ConnectButton({
                         height="24"
                         paddingX="4"
                       >
-                        {i18n.t('connect_wallet.wrong_network.label')}
+                        {t('connect_wallet.wrong_network.label')}
                       </Box>
                     ) : (
                       <Box alignItems="center" display="flex" gap="6">
@@ -282,7 +280,7 @@ export function ConnectButton({
                 type="button"
               >
                 {mounted && label === 'Connect Wallet'
-                  ? i18n.t('connect_wallet.label')
+                  ? t('connect_wallet.label')
                   : label}
               </Box>
             )}

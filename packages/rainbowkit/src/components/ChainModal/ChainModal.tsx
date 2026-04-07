@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useAccount, useDisconnect, useSwitchChain } from 'wagmi';
 import { useConfig } from 'wagmi';
 import { isMobile } from '../../utils/isMobile';
+import { t } from '../../translations';
 import { Box } from '../Box/Box';
 import { CloseButton } from '../CloseButton/CloseButton';
 import { Dialog } from '../Dialog/Dialog';
 import { DialogContent } from '../Dialog/DialogContent';
 import { DisconnectSqIcon } from '../Icons/DisconnectSq';
 import { MenuButton } from '../MenuButton/MenuButton';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { useRainbowKitChains } from '../RainbowKitProvider/RainbowKitChainContext';
 import { Text } from '../Text/Text';
 import Chain from './Chain';
@@ -42,9 +42,6 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
       },
     },
   });
-
-  const { i18n } = useContext(I18nContext);
-
   const { disconnect } = useDisconnect();
   const titleId = 'rk_chain_modal_title';
   const mobile = isMobile();
@@ -74,7 +71,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
                 size={mobile ? '20' : '18'}
                 weight="heavy"
               >
-                {i18n.t('chains.title')}
+                {t('chains.title')}
               </Text>
             </Box>
             <CloseButton onClose={onClose} />
@@ -82,7 +79,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
           {!isCurrentChainSupported && (
             <Box marginX="8" textAlign={mobile ? 'center' : 'left'}>
               <Text color="modalTextSecondary" size="14" weight="medium">
-                {i18n.t('chains.wrong_network')}
+                {t('chains.wrong_network')}
               </Text>
             </Box>
           )}
@@ -147,7 +144,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
                         >
                           <DisconnectSqIcon size={Number(chainIconSize)} />
                         </Box>
-                        <div>{i18n.t('chains.disconnect')}</div>
+                        <div>{t('chains.disconnect')}</div>
                       </Box>
                     </Box>
                   </Box>

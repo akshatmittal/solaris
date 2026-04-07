@@ -1,6 +1,7 @@
-import React, { useCallback, useContext, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { UserRejectedRequestError } from 'viem';
 import { useAccount, useSignMessage } from 'wagmi';
+import { t } from '../../translations';
 import { touchableStyles } from '../../css/touchableStyles';
 import { isMobile } from '../../utils/isMobile';
 import { AsyncImage } from '../AsyncImage/AsyncImage';
@@ -8,7 +9,6 @@ import { Box } from '../Box/Box';
 import { ActionButton } from '../Button/ActionButton';
 import { CloseButton } from '../CloseButton/CloseButton';
 import { useAuthenticationAdapter } from '../RainbowKitProvider/AuthenticationContext';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { Text } from '../Text/Text';
 
 export const signInIcon = async () => (await import('./sign.png')).default;
@@ -20,7 +20,6 @@ export function SignIn({
   onClose: () => void;
   onCloseModal: () => void;
 }) {
-  const { i18n } = useContext(I18nContext);
   const [{ status, ...state }, setState] = React.useState<{
     status: 'idle' | 'signing' | 'verifying';
     errorMessage?: string;
@@ -36,11 +35,11 @@ export function SignIn({
     } catch {
       setState((x) => ({
         ...x,
-        errorMessage: i18n.t('sign_in.message.preparing_error'),
+        errorMessage: t('sign_in.message.preparing_error'),
         status: 'idle',
       }));
     }
-  }, [authAdapter, i18n.t]);
+  }, [authAdapter]);
 
   // Pre-fetch nonce when screen is rendered
   // to ensure deep linking works for WalletConnect
@@ -90,7 +89,7 @@ export function SignIn({
 
         return setState((x) => ({
           ...x,
-          errorMessage: i18n.t('sign_in.signature.signing_error'),
+          errorMessage: t('sign_in.signature.signing_error'),
           status: 'idle',
         }));
       }
@@ -111,13 +110,13 @@ export function SignIn({
       } catch {
         return setState((x) => ({
           ...x,
-          errorMessage: i18n.t('sign_in.signature.verifying_error'),
+          errorMessage: t('sign_in.signature.verifying_error'),
           status: 'idle',
         }));
       }
     } catch {
       setState({
-        errorMessage: i18n.t('sign_in.signature.oops_error'),
+        errorMessage: t('sign_in.signature.oops_error'),
         status: 'idle',
       });
     }
@@ -163,7 +162,7 @@ export function SignIn({
               textAlign="center"
               weight="heavy"
             >
-              {i18n.t('sign_in.label')}
+              {t('sign_in.label')}
             </Text>
           </Box>
           <Box
@@ -177,7 +176,7 @@ export function SignIn({
               size={mobile ? '16' : '14'}
               textAlign="center"
             >
-              {i18n.t('sign_in.description')}
+              {t('sign_in.description')}
             </Text>
             {status === 'idle' && state.errorMessage ? (
               <Text
@@ -205,12 +204,12 @@ export function SignIn({
             }
             label={
               !state.nonce
-                ? i18n.t('sign_in.message.preparing')
+                ? t('sign_in.message.preparing')
                 : status === 'signing'
-                  ? i18n.t('sign_in.signature.waiting')
+                  ? t('sign_in.signature.waiting')
                   : status === 'verifying'
-                    ? i18n.t('sign_in.signature.verifying')
-                    : i18n.t('sign_in.message.send')
+                    ? t('sign_in.signature.verifying')
+                    : t('sign_in.message.send')
             }
             onClick={signIn}
             size={mobile ? 'large' : 'medium'}
@@ -242,7 +241,7 @@ export function SignIn({
                 size={mobile ? '16' : '14'}
                 weight="bold"
               >
-                {i18n.t('sign_in.message.cancel')}
+                {t('sign_in.message.cancel')}
               </Text>
             </Box>
           )}

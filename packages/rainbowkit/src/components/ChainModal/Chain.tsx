@@ -1,11 +1,11 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 import type { useSwitchChain } from 'wagmi';
 import { isMobile } from '../../utils/isMobile';
+import { t } from '../../translations';
 import { AsyncImage } from '../AsyncImage/AsyncImage';
 import type { AsyncImageSrc } from '../AsyncImage/useAsyncImage';
 import { Box, type BoxProps } from '../Box/Box';
 import { MenuButton } from '../MenuButton/MenuButton';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { useRainbowKitChains } from '../RainbowKitProvider/RainbowKitChainContext';
 import { Text } from '../Text/Text';
 
@@ -33,7 +33,6 @@ const Chain = ({
   idx,
 }: ChainProps) => {
   const mobile = isMobile();
-  const { i18n } = useContext(I18nContext);
   const rainbowkitChains = useRainbowKitChains();
 
   const isCurrentChain = currentChainId === chainId;
@@ -82,7 +81,7 @@ const Chain = ({
                 marginRight="6"
               >
                 <Text color="accentColorForeground" size="14" weight="medium">
-                  {i18n.t('chains.connected')}
+                  {t('chains.connected')}
                 </Text>
                 <Box
                   background="connectionIndicator"
@@ -104,7 +103,7 @@ const Chain = ({
                 marginRight="6"
               >
                 <Text color="modalText" size="14" weight="medium">
-                  {i18n.t('chains.confirm')}
+                  {t('chains.confirm')}
                 </Text>
                 <Box
                   background="standby"

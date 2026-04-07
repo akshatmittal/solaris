@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { t } from '../../translations';
 import { touchableStyles } from '../../css/touchableStyles';
 import { isSafari } from '../../utils/browsers';
 import { groupBy } from '../../utils/groupBy';
@@ -21,7 +22,6 @@ import { BackIcon } from '../Icons/Back';
 import { InfoButton } from '../InfoButton/InfoButton';
 import { ModalSelection } from '../ModalSelection/ModalSelection';
 import { AppContext } from '../RainbowKitProvider/AppContext';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import {
   ModalSizeContext,
   ModalSizeOptions,
@@ -69,7 +69,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const modalSize = useContext(ModalSizeContext);
   const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
   const { disclaimer: Disclaimer } = useContext(AppContext);
-  const { i18n } = useContext(I18nContext);
   const safari = isSafari();
 
   const initialized = useRef(false);
@@ -90,7 +89,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
 
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
 
-  const supportedI18nGroupNames = [
+  const supportedGroupNames = [
     'Recommended',
     'Other',
     'Popular',
@@ -241,7 +240,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
           getWallet={() => changeWalletStep(WalletStep.Get)}
         />
       );
-      headerLabel = i18n.t('intro.title');
+      headerLabel = t('intro.title');
       headerBackButtonLink = WalletStep.None;
       break;
     case WalletStep.Get:
@@ -251,7 +250,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
           compactModeEnabled={compactModeEnabled}
         />
       );
-      headerLabel = i18n.t('get.title');
+      headerLabel = t('get.title');
       headerBackButtonLink = compactModeEnabled
         ? WalletStep.LearnCompact
         : WalletStep.None;
@@ -271,8 +270,8 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       headerLabel =
         hasQrCode &&
         (selectedWallet.name === 'WalletConnect'
-          ? i18n.t('connect_scan.fallback_title')
-          : i18n.t('connect_scan.title', {
+          ? t('connect_scan.fallback_title')
+          : t('connect_scan.title', {
               wallet: selectedWallet.name,
             }));
       headerBackButtonLink = compactModeEnabled
@@ -295,7 +294,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       );
       headerLabel =
         selectedWallet &&
-        i18n.t('get_options.short_title', { wallet: selectedWallet.name });
+        t('get_options.short_title', { wallet: selectedWallet.name });
       headerBackButtonLink = connector
         ? WalletStep.Connect
         : compactModeEnabled
@@ -311,7 +310,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       );
       headerLabel =
         selectedWallet &&
-        i18n.t('get_mobile.title', { wallet: selectedWallet.name });
+        t('get_mobile.title', { wallet: selectedWallet.name });
       headerBackButtonLink = hasExtensionAndMobile
         ? WalletStep.DownloadOptions
         : initialWalletStep;
@@ -325,7 +324,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       );
       headerLabel =
         selectedWallet &&
-        i18n.t('get_options.title', {
+        t('get_options.title', {
           wallet: compactModeEnabled
             ? selectedWallet.shortName || selectedWallet.name
             : selectedWallet.name,
@@ -338,7 +337,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       );
       headerLabel =
         selectedWallet &&
-        i18n.t('get_options.title', {
+        t('get_options.title', {
           wallet: compactModeEnabled
             ? selectedWallet.shortName || selectedWallet.name
             : selectedWallet.name,
@@ -354,7 +353,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       );
       headerLabel =
         selectedWallet &&
-        i18n.t('get_options.title', {
+        t('get_options.title', {
           wallet: compactModeEnabled
             ? selectedWallet.shortName || selectedWallet.name
             : selectedWallet.name,
@@ -402,7 +401,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                 weight="heavy"
                 testId={'connect-header-label'}
               >
-                {i18n.t('connect.title')}
+                {t('connect.title')}
               </Text>
             </Box>
             {compactModeEnabled && (
@@ -427,10 +426,8 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                           size="14"
                           weight="bold"
                         >
-                          {supportedI18nGroupNames.includes(groupName)
-                            ? i18n.t(
-                                `connector_group.${groupName.toLowerCase()}`,
-                              )
+                          {supportedGroupNames.includes(groupName)
+                            ? t(`connector_group.${groupName.toLowerCase()}`)
                             : groupName}
                         </Text>
                       </Box>
@@ -474,7 +471,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                 >
                   <Box paddingY="4">
                     <Text color="modalTextSecondary" size="14" weight="medium">
-                      {i18n.t('connect.new_to_ethereum.description')}
+                      {t('connect.new_to_ethereum.description')}
                     </Text>
                   </Box>
                   <Box
@@ -496,7 +493,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                       transition="default"
                     >
                       <Text color="accentColor" size="14" weight="bold">
-                        {i18n.t('connect.new_to_ethereum.learn_more.label')}
+                        {t('connect.new_to_ethereum.learn_more.label')}
                       </Text>
                     </Box>
                   </Box>

@@ -19,7 +19,7 @@ import { RefreshIcon, preloadRefreshIcon } from '../Icons/Refresh';
 import { ScanIcon, preloadScanIcon } from '../Icons/Scan';
 import { SpinnerIcon } from '../Icons/Spinner';
 import { QRCode } from '../QRCode/QRCode';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
+import { t } from '../../translations';
 import { ModalSizeContext } from '../RainbowKitProvider/ModalSizeContext';
 import { Text } from '../Text/Text';
 import { WalletStep } from './DesktopOptions';
@@ -76,8 +76,6 @@ export function GetDetail({
   );
 
   const shownWallets = wallets.splice(0, 5);
-
-  const { i18n } = useContext(I18nContext);
 
   return (
     <Box
@@ -141,20 +139,20 @@ export function GetDetail({
                     </Text>
                     <Text color="modalTextSecondary" size="14" weight="medium">
                       {hasMobileAndExtension
-                        ? i18n.t('get.mobile_and_extension.description')
+                        ? t('get.mobile_and_extension.description')
                         : hasMobileAndDesktop
-                          ? i18n.t('get.mobile_and_desktop.description')
+                          ? t('get.mobile_and_desktop.description')
                           : hasMobileCompanionApp
-                            ? i18n.t('get.mobile.description')
+                            ? t('get.mobile.description')
                             : hasExtension
-                              ? i18n.t('get.extension.description')
+                              ? t('get.extension.description')
                               : null}
                     </Text>
                   </Box>
                 </Box>
                 <Box display="flex" flexDirection="column" gap="4">
                   <ActionButton
-                    label={i18n.t('get.action.label')}
+                    label={t('get.action.label')}
                     onClick={() => getWalletDownload(id)}
                     type="secondary"
                   />
@@ -175,12 +173,12 @@ export function GetDetail({
         style={{ maxWidth: 275, textAlign: 'center' }}
       >
         <Text color="modalText" size="14" weight="bold">
-          {i18n.t('get.looking_for.title')}
+          {t('get.looking_for.title')}
         </Text>
         <Text color="modalTextSecondary" size="14" weight="medium">
           {compactModeEnabled
-            ? i18n.t('get.looking_for.desktop.compact_description')
-            : i18n.t('get.looking_for.desktop.wide_description')}
+            ? t('get.looking_for.desktop.compact_description')
+            : t('get.looking_for.desktop.wide_description')}
         </Text>
       </Box>
     </Box>
@@ -218,8 +216,6 @@ export function ConnectDetail({
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
 
-  const { i18n } = useContext(I18nContext);
-
   const hasExtension = !!wallet.extensionDownloadUrl;
   const hasQrCodeAndExtension = downloadUrls?.qrCode && hasExtension;
   const hasQrCodeAndDesktop =
@@ -239,9 +235,9 @@ export function ConnectDetail({
   } | null = showWalletConnectModal
     ? {
         description: !compactModeEnabled
-          ? i18n.t('connect.walletconnect.description.full')
-          : i18n.t('connect.walletconnect.description.compact'),
-        label: i18n.t('connect.walletconnect.open.label'),
+          ? t('connect.walletconnect.description.full')
+          : t('connect.walletconnect.description.compact'),
+        label: t('connect.walletconnect.open.label'),
         onClick: () => {
           onClose();
           showWalletConnectModal();
@@ -249,10 +245,10 @@ export function ConnectDetail({
       }
     : hasQrCode
       ? {
-          description: i18n.t('connect.secondary_action.get.description', {
+          description: t('connect.secondary_action.get.description', {
             wallet: name,
           }),
-          label: i18n.t('connect.secondary_action.get.label'),
+          label: t('connect.secondary_action.get.label'),
           onClick: () =>
             changeWalletStep(
               hasQrCodeAndExtension || hasQrCodeAndDesktop
@@ -325,14 +321,14 @@ export function ConnectDetail({
             >
               <Text color="modalText" size="18" weight="bold">
                 {ready
-                  ? i18n.t('connect.status.opening', {
+                  ? t('connect.status.opening', {
                       wallet: name,
                     })
                   : hasExtension
-                    ? i18n.t('connect.status.not_installed', {
+                    ? t('connect.status.not_installed', {
                         wallet: name,
                       })
-                    : i18n.t('connect.status.not_available', {
+                    : t('connect.status.not_available', {
                         wallet: name,
                       })}
               </Text>
@@ -340,7 +336,7 @@ export function ConnectDetail({
                 <Box paddingTop="20">
                   <ActionButton
                     href={wallet.extensionDownloadUrl}
-                    label={i18n.t('connect.secondary_action.install.label')}
+                    label={t('connect.secondary_action.install.label')}
                     type="secondary"
                   />
                 </Box>
@@ -359,7 +355,7 @@ export function ConnectDetail({
                       textAlign="center"
                       weight="medium"
                     >
-                      {i18n.t('connect.status.confirm')}
+                      {t('connect.status.confirm')}
                     </Text>
                   </Box>
                   <Box
@@ -372,7 +368,7 @@ export function ConnectDetail({
                   >
                     {connectionError ? (
                       <ActionButton
-                        label={i18n.t('connect.secondary_action.retry.label')}
+                        label={t('connect.secondary_action.retry.label')}
                         onClick={async () => {
                           if (isDesktopDeepLinkAvailable) onDesktopUri();
                           reconnect(wallet);
@@ -633,8 +629,6 @@ export function DownloadOptionsDetail({
     mobileDownloadUrl,
   } = wallet;
 
-  const { i18n } = useContext(I18nContext);
-
   useEffect(() => {
     // Preload icons used on next screen
     preloadCreateIcon();
@@ -665,10 +659,10 @@ export function DownloadOptionsDetail({
       >
         {extensionDownloadUrl && (
           <DownloadOptionsBox
-            actionLabel={i18n.t('get_options.extension.download.label', {
+            actionLabel={t('get_options.extension.download.label', {
               browser,
             })}
-            description={i18n.t('get_options.extension.description')}
+            description={t('get_options.extension.description')}
             iconUrl={getBrowserSrc}
             isCompact={isCompact}
             onAction={() =>
@@ -678,7 +672,7 @@ export function DownloadOptionsDetail({
                   : WalletStep.Connect,
               )
             }
-            title={i18n.t('get_options.extension.title', {
+            title={t('get_options.extension.title', {
               wallet: wallet.name,
               browser,
             })}
@@ -688,10 +682,10 @@ export function DownloadOptionsDetail({
         )}
         {desktopDownloadUrl && (
           <DownloadOptionsBox
-            actionLabel={i18n.t('get_options.desktop.download.label', {
+            actionLabel={t('get_options.desktop.download.label', {
               platform,
             })}
-            description={i18n.t('get_options.desktop.description')}
+            description={t('get_options.desktop.description')}
             iconUrl={getPlatformSrc}
             isCompact={isCompact}
             onAction={() =>
@@ -701,7 +695,7 @@ export function DownloadOptionsDetail({
                   : WalletStep.Connect,
               )
             }
-            title={i18n.t('get_options.desktop.title', {
+            title={t('get_options.desktop.title', {
               wallet: wallet.name,
               platform,
             })}
@@ -711,10 +705,10 @@ export function DownloadOptionsDetail({
         )}
         {mobileDownloadUrl && (
           <DownloadOptionsBox
-            actionLabel={i18n.t('get_options.mobile.download.label', {
+            actionLabel={t('get_options.mobile.download.label', {
               wallet: wallet.name,
             })}
-            description={i18n.t('get_options.mobile.description')}
+            description={t('get_options.mobile.description')}
             iconAccent={wallet.iconAccent}
             iconBackground={wallet.iconBackground}
             iconUrl={wallet.iconUrl}
@@ -722,7 +716,7 @@ export function DownloadOptionsDetail({
             onAction={() => {
               changeWalletStep(WalletStep.Download);
             }}
-            title={i18n.t('get_options.mobile.title', { wallet: wallet.name })}
+            title={t('get_options.mobile.title', { wallet: wallet.name })}
             variant="app"
           />
         )}
@@ -739,8 +733,6 @@ export function DownloadDetail({
   wallet: WalletConnector;
 }) {
   const { downloadUrls, qrCode } = wallet;
-
-  const { i18n } = useContext(I18nContext);
 
   useEffect(() => {
     // Preload icons used on next screen
@@ -759,7 +751,7 @@ export function DownloadDetail({
     >
       <Box style={{ maxWidth: 220, textAlign: 'center' }}>
         <Text color="modalTextSecondary" size="14" weight="semibold">
-          {i18n.t('get_mobile.description')}
+          {t('get_mobile.description')}
         </Text>
       </Box>
       <Box height="full">
@@ -780,7 +772,7 @@ export function DownloadDetail({
         paddingY="8"
       >
         <ActionButton
-          label={i18n.t('get_mobile.continue.label')}
+          label={t('get_mobile.continue.label')}
           onClick={() =>
             changeWalletStep(
               qrCode?.instructions
@@ -821,8 +813,6 @@ export function InstructionMobileDetail({
   connectWallet: (wallet: WalletConnector) => void;
   wallet: WalletConnector;
 }) {
-  const { i18n } = useContext(I18nContext);
-
   return (
     <Box
       alignItems="center"
@@ -860,12 +850,12 @@ export function InstructionMobileDetail({
             </Box>
             <Box display="flex" flexDirection="column" gap="4">
               <Text color="modalText" size="14" weight="bold">
-                {i18n.t(d.title, undefined, {
+                {t(d.title, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
               <Text color="modalTextSecondary" size="14" weight="medium">
-                {i18n.t(d.description, undefined, {
+                {t(d.description, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
@@ -883,7 +873,7 @@ export function InstructionMobileDetail({
         marginBottom="16"
       >
         <ActionButton
-          label={i18n.t('get_instructions.mobile.connect.label')}
+          label={t('get_instructions.mobile.connect.label')}
           onClick={() => connectWallet(wallet)}
         />
         <Box
@@ -899,7 +889,7 @@ export function InstructionMobileDetail({
           transition="default"
         >
           <Text color="accentColor" size="14" weight="bold">
-            {i18n.t('get_instructions.mobile.learn_more.label')}
+            {t('get_instructions.mobile.learn_more.label')}
           </Text>
         </Box>
       </Box>
@@ -912,8 +902,6 @@ export function InstructionExtensionDetail({
 }: {
   wallet: WalletConnector;
 }) {
-  const { i18n } = useContext(I18nContext);
-
   return (
     <Box
       alignItems="center"
@@ -951,12 +939,12 @@ export function InstructionExtensionDetail({
             </Box>
             <Box display="flex" flexDirection="column" gap="4">
               <Text color="modalText" size="14" weight="bold">
-                {i18n.t(d.title, undefined, {
+                {t(d.title, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
               <Text color="modalTextSecondary" size="14" weight="medium">
-                {i18n.t(d.description, undefined, {
+                {t(d.description, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
@@ -974,7 +962,7 @@ export function InstructionExtensionDetail({
         marginBottom="16"
       >
         <ActionButton
-          label={i18n.t('get_instructions.extension.refresh.label')}
+          label={t('get_instructions.extension.refresh.label')}
           onClick={window.location.reload.bind(window.location)}
         />
         <Box
@@ -990,7 +978,7 @@ export function InstructionExtensionDetail({
           transition="default"
         >
           <Text color="accentColor" size="14" weight="bold">
-            {i18n.t('get_instructions.extension.learn_more.label')}
+            {t('get_instructions.extension.learn_more.label')}
           </Text>
         </Box>
       </Box>
@@ -1005,8 +993,6 @@ export function InstructionDesktopDetail({
   connectWallet: (wallet: WalletConnector) => void;
   wallet: WalletConnector;
 }) {
-  const { i18n } = useContext(I18nContext);
-
   return (
     <Box
       alignItems="center"
@@ -1044,12 +1030,12 @@ export function InstructionDesktopDetail({
             </Box>
             <Box display="flex" flexDirection="column" gap="4">
               <Text color="modalText" size="14" weight="bold">
-                {i18n.t(d.title, undefined, {
+                {t(d.title, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
               <Text color="modalTextSecondary" size="14" weight="medium">
-                {i18n.t(d.description, undefined, {
+                {t(d.description, undefined, {
                   rawKeyIfTranslationMissing: true,
                 })}
               </Text>
@@ -1067,7 +1053,7 @@ export function InstructionDesktopDetail({
         marginBottom="16"
       >
         <ActionButton
-          label={i18n.t('get_instructions.desktop.connect.label')}
+          label={t('get_instructions.desktop.connect.label')}
           onClick={() => connectWallet(wallet)}
         />
         <Box
@@ -1083,7 +1069,7 @@ export function InstructionDesktopDetail({
           transition="default"
         >
           <Text color="accentColor" size="14" weight="bold">
-            {i18n.t('get_instructions.desktop.learn_more.label')}
+            {t('get_instructions.desktop.learn_more.label')}
           </Text>
         </Box>
       </Box>

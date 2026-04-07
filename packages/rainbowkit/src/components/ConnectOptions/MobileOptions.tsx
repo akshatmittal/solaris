@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { t } from '../../translations';
 import { touchableStyles } from '../../css/touchableStyles';
 import { isIOS } from '../../utils/isMobile';
 import {
@@ -19,7 +20,6 @@ import { DisclaimerLink } from '../Disclaimer/DisclaimerLink';
 import { DisclaimerText } from '../Disclaimer/DisclaimerText';
 import { BackIcon } from '../Icons/Back';
 import { AppContext } from '../RainbowKitProvider/AppContext';
-import { I18nContext } from '../RainbowKitProvider/I18nContext';
 import { useCoolMode } from '../RainbowKitProvider/useCoolMode';
 import { setWalletConnectDeepLink } from '../RainbowKitProvider/walletConnectDeepLink';
 import { Text } from '../Text/Text';
@@ -79,8 +79,6 @@ export function WalletButton({
 
   const coolModeRef = useCoolMode(iconUrl);
   const initialized = useRef(false);
-
-  const { i18n } = useContext(I18nContext);
 
   const onConnect = useCallback(async () => {
     const onMobileUri = async () => {
@@ -192,7 +190,7 @@ export function WalletButton({
 
             {wallet.recent && (
               <Text color="accentColor" size="12" weight="medium">
-                {i18n.t('connect.recent')}
+                {t('connect.recent')}
               </Text>
             )}
           </Box>
@@ -223,13 +221,11 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
     MobileWalletStep.Connect,
   );
 
-  const { i18n } = useContext(I18nContext);
-
   const ios = isIOS();
 
   switch (walletStep) {
     case MobileWalletStep.Connect: {
-      headerLabel = i18n.t('connect.title');
+      headerLabel = t('connect.title');
       headerBackgroundContrast = true;
       walletContent = (
         <Box>
@@ -278,10 +274,10 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
               textAlign="center"
             >
               <Text color="modalText" size="16" weight="bold">
-                {i18n.t('intro.title')}
+                {t('intro.title')}
               </Text>
               <Text color="modalTextSecondary" size="16">
-                {i18n.t('intro.description')}
+                {t('intro.description')}
               </Text>
             </Box>
           </Box>
@@ -289,14 +285,14 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
           <Box paddingTop="32" paddingX="20">
             <Box display="flex" gap="14" justifyContent="center">
               <ActionButton
-                label={i18n.t('intro.get.label')}
+                label={t('intro.get.label')}
                 onClick={() => setWalletStep(MobileWalletStep.Get)}
                 size="large"
                 type="secondary"
               />
               <ActionButton
                 href={learnMoreUrl}
-                label={i18n.t('intro.learn_more.label')}
+                label={t('intro.learn_more.label')}
                 size="large"
                 type="secondary"
               />
@@ -312,7 +308,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
       break;
     }
     case MobileWalletStep.Get: {
-      headerLabel = i18n.t('get.title');
+      headerLabel = t('get.title');
       headerBackButtonLink = MobileWalletStep.Connect;
 
       const mobileWallets = wallets
@@ -377,7 +373,7 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
                           (ios ? downloadUrls?.ios : downloadUrls?.android) ||
                           downloadUrls?.mobile
                         }
-                        label={i18n.t('get.action.label')}
+                        label={t('get.action.label')}
                         size="small"
                         type="secondary"
                       />
@@ -412,10 +408,10 @@ export function MobileOptions({ onClose }: { onClose: () => void }) {
               textAlign="center"
             >
               <Text color="modalText" size="16" weight="bold">
-                {i18n.t('get.looking_for.title')}
+                {t('get.looking_for.title')}
               </Text>
               <Text color="modalTextSecondary" size="16">
-                {i18n.t('get.looking_for.mobile.description')}
+                {t('get.looking_for.mobile.description')}
               </Text>
             </Box>
           </Box>
