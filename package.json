@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prepare": "husky",
     "dev": "pnpm --recursive --parallel --filter @rainbow-me/rainbow* --filter example dev",
     "dev:lib": "pnpm --parallel --filter @rainbow-me/rainbow* dev",
     "dev:example": "pnpm dev:lib & pnpm --filter example dev",
@@ -83,29 +82,7 @@
     "elliptic": "6.6.1"
   },
   "packageManager": "pnpm@10.24.0",
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "@biomejs/biome",
-      "@tailwindcss/oxide",
-      "@vercel/speed-insights",
-      "bufferutil",
-      "contentlayer2",
-      "core-js",
-      "core-js-pure",
-      "keccak",
-      "msw",
-      "protobufjs",
-      "sharp",
-      "utf-8-validate"
-    ],
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ],
-    "overrides": {
-      "@remix-run/dev>esbuild": "0.25.5"
-    }
-  },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   }
 }
