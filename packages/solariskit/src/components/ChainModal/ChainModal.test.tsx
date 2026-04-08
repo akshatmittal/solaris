@@ -3,9 +3,10 @@ import React, { Fragment } from "react";
 import user from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { useConnect } from "wagmi";
-import { type Chain, arbitrum, mainnet, optimism } from "wagmi/chains";
+import { type Chain, arbitrum, base, mainnet, optimism, polygon, sepolia } from "wagmi/chains";
 
 import { renderWithProviders } from "../../../test/";
+import type { RainbowKitProviderProps } from "../RainbowKitProvider/RainbowKitProvider";
 import { ChainModal } from "./ChainModal";
 
 const ChainModalWithConnectButton = ({ onClose }: { onClose?: () => void }) => {
@@ -30,9 +31,16 @@ const ChainModalWithConnectButton = ({ onClose }: { onClose?: () => void }) => {
 };
 
 describe("<ChainModal />", () => {
-  const renderChainModalWithConnectedWallet = async (chains?: readonly [Chain, ...Chain[]], onClose?: () => void) => {
+  const searchableChains = [mainnet, arbitrum, optimism, base, polygon, sepolia] as const;
+
+  const renderChainModalWithConnectedWallet = async (
+    chains?: readonly [Chain, ...Chain[]],
+    onClose?: () => void,
+    props?: Omit<RainbowKitProviderProps, "children">,
+  ) => {
     const modal = renderWithProviders(<ChainModalWithConnectButton onClose={onClose} />, {
       chains,
+      props,
     });
 
     const connectButtonOption = await modal.findByTestId("rk-connect-btn");
@@ -63,8 +71,30 @@ describe("<ChainModal />", () => {
     expect(optimismOption).toBeInTheDocument();
   });
 
+  it("Hides search when there are 5 or fewer chains", async () => {
+    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism, base, polygon]);
+
+    expect(modal.queryByRole("searchbox", { name: "Search networks" })).not.toBeInTheDocument();
+  });
+
+  it("Shows search when chain count exceeds the configured threshold", async () => {
+    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism], undefined, {
+      chainSearchThreshold: 2,
+    });
+
+    expect(modal.getByRole("searchbox", { name: "Search networks" })).toBeInTheDocument();
+  });
+
+  it("Hides search when the configured threshold is Infinity", async () => {
+    const modal = await renderChainModalWithConnectedWallet(searchableChains, undefined, {
+      chainSearchThreshold: Infinity,
+    });
+
+    expect(modal.queryByRole("searchbox", { name: "Search networks" })).not.toBeInTheDocument();
+  });
+
   it("Filters chains by name", async () => {
-    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism]);
+    const modal = await renderChainModalWithConnectedWallet(searchableChains);
 
     const searchInput = await modal.findByRole("searchbox", { name: "Search networks" });
 
@@ -76,7 +106,7 @@ describe("<ChainModal />", () => {
   });
 
   it("Filters chains by id", async () => {
-    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism]);
+    const modal = await renderChainModalWithConnectedWallet(searchableChains);
 
     const searchInput = await modal.findByRole("searchbox", { name: "Search networks" });
 

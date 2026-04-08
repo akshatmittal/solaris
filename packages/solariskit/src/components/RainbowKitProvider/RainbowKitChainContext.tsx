@@ -14,18 +14,25 @@ export interface RainbowKitChain extends Chain {
 interface RainbowKitChainContextValue {
   chains: RainbowKitChain[];
   initialChainId?: number;
+  chainSearchThreshold: number;
 }
 
 const RainbowKitChainContext = createContext<RainbowKitChainContextValue>({
   chains: [],
+  chainSearchThreshold: 5,
 });
 
 interface RainbowKitChainProviderProps {
   initialChain?: Chain | number;
+  chainSearchThreshold?: number;
   children: ReactNode;
 }
 
-export function RainbowKitChainProvider({ children, initialChain }: RainbowKitChainProviderProps) {
+export function RainbowKitChainProvider({
+  chainSearchThreshold = 5,
+  children,
+  initialChain,
+}: RainbowKitChainProviderProps) {
   const { chains } = useConfig();
 
   return (
@@ -33,9 +40,10 @@ export function RainbowKitChainProvider({ children, initialChain }: RainbowKitCh
       value={useMemo(
         () => ({
           chains: provideRainbowKitChains(chains),
+          chainSearchThreshold,
           initialChainId: typeof initialChain === "number" ? initialChain : initialChain?.id,
         }),
-        [chains, initialChain],
+        [chainSearchThreshold, chains, initialChain],
       )}
     >
       {children}
@@ -44,6 +52,8 @@ export function RainbowKitChainProvider({ children, initialChain }: RainbowKitCh
 }
 
 export const useRainbowKitChains = () => useContext(RainbowKitChainContext).chains;
+
+export const useChainSearchThreshold = () => useContext(RainbowKitChainContext).chainSearchThreshold;
 
 export const useInitialChainId = () => useContext(RainbowKitChainContext).initialChainId;
 

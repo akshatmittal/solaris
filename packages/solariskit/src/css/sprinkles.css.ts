@@ -69,7 +69,6 @@ export type ThemeVars = typeof themeContractValues;
 
 export const themeVars = createGlobalThemeContract(themeContractValues, (_, path) => `rk-${path.join("-")}`);
 
-// biome-ignore format: design system keys
 const spacing = {
   "-1": "-1px",
   "0": "0",
@@ -94,7 +93,6 @@ const spacing = {
   "64": "64px",
 };
 
-// biome-ignore format: design system keys
 const dimensions = {
   "1": "1px",
   "2": "2px",
@@ -146,7 +144,6 @@ export type ResponsiveValue<Value extends string | number | boolean> = RequiredC
 export const mapResponsiveValue = createMapValueFn(responsiveProperties);
 export const normalizeResponsiveValue = createNormalizeValueFn(responsiveProperties);
 
-// biome-ignore format: design system keys
 const unresponsiveProperties = defineProperties({
   properties: {
     alignSelf: flexAlignment,

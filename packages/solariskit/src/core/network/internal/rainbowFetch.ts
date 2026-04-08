@@ -9,8 +9,7 @@ export interface RainbowFetchRequestOpts extends RequestInit {
  * rainbowFetch fetches data and handles response edge cases and error handling.
  */
 export async function rainbowFetch<TData>(url: RequestInfo, opts: RainbowFetchRequestOpts) {
-  // biome-ignore lint/style/noParameterAssign: ignore
-  opts = {
+  const requestOptions = {
     headers: {},
     method: "get",
     ...opts, // Any other fetch options
@@ -20,11 +19,11 @@ export async function rainbowFetch<TData>(url: RequestInfo, opts: RainbowFetchRe
   if (!url) throw new Error("rainbowFetch: Missing url argument");
 
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), opts.timeout);
+  const id = setTimeout(() => controller.abort(), requestOptions.timeout);
 
-  const { body, params, headers, ...otherOpts } = opts;
+  const { body, params, headers, ...otherOpts } = requestOptions;
 
-  const requestBody = body && typeof body === "object" ? JSON.stringify(opts.body) : opts.body;
+  const requestBody = body && typeof body === "object" ? JSON.stringify(body) : body;
 
   const response = await fetch(`${url}${createParams(params)}`, {
     ...otherOpts,

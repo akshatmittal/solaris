@@ -11,7 +11,7 @@ import { Dialog } from "../Dialog/Dialog";
 import { DialogContent } from "../Dialog/DialogContent";
 import { DisconnectSqIcon } from "../Icons/DisconnectSq";
 import { MenuButton } from "../MenuButton/MenuButton";
-import { useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
+import { useChainSearchThreshold, useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
 import { Text } from "../Text/Text";
 import Chain from "./Chain";
 import { DesktopScrollClassName, MobileScrollClassName, SearchInputClassName } from "./ChainModal.css";
@@ -48,9 +48,11 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
   const isCurrentChainSupported = chains.some((chain) => chain.id === chainId);
   const chainIconSize = mobile ? "36" : "28";
   const rainbowkitChains = useRainbowKitChains();
+  const chainSearchThreshold = useChainSearchThreshold();
+  const shouldShowSearch = rainbowkitChains.length > chainSearchThreshold;
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const filteredChains = rainbowkitChains.filter(({ id, name }) => {
-    if (!normalizedSearchQuery) {
+    if (!shouldShowSearch || !normalizedSearchQuery) {
       return true;
     }
 
@@ -119,20 +121,22 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
               </Text>
             </Box>
           )}
-          <Box>
-            <Box
-              as="input"
-              aria-label={t("chains.search.label")}
-              autoComplete="off"
-              className={SearchInputClassName}
-              inputMode="search"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
-              placeholder={t("chains.search.placeholder")}
-              type="search"
-              name="network-search"
-              value={searchQuery}
-            />
-          </Box>
+          {shouldShowSearch && (
+            <Box>
+              <Box
+                as="input"
+                aria-label={t("chains.search.label")}
+                autoComplete="off"
+                className={SearchInputClassName}
+                inputMode="search"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
+                placeholder={t("chains.search.placeholder")}
+                type="search"
+                name="network-search"
+                value={searchQuery}
+              />
+            </Box>
+          )}
           <Box
             className={mobile ? MobileScrollClassName : DesktopScrollClassName}
             display="flex"

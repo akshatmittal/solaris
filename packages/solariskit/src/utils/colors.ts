@@ -1,5 +1,6 @@
 export const convertHexToRGBA = (hexCode: string, opacity = 1): string => {
   let hex = hexCode.replace("#", "");
+  const normalizedOpacity = opacity > 1 && opacity <= 100 ? opacity / 100 : opacity;
 
   if (hex.length === 3) {
     hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
@@ -10,12 +11,7 @@ export const convertHexToRGBA = (hexCode: string, opacity = 1): string => {
   const b = Number.parseInt(hex.substring(4, 6), 16);
 
   /* Backward compatibility for whole number based opacity values. */
-  if (opacity > 1 && opacity <= 100) {
-    // biome-ignore lint/style/noParameterAssign: TODO
-    opacity = opacity / 100;
-  }
-
-  return `rgba(${r},${g},${b},${opacity})`;
+  return `rgba(${r},${g},${b},${normalizedOpacity})`;
 };
 
 export const getGradientRGBAs = (hexColor?: string): string[] | null => {

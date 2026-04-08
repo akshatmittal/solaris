@@ -14,6 +14,7 @@ const moveFocusWithin = (element: HTMLElement, position: "start" | "end") => {
 
 export function FocusTrap(props: JSX.IntrinsicElements["div"]) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const sentinelStyle = { border: 0, height: 0, opacity: 0, padding: 0, position: "fixed", width: 0 } as const;
 
   useEffect(() => {
     const previouslyActiveElement = document.activeElement;
@@ -36,10 +37,11 @@ export function FocusTrap(props: JSX.IntrinsicElements["div"]) {
 
   return (
     <>
-      <div
+      <button
+        aria-hidden="true"
         onFocus={useCallback(() => contentRef.current && moveFocusWithin(contentRef.current, "end"), [])}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: incorrect
-        tabIndex={0}
+        style={sentinelStyle}
+        type="button"
       />
       <div
         ref={contentRef}
@@ -47,10 +49,11 @@ export function FocusTrap(props: JSX.IntrinsicElements["div"]) {
         tabIndex={-1}
         {...props}
       />
-      <div
+      <button
+        aria-hidden="true"
         onFocus={useCallback(() => contentRef.current && moveFocusWithin(contentRef.current, "start"), [])}
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: incorrect
-        tabIndex={0}
+        style={sentinelStyle}
+        type="button"
       />
     </>
   );
