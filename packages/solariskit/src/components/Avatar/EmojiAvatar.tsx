@@ -4,7 +4,7 @@ import type { AvatarComponent } from "../RainbowKitProvider/AvatarContext";
 
 import { Box } from "../Box/Box";
 import { SpinnerIcon } from "../Icons/Spinner";
-import { emojiAvatarForAddress } from "./emojiAvatarForAddress";
+import { polyconDataUri } from "./polyconDataUri";
 
 export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   const [loaded, setLoaded] = useState(false);
@@ -16,12 +16,12 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
     }
   }, [ensImage]);
 
-  const { color: backgroundColor, emoji } = useMemo(() => emojiAvatarForAddress(address), [address]);
+  const polyconImage = useMemo(() => polyconDataUri(address, size), [address, size]);
+
   return ensImage ? (
     loaded ? (
       <Box
         backgroundSize="cover"
-        borderRadius="full"
         position="absolute"
         style={{
           backgroundImage: `url(${ensImage})`,
@@ -34,7 +34,6 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
       <Box
         alignItems="center"
         backgroundSize="cover"
-        borderRadius="full"
         color="modalText"
         display="flex"
         justifyContent="center"
@@ -49,17 +48,15 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
     )
   ) : (
     <Box
-      alignItems="center"
-      display="flex"
-      justifyContent="center"
+      backgroundSize="cover"
       overflow="hidden"
+      position="absolute"
       style={{
-        ...(!ensImage && { backgroundColor }),
+        backgroundImage: `url(${polyconImage})`,
+        backgroundPosition: "center",
         height: size,
         width: size,
       }}
-    >
-      {emoji}
-    </Box>
+    />
   );
 };
