@@ -7,8 +7,14 @@
     "outDir": "dist",
     "preserveSymlinks": false,
     "rootDir": "src",
-    "target": "es2024"
+    "types": ["node"]
   },
-  "exclude": ["dist", "node_modules", "src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "test/**/*"
+  ],
   "include": ["src"]
 }
