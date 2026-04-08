@@ -45,7 +45,6 @@
   "dependencies": {
     "@base-org/account": "^2.5.3",
     "@coinbase/wallet-sdk": "^4.3.7",
-    "@metamask/connect-evm": "^0.9.1",
     "@safe-global/safe-apps-provider": "^0.18.6",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@vanilla-extract/css": "1.18.0",

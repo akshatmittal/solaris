@@ -22,7 +22,7 @@ describe("<WalletButton />", () => {
   const getWalletButtonLabel = async (connectorId?: string) => {
     const wallets = [
       { id: "rainbow", name: "Rainbow" },
-      { id: "metaMask", name: "MetaMask" },
+      { id: "metaMask", name: "MetaMask Mobile" },
       { id: "coinbase", name: "Coinbase Wallet" },
     ].map(({ id, name }) => mockWallet(id, name));
 
@@ -46,9 +46,9 @@ describe("<WalletButton />", () => {
     expect(label).toBe("Rainbow");
   });
 
-  it("should display 'MetaMask' when `wallet` prop is 'metaMask'", async () => {
+  it("should display 'MetaMask Mobile' when `wallet` prop is 'metaMask'", async () => {
     const label = await getWalletButtonLabel("metaMask");
-    expect(label).toBe("MetaMask");
+    expect(label).toBe("MetaMask Mobile");
   });
 
   it("should display 'Coinbase Wallet' when `wallet` prop is 'coinbase'", async () => {
