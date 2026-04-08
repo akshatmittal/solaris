@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 import { useConfig } from "wagmi";
@@ -14,7 +14,7 @@ import { MenuButton } from "../MenuButton/MenuButton";
 import { useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
 import { Text } from "../Text/Text";
 import Chain from "./Chain";
-import { DesktopScrollClassName, MobileScrollClassName } from "./ChainModal.css";
+import { DesktopScrollClassName, MobileScrollClassName, SearchInputClassName } from "./ChainModal.css";
 
 export interface ChainModalProps {
   open: boolean;
@@ -25,6 +25,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
   const { chainId } = useAccount();
   const { chains } = useConfig();
   const [pendingChainId, setPendingChainId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { switchChain } = useSwitchChain({
     mutation: {
       onMutate: ({ chainId: _chainId }) => {
@@ -47,6 +48,20 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
   const isCurrentChainSupported = chains.some((chain) => chain.id === chainId);
   const chainIconSize = mobile ? "36" : "28";
   const rainbowkitChains = useRainbowKitChains();
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredChains = rainbowkitChains.filter(({ id, name }) => {
+    if (!normalizedSearchQuery) {
+      return true;
+    }
+
+    return name?.toLowerCase().includes(normalizedSearchQuery) === true || String(id).includes(normalizedSearchQuery);
+  });
+
+  useEffect(() => {
+    if (!open) {
+      setSearchQuery("");
+    }
+  }, [open]);
 
   if (!chainId) {
     return null;
@@ -104,6 +119,20 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
               </Text>
             </Box>
           )}
+          <Box>
+            <Box
+              as="input"
+              aria-label={t("chains.search.label")}
+              autoComplete="off"
+              className={SearchInputClassName}
+              inputMode="search"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
+              placeholder={t("chains.search.placeholder")}
+              type="search"
+              name="network-search"
+              value={searchQuery}
+            />
+          </Box>
           <Box
             className={mobile ? MobileScrollClassName : DesktopScrollClassName}
             display="flex"
@@ -112,7 +141,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
             padding="2"
             paddingBottom="16"
           >
-            {rainbowkitChains.map(({ iconBackground, iconUrl, id, name }, idx) => {
+            {filteredChains.map(({ iconBackground, iconUrl, id, name }, idx) => {
               return (
                 <Chain
                   key={id}
@@ -124,10 +153,25 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
                   src={iconUrl}
                   name={name}
                   iconBackground={iconBackground}
-                  idx={idx}
+                  showDivider={idx < filteredChains.length - 1}
                 />
               );
             })}
+            {filteredChains.length === 0 && (
+              <Box
+                marginX="8"
+                paddingY="12"
+                textAlign={mobile ? "center" : "left"}
+              >
+                <Text
+                  color="modalTextSecondary"
+                  size="14"
+                  weight="medium"
+                >
+                  {t("chains.search.no_results")}
+                </Text>
+              </Box>
+            )}
             {!isCurrentChainSupported && (
               <>
                 <Box

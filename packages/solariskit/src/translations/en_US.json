@@ -199,7 +199,12 @@
     "switching_not_supported": "Your wallet does not support switching networks from %{appName}. Try switching networks from within your wallet instead.",
     "switching_not_supported_fallback": "Your wallet does not support switching networks from this app. Try switching networks from within your wallet instead.",
     "disconnect": "Disconnect",
-    "connected": "Connected"
+    "connected": "Connected",
+    "search": {
+      "label": "Search networks",
+      "placeholder": "Search",
+      "no_results": "No networks match your search."
+    }
   },
 
   "profile": {

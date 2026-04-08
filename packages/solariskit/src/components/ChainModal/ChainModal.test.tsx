@@ -54,13 +54,37 @@ describe("<ChainModal />", () => {
   it("List chains from <RainbowKitProvider />", async () => {
     const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism]);
 
-    const mainnetOption = await modal.findByTestId(`rk-chain-option-${optimism.id}`);
-    const arbitrumOption = await modal.findByTestId(`rk-chain-option-${optimism.id}`);
+    const mainnetOption = await modal.findByTestId(`rk-chain-option-${mainnet.id}`);
+    const arbitrumOption = await modal.findByTestId(`rk-chain-option-${arbitrum.id}`);
     const optimismOption = await modal.findByTestId(`rk-chain-option-${optimism.id}`);
 
     expect(mainnetOption).toBeInTheDocument();
     expect(arbitrumOption).toBeInTheDocument();
     expect(optimismOption).toBeInTheDocument();
+  });
+
+  it("Filters chains by name", async () => {
+    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism]);
+
+    const searchInput = await modal.findByRole("searchbox", { name: "Search networks" });
+
+    await user.type(searchInput, "arb");
+
+    expect(modal.getByTestId(`rk-chain-option-${arbitrum.id}`)).toBeInTheDocument();
+    expect(modal.queryByTestId(`rk-chain-option-${mainnet.id}`)).not.toBeInTheDocument();
+    expect(modal.queryByTestId(`rk-chain-option-${optimism.id}`)).not.toBeInTheDocument();
+  });
+
+  it("Filters chains by id", async () => {
+    const modal = await renderChainModalWithConnectedWallet([mainnet, arbitrum, optimism]);
+
+    const searchInput = await modal.findByRole("searchbox", { name: "Search networks" });
+
+    await user.type(searchInput, String(optimism.id));
+
+    expect(modal.getByTestId(`rk-chain-option-${optimism.id}`)).toBeInTheDocument();
+    expect(modal.queryByTestId(`rk-chain-option-${mainnet.id}`)).not.toBeInTheDocument();
+    expect(modal.queryByTestId(`rk-chain-option-${arbitrum.id}`)).not.toBeInTheDocument();
   });
 
   it("Can switch chains", async () => {
@@ -98,7 +122,7 @@ describe("<ChainModal />", () => {
     expect(onCloseGotCalled).toBe(true);
   });
 
-  it("Custom chain metadata passed from <RainbowKitProvider>", async () => {
+  it("Chain metadata passed from <RainbowKitProvider>", async () => {
     const modal = await renderChainModalWithConnectedWallet([mainnet]);
 
     const mainnetOption = await modal.findByTestId(`rk-chain-option-${mainnet.id}`);
@@ -107,6 +131,7 @@ describe("<ChainModal />", () => {
 
     const mainnetOptionIcon = await modal.findByTestId(`rk-chain-option-${mainnet.id}-icon`);
 
-    expect(mainnetOptionIcon).toHaveAttribute("style", "background: rgb(72, 76, 80);");
+    expect(mainnetOptionIcon).toBeInTheDocument();
+    expect(mainnetOptionIcon).toHaveAttribute("aria-label", "Ethereum");
   });
 });

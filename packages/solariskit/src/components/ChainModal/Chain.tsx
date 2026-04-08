@@ -9,7 +9,6 @@ import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Box, type BoxProps } from "../Box/Box";
 import { MenuButton } from "../MenuButton/MenuButton";
-import { useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
 import { Text } from "../Text/Text";
 
 interface ChainProps {
@@ -21,7 +20,7 @@ interface ChainProps {
   isLoading: boolean;
   iconBackground: string | undefined;
   src: string | AsyncImageSrc | undefined | null;
-  idx: number;
+  showDivider: boolean;
 }
 
 const Chain = ({
@@ -33,10 +32,9 @@ const Chain = ({
   src,
   name,
   iconBackground,
-  idx,
+  showDivider,
 }: ChainProps) => {
   const mobile = isMobile();
-  const rainbowkitChains = useRainbowKitChains();
 
   const isCurrentChain = currentChainId === chainId;
 
@@ -135,7 +133,7 @@ const Chain = ({
           </Box>
         </Box>
       </MenuButton>
-      {mobile && idx < rainbowkitChains.length - 1 && (
+      {mobile && showDivider && (
         <Box
           background="generalBorderDim"
           height="1"
