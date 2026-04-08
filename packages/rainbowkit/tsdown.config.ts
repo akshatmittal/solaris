@@ -1,14 +1,12 @@
-import autoprefixer from "autoprefixer";
-import postcss from "postcss";
-import prefixSelector from "postcss-prefix-selector";
 import replace from "@rollup/plugin-replace";
 import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin";
+import autoprefixer from "autoprefixer";
 import { readFileSync } from "node:fs";
+import postcss from "postcss";
+import prefixSelector from "postcss-prefix-selector";
 import { defineConfig } from "tsdown";
 
-const { version } = JSON.parse(
-  readFileSync(new URL("./package.json", import.meta.url), "utf8"),
-) as { version: string };
+const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string };
 
 const isCssMinified = process.env.MINIFY_CSS === "true";
 
@@ -17,20 +15,14 @@ function postProcessExtractedCss() {
     name: "post-process-extracted-css",
     async generateBundle(
       _options: unknown,
-      bundle: Record<
-        string,
-        { fileName?: string; type: string; source?: string | Uint8Array }
-      >,
+      bundle: Record<string, { fileName?: string; type: string; source?: string | Uint8Array }>,
     ) {
       for (const asset of Object.values(bundle)) {
         if (asset.type !== "asset" || typeof asset.source !== "string") {
           continue;
         }
 
-        const result = await postcss([
-          autoprefixer,
-          prefixSelector({ prefix: "[data-rk]" }),
-        ]).process(asset.source, {
+        const result = await postcss([autoprefixer, prefixSelector({ prefix: "[data-rk]" })]).process(asset.source, {
           from: undefined,
         });
 
@@ -78,5 +70,4 @@ export default defineConfig({
     }) as any,
     postProcessExtractedCss() as any,
   ],
-  target: "es2022",
 });

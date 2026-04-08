@@ -1,6 +1,11 @@
 {
   "folders": [
     {
+      "name": "solaris-example",
+      "path": "apps/example",
+    },
+    {
+      "name": "solaris-rainbowkit",
       "path": "packages/rainbowkit",
     },
     {
