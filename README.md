@@ -1,10 +1,10 @@
 # Solaris
 
 Solaris is a pared-down RainbowKit fork focused on the core
-`@rainbow-me/rainbowkit` package.
+`solariskit` package.
 
 This repo intentionally keeps a lean monorepo around the core
-`@rainbow-me/rainbowkit` package, with shared workspace tooling for builds,
+`solariskit` package, with shared workspace tooling for builds,
 linting, formatting, and releases.
 
 ## Development
@@ -20,7 +20,7 @@ pnpm lint
 
 ## Package
 
-The library source lives in `packages/rainbowkit`.
+The library source lives in `packages/solariskit`.
 
 ## License
 

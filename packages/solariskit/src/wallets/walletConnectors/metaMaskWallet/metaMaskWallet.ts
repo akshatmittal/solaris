@@ -170,7 +170,7 @@ export const metaMaskWallet: MetaMaskWallet = ({
           return createConnector((config) => {
             const metamaskConnector = metaMask({
               dappMetadata: {
-                connector: "rainbowkit",
+                connector: "solariskit",
                 name: walletConnectParameters?.metadata?.name,
                 iconUrl: walletConnectParameters?.metadata?.icons[0],
                 url: walletConnectParameters?.metadata?.url,
@@ -184,7 +184,7 @@ export const metaMaskWallet: MetaMaskWallet = ({
             /**
              * Override getChainId to avoid metamask error
              *
-             * @see https://github.com/rainbow-me/rainbowkit/blob/cdcaa25d66b522119852502f71c8efc02b1abdd9/packages/rainbowkit/src/wallets/useWalletConnectors.ts#L57
+             * @see https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/src/wallets/useWalletConnectors.ts#L57
              * And @see https://github.com/wevm/wagmi/blob/275cccb51437908a2d7d3dab0549c6050b6340d3/packages/connectors/src/metaMask.ts#L154
              */
             return {

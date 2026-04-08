@@ -39,7 +39,7 @@ describe("connectorsForWallets", () => {
         ],
         {
           projectId: exampleProjectId,
-          appName: "rainbowkit.com",
+          appName: "solariskit",
         },
       );
 
@@ -64,7 +64,7 @@ describe("connectorsForWallets", () => {
 
       const connectors = connectorsForWallets([{ groupName: "Test Group 1", wallets: [customWallet] }], {
         projectId: exampleProjectId,
-        appName: "rainbowkit.com",
+        appName: "solariskit",
       });
 
       expect(connectors.length).toBe(0);
@@ -85,7 +85,7 @@ describe("connectorsForWallets", () => {
           ],
           {
             projectId: exampleProjectId,
-            appName: "rainbowkit.com",
+            appName: "solariskit",
           },
         );
       }).toThrow("No projectId found. Every dApp must now provide a WalletConnect Cloud projectId");

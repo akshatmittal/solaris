@@ -6,7 +6,7 @@
   "scripts": {
     "build": "turbo build",
     "changeset": "changeset",
-    "clean": "turbo clean",
+    "clean": "turbo clean && rm -rf node_modules .turbo",
     "dev": "turbo dev",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",

@@ -32,7 +32,7 @@ export function renderWithProviders(
     chains: supportedChains,
     connectors: options?.mockWallets
       ? connectorsForWallets(options.mockWallets, {
-          appName: "rainbowkit.com",
+          appName: "solariskit",
           projectId: process.env.WALLETCONNECT_PROJECT_ID ?? "YOUR_PROJECT_ID",
         })
       : [

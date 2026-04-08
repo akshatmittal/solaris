@@ -1,6 +1,6 @@
 {
-  "name": "@rainbow-me/rainbowkit",
-  "version": "2.2.10",
+  "name": "solariskit",
+  "version": "1.0.0",
   "description": "The best way to connect a wallet",
   "keywords": [
     "blockchain",
@@ -14,8 +14,8 @@
   "author": "Rainbow",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rainbow-me/rainbowkit.git",
-    "directory": "packages/rainbowkit"
+    "url": "git+https://github.com/akshatmittal/solaris.git",
+    "directory": "packages/solariskit"
   },
   "files": [
     "dist"
@@ -34,7 +34,7 @@
   "scripts": {
     "build": "tsdown",
     "build:watch": "tsdown --watch",
-    "clean": "rm -rf .turbo dist",
+    "clean": "rm -rf .turbo dist node_modules",
     "dev": "pnpm run build:watch",
     "prepack": "MINIFY_CSS=true pnpm run build",
     "test": "vitest run --config vitest.config.ts",

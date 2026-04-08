@@ -5,8 +5,8 @@
       "path": "apps/example",
     },
     {
-      "name": "solaris-rainbowkit",
-      "path": "packages/rainbowkit",
+      "name": "solaris-kit",
+      "path": "packages/solariskit",
     },
     {
       "name": "workspace-root",
@@ -16,5 +16,6 @@
   "settings": {
     "js/ts.tsdk.path": "workspace-root/node_modules/typescript/lib",
     "editor.defaultFormatter": "oxc.oxc-vscode",
+    "cSpell.words": ["solariskit"],
   },
 }

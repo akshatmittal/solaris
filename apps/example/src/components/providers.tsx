@@ -1,26 +1,25 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type PropsWithChildren } from "react";
 
+import { RainbowKitProvider, darkTheme, getDefaultConfig } from "solariskit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RainbowKitProvider, darkTheme, getDefaultConfig } from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
+import "solariskit/styles.css";
 import { WagmiProvider } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
+import { base, mainnet } from "wagmi/chains";
 
-const walletConnectProjectId =
-  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "replace-with-your-walletconnect-project-id";
+const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "demo";
 
 const config = getDefaultConfig({
-  appDescription: "Local Next.js sandbox for the Solaris RainbowKit workspace package.",
+  appDescription: "",
   appName: "Solaris Example",
   appUrl: "http://localhost:3000",
-  chains: [mainnet, sepolia],
+  chains: [mainnet, base],
   projectId: walletConnectProjectId,
   ssr: true,
 });
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (

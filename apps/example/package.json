@@ -7,14 +7,15 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "typecheck": "pnpm exec tsc --noEmit"
+    "typecheck": "pnpm exec tsc --noEmit",
+    "clean": "rm -rf .turbo dist node_modules .next"
   },
   "dependencies": {
-    "@rainbow-me/rainbowkit": "workspace:*",
     "@tanstack/react-query": "catalog:",
     "next": "^16.2.2",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "solariskit": "workspace:*",
     "viem": "catalog:",
     "wagmi": "catalog:"
   },

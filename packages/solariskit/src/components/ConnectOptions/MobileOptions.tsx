@@ -74,7 +74,7 @@ export function WalletButton({
       }
 
       if (mobileUri.startsWith("http")) {
-        // Workaround for https://github.com/rainbow-me/rainbowkit/issues/524.
+        // Workaround for the upstream RainbowKit issue #524.
         // Using 'window.open' causes issues on iOS in non-Safari browsers and
         // WebViews where a blank tab is left behind after connecting.
         // This is especially bad in some WebView scenarios (e.g. following a
