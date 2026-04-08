@@ -29,11 +29,9 @@ export function ConnectDetail({
   reconnect: (wallet: WalletConnector) => void;
   wallet: WalletConnector;
 }) {
-  const { downloadUrls, iconBackground, iconUrl, name, qrCode, ready, showWalletConnectModal, getDesktopUri } = wallet;
+  const { iconBackground, iconUrl, name, qrCode, ready, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
-
-  const hasExtension = !!wallet.extensionDownloadUrl;
   const hasQrCode = qrCode && qrCodeUri;
 
   const onDesktopUri = async () => {
@@ -130,27 +128,10 @@ export function ConnectDetail({
                 size="18"
                 weight="bold"
               >
-                {ready
-                  ? t("connect.status.opening", {
-                      wallet: name,
-                    })
-                  : hasExtension
-                    ? t("connect.status.not_installed", {
-                        wallet: name,
-                      })
-                    : t("connect.status.not_available", {
-                        wallet: name,
-                      })}
+                {t("connect.status.opening", {
+                  wallet: name,
+                })}
               </Text>
-              {!ready && hasExtension ? (
-                <Box paddingTop="20">
-                  <ActionButton
-                    href={GET_WALLET_URL}
-                    label={t("connect.secondary_action.install.label")}
-                    type="secondary"
-                  />
-                </Box>
-              ) : null}
               {ready && !hasQrCode && (
                 <>
                   <Box

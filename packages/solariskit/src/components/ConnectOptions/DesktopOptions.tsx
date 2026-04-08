@@ -18,9 +18,7 @@ import { AppContext } from "../RainbowKitProvider/AppContext";
 import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { Text } from "../Text/Text";
-import {
-  ConnectDetail,
-} from "./ConnectDetails";
+import { ConnectDetail } from "./ConnectDetails";
 import { GET_WALLET_URL } from "./constants";
 import { ScrollClassName, sidebar, sidebarCompactMode } from "./DesktopOptions.css";
 
@@ -54,7 +52,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const mergeEIP6963WithRkConnectors = !connector;
 
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
-    .filter((wallet) => wallet.ready || !!wallet.extensionDownloadUrl)
+    .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
 
@@ -151,9 +149,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   switch (walletStep) {
     case WalletStep.None:
       walletContent = (
-        <ConnectModalIntro
-          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
-        />
+        <ConnectModalIntro getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")} />
       );
       break;
     case WalletStep.LearnCompact:

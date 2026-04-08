@@ -8,8 +8,6 @@ import { defineConfig } from "tsdown";
 
 const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string };
 
-const isCssMinified = process.env.MINIFY_CSS === "true";
-
 function postProcessExtractedCss() {
   return {
     name: "post-process-extracted-css",
@@ -52,6 +50,7 @@ export default defineConfig({
     ".png": "dataurl",
     ".svg": "dataurl",
   },
+  minify: false,
   outDir: "dist",
   platform: "browser",
   plugins: [
@@ -61,13 +60,13 @@ export default defineConfig({
       values: {
         '"__buildVersion"': JSON.stringify(version),
       },
-    }) as any,
+    }),
     vanillaExtractPlugin({
       extract: {
         name: "index.css",
       },
-      identifiers: isCssMinified ? "short" : "debug",
-    }) as any,
-    postProcessExtractedCss() as any,
+      identifiers: "short",
+    }),
+    postProcessExtractedCss(),
   ],
 });

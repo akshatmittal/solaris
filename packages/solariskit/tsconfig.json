@@ -6,15 +6,8 @@
     "noEmit": false,
     "outDir": "dist",
     "preserveSymlinks": false,
-    "rootDir": "src",
-    "types": ["node"]
+    "rootDir": "src"
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "test/**/*"
-  ],
+  "exclude": ["dist", "node_modules", "src/**/*.test.ts", "src/**/*.test.tsx", "test/**/*"],
   "include": ["src"]
 }

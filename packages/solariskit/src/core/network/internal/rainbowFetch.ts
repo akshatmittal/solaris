@@ -113,7 +113,7 @@ export class RainbowFetchClient {
   get<TData>(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       method: "get",
     });
   }
@@ -124,7 +124,7 @@ export class RainbowFetchClient {
   delete(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       method: "delete",
     });
   }
@@ -135,7 +135,7 @@ export class RainbowFetchClient {
   head(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       method: "head",
     });
   }
@@ -146,7 +146,7 @@ export class RainbowFetchClient {
   options(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       method: "options",
     });
   }
@@ -157,7 +157,7 @@ export class RainbowFetchClient {
   post<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       body,
       method: "post",
     });
@@ -169,7 +169,7 @@ export class RainbowFetchClient {
   put<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       body,
       method: "put",
     });
@@ -181,7 +181,7 @@ export class RainbowFetchClient {
   patch<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
-      ...(opts || {}),
+      ...opts,
       body,
       method: "patch",
     });

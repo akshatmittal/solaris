@@ -5,8 +5,9 @@ import { describe, expect, it } from "vitest";
 import { useConnect } from "wagmi";
 import { type Chain, arbitrum, base, mainnet, optimism, polygon, sepolia } from "wagmi/chains";
 
-import { renderWithProviders } from "../../../test/";
 import type { RainbowKitProviderProps } from "../RainbowKitProvider/RainbowKitProvider";
+
+import { renderWithProviders } from "../../../test/";
 import { ChainModal } from "./ChainModal";
 
 const ChainModalWithConnectButton = ({ onClose }: { onClose?: () => void }) => {

@@ -6,7 +6,6 @@ import { useWalletConnectOpenState } from "../components/RainbowKitProvider/Moda
 import { indexBy } from "../utils/indexBy";
 import { isNotNullish } from "../utils/isNotNullish";
 import { useInitialChainId, useRainbowKitChains } from "./../components/RainbowKitProvider/RainbowKitChainContext";
-import { getDesktopDownloadUrl, getExtensionDownloadUrl, getMobileDownloadUrl } from "./downloadUrls";
 import {
   connectorsWithRecentWallets,
   isEIP6963Connector,
@@ -21,9 +20,6 @@ export interface WalletConnector extends WalletInstance {
   connect: WalletInstance["connect"];
   showWalletConnectModal?: () => void;
   recent: boolean;
-  mobileDownloadUrl?: string;
-  extensionDownloadUrl?: string;
-  desktopDownloadUrl?: string;
   getDesktopUri?: () => Promise<string>;
   getQrCodeUri?: () => Promise<string>;
   getMobileUri?: () => Promise<string>;
@@ -43,7 +39,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     // rkDetails is optional it does not exist in eip6963 connectors.
     // We only inject `rkDetails` in `connectorsForWallets` when we
     // want to have additional information in the connector.
-    ...(connector.rkDetails || {}),
+    ...connector.rkDetails,
   })) as WalletInstance[];
 
   async function connectWallet(
@@ -176,10 +172,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       ...wallet,
       ready: wallet.installed ?? true,
       connect: connectWallet.bind(null, wallet) as WalletInstance["connect"],
-      desktopDownloadUrl: getDesktopDownloadUrl(wallet),
-      extensionDownloadUrl: getExtensionDownloadUrl(wallet),
       groupName: wallet.groupName,
-      mobileDownloadUrl: getMobileDownloadUrl(wallet),
       getQrCodeUri: wallet.qrCode?.getUri ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri!) : undefined,
       getDesktopUri: wallet.desktop?.getUri ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!) : undefined,
       getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
