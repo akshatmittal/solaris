@@ -1,4 +1,4 @@
-import type { Address } from "viem";
+import { type Address, formatUnits } from "viem";
 
 import { useBalance } from "wagmi";
 
@@ -13,9 +13,16 @@ interface UseProfileParameters {
 export function useProfile({ address, includeBalance }: UseProfileParameters) {
   const ensName = useMainnetEnsName(address);
   const ensAvatar = useMainnetEnsAvatar(ensName);
-  const { data: balance } = useBalance({
+  const { data: rawBalance } = useBalance({
     address: includeBalance ? address : undefined,
   });
+
+  const balance = rawBalance
+    ? {
+        ...rawBalance,
+        formatted: formatUnits(rawBalance.value, rawBalance.decimals),
+      }
+    : undefined;
 
   return { ensName, ensAvatar, balance };
 }

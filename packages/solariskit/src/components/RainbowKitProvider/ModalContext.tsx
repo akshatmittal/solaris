@@ -1,6 +1,6 @@
 import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { useAccount, useAccountEffect, useConfig } from "wagmi";
+import { useConfig, useConnection, useConnectionEffect } from "wagmi";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { AccountModal } from "../AccountModal/AccountModal";
@@ -60,7 +60,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
 
   const connectionStatus = useConnectionStatus();
 
-  const { chainId } = useAccount();
+  const { chainId } = useConnection();
   const { chains } = useConfig();
 
   const isCurrentChainSupported = chains.some((chain) => chain.id === chainId);
@@ -82,7 +82,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
 
   const isUnauthenticated = useAuthenticationStatus() === "unauthenticated";
 
-  useAccountEffect({
+  useConnectionEffect({
     onConnect: () => closeModals({ keepConnectModalOpen: isUnauthenticated }),
     onDisconnect: () => closeModals(),
   });

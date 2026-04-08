@@ -37,7 +37,7 @@ export const baseAccount: BaseAccount = ({ appName, appIcon }: BaseAccountOption
         ...optionalConfig,
         preference: {
           telemetry: false,
-          ...(preference || {}),
+          ...preference,
         },
       });
 

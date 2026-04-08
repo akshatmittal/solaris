@@ -4,9 +4,9 @@ import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, darkTheme, getDefaultConfig } from "solariskit";
-import "solariskit/styles.css";
 import { http, WagmiProvider } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
+import "solariskit/styles.css";
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "demo";
 

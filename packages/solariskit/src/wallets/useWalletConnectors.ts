@@ -1,4 +1,4 @@
-import { type Connector, useConnect } from "wagmi";
+import { type Connector, useConnect, useConnectors } from "wagmi";
 
 import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
@@ -32,7 +32,8 @@ export interface WalletConnector extends WalletInstance {
 export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): WalletConnector[] {
   const rainbowKitChains = useRainbowKitChains();
   const intialChainId = useInitialChainId();
-  const { connectAsync, connectors: defaultConnectors_untyped } = useConnect();
+  const { connectAsync } = useConnect();
+  const defaultConnectors_untyped = useConnectors();
   const defaultCreatedConnectors = defaultConnectors_untyped as WagmiConnectorInstance[];
 
   const { setIsWalletConnectModalOpen } = useWalletConnectOpenState();
@@ -99,13 +100,15 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       return provider.qrUrl;
     }
 
-    return new Promise<string>((resolve) =>
-      // Wagmi v2 doesn't have a return type for provider yet
-      // @ts-expect-error
-      provider.once("display_uri", (uri) => {
-        resolve(uriConverter(uri));
-      }),
-    );
+    return new Promise<string>((resolve) => {
+      const onMessage = ({ data, type }: { data?: unknown; type: string }) => {
+        if (type !== "display_uri" || typeof data !== "string") return;
+        connector.emitter.off("message", onMessage);
+        resolve(uriConverter(data));
+      };
+
+      connector.emitter.on("message", onMessage);
+    });
   };
 
   const walletConnectModalConnector = defaultConnectors.find(

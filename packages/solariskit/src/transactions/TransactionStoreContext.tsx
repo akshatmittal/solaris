@@ -2,7 +2,7 @@ import React from "react";
 
 import type { PublicClient, TransactionReceipt } from "viem";
 
-import { useAccount, useBalance, usePublicClient } from "wagmi";
+import { useBalance, useConnection, usePublicClient } from "wagmi";
 
 import { useChainId } from "../hooks/useChainId";
 import { type TransactionStore, createTransactionStore } from "./transactionStore";
@@ -17,7 +17,7 @@ const TransactionStoreContext = React.createContext<TransactionStore | null>(nul
 
 export function TransactionStoreProvider({ children }: { children: React.ReactNode }) {
   const provider = usePublicClient() as PublicClient;
-  const { address } = useAccount();
+  const { address } = useConnection();
   const chainId = useChainId();
   const { refetch } = useBalance({
     address,

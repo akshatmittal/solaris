@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 
 import { UserRejectedRequestError } from "viem";
-import { useAccount, useSignMessage } from "wagmi";
+import { useConnection, useSignMessage } from "wagmi";
 
 import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
@@ -49,7 +49,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
   }, [getNonce]);
 
   const mobile = isMobile();
-  const { address, chain: activeChain } = useAccount();
+  const { address, chain: activeChain } = useConnection();
   const { signMessageAsync } = useSignMessage();
 
   const signIn = async () => {

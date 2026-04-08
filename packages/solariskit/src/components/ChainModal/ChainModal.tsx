@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
+import { useConnection, useDisconnect, useSwitchChain } from "wagmi";
 import { useConfig } from "wagmi";
 
 import { t } from "../../translations";
@@ -22,7 +22,7 @@ export interface ChainModalProps {
 }
 
 export function ChainModal({ onClose, open }: ChainModalProps) {
-  const { chainId } = useAccount();
+  const { chainId } = useConnection();
   const { chains } = useConfig();
   const [pendingChainId, setPendingChainId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");

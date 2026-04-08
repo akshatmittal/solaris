@@ -1,6 +1,6 @@
 import React, { type ReactNode, useContext } from "react";
 
-import { useAccount, useConfig } from "wagmi";
+import { useConnection, useConfig } from "wagmi";
 
 import { normalizeResponsiveValue } from "../../css/sprinkles.css";
 import { useIsMounted } from "../../hooks/useIsMounted";
@@ -53,9 +53,9 @@ export interface ConnectButtonRendererProps {
 
 export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) {
   const isMounted = useIsMounted();
-  const { address } = useAccount();
+  const { address } = useConnection();
 
-  const { chainId } = useAccount();
+  const { chainId } = useConnection();
   const { chains: wagmiChains } = useConfig();
   const isCurrentChainSupported = wagmiChains.some((chain) => chain.id === chainId);
 

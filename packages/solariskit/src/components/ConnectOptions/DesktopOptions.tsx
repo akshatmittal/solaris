@@ -113,7 +113,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     // green badge on our custom WalletButton API
     addLatestWalletId(wallet.id);
 
-    // This ensures that we listen to the provider.once("display_uri")
+    // This ensures that we listen to the connector "message" event
     // before connecting to the wallet
     if (wallet.ready) {
       onQrCode(wallet);

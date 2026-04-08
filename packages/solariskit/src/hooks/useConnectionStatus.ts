@@ -1,4 +1,4 @@
-import { useAccount } from "wagmi";
+import { useConnection } from "wagmi";
 
 import { useAuthenticationStatus } from "../components/RainbowKitProvider/AuthenticationContext";
 
@@ -6,7 +6,7 @@ export type ConnectionStatus = "disconnected" | "loading" | "unauthenticated" | 
 
 export function useConnectionStatus(): ConnectionStatus {
   const authenticationStatus = useAuthenticationStatus();
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
 
   if (!isConnected) {
     return "disconnected";
