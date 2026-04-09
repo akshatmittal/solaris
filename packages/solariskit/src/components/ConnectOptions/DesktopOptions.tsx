@@ -35,12 +35,14 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const [qrCodeUri, setQrCodeUri] = useState<string>();
   const hasQrCode = !!selectedWallet?.qrCode && qrCodeUri;
   const [connectionError, setConnectionError] = useState(false);
+  const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
   const modalSize = useContext(ModalSizeContext);
   const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
   const { disclaimer: Disclaimer } = useContext(AppContext);
   const safari = isSafari();
 
   const initialized = useRef(false);
+  const selectWalletRef = useRef<((wallet: WalletConnector) => Promise<void>) | null>(null);
 
   const { connector } = useContext(WalletButtonContext);
 
@@ -57,16 +59,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
 
   const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
-
-  // If a user hasn't installed the extension we will get the
-  // qr code with additional steps on how to get the wallet
-  useEffect(() => {
-    if (connector && !initialized.current) {
-      changeWalletStep(WalletStep.Connect);
-      selectWallet(connector);
-      initialized.current = true;
-    }
-  }, [connector]);
 
   const connectToWallet = (wallet: WalletConnector) => {
     setConnectionError(false);
@@ -126,6 +118,17 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
       return;
     }
   };
+  selectWalletRef.current = selectWallet;
+
+  // If a user hasn't installed the extension we will get the
+  // qr code with additional steps on how to get the wallet
+  useEffect(() => {
+    if (connector && !initialized.current) {
+      setWalletStep(WalletStep.Connect);
+      selectWalletRef.current?.(connector);
+      initialized.current = true;
+    }
+  }, [connector]);
 
   const clearSelectedWallet = () => {
     setSelectedOptionId(undefined);
@@ -135,8 +138,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const changeWalletStep = (newWalletStep: WalletStep) => {
     setWalletStep(newWalletStep);
   };
-  const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
-
   let walletContent = null;
   let headerLabel = null;
   let headerBackButtonLink: WalletStep | null = null;
@@ -390,7 +391,9 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
                     })}
                     color="accentColor"
                     onClick={() => {
-                      headerBackButtonLink && changeWalletStep(headerBackButtonLink);
+                      if (headerBackButtonLink) {
+                        changeWalletStep(headerBackButtonLink);
+                      }
                       headerBackButtonCallback?.();
                     }}
                     paddingX="8"
