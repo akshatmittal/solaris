@@ -35,6 +35,7 @@ function postProcessExtractedCss() {
 }
 
 export default defineConfig({
+  target: "es2024",
   banner: {
     js: '"use client";',
   },
