@@ -44,20 +44,18 @@
     "typegen:watch": "tsc --emitDeclarationOnly --watch"
   },
   "dependencies": {
-    "@base-org/account": "^2.5.6",
-    "@coinbase/wallet-sdk": "^4.3.7",
-    "@safe-global/safe-apps-provider": "^0.18.6",
-    "@safe-global/safe-apps-sdk": "^9.1.0",
     "@vanilla-extract/css": "1.20.1",
     "@vanilla-extract/dynamic": "2.1.5",
     "@vanilla-extract/sprinkles": "1.6.5",
-    "@walletconnect/ethereum-provider": "^2.23.9",
     "clsx": "2.1.1",
     "cuer": "0.0.3",
     "react-remove-scroll": "2.7.2"
   },
   "devDependencies": {
+    "@base-org/account": "^2.5.6",
     "@rollup/plugin-replace": "^6.0.3",
+    "@safe-global/safe-apps-provider": "^0.18.6",
+    "@safe-global/safe-apps-sdk": "^9.1.0",
     "@tanstack/react-query": "catalog:",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -71,6 +69,7 @@
     "@vanilla-extract/private": "1.0.9",
     "@vanilla-extract/rollup-plugin": "^1.5.3",
     "@vanilla-extract/vite-plugin": "catalog:",
+    "@walletconnect/ethereum-provider": "^2.23.9",
     "@workspace/typescript-config": "workspace:*",
     "autoprefixer": "catalog:",
     "jsdom": "catalog:",
@@ -88,13 +87,31 @@
     "wagmi": "catalog:"
   },
   "peerDependencies": {
+    "@base-org/account": "^2.5.1",
+    "@safe-global/safe-apps-provider": "^0.18.6",
+    "@safe-global/safe-apps-sdk": "^9.1.0",
     "@tanstack/react-query": ">=5.0.0",
-    "react": ">=18",
-    "react-dom": ">=18",
-    "viem": "2.x",
+    "@walletconnect/ethereum-provider": "^2.21.1",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19",
+    "viem": "^2.0.0",
     "wagmi": "^3.0.0"
   },
+  "peerDependenciesMeta": {
+    "@base-org/account": {
+      "optional": true
+    },
+    "@safe-global/safe-apps-provider": {
+      "optional": true
+    },
+    "@safe-global/safe-apps-sdk": {
+      "optional": true
+    },
+    "@walletconnect/ethereum-provider": {
+      "optional": true
+    }
+  },
   "engines": {
-    "node": ">=12.4"
+    "node": ">=24"
   }
 }
