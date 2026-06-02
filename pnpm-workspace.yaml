@@ -2,27 +2,26 @@ packages:
   - "apps/*"
   - "packages/*"
   - "tooling/*"
-blockExoticSubdeps: true
 
 catalog:
-  "@tanstack/react-query": ^5.97.0
+  "@tanstack/react-query": ^5.100.14
   "@types/node": ^24.12.2
-  "@types/react": ^19.2.14
+  "@types/react": ^19.2.16
   "@types/react-dom": ^19.2.3
   "@vanilla-extract/vite-plugin": ^5.2.2
-  autoprefixer: ^10.4.27
-  jsdom: ^29.0.2
-  oxfmt: ^0.44.0
-  oxlint: ^1.59.0
-  postcss: ^8.5.9
+  autoprefixer: ^10.5.0
+  jsdom: ^29.1.1
+  oxfmt: ^0.53.0
+  oxlint: ^1.68.0
+  postcss: ^8.5.15
   postcss-prefix-selector: ^2.1.1
-  react: ^19.2.5
-  react-dom: ^19.2.5
-  typescript: ^6.0.2
-  viem: ^2.47.12
-  vite: ^8.0.8
-  vitest: ^4.1.4
-  wagmi: ^3.6.1
+  react: ^19.2.7
+  react-dom: ^19.2.7
+  typescript: ^6.0.3
+  viem: ^2.52.0
+  vite: ^8.0.16
+  vitest: ^4.1.8
+  wagmi: ^3.6.16
 
 overrides:
   "@types/react": "catalog:"
@@ -37,11 +36,12 @@ overrides:
 
 catalogMode: manual
 strictDepBuilds: false
+
 allowBuilds:
-  '@reown/appkit': set this to true or false
-  bufferutil: set this to true or false
-  esbuild: set this to true or false
-  msw: set this to true or false
-  protobufjs: set this to true or false
-  sharp: set this to true or false
-  utf-8-validate: set this to true or false
+  "@reown/appkit": false
+  bufferutil: false
+  esbuild: false
+  msw: false
+  protobufjs: false
+  sharp: false
+  utf-8-validate: false
