@@ -19,13 +19,13 @@ function safeParseJsonData(string: string | null): EnsData | null {
 }
 
 export function addEnsName(address: Address, ensName: string) {
-  if (!isAddress(address)) return;
+  if (!isAddress(address) || typeof window === "undefined") return;
 
   const now = new Date();
 
   const expiry = new Date(now.getTime() + 180 * 60_000); // Set expiry to 3 hours from now
 
-  localStorage.setItem(
+  window.localStorage.setItem(
     getStorageEnsNameKey(address),
     JSON.stringify({
       ensName,
@@ -35,21 +35,23 @@ export function addEnsName(address: Address, ensName: string) {
 }
 
 export function getEnsName(address: Address): string | null {
-  const data = safeParseJsonData(localStorage.getItem(getStorageEnsNameKey(address)));
+  if (typeof window === "undefined") return null;
+
+  const data = safeParseJsonData(window.localStorage.getItem(getStorageEnsNameKey(address)));
 
   if (!data) return null;
 
   const { ensName, expires } = data;
 
   if (typeof ensName !== "string" || Number.isNaN(Number(expires))) {
-    localStorage.removeItem(getStorageEnsNameKey(address));
+    window.localStorage.removeItem(getStorageEnsNameKey(address));
     return null;
   }
 
   const now = new Date();
 
   if (now.getTime() > Number(expires)) {
-    localStorage.removeItem(getStorageEnsNameKey(address));
+    window.localStorage.removeItem(getStorageEnsNameKey(address));
     return null;
   }
 

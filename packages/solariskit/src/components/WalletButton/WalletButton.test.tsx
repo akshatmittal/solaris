@@ -56,6 +56,34 @@ describe("<WalletButton />", () => {
     expect(label).toBe("Coinbase Wallet");
   });
 
+  it("should display 'Base' when `wallet` prop uses the deprecated baseAccount alias", async () => {
+    const baseWallet = mockWallet("base", "Base");
+    const wallets = [
+      { id: "rainbow", name: "Rainbow" },
+      { id: "metaMask", name: "MetaMask Mobile" },
+      { id: "coinbase", name: "Coinbase Wallet" },
+    ].map(({ id, name }) => mockWallet(id, name));
+
+    const { findByTestId } = renderWithProviders(<WalletButton wallet="baseAccount" />, {
+      mockWallets: [
+        {
+          groupName: "Popular",
+          wallets: [
+            ...wallets,
+            () => ({
+              ...baseWallet(),
+              aliases: ["baseAccount"],
+            }),
+          ],
+        },
+      ],
+      chains: [mainnet],
+    });
+
+    const labelElement = await findByTestId("rk-wallet-button-label-base");
+    expect(labelElement.textContent).toBe("Base");
+  });
+
   it("should throw error for non ready connectors", () => {
     for (const connector of ["ready", "xdefi", "uniswap"]) {
       expect(() =>

@@ -27,7 +27,13 @@ export function TransactionStoreProvider({ children }: { children: React.ReactNo
   });
 
   // Use existing store if it exists, or lazily create one
-  const [store] = React.useState(() => storeSingleton ?? (storeSingleton = createTransactionStore({ provider })));
+  const [store] = React.useState(() => {
+    if (!storeSingleton) {
+      storeSingleton = createTransactionStore({ provider });
+    }
+
+    return storeSingleton;
+  });
 
   const onTransactionStatus = React.useCallback(
     (txStatus: TransactionReceipt["status"]) => {

@@ -17,6 +17,7 @@ type RainbowKitConnector = {
 
 export type Wallet = {
   id: string;
+  aliases?: string[];
   name: string;
   rdns?: string;
   shortName?: string;

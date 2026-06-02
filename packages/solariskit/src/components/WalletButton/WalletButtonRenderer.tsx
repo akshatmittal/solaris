@@ -36,7 +36,11 @@ export function WalletButtonRenderer({
   const [firstConnector] = useWalletConnectors()
     .filter((wallet) => wallet.isRainbowKitConnector)
     // RainbowKit/wagmi connector ids can differ in casing, so normalize the comparison.
-    .filter((_wallet) => _wallet.id.toLowerCase() === wallet.toLowerCase())
+    .filter(
+      (_wallet) =>
+        _wallet.id.toLowerCase() === wallet.toLowerCase() ||
+        _wallet.aliases?.some((alias) => alias.toLowerCase() === wallet.toLowerCase()),
+    )
     .sort((a, b) => a.groupIndex - b.groupIndex);
 
   if (!firstConnector) {

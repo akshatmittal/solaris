@@ -10,7 +10,7 @@ function safeParseJsonArray<T>(string: string | null): T[] {
 }
 
 export function getRecentWalletIds(): string[] {
-  return typeof localStorage !== "undefined" ? safeParseJsonArray(localStorage.getItem(storageKey)) : [];
+  return typeof window !== "undefined" ? safeParseJsonArray(window.localStorage.getItem(storageKey)) : [];
 }
 
 function dedupe<T>(array: T[]): T[] {
@@ -20,5 +20,7 @@ function dedupe<T>(array: T[]): T[] {
 export function addRecentWalletId(walletId: string): void {
   const newValue = dedupe([walletId, ...getRecentWalletIds()]);
 
-  localStorage.setItem(storageKey, JSON.stringify(newValue));
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(storageKey, JSON.stringify(newValue));
+  }
 }

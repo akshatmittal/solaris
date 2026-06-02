@@ -27,7 +27,7 @@ export interface WalletConnector extends WalletInstance {
 
 export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): WalletConnector[] {
   const rainbowKitChains = useRainbowKitChains();
-  const intialChainId = useInitialChainId();
+  const initialChainId = useInitialChainId();
   const { connectAsync } = useConnect();
   const defaultConnectors_untyped = useConnectors();
   const defaultCreatedConnectors = defaultConnectors_untyped as WagmiConnectorInstance[];
@@ -53,7 +53,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
         parameters?.chainId ??
         // The goal here is to ensure users are always on a supported chain when connecting.
         // If an `initialChain` prop was provided to RainbowKitProvider, use that.
-        intialChainId ??
+        initialChainId ??
         // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
         rainbowKitChains.find(({ id }) => id === walletChainId)?.id ??
         // Finally, fall back to the first chain provided to RainbowKitProvider.
@@ -173,7 +173,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       ready: wallet.installed ?? true,
       connect: connectWallet.bind(null, wallet) as WalletInstance["connect"],
       groupName: wallet.groupName,
-      getQrCodeUri: wallet.qrCode?.getUri ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri!) : undefined,
+      getQrCodeUri: wallet.qrCode?.getUri ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri) : undefined,
       getDesktopUri: wallet.desktop?.getUri ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!) : undefined,
       getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
       recent,

@@ -53,19 +53,29 @@ export function QRCode({
           size={size}
           value={uri}
         >
-          <Cuer.Cells radius={1} />
-          <Cuer.Finder radius={0.25} />
+          <Cuer.Cells
+            className={undefined}
+            fill="currentColor"
+            filter={undefined}
+            radius={1}
+          />
+          <Cuer.Finder
+            className={undefined}
+            fill="currentColor"
+            radius={0.25}
+            stroke={undefined}
+          />
           {resolvedLogoUrl && (
             <Cuer.Arena>
               <img
                 alt="Wallet Logo"
                 src={resolvedLogoUrl}
                 style={{
-                  objectFit: "cover",
-                  height: "88%",
-                  width: "88%",
-                  borderRadius: "22.5%",
                   backgroundColor: logoBackground,
+                  borderRadius: "22.5%",
+                  height: "88%",
+                  objectFit: "cover",
+                  width: "88%",
                 }}
               />
             </Cuer.Arena>

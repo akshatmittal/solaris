@@ -8,7 +8,7 @@ export type AuthenticationStatus = "loading" | "unauthenticated" | "authenticate
 
 export interface AuthenticationAdapter<Message> {
   getNonce: () => Promise<string>;
-  createMessage: (args: { nonce: string; address: Address; chainId: number }) => Message;
+  createMessage: (args: { nonce: string; address: Address; chainId: number }) => Promise<Message> | Message;
   verify: (args: { message: Message; signature: string }) => Promise<boolean>;
   signOut: () => Promise<void>;
 }

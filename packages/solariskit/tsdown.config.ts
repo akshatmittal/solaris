@@ -43,6 +43,7 @@ export default defineConfig({
   dts: true,
   entry: {
     index: "./src/index.ts",
+    "components/index": "./src/components/index.ts",
     "wallets/walletConnectors/index": "./src/wallets/walletConnectors/index.ts",
   },
   format: "esm",

@@ -9,7 +9,7 @@ import type { RainbowKitWalletConnectParameters, WalletList } from "../wallets/W
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
 import {
-  baseAccount,
+  base,
   injectedWallet,
   metaMaskWallet,
   safeWallet,
@@ -73,7 +73,7 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
     wallets || [
       {
         groupName: "Popular",
-        wallets: [safeWallet, injectedWallet, baseAccount, metaMaskWallet, walletConnectWallet],
+        wallets: [safeWallet, injectedWallet, base, metaMaskWallet, walletConnectWallet],
       },
     ],
     {

@@ -257,9 +257,7 @@ export function ConnectButton({
         );
       }}
     </ConnectButtonRenderer>
-  ) : (
-    <></>
-  );
+  ) : null;
 }
 
 ConnectButton.__defaultProps = defaultProps;

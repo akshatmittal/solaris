@@ -4,7 +4,7 @@ import { Box } from "../Box/Box";
 import { SpinnerIcon } from "../Icons/Spinner";
 import { AvatarContext } from "../RainbowKitProvider/AvatarContext";
 
-interface AvatarProps {
+export interface AvatarProps {
   address: string;
   loading?: boolean;
   imageUrl?: string | null;

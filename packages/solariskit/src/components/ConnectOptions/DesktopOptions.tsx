@@ -246,9 +246,9 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
             paddingBottom="18"
           >
             {Object.entries(groupedWallets).map(
-              ([groupName, wallets], index) =>
+              ([groupName, wallets]) =>
                 wallets.length > 0 && (
-                  <Fragment key={index}>
+                  <Fragment key={groupName}>
                     {groupName ? (
                       <Box
                         marginBottom="8"

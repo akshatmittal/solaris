@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type JSX, type ReactNode } from "react";
 
 import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
@@ -6,9 +6,18 @@ import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Box } from "../Box/Box";
 import { SpinnerIcon } from "../Icons/Spinner";
 import * as styles from "./WalletButton.css";
-import { WalletButtonRenderer } from "./WalletButtonRenderer";
+import { WalletButtonRenderer, type WalletButtonRendererProps } from "./WalletButtonRenderer";
 
-export const WalletButton = ({ wallet }: { wallet?: string }) => {
+export type { WalletButtonRendererProps } from "./WalletButtonRenderer";
+
+export interface WalletButtonProps {
+  wallet?: string;
+}
+
+export const WalletButton: {
+  (props: WalletButtonProps): JSX.Element | undefined;
+  Custom: (props: WalletButtonRendererProps) => ReactNode;
+} = ({ wallet }) => {
   return (
     <WalletButtonRenderer wallet={wallet}>
       {({ ready, connect, connected, mounted, connector, loading }) => {

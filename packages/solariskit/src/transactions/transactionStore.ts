@@ -1,4 +1,7 @@
 import type { Address, PublicClient, TransactionReceipt } from "viem";
+import { waitForTransactionReceipt } from "viem/actions";
+
+import { getTransactionProvider } from "./getTransactionProvider";
 
 const storageKey = "rk-transactions";
 
@@ -25,7 +28,7 @@ function safeParseJsonData(string: string | null): Data {
 }
 
 function loadData(): Data {
-  return safeParseJsonData(typeof localStorage !== "undefined" ? localStorage.getItem(storageKey) : null);
+  return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null);
 }
 
 const transactionHashRegex = /^0x([A-Fa-f0-9]{64})$/;
@@ -54,14 +57,16 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 export function createTransactionStore({ provider: initialProvider }: { provider: PublicClient }) {
   let data: Data = loadData();
 
-  let provider = initialProvider;
+  let transactionProvider: PublicClient;
   const listeners: Set<() => void> = new Set();
   const transactionListeners: Set<(txStatus: TransactionReceipt["status"]) => void> = new Set();
   const transactionRequestCache: Map<string, Promise<void>> = new Map();
 
   function setProvider(newProvider: PublicClient): void {
-    provider = newProvider;
+    transactionProvider = getTransactionProvider(newProvider);
   }
+
+  setProvider(initialProvider);
 
   function getTransactions(account: string, chainId: number): Transaction[] {
     return data[account]?.[chainId] ?? [];
@@ -109,12 +114,14 @@ export function createTransactionStore({ provider: initialProvider }: { provider
             return await existingRequest;
           }
 
-          const requestPromise = provider
-            .waitForTransactionReceipt({
+          const requestPromise = waitForTransactionReceipt(
+            transactionProvider,
+            {
               confirmations,
               hash: hash as Address,
               timeout: 300_000, // 5 minutes
-            })
+            },
+          )
             .then(({ status }) => {
               transactionRequestCache.delete(hash);
 
@@ -126,13 +133,14 @@ export function createTransactionStore({ provider: initialProvider }: { provider
                 account,
                 chainId,
                 hash,
-                // @ts-ignore - types changed with viem@1.1.0
+                // @ts-expect-error - types changed with viem@1.1.0
                 status === 0 || status === "reverted" ? "failed" : "confirmed",
               );
 
               notifyTransactionListeners(status);
             })
             .catch(() => {
+              transactionRequestCache.delete(hash);
               // If a transaction is not found or cancelled
               // viem will throw a 'TransactionNotFoundError'.
               // In this case it should mark the transaction as 'failed'
@@ -174,7 +182,9 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   }
 
   function persistData(): void {
-    localStorage.setItem(storageKey, JSON.stringify(data));
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(storageKey, JSON.stringify(data));
+    }
   }
 
   function notifyListeners(): void {
