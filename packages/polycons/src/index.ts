@@ -59,21 +59,33 @@ const complementaryPairs = [
 
 const colorPairs: ReadonlyArray<readonly [string, string]> = [...neutralPairs, ...tonalPairs, ...complementaryPairs];
 
-function hashSeed(seed: string) {
+const dataUriCache = new Map<string, string>();
+
+function seedFromAddress(address: string) {
+  const parsedSeed = Number.parseInt(address.slice(2, 10), 16);
+  return Number.isNaN(parsedSeed) ? 0 : parsedSeed;
+}
+
+function hashSeed(value: string) {
   let hash = 0;
 
-  for (let i = 0; i < seed.length; i++) {
-    hash = seed.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
+  for (let i = 0; i < value.length; i++) {
+    hash = value.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
   }
 
   return hash;
 }
 
-export function polyconDataUri(seed: string, size: number) {
-  const normalizedSeed = seed.length < 6 ? seed.padEnd(6, " ") : seed;
-  const hash = hashSeed(normalizedSeed);
+function seedToString(seed: number) {
+  const hex = seed.toString(16);
+  return hex.length < 6 ? hex.padEnd(6, "0") : hex;
+}
+
+function createPolyconSvg(seed: number, size: number) {
+  const seedString = seedToString(seed);
+  const hashValue = hashSeed(seedString);
   const defaultColorPair: readonly [string, string] = ["#FF5C16", "#FCFCFC"];
-  const [backgroundColor, foregroundColor] = colorPairs[Math.abs(hash) % colorPairs.length] ?? defaultColorPair;
+  const [backgroundColor, foregroundColor] = colorPairs[Math.abs(hashValue) % colorPairs.length] ?? defaultColorPair;
   const grid = 2;
   const margin = size * 0.25;
   const innerSize = size - 2 * margin;
@@ -94,7 +106,7 @@ export function polyconDataUri(seed: string, size: number) {
     }
 
     const [x, y] = currentCell;
-    const cellHash = Math.abs(hash >> (x * 3 + y * 5)) & 15;
+    const cellHash = Math.abs(hashValue >> (x * 3 + y * 5)) & 15;
     const neighbors: Array<[number, number]> = [];
     const directions: Array<[number, number]> = [
       [0, 1],
@@ -122,6 +134,7 @@ export function polyconDataUri(seed: string, size: number) {
 
       const [nextX, nextY] = nextCell;
       stack.push(nextCell);
+
       if (filledGrid[nextX]) {
         filledGrid[nextX][nextY] = true;
       }
@@ -134,10 +147,7 @@ export function polyconDataUri(seed: string, size: number) {
 
     if (isSquare) {
       pathData += `M${cx},${cy} h${cellSize} v${cellSize} h-${cellSize}z `;
-      continue;
-    }
-
-    if (rotation === 0) {
+    } else if (rotation === 0) {
       pathData += `M${cx},${cy} h${cellSize} v${cellSize}z `;
     } else if (rotation === 90) {
       pathData += `M${cx + cellSize},${cy} v${cellSize} h-${cellSize}z `;
@@ -148,7 +158,18 @@ export function polyconDataUri(seed: string, size: number) {
     }
   }
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" fill="${backgroundColor}"/><path d="${pathData.trim()}" fill="${foregroundColor}"/></svg>`;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg"><rect width="${size}" height="${size}" fill="${backgroundColor}" /><path d="${pathData}" fill="${foregroundColor}" /></svg>`;
+}
 
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+export function polyconDataUri(address: string, size: number) {
+  const cacheKey = `${address.toLowerCase()}:${size}`;
+  const cachedDataUri = dataUriCache.get(cacheKey);
+
+  if (cachedDataUri) {
+    return cachedDataUri;
+  }
+
+  const dataUri = `data:image/svg+xml,${encodeURIComponent(createPolyconSvg(seedFromAddress(address), size))}`;
+  dataUriCache.set(cacheKey, dataUri);
+  return dataUri;
 }
