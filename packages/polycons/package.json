@@ -1,0 +1,42 @@
+{
+  "name": "@akshatmittal/polycons",
+  "version": "1.0.0",
+  "description": "Deterministic polycon avatar image generation",
+  "license": "MIT",
+  "author": "Rainbow",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akshatmittal/solaris.git",
+    "directory": "packages/polycons"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "build:watch": "tsdown --watch",
+    "clean": "rm -rf .turbo dist node_modules",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@workspace/typescript-config": "workspace:*",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+import { polyconDataUri } from "@akshatmittal/polycons";
 
 import type { AvatarComponent } from "../RainbowKitProvider/AvatarContext";
 
 import { Box } from "../Box/Box";
 import { SpinnerIcon } from "../Icons/Spinner";
-import { polyconDataUri } from "./polyconDataUri";
 
 export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   const [loaded, setLoaded] = useState(false);

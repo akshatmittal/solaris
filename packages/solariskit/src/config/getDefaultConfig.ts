@@ -8,13 +8,7 @@ import type { RainbowKitWalletConnectParameters, WalletList } from "../wallets/W
 
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
-import {
-  base,
-  injectedWallet,
-  metaMaskWallet,
-  safeWallet,
-  walletConnectWallet,
-} from "../wallets/walletConnectors";
+import { base, injectedWallet, metaMaskWallet, safeWallet, walletConnectWallet } from "../wallets/walletConnectors";
 
 export type _chains = readonly [RainbowKitChain, ...RainbowKitChain[]];
 

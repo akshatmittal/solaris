@@ -1,4 +1,5 @@
 import type { Address, PublicClient, TransactionReceipt } from "viem";
+
 import { waitForTransactionReceipt } from "viem/actions";
 
 import { getTransactionProvider } from "./getTransactionProvider";
@@ -114,14 +115,11 @@ export function createTransactionStore({ provider: initialProvider }: { provider
             return await existingRequest;
           }
 
-          const requestPromise = waitForTransactionReceipt(
-            transactionProvider,
-            {
-              confirmations,
-              hash: hash as Address,
-              timeout: 300_000, // 5 minutes
-            },
-          )
+          const requestPromise = waitForTransactionReceipt(transactionProvider, {
+            confirmations,
+            hash: hash as Address,
+            timeout: 300_000, // 5 minutes
+          })
             .then(({ status }) => {
               transactionRequestCache.delete(hash);
 

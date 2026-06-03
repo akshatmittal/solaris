@@ -1,4 +1,5 @@
 import type { PublicClient } from "viem";
+
 import { waitForTransactionReceipt } from "viem/actions";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 

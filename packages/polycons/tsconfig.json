@@ -1,0 +1,13 @@
+{
+  "extends": "@workspace/typescript-config/config.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "noEmit": false,
+    "outDir": "dist",
+    "preserveSymlinks": false,
+    "rootDir": "src"
+  },
+  "exclude": ["dist", "node_modules", "src/**/*.test.ts"],
+  "include": ["src"]
+}

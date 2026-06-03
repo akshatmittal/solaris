@@ -9,6 +9,10 @@
       "path": "packages/solariskit",
     },
     {
+      "name": "polycons",
+      "path": "packages/polycons",
+    },
+    {
       "name": "workspace-root",
       "path": ".",
     },
@@ -16,6 +20,6 @@
   "settings": {
     "js/ts.tsdk.path": "workspace-root/node_modules/typescript/lib",
     "editor.defaultFormatter": "oxc.oxc-vscode",
-    "cSpell.words": ["solariskit"],
+    "cSpell.words": ["polycons", "solariskit"],
   },
 }
