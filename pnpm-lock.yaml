@@ -55,7 +55,6 @@ overrides:
   typescript: ^6.0.3
   abitype>zod: '-'
   react-native: '-'
-  '@paulmillr/qr': npm:qr@^0.5.5
 
 importers:
 
@@ -167,6 +166,9 @@ importers:
       cuer:
         specifier: 0.0.3
         version: 0.0.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
+      qr:
+        specifier: 0.5.5
+        version: 0.5.5
       react-remove-scroll:
         specifier: 2.7.2
         version: 2.7.2(@types/react@19.2.16)(react@19.2.7)

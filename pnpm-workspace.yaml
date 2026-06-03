@@ -33,7 +33,6 @@ overrides:
   "typescript": "catalog:"
   "abitype>zod": "-"
   "react-native": "-"
-  "@paulmillr/qr": "npm:qr@^0.5.5"
 
 catalogMode: manual
 strictDepBuilds: false
