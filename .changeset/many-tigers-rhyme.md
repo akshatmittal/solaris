@@ -1,5 +1,0 @@
----
-"solariskit": minor
----
-
-Pin `qr`
