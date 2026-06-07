@@ -1,4 +1,4 @@
-import { type Connector, useChainId as useWagmiChainId, useConnect, useConnectors } from "wagmi";
+import { type Connector, useChainId as useWagmiChainId, useConnect, useConnectors, useSwitchChain } from "wagmi";
 
 import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
@@ -31,6 +31,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
   const initialChainId = useInitialChainId();
   const selectedChainId = useWagmiChainId();
   const { mutateAsync: connect } = useConnect();
+  const { mutateAsync: switchChain } = useSwitchChain();
   const defaultConnectors_untyped = useConnectors();
   const defaultCreatedConnectors = defaultConnectors_untyped as WagmiConnectorInstance[];
 
@@ -49,22 +50,37 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     parameters?: Parameters<WalletInstance["connect"]>[0],
   ): ReturnType<WalletInstance["connect"]> {
     const walletChainId = await connector.getChainId();
-    const result = await connect({
+    const targetChainId =
+      parameters?.chainId ??
+      // Use the currently selected wagmi target chain. This is updated by the
+      // disconnected chain picker via `switchChain`.
+      selectedChainId ??
+      // `initialChain` is also applied to wagmi config, but keep this fallback
+      // for callers rendered before that effect runs.
+      initialChainId ??
+      // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
+      (isChainIdSupported(rainbowKitChains, walletChainId) ? walletChainId : undefined) ??
+      // Finally, fall back to the first chain provided to RainbowKitProvider.
+      rainbowKitChains[0]?.id;
+
+    let result = await connect({
       ...parameters,
-      chainId:
-        parameters?.chainId ??
-        // Use the currently selected wagmi target chain. This is updated by the
-        // disconnected chain picker via `switchChain`.
-        selectedChainId ??
-        // `initialChain` is also applied to wagmi config, but keep this fallback
-        // for callers rendered before that effect runs.
-        initialChainId ??
-        // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
-        (isChainIdSupported(rainbowKitChains, walletChainId) ? walletChainId : undefined) ??
-        // Finally, fall back to the first chain provided to RainbowKitProvider.
-        rainbowKitChains[0]?.id,
+      chainId: targetChainId,
       connector,
     });
+
+    if (targetChainId && connector.switchChain) {
+      const connectedChainId = await connector.getChainId();
+
+      if (connectedChainId !== targetChainId) {
+        const chain = await switchChain({ chainId: targetChainId, connector });
+
+        result = {
+          ...result,
+          chainId: chain.id,
+        };
+      }
+    }
 
     if (result) {
       addRecentWalletId(connector.id);
