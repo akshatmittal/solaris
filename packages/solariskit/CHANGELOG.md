@@ -1,5 +1,12 @@
 # solariskit
 
+## 1.2.0
+
+### Minor Changes
+
+- dc13687: Pin `qr`
+- 2f01f2f: Add persistent network picker
+
 ## 1.1.0
 
 ### Minor Changes
