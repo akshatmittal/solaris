@@ -1,5 +1,11 @@
 # solariskit
 
+## 1.3.0
+
+### Minor Changes
+
+- 0a6b1ec: fix: always sync after connector to deal with spotty connectors
+
 ## 1.2.0
 
 ### Minor Changes
