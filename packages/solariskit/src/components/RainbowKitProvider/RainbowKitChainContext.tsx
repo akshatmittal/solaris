@@ -1,8 +1,8 @@
-import React, { type ReactNode, createContext, useContext, useMemo } from "react";
+import React, { type ReactNode, createContext, useContext, useEffect, useMemo, useRef } from "react";
 
 import type { Chain } from "wagmi/chains";
 
-import { useConfig } from "wagmi";
+import { useChainId as useWagmiChainId, useConfig, useConnection, useSwitchChain } from "wagmi";
 
 import { provideRainbowKitChains } from "./provideRainbowKitChains";
 
@@ -34,6 +34,24 @@ export function RainbowKitChainProvider({
   initialChain,
 }: RainbowKitChainProviderProps) {
   const { chains } = useConfig();
+  const { status } = useConnection();
+  const wagmiChainId = useWagmiChainId();
+  const { mutate: switchChain } = useSwitchChain();
+  const appliedInitialChainIdRef = useRef<number | undefined>(undefined);
+  const initialChainId = typeof initialChain === "number" ? initialChain : initialChain?.id;
+  const configuredInitialChainId =
+    initialChainId != null && chains.some((chain) => chain.id === initialChainId) ? initialChainId : undefined;
+
+  useEffect(() => {
+    if (status !== "disconnected" || configuredInitialChainId == null) return;
+    if (appliedInitialChainIdRef.current === configuredInitialChainId) return;
+
+    appliedInitialChainIdRef.current = configuredInitialChainId;
+
+    if (wagmiChainId !== configuredInitialChainId) {
+      switchChain({ chainId: configuredInitialChainId });
+    }
+  }, [configuredInitialChainId, status, switchChain, wagmiChainId]);
 
   return (
     <RainbowKitChainContext.Provider
@@ -41,9 +59,9 @@ export function RainbowKitChainProvider({
         () => ({
           chains: provideRainbowKitChains(chains),
           chainSearchThreshold,
-          initialChainId: typeof initialChain === "number" ? initialChain : initialChain?.id,
+          initialChainId,
         }),
-        [chainSearchThreshold, chains, initialChain],
+        [chainSearchThreshold, chains, initialChainId],
       )}
     >
       {children}

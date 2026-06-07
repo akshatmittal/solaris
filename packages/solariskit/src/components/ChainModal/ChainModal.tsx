@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useConnection, useDisconnect, useSwitchChain } from "wagmi";
+import { useChainId as useWagmiChainId, useConnection, useDisconnect, useSwitchChain } from "wagmi";
 import { useConfig } from "wagmi";
 
 import { t } from "../../translations";
@@ -22,30 +22,32 @@ export interface ChainModalProps {
 }
 
 export function ChainModal({ onClose, open }: ChainModalProps) {
-  const { chainId } = useConnection();
+  const { chainId: connectedChainId, isConnected } = useConnection();
+  const wagmiChainId = useWagmiChainId();
+  const currentChainId = connectedChainId ?? wagmiChainId;
   const { chains } = useConfig();
   const [pendingChainId, setPendingChainId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const { switchChain } = useSwitchChain({
+  const { mutate: switchChain } = useSwitchChain({
     mutation: {
       onMutate: ({ chainId: _chainId }) => {
         setPendingChainId(_chainId);
       },
       onSuccess: () => {
-        if (pendingChainId) setPendingChainId(null);
+        setPendingChainId(null);
       },
       onError: () => {
-        if (pendingChainId) setPendingChainId(null);
+        setPendingChainId(null);
       },
       onSettled: () => {
         onClose();
       },
     },
   });
-  const { disconnect } = useDisconnect();
+  const { mutate: disconnect } = useDisconnect();
   const titleId = "rk_chain_modal_title";
   const mobile = isMobile();
-  const isCurrentChainSupported = chains.some((chain) => chain.id === chainId);
+  const isConnectedToUnsupportedChain = isConnected && !chains.some((chain) => chain.id === connectedChainId);
   const chainIconSize = mobile ? "36" : "28";
   const rainbowkitChains = useRainbowKitChains();
   const chainSearchThreshold = useChainSearchThreshold();
@@ -64,10 +66,6 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
       setSearchQuery("");
     }
   }, [open]);
-
-  if (!chainId) {
-    return null;
-  }
 
   return (
     <Dialog
@@ -107,7 +105,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
             </Box>
             <CloseButton onClose={onClose} />
           </Box>
-          {!isCurrentChainSupported && (
+          {isConnectedToUnsupportedChain && (
             <Box
               marginX="8"
               textAlign={mobile ? "center" : "left"}
@@ -150,7 +148,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
                 <Chain
                   key={id}
                   chainId={id}
-                  currentChainId={chainId}
+                  currentChainId={currentChainId}
                   switchChain={switchChain}
                   chainIconSize={chainIconSize}
                   isLoading={pendingChainId === id}
@@ -176,7 +174,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
                 </Text>
               </Box>
             )}
-            {!isCurrentChainSupported && (
+            {isConnectedToUnsupportedChain && (
               <>
                 <Box
                   background="generalBorderDim"

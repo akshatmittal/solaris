@@ -12,7 +12,7 @@ import {
 import { SignIn } from "./SignIn";
 
 const wagmiMocks = vi.hoisted(() => ({
-  signMessageAsync: vi.fn(),
+  signMessage: vi.fn(),
   useConnection: vi.fn(),
   useConnectionEffect: vi.fn(),
 }));
@@ -21,7 +21,7 @@ vi.mock("wagmi", () => ({
   useConnection: wagmiMocks.useConnection,
   useConnectionEffect: wagmiMocks.useConnectionEffect,
   useSignMessage: () => ({
-    signMessageAsync: wagmiMocks.signMessageAsync,
+    mutateAsync: wagmiMocks.signMessage,
   }),
 }));
 
@@ -54,7 +54,7 @@ function renderSignIn({
 
 describe("SignIn", () => {
   beforeEach(() => {
-    wagmiMocks.signMessageAsync.mockReset();
+    wagmiMocks.signMessage.mockReset();
     wagmiMocks.useConnection.mockReturnValue({
       address,
       chain: { id: 1 },
@@ -64,7 +64,7 @@ describe("SignIn", () => {
 
   it("skips message preparation state when message creation is synchronous", async () => {
     const createMessage = vi.fn(() => "message");
-    wagmiMocks.signMessageAsync.mockReturnValue(new Promise(() => {}));
+    wagmiMocks.signMessage.mockReturnValue(new Promise(() => {}));
 
     renderSignIn({ createMessage });
 
@@ -75,7 +75,7 @@ describe("SignIn", () => {
 
     expect(createMessage).toHaveBeenCalledOnce();
     await waitFor(() =>
-      expect(wagmiMocks.signMessageAsync).toHaveBeenCalledWith({
+      expect(wagmiMocks.signMessage).toHaveBeenCalledWith({
         message: "message",
       }),
     );
@@ -88,7 +88,7 @@ describe("SignIn", () => {
       resolveMessage = resolve;
     });
     const createMessage = vi.fn(() => messagePromise);
-    wagmiMocks.signMessageAsync.mockReturnValue(new Promise(() => {}));
+    wagmiMocks.signMessage.mockReturnValue(new Promise(() => {}));
 
     renderSignIn({ createMessage });
 
@@ -98,7 +98,7 @@ describe("SignIn", () => {
     fireEvent.click(button);
 
     expect(createMessage).toHaveBeenCalledOnce();
-    expect(wagmiMocks.signMessageAsync).not.toHaveBeenCalled();
+    expect(wagmiMocks.signMessage).not.toHaveBeenCalled();
     expect(button).toHaveTextContent("Preparing message...");
 
     await act(async () => {
@@ -107,7 +107,7 @@ describe("SignIn", () => {
     });
 
     await waitFor(() =>
-      expect(wagmiMocks.signMessageAsync).toHaveBeenCalledWith({
+      expect(wagmiMocks.signMessage).toHaveBeenCalledWith({
         message: "message",
       }),
     );

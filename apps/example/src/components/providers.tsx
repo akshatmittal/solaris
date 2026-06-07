@@ -3,7 +3,7 @@
 import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RainbowKitProvider, darkTheme, getDefaultConfig } from "solariskit";
+import { RainbowKitProvider, getDefaultConfig } from "solariskit";
 import { http, WagmiProvider } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
 import "solariskit/styles.css";
@@ -29,7 +29,7 @@ export function Providers({ children }: PropsWithChildren) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
+        <RainbowKitProvider>{children}</RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

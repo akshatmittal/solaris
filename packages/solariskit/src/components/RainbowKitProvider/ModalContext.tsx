@@ -103,7 +103,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           connectModalOpen,
           isWalletConnectModalOpen,
           openAccountModal: isCurrentChainSupported && connectionStatus === "connected" ? openAccountModal : undefined,
-          openChainModal: connectionStatus === "connected" ? openChainModal : undefined,
+          openChainModal: chains.length > 0 ? openChainModal : undefined,
           openConnectModal:
             connectionStatus === "disconnected" || connectionStatus === "unauthenticated"
               ? openConnectModal
@@ -119,6 +119,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           openChainModal,
           openConnectModal,
           isCurrentChainSupported,
+          chains.length,
           isWalletConnectModalOpen,
         ],
       )}

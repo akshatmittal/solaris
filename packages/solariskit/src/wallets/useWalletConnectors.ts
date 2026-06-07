@@ -1,4 +1,4 @@
-import { type Connector, useConnect, useConnectors } from "wagmi";
+import { type Connector, useChainId as useWagmiChainId, useConnect, useConnectors } from "wagmi";
 
 import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
@@ -28,7 +28,8 @@ export interface WalletConnector extends WalletInstance {
 export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): WalletConnector[] {
   const rainbowKitChains = useRainbowKitChains();
   const initialChainId = useInitialChainId();
-  const { connectAsync } = useConnect();
+  const selectedChainId = useWagmiChainId();
+  const { mutateAsync: connect } = useConnect();
   const defaultConnectors_untyped = useConnectors();
   const defaultCreatedConnectors = defaultConnectors_untyped as WagmiConnectorInstance[];
 
@@ -47,12 +48,15 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     parameters?: Parameters<WalletInstance["connect"]>[0],
   ): ReturnType<WalletInstance["connect"]> {
     const walletChainId = await connector.getChainId();
-    const result = await connectAsync({
+    const result = await connect({
       ...parameters,
       chainId:
         parameters?.chainId ??
-        // The goal here is to ensure users are always on a supported chain when connecting.
-        // If an `initialChain` prop was provided to RainbowKitProvider, use that.
+        // Use the currently selected wagmi target chain. This is updated by the
+        // disconnected chain picker via `switchChain`.
+        selectedChainId ??
+        // `initialChain` is also applied to wagmi config, but keep this fallback
+        // for callers rendered before that effect runs.
         initialChainId ??
         // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
         rainbowKitChains.find(({ id }) => id === walletChainId)?.id ??

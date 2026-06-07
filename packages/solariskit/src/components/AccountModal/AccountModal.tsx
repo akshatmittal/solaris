@@ -18,7 +18,7 @@ export function AccountModal({ onClose, open }: AccountModalProps) {
     address,
     includeBalance: open,
   });
-  const { disconnect } = useDisconnect();
+  const { mutate: disconnect } = useDisconnect();
 
   if (!address) {
     return null;
