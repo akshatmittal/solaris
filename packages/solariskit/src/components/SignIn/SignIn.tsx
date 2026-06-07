@@ -50,7 +50,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
 
   const mobile = isMobile();
   const { address, chain: activeChain } = useConnection();
-  const { signMessageAsync } = useSignMessage();
+  const { mutateAsync: signMessage } = useSignMessage();
 
   const signIn = async () => {
     try {
@@ -88,7 +88,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
       try {
         setState((x) => ({ ...x, status: "signing" }));
 
-        signature = await signMessageAsync({
+        signature = await signMessage({
           message,
         });
       } catch (error) {

@@ -2,8 +2,6 @@ import type { Address } from "viem";
 
 import { vi } from "vitest";
 
-import { injectedWallet } from "../src/wallets/walletConnectors/injectedWallet/injectedWallet";
-
 export const injectedTestAccounts: readonly [Address, ...Address[]] = [
   "0x1111111111111111111111111111111111111111",
   "0x2222222222222222222222222222222222222222",

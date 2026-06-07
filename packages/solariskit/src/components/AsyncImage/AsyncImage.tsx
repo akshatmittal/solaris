@@ -36,6 +36,17 @@ export function AsyncImage({
   const src = useAsyncImage(srcProp);
   const isRemoteImage = src && src.startsWith("http");
   const [isRemoteImageLoaded, setRemoteImageLoaded] = useReducer(() => true, false);
+  const imageProps = src
+    ? isRemoteImage
+      ? {
+          "aria-hidden": true,
+          as: "img" as const,
+          onLoad: setRemoteImageLoaded,
+          src,
+        }
+      : { "aria-hidden": true, as: "img" as const, src }
+    : { "aria-hidden": true };
+
   return (
     <Box
       aria-label={alt}
@@ -54,14 +65,7 @@ export function AsyncImage({
       testId={testId}
     >
       <Box
-        {...(isRemoteImage
-          ? {
-              "aria-hidden": true,
-              as: "img",
-              onLoad: setRemoteImageLoaded,
-              src,
-            }
-          : { "aria-hidden": true, as: "img", src })}
+        {...imageProps}
         height="full"
         position="absolute"
         {...(ios ? { WebkitUserSelect: "none" } : {})}

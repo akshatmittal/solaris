@@ -9,9 +9,11 @@
  * Following Wagmi's approach: https://github.com/wevm/wagmi/blob/main/packages/connectors/src/walletConnect.test.ts
  */
 
-import { http, HttpResponse } from "msw";
+import { http, HttpResponse, ws } from "msw";
 import { setupServer } from "msw/node";
 import { vi } from "vitest";
+
+const walletConnectRelay = ws.link("wss://relay.walletconnect.org");
 
 // WalletConnect relay and API mock handlers
 const handlers = [
@@ -48,6 +50,39 @@ const handlers = [
       { status: 200 },
     ),
   ),
+  http.get("https://api.web3modal.org/appkit/v1/project-limits", async () =>
+    HttpResponse.json(
+      {
+        planLimits: {
+          tier: "starter",
+          isAboveMauLimit: false,
+          isAboveRpcLimit: false,
+        },
+      },
+      { status: 200 },
+    ),
+  ),
+  http.get("https://api.web3modal.org/*", async () =>
+    HttpResponse.json(
+      {
+        count: 0,
+        data: [],
+      },
+      { status: 200 },
+    ),
+  ),
+  http.post("https://eth.merkle.io/", async ({ request }) => {
+    const body = (await request.json()) as { id?: number | string };
+
+    return HttpResponse.json({
+      jsonrpc: "2.0",
+      id: body.id ?? 0,
+      result: "0x",
+    });
+  }),
+  walletConnectRelay.addEventListener("connection", ({ client }) => {
+    client.close();
+  }),
   // Mock WalletConnect keys server
   http.get("https://keys.walletconnect.com/*", async () =>
     HttpResponse.json(

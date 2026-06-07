@@ -5,7 +5,9 @@ import { useConnection, useConfig } from "wagmi";
 import { normalizeResponsiveValue } from "../../css/sprinkles.css";
 import { useIsMounted } from "../../hooks/useIsMounted";
 import { useProfile } from "../../hooks/useProfile";
+import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
+import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { isMobile } from "../../utils/isMobile";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 import { type AuthenticationStatus, useAuthenticationStatus } from "../RainbowKitProvider/AuthenticationContext";
@@ -53,11 +55,10 @@ export interface ConnectButtonRendererProps {
 
 export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) {
   const isMounted = useIsMounted();
-  const { address } = useConnection();
-
-  const { chainId } = useConnection();
+  const { address, chainId: connectedChainId } = useConnection();
+  const chainId = useSelectedChainId(connectedChainId);
   const { chains: wagmiChains } = useConfig();
-  const isCurrentChainSupported = wagmiChains.some((chain) => chain.id === chainId);
+  const isConnectedChainSupported = connectedChainId ? isChainIdSupported(wagmiChains, connectedChainId) : true;
 
   const rainbowkitChainsById = useRainbowKitChainsById();
   const authenticationStatus = useAuthenticationStatus() ?? undefined;
@@ -126,7 +127,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
               iconUrl: resolvedChainIconUrl,
               id: chainId,
               name: chainName,
-              unsupported: !isCurrentChainSupported,
+              unsupported: !isConnectedChainSupported,
             }
           : undefined,
         chainModalOpen,
