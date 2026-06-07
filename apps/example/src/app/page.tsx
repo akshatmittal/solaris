@@ -1,6 +1,31 @@
+"use client";
+
+import { useEffect } from "react";
+
 import { ConnectButton } from "solariskit";
+import { useChainId, useConnection, useSendTransaction } from "wagmi";
 
 export default function HomePage() {
+  const { address, isConnected } = useConnection();
+  const chainId = useChainId();
+  const { data: transactionHash, error, isPending, sendTransaction } = useSendTransaction();
+
+  useEffect(() => {
+    console.log("Chain:", chainId);
+  }, [chainId]);
+
+  const sendDummyTransaction = () => {
+    if (!address) {
+      return;
+    }
+
+    sendTransaction({
+      chainId,
+      to: address,
+      value: 0n,
+    });
+  };
+
   return (
     <main className="page-shell">
       <section className="hero">
@@ -11,7 +36,17 @@ export default function HomePage() {
         </p>
         <div className="actions">
           <ConnectButton />
+          <button
+            className="send-transaction-button"
+            disabled={!isConnected || isPending}
+            onClick={sendDummyTransaction}
+            type="button"
+          >
+            {isPending ? "Sending..." : "Send dummy transaction"}
+          </button>
         </div>
+        {transactionHash ? <p className="transaction-status">Sent {transactionHash}</p> : null}
+        {error ? <p className="transaction-status error">{error.message}</p> : null}
       </section>
     </main>
   );
