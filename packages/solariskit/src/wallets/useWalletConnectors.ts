@@ -4,6 +4,7 @@ import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
 import { useWalletConnectOpenState } from "../components/RainbowKitProvider/ModalContext";
 import { indexBy } from "../utils/indexBy";
+import { isChainIdSupported } from "../utils/isChainIdSupported";
 import { isNotNullish } from "../utils/isNotNullish";
 import { useInitialChainId, useRainbowKitChains } from "./../components/RainbowKitProvider/RainbowKitChainContext";
 import {
@@ -59,7 +60,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
         // for callers rendered before that effect runs.
         initialChainId ??
         // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
-        rainbowKitChains.find(({ id }) => id === walletChainId)?.id ??
+        (isChainIdSupported(rainbowKitChains, walletChainId) ? walletChainId : undefined) ??
         // Finally, fall back to the first chain provided to RainbowKitProvider.
         rainbowKitChains[0]?.id,
       connector,

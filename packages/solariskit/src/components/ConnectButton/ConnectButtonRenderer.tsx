@@ -1,11 +1,13 @@
 import React, { type ReactNode, useContext } from "react";
 
-import { useChainId as useWagmiChainId, useConnection, useConfig } from "wagmi";
+import { useConnection, useConfig } from "wagmi";
 
 import { normalizeResponsiveValue } from "../../css/sprinkles.css";
 import { useIsMounted } from "../../hooks/useIsMounted";
 import { useProfile } from "../../hooks/useProfile";
+import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
+import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { isMobile } from "../../utils/isMobile";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 import { type AuthenticationStatus, useAuthenticationStatus } from "../RainbowKitProvider/AuthenticationContext";
@@ -54,12 +56,9 @@ export interface ConnectButtonRendererProps {
 export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) {
   const isMounted = useIsMounted();
   const { address, chainId: connectedChainId } = useConnection();
-  const wagmiChainId = useWagmiChainId();
-  const chainId = connectedChainId ?? wagmiChainId;
+  const chainId = useSelectedChainId(connectedChainId);
   const { chains: wagmiChains } = useConfig();
-  const isConnectedChainSupported = connectedChainId
-    ? wagmiChains.some((chain) => chain.id === connectedChainId)
-    : true;
+  const isConnectedChainSupported = connectedChainId ? isChainIdSupported(wagmiChains, connectedChainId) : true;
 
   const rainbowkitChainsById = useRainbowKitChainsById();
   const authenticationStatus = useAuthenticationStatus() ?? undefined;

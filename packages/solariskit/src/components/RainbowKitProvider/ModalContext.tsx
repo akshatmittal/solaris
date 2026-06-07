@@ -3,6 +3,7 @@ import React, { type ReactNode, createContext, useCallback, useContext, useEffec
 import { useConfig, useConnection, useConnectionEffect } from "wagmi";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
+import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { AccountModal } from "../AccountModal/AccountModal";
 import { ChainModal } from "../ChainModal/ChainModal";
 import { ConnectModal } from "../ConnectModal/ConnectModal";
@@ -63,7 +64,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
   const { chainId } = useConnection();
   const { chains } = useConfig();
 
-  const isCurrentChainSupported = chains.some((chain) => chain.id === chainId);
+  const isCurrentChainSupported = isChainIdSupported(chains, chainId);
 
   interface CloseModalsOptions {
     keepConnectModalOpen?: boolean;

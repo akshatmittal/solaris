@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { useChainId as useWagmiChainId, useConnection, useDisconnect, useSwitchChain } from "wagmi";
+import { useConnection, useDisconnect, useSwitchChain } from "wagmi";
 import { useConfig } from "wagmi";
 
+import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { t } from "../../translations";
+import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { isMobile } from "../../utils/isMobile";
 import { Box } from "../Box/Box";
 import { CloseButton } from "../CloseButton/CloseButton";
@@ -23,8 +25,7 @@ export interface ChainModalProps {
 
 export function ChainModal({ onClose, open }: ChainModalProps) {
   const { chainId: connectedChainId, isConnected } = useConnection();
-  const wagmiChainId = useWagmiChainId();
-  const currentChainId = connectedChainId ?? wagmiChainId;
+  const currentChainId = useSelectedChainId(connectedChainId);
   const { chains } = useConfig();
   const [pendingChainId, setPendingChainId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,13 +34,8 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
       onMutate: ({ chainId: _chainId }) => {
         setPendingChainId(_chainId);
       },
-      onSuccess: () => {
-        setPendingChainId(null);
-      },
-      onError: () => {
-        setPendingChainId(null);
-      },
       onSettled: () => {
+        setPendingChainId(null);
         onClose();
       },
     },
@@ -47,7 +43,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
   const { mutate: disconnect } = useDisconnect();
   const titleId = "rk_chain_modal_title";
   const mobile = isMobile();
-  const isConnectedToUnsupportedChain = isConnected && !chains.some((chain) => chain.id === connectedChainId);
+  const isConnectedToUnsupportedChain = isConnected && !isChainIdSupported(chains, connectedChainId);
   const chainIconSize = mobile ? "36" : "28";
   const rainbowkitChains = useRainbowKitChains();
   const chainSearchThreshold = useChainSearchThreshold();

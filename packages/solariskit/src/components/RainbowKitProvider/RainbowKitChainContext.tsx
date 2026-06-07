@@ -4,6 +4,7 @@ import type { Chain } from "wagmi/chains";
 
 import { useChainId as useWagmiChainId, useConfig, useConnection, useSwitchChain } from "wagmi";
 
+import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { provideRainbowKitChains } from "./provideRainbowKitChains";
 
 export interface RainbowKitChain extends Chain {
@@ -39,8 +40,7 @@ export function RainbowKitChainProvider({
   const { mutate: switchChain } = useSwitchChain();
   const appliedInitialChainIdRef = useRef<number | undefined>(undefined);
   const initialChainId = typeof initialChain === "number" ? initialChain : initialChain?.id;
-  const configuredInitialChainId =
-    initialChainId != null && chains.some((chain) => chain.id === initialChainId) ? initialChainId : undefined;
+  const configuredInitialChainId = isChainIdSupported(chains, initialChainId) ? initialChainId : undefined;
 
   useEffect(() => {
     if (status !== "disconnected" || configuredInitialChainId == null) return;
