@@ -1,9 +1,8 @@
 import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { useConfig, useConnection, useConnectionEffect } from "wagmi";
+import { useConfig, useConnectionEffect } from "wagmi";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
-import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { AccountModal } from "../AccountModal/AccountModal";
 import { ChainModal } from "../ChainModal/ChainModal";
 import { ConnectModal } from "../ConnectModal/ConnectModal";
@@ -61,10 +60,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
 
   const connectionStatus = useConnectionStatus();
 
-  const { chainId } = useConnection();
   const { chains } = useConfig();
-
-  const isCurrentChainSupported = isChainIdSupported(chains, chainId);
 
   interface CloseModalsOptions {
     keepConnectModalOpen?: boolean;
@@ -103,7 +99,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           chainModalOpen,
           connectModalOpen,
           isWalletConnectModalOpen,
-          openAccountModal: isCurrentChainSupported && connectionStatus === "connected" ? openAccountModal : undefined,
+          openAccountModal: connectionStatus === "connected" ? openAccountModal : undefined,
           openChainModal: chains.length > 0 ? openChainModal : undefined,
           openConnectModal:
             connectionStatus === "disconnected" || connectionStatus === "unauthenticated"
@@ -119,7 +115,6 @@ export function ModalProvider({ children }: ModalProviderProps) {
           openAccountModal,
           openChainModal,
           openConnectModal,
-          isCurrentChainSupported,
           chains.length,
           isWalletConnectModalOpen,
         ],

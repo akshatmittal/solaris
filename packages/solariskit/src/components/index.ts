@@ -4,6 +4,9 @@ export type { RainbowKitProviderProps } from "./RainbowKitProvider/RainbowKitPro
 export { ConnectButton } from "./ConnectButton/ConnectButton";
 export type { ConnectButtonProps } from "./ConnectButton/ConnectButton";
 
+export { ChainSelectButton } from "./ChainSelectButton/ChainSelectButton";
+export type { ChainSelectButtonProps, ChainStatus } from "./ChainSelectButton/ChainSelectButton";
+
 export { WalletButton } from "./WalletButton/WalletButton";
 export type { WalletButtonProps } from "./WalletButton/WalletButton";
 

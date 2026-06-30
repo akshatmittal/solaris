@@ -1,4 +1,5 @@
 export { ConnectButton } from "./components/ConnectButton/ConnectButton";
+export { ChainSelectButton } from "./components/ChainSelectButton/ChainSelectButton";
 export { WalletButton, type WalletButtonRendererProps } from "./components/WalletButton/WalletButton";
 export { RainbowKitProvider, type RainbowKitProviderProps } from "./components/RainbowKitProvider/RainbowKitProvider";
 export { getDefaultConfig } from "./config/getDefaultConfig";
@@ -13,6 +14,7 @@ export {
 } from "./components/RainbowKitProvider/AuthenticationContext";
 export type { Wallet, WalletList, WalletDetailsParams, RainbowKitWalletConnectParameters } from "./wallets/Wallet";
 export type { Theme } from "./components/RainbowKitProvider/RainbowKitProvider";
+export type { ChainSelectButtonProps, ChainStatus } from "./components/ChainSelectButton/ChainSelectButton";
 export type { AuthenticationStatus, AuthenticationConfig } from "./components/RainbowKitProvider/AuthenticationContext";
 export type { DisclaimerComponent } from "./components/RainbowKitProvider/AppContext";
 export type { AvatarComponent } from "./components/RainbowKitProvider/AvatarContext";

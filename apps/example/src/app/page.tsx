@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { ConnectButton } from "solariskit";
+import { ChainSelectButton, ConnectButton } from "solariskit";
 import { useChainId, useConnection, useSendTransaction } from "wagmi";
 
 export default function HomePage() {
@@ -35,7 +35,10 @@ export default function HomePage() {
           Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test WalletConnect flows.
         </p>
         <div className="actions">
-          <ConnectButton />
+          <div className="wallet-actions">
+            <ChainSelectButton />
+            <ConnectButton />
+          </div>
           <button
             className="send-transaction-button"
             disabled={!isConnected || isPending}

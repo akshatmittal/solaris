@@ -70,9 +70,16 @@ code {
 .actions {
   margin-top: 28px;
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.wallet-actions {
+  display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
