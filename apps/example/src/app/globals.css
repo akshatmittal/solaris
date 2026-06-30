@@ -32,8 +32,15 @@ code {
   place-items: center;
 }
 
-.hero {
+.page-stack {
   width: min(680px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero,
+.showcase {
   padding: 40px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 28px;
@@ -41,6 +48,10 @@ code {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(18px);
   text-align: center;
+}
+
+.showcase {
+  padding: 24px;
 }
 
 .eyebrow {
@@ -84,6 +95,10 @@ code {
   align-items: center;
 }
 
+.showcase-control {
+  width: 100%;
+}
+
 .send-transaction-button {
   min-height: 40px;
   padding: 0 16px;
@@ -121,6 +136,11 @@ code {
 
   .hero {
     padding: 28px;
+    border-radius: 22px;
+  }
+
+  .showcase {
+    padding: 20px;
     border-radius: 22px;
   }
 }

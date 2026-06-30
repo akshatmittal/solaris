@@ -28,29 +28,38 @@ export default function HomePage() {
 
   return (
     <main className="page-shell">
-      <section className="hero">
-        <p className="eyebrow">Solaris Example</p>
-        <h1>Next 💖 SolarisKit</h1>
-        <p className="lede">
-          Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test WalletConnect flows.
-        </p>
-        <div className="actions">
-          <div className="wallet-actions">
-            <ChainSelectButton />
-            <ConnectButton />
+      <div className="page-stack">
+        <section className="hero">
+          <p className="eyebrow">Solaris Example</p>
+          <h1>Next 💖 SolarisKit</h1>
+          <p className="lede">
+            Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test WalletConnect flows.
+          </p>
+          <div className="actions">
+            <div className="wallet-actions">
+              <ChainSelectButton />
+              <ConnectButton />
+            </div>
+            <button
+              className="send-transaction-button"
+              disabled={!isConnected || isPending}
+              onClick={sendDummyTransaction}
+              type="button"
+            >
+              {isPending ? "Sending..." : "Send dummy transaction"}
+            </button>
           </div>
-          <button
-            className="send-transaction-button"
-            disabled={!isConnected || isPending}
-            onClick={sendDummyTransaction}
-            type="button"
-          >
-            {isPending ? "Sending..." : "Send dummy transaction"}
-          </button>
-        </div>
-        {transactionHash ? <p className="transaction-status">Sent {transactionHash}</p> : null}
-        {error ? <p className="transaction-status error">{error.message}</p> : null}
-      </section>
+          {transactionHash ? <p className="transaction-status">Sent {transactionHash}</p> : null}
+          {error ? <p className="transaction-status error">{error.message}</p> : null}
+        </section>
+
+        <section className="showcase">
+          <p className="eyebrow">Full Width</p>
+          <div className="showcase-control">
+            <ChainSelectButton fullWidth />
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

@@ -20,13 +20,14 @@ export type ChainStatus = "full" | "icon" | "name" | "none";
 
 export interface ChainSelectButtonProps {
   chainStatus?: ResponsiveValue<ChainStatus>;
+  fullWidth?: boolean;
 }
 
 const defaultProps = {
   chainStatus: { largeScreen: "full", smallScreen: "icon" },
 } as const;
 
-export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: ChainSelectButtonProps) {
+export function ChainSelectButton({ chainStatus = defaultProps.chainStatus, fullWidth = false }: ChainSelectButtonProps) {
   const chains = useRainbowKitChains();
   const chainsById = useRainbowKitChainsById();
   const connectionStatus = useConnectionStatus();
@@ -83,6 +84,7 @@ export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: Ch
       fontFamily="body"
       fontWeight="bold"
       gap="6"
+      justifyContent={fullWidth ? "space-between" : "center"}
       key={
         // Force re-mount to prevent CSS transition
         unsupportedChain ? "unsupported" : "supported"
@@ -93,6 +95,7 @@ export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: Ch
       testId={unsupportedChain ? "wrong-network-button" : "chain-button"}
       transition="default"
       type="button"
+      width={fullWidth ? "full" : undefined}
       {...(!buttonReady && {
         "aria-hidden": true,
         style: {
