@@ -1,5 +1,14 @@
 # solariskit
 
+## 1.4.0
+
+### Minor Changes
+
+- 7dd56c5: Add a `fullWidth` prop to `ChainSelectButton` for filling its parent container.
+- aea20f8: Split the chain selector out of `ConnectButton`.
+
+  `ConnectButton` now only renders the wallet connect/account button. Use the new `ChainSelectButton` export when you need the chain selector or wrong-network button independently.
+
 ## 1.3.0
 
 ### Minor Changes
