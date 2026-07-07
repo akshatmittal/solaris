@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import type { SolanaConnectButtonProps } from "../../types";
 
+import { abbreviateETHBalance } from "../../../components/ConnectButton/abbreviateETHBalance";
 import { ConnectButtonView } from "../../../components/ConnectButton/ConnectButtonView";
 import { formatAddress } from "../../../components/ConnectButton/formatAddress";
 import { useShowBalance } from "../../../components/RainbowKitProvider/ShowBalanceContext";
@@ -44,7 +45,7 @@ export function SolanaConnectButton({
     return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
   })();
 
-  const { formattedSol } = useSolanaBalance({
+  const { lastUpdated, solBalance } = useSolanaBalance({
     enabled: wallet.isConnected && shouldShowBalance,
   });
 
@@ -56,7 +57,9 @@ export function SolanaConnectButton({
   const account = wallet.account
     ? {
         address: wallet.account,
-        displayBalance: shouldShowBalance ? formattedSol : undefined,
+        // lastUpdated is null until a fetch succeeds; the hook defaults the
+        // balance to 0 while loading, so gate on it to avoid "0 SOL".
+        displayBalance: shouldShowBalance && lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined,
         displayName: formatAddress(wallet.account),
         hasPendingTransactions: false,
       }
@@ -66,7 +69,7 @@ export function SolanaConnectButton({
     <ConnectButtonView
       account={account}
       accountStatus={accountStatus}
-      buttonReady={mounted && !wallet.isConnecting}
+      buttonReady={mounted}
       isConnected={wallet.isConnected}
       label={label}
       mounted={mounted}

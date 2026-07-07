@@ -1,5 +1,6 @@
 import React from "react";
 
+import { abbreviateETHBalance } from "../../../components/ConnectButton/abbreviateETHBalance";
 import { formatAddress } from "../../../components/ConnectButton/formatAddress";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
@@ -14,7 +15,7 @@ export interface SolanaAccountModalProps {
 export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
   const wallet = useSolanaWallet();
   const { disconnect } = useSolanaDisconnectWallet();
-  const { formattedSol } = useSolanaBalance({ enabled: open && wallet.isConnected });
+  const { lastUpdated, solBalance } = useSolanaBalance({ enabled: open && wallet.isConnected });
 
   if (!wallet.account) {
     return null;
@@ -35,7 +36,7 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
         <ProfileDetailsView
           accountName={formatAddress(wallet.account)}
           address={wallet.account}
-          balanceLabel={formattedSol}
+          balanceLabel={lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined}
           onClose={onClose}
           onDisconnect={() => {
             void disconnect();

@@ -19,9 +19,15 @@ export function SolanaChainModal({ onClose, open }: SolanaChainModalProps) {
     const clusterId = String(networkId);
 
     setPendingClusterId(clusterId);
+    // Match the EVM ChainModal's onSettled behavior: close and clear the
+    // pending state on both success and failure instead of leaving a
+    // rejected switch as an unhandled rejection with the modal stuck open.
     setCluster(clusterId as Parameters<typeof setCluster>[0])
-      .then(onClose)
-      .finally(() => setPendingClusterId(null));
+      .catch(() => {})
+      .finally(() => {
+        setPendingClusterId(null);
+        onClose();
+      });
   };
 
   return (

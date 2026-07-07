@@ -1,34 +1,16 @@
-import type React from "react";
+import type { DefaultConfigOptions } from "@solana/connector";
 
 import {
   getDefaultConfig as getConnectorDefaultConfig,
   getDefaultMobileConfig as getConnectorDefaultMobileConfig,
 } from "@solana/connector/react";
 
-import type { SolanaCluster, SolanaConnectorConfig, SolanaKitConfig, SolanaNetwork } from "../types";
+import type { SolanaKitConfig, SolanaNetwork } from "../types";
 
-export interface SolanaDefaultConfigOptions {
-  additionalWallets?: unknown[];
-  appName: string;
-  appUrl?: string;
-  autoConnect?: boolean;
-  clusterStorageKey?: string;
-  clusters?: SolanaCluster[];
-  coingecko?: SolanaConnectorConfig["coingecko"];
-  customClusters?: SolanaCluster[];
-  debug?: boolean;
-  enableErrorBoundary?: boolean;
-  enableMobile?: boolean;
-  imageProxy?: string;
-  maxRetries?: number;
-  network?: SolanaNetwork;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-  persistClusterSelection?: boolean;
-  programLabels?: Record<string, string>;
-  storage?: SolanaConnectorConfig["storage"];
+/** ConnectorKit's default-config options, minus WalletConnect (unsupported here). */
+export type SolanaDefaultConfigOptions = Omit<DefaultConfigOptions, "walletConnect"> & {
   walletConnect?: never;
-  wallets?: SolanaConnectorConfig["wallets"];
-}
+};
 
 export type SolanaDefaultConfig = SolanaKitConfig;
 
@@ -39,12 +21,8 @@ function getDefaultMobileNetwork(network: SolanaNetwork | undefined): Exclude<So
 }
 
 export function getDefaultSolanaConfig(options: SolanaDefaultConfigOptions): SolanaDefaultConfig {
-  const { walletConnect: _walletConnect, ...connectorOptions } = options as SolanaDefaultConfigOptions & {
-    walletConnect?: unknown;
-  };
-  const connectorConfig = getConnectorDefaultConfig(
-    connectorOptions as Parameters<typeof getConnectorDefaultConfig>[0],
-  ) as SolanaDefaultConfig;
+  const { walletConnect: _walletConnect, ...connectorOptions } = options;
+  const { walletConnect: _connectorWalletConnect, ...connectorConfig } = getConnectorDefaultConfig(connectorOptions);
   const mobileNetwork = getDefaultMobileNetwork(options.network);
   const mobile =
     options.enableMobile === false || !mobileNetwork

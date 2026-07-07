@@ -1,34 +1,19 @@
-const recentStorageKey = "rk-solana-recent";
-const latestStorageKey = "rk-solana-latest-id";
+import { createWalletIdStorage } from "../../wallets/walletIdStorage";
+
 const reconnectDisabledStorageKey = "rk-solana-reconnect-disabled";
 
-function safeParseJsonArray<T>(value: string | null): T[] {
-  try {
-    const parsed = value ? JSON.parse(value) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function dedupe<T>(array: T[]): T[] {
-  return [...new Set(array)];
-}
+const storage = createWalletIdStorage({ latest: "rk-solana-latest-id", recent: "rk-solana-recent" });
 
 export function getRecentSolanaWalletIds(): string[] {
-  return typeof window !== "undefined" ? safeParseJsonArray(window.localStorage.getItem(recentStorageKey)) : [];
+  return storage.getRecent();
 }
 
 export function addRecentSolanaWalletId(walletId: string): void {
-  const newValue = dedupe([walletId, ...getRecentSolanaWalletIds()]);
-
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(recentStorageKey, JSON.stringify(newValue));
-  }
+  storage.addRecent(walletId);
 }
 
 export function getLatestSolanaWalletId(): string {
-  return typeof window !== "undefined" ? window.localStorage.getItem(latestStorageKey) || "" : "";
+  return storage.getLatest();
 }
 
 export function getLastConnectedSolanaWalletId(): string {
@@ -42,14 +27,13 @@ export function getLastConnectedSolanaWalletId(): string {
 export function addLatestSolanaWalletId(walletId: string): void {
   if (typeof window !== "undefined") {
     window.localStorage.removeItem(reconnectDisabledStorageKey);
-    window.localStorage.setItem(latestStorageKey, walletId);
   }
+
+  storage.addLatest(walletId);
 }
 
 export function clearLatestSolanaWalletId(): void {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(latestStorageKey);
-  }
+  storage.clearLatest();
 }
 
 export function disableSolanaAutoReconnect(): void {

@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import {
   useBalance,
   useCluster,
@@ -41,38 +43,49 @@ export interface SolanaWalletState {
 export function useSolanaWallet(): SolanaWalletState {
   const wallet = useWallet();
 
-  return {
-    account: wallet.account ? String(wallet.account) : null,
-    accounts: wallet.accounts.map((account) => ({
-      address: String(account.address),
-      label: account.label,
-    })),
-    connectorId: wallet.connectorId ? String(wallet.connectorId) : null,
-    error: wallet.error,
-    isConnected: wallet.isConnected,
-    isConnecting: wallet.isConnecting,
-    isError: wallet.isError,
-    status: wallet.status,
-  };
+  return useMemo(
+    () => ({
+      account: wallet.account ? String(wallet.account) : null,
+      accounts: wallet.accounts.map((account) => ({
+        address: String(account.address),
+        label: account.label,
+      })),
+      connectorId: wallet.connectorId ? String(wallet.connectorId) : null,
+      error: wallet.error,
+      isConnected: wallet.isConnected,
+      isConnecting: wallet.isConnecting,
+      isError: wallet.isError,
+      status: wallet.status,
+    }),
+    [wallet],
+  );
 }
 
 export function useSolanaWalletConnectors(): SolanaWalletConnector[] {
-  return useWalletConnectors().map((connector) => ({
-    chains: connector.chains,
-    features: connector.features,
-    icon: connector.icon,
-    id: String(connector.id),
-    name: connector.name,
-    ready: connector.ready,
-  }));
+  const connectors = useWalletConnectors();
+
+  return useMemo(
+    () =>
+      connectors.map((connector) => ({
+        chains: connector.chains,
+        features: connector.features,
+        icon: connector.icon,
+        id: String(connector.id),
+        name: connector.name,
+        ready: connector.ready,
+      })),
+    [connectors],
+  );
 }
 
 export function useSolanaConnectWallet() {
   const { connect, error, isConnecting, resetError } = useConnectWallet();
 
   return {
+    // The kit's public API takes plain-string connector ids; the cast bridges
+    // to ConnectorKit's branded id type, which validates ids at runtime.
     connect: (connectorId: string, options?: SolanaConnectOptions) =>
-      connect(connectorId as Parameters<typeof connect>[0], options as Parameters<typeof connect>[1]),
+      connect(connectorId as Parameters<typeof connect>[0], options),
     error,
     isConnecting,
     resetError,
@@ -93,29 +106,17 @@ export function useSolanaDisconnectWallet(): SolanaDisconnectWalletReturn {
 }
 
 export function useSolanaCluster(): SolanaClusterReturn {
-  const cluster = useCluster();
-
-  return {
-    cluster: cluster.cluster,
-    clusters: cluster.clusters,
-    explorerUrl: cluster.explorerUrl,
-    isDevnet: cluster.isDevnet,
-    isLocal: cluster.isLocal,
-    isMainnet: cluster.isMainnet,
-    isTestnet: cluster.isTestnet,
-    setCluster: (id) => cluster.setCluster(id as Parameters<typeof cluster.setCluster>[0]),
-    type: cluster.type,
-  };
+  return useCluster();
 }
 
 export function useSolanaBalance(options?: SolanaBalanceOptions): SolanaBalanceReturn {
-  return useBalance(options as Parameters<typeof useBalance>[0]) as unknown as SolanaBalanceReturn;
+  return useBalance(options);
 }
 
 export function useSolanaClient(): SolanaClientReturn {
-  return useConnectorSolanaClient() as SolanaClientReturn;
+  return useConnectorSolanaClient();
 }
 
 export function useSolanaKitTransactionSigner(): SolanaKitTransactionSignerReturn {
-  return useKitTransactionSigner() as SolanaKitTransactionSignerReturn;
+  return useKitTransactionSigner();
 }

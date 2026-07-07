@@ -8,12 +8,16 @@ const solanaMock = vi.hoisted(() => ({
   balance: {
     abort: vi.fn(),
     error: null as Error | null,
-    formattedSol: "1.25 SOL",
+    // ConnectorKit formats with 4 decimals; the kit re-formats solBalance with
+    // the shared abbreviateETHBalance (3 decimals below 1) for EVM parity.
+    formattedSol: "0.1234 SOL",
     isLoading: false,
-    lamports: 1250000000n,
-    lastUpdated: null,
+    lamports: 123456000n,
+    // A successful fetch always stamps lastUpdated; the connect button hides
+    // the balance until then to avoid rendering the hook's 0n default.
+    lastUpdated: new Date(0) as Date | null,
     refetch: vi.fn(),
-    solBalance: 1.25,
+    solBalance: 0.123456,
     tokens: [],
   },
   appProviderProps: [] as {
@@ -270,7 +274,7 @@ describe("Solana entrypoint", () => {
     await renderWithSolanaProvider(<SolanaConnectButton />);
 
     expect(await screen.findByTestId("rk-account-button")).toHaveTextContent("5Gv8…3vR8");
-    expect(screen.getByTestId("rk-account-button")).toHaveTextContent("1.25 SOL");
+    expect(screen.getByTestId("rk-account-button")).toHaveTextContent("0.123 SOL");
   });
 
   it("copies and disconnects from the Solana account modal", async () => {

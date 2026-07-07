@@ -40,7 +40,6 @@ overrides:
   "@solana/connector>@solana/keychain-privy": "-"
   "@solana/connector>@solana/keychain-turnkey": "-"
   "@solana/connector>@solana/keychain-vault": "-"
-  "@solana/connector>@solana/web3.js": "-"
   "@solana/connector>@walletconnect/universal-provider": "-"
 
 packageExtensions:

@@ -1,19 +1,10 @@
-import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo } from "react";
 
+import { useModalStateValue } from "../../../components/RainbowKitProvider/ModalContext";
 import { useSolanaCluster, useSolanaWallet } from "../../hooks";
 import { SolanaAccountModal } from "../SolanaAccountModal/SolanaAccountModal";
 import { SolanaChainModal } from "../SolanaChainModal/SolanaChainModal";
 import { SolanaConnectModal } from "../SolanaConnectModal/SolanaConnectModal";
-
-function useModalStateValue() {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  return {
-    closeModal: useCallback(() => setModalOpen(false), []),
-    isModalOpen,
-    openModal: useCallback(() => setModalOpen(true), []),
-  };
-}
 
 interface SolanaModalContextValue {
   accountModalOpen: boolean;
@@ -104,16 +95,6 @@ export function SolanaModalProvider({ children }: { children: ReactNode }) {
       />
     </SolanaModalContext.Provider>
   );
-}
-
-export function useSolanaModalState() {
-  const { accountModalOpen, chainModalOpen, connectModalOpen } = useContext(SolanaModalContext);
-
-  return {
-    accountModalOpen,
-    chainModalOpen,
-    connectModalOpen,
-  };
 }
 
 export function useSolanaAccountModal() {

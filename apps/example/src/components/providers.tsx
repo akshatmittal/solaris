@@ -52,10 +52,6 @@ const solanaConfig = getDefaultSolanaConfig({
   },
 });
 
-export function Providers({ children }: PropsWithChildren) {
-  return <>{children}</>;
-}
-
 export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
 

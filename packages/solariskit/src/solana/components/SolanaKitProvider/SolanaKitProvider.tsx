@@ -41,10 +41,7 @@ function splitConnectorKitConfig(config: SolanaKitProviderProps["config"]): {
   }
 
   const { mobile, ...connectorConfig } = config;
-  return {
-    connectorConfig: connectorConfig as AppProviderProps["connectorConfig"],
-    mobile: mobile as AppProviderProps["mobile"],
-  };
+  return { connectorConfig, mobile };
 }
 
 function SolanaAutoConnect() {
@@ -76,12 +73,12 @@ function SolanaAutoConnect() {
       }
 
       attemptedReconnect.current = true;
-      addLatestSolanaWalletId(walletId);
       void connectRef
         .current?.(walletId, {
           allowInteractiveFallback: false,
           silent: true,
         })
+        .then(() => addLatestSolanaWalletId(walletId))
         .catch(() => {});
     }, reconnectDelayMs);
 
@@ -132,7 +129,7 @@ export function SolanaKitProvider({
       connectorConfig={connectorConfig}
       mobile={mobile}
     >
-      <SolanaAutoConnect />
+      {config?.autoConnect !== false && <SolanaAutoConnect />}
       <ModalSizeProvider modalSize={modalSize}>
         <AvatarContext.Provider value={avatarContext}>
           <AppContext.Provider value={appContext}>

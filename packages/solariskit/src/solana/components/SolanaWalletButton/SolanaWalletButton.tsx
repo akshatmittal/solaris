@@ -48,14 +48,30 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
     [connectorId, connectors],
   );
 
+  // Wallet Standard connectors are detected at runtime, so the list is empty
+  // during SSR and in browsers without a Solana wallet installed.
   if (!connector) {
-    throw new Error("Connector not found");
+    return (
+      <>
+        {children({
+          connected: false,
+          connector: {
+            iconUrl: fallbackWalletIcon,
+            id: connectorId ?? "unknown",
+            name: connectorId ?? "Wallet",
+            ready: false,
+          },
+          connect: async () => openConnectModal?.(),
+          error: isError,
+          loading: false,
+          mounted: isMounted(),
+          ready: false,
+        })}
+      </>
+    );
   }
 
   const connectWallet = async () => {
-    addLatestSolanaWalletId(connector.id);
-    addRecentSolanaWalletId(connector.id);
-
     if (!connector.ready) {
       openConnectModal?.();
       return;
@@ -65,6 +81,8 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
       setLoading(true);
       if (isError) setIsError(false);
       await connect(connector.id);
+      addLatestSolanaWalletId(connector.id);
+      addRecentSolanaWalletId(connector.id);
     } catch {
       setIsError(true);
     } finally {
