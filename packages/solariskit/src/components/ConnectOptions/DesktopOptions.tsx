@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
@@ -13,7 +13,6 @@ import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
 import { BackIcon } from "../Icons/Back";
 import { InfoButton } from "../InfoButton/InfoButton";
-import { ModalSelection } from "../ModalSelection/ModalSelection";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
@@ -21,6 +20,7 @@ import { Text } from "../Text/Text";
 import { ConnectDetail } from "./ConnectDetails";
 import { GET_WALLET_URL } from "./constants";
 import { ScrollClassName, sidebar, sidebarCompactMode } from "./DesktopOptions.css";
+import { WalletListView } from "./WalletListView";
 
 export enum WalletStep {
   None = "NONE",
@@ -57,8 +57,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
-
-  const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
 
   const connectToWallet = (wallet: WalletConnector) => {
     setConnectionError(false);
@@ -245,52 +243,11 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
             className={ScrollClassName}
             paddingBottom="18"
           >
-            {Object.entries(groupedWallets).map(
-              ([groupName, wallets]) =>
-                wallets.length > 0 && (
-                  <Fragment key={groupName}>
-                    {groupName ? (
-                      <Box
-                        marginBottom="8"
-                        marginTop="16"
-                        marginX="6"
-                      >
-                        <Text
-                          color={groupName === "Installed" ? "accentColor" : "modalTextSecondary"}
-                          size="14"
-                          weight="bold"
-                        >
-                          {supportedGroupNames.includes(groupName)
-                            ? t(`connector_group.${groupName.toLowerCase()}`)
-                            : groupName}
-                        </Text>
-                      </Box>
-                    ) : null}
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      gap="4"
-                    >
-                      {wallets.map((wallet) => {
-                        return (
-                          <ModalSelection
-                            currentlySelected={wallet.id === selectedOptionId}
-                            iconBackground={wallet.iconBackground}
-                            iconUrl={wallet.iconUrl}
-                            key={wallet.id}
-                            name={wallet.name}
-                            onClick={() => selectWallet(wallet)}
-                            ready={wallet.ready}
-                            recent={wallet.recent}
-                            testId={`wallet-option-${wallet.id}`}
-                            isRainbowKitConnector={wallet.isRainbowKitConnector}
-                          />
-                        );
-                      })}
-                    </Box>
-                  </Fragment>
-                ),
-            )}
+            <WalletListView
+              groupedWallets={groupedWallets}
+              onSelectWallet={(wallet) => selectWallet(wallet as WalletConnector)}
+              selectedWalletId={selectedOptionId}
+            />
           </Box>
           {compactModeEnabled && (
             <>

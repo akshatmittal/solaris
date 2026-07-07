@@ -33,6 +33,37 @@ overrides:
   "typescript": "catalog:"
   "abitype>zod": "-"
   "react-native": "-"
+  "@solana/connector>@solana/connector-debugger": "-"
+  "@solana/connector>@solana/keychain": "-"
+  "@solana/connector>@solana/keychain-aws-kms": "-"
+  "@solana/connector>@solana/keychain-fireblocks": "-"
+  "@solana/connector>@solana/keychain-privy": "-"
+  "@solana/connector>@solana/keychain-turnkey": "-"
+  "@solana/connector>@solana/keychain-vault": "-"
+  "@solana/connector>@solana/web3.js": "-"
+  "@solana/connector>@walletconnect/universal-provider": "-"
+
+packageExtensions:
+  "@solana/connector@*":
+    peerDependenciesMeta:
+      "@solana/connector-debugger":
+        optional: true
+      "@solana/keychain":
+        optional: true
+      "@solana/keychain-aws-kms":
+        optional: true
+      "@solana/keychain-fireblocks":
+        optional: true
+      "@solana/keychain-privy":
+        optional: true
+      "@solana/keychain-turnkey":
+        optional: true
+      "@solana/keychain-vault":
+        optional: true
+      "@solana/web3.js":
+        optional: true
+      "@walletconnect/universal-provider":
+        optional: true
 
 catalogMode: manual
 strictDepBuilds: false

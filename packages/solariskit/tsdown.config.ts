@@ -44,6 +44,7 @@ export default defineConfig({
   entry: {
     index: "./src/index.ts",
     "components/index": "./src/components/index.ts",
+    "solana/index": "./src/solana/index.ts",
     "wallets/walletConnectors/index": "./src/wallets/walletConnectors/index.ts",
   },
   format: "esm",

@@ -1,4 +1,4 @@
-import React, { type ReactNode, createContext, useContext } from "react";
+import React, { type ReactNode } from "react";
 
 import type { Chain } from "wagmi/chains";
 
@@ -16,29 +16,11 @@ import { ModalSizeOptions, ModalSizeProvider, type ModalSizes } from "./ModalSiz
 import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
+import { ThemeIdProvider, createThemeRootProps, createThemeRootSelector } from "./ThemeRootContext";
 import { useFingerprint } from "./useFingerprint";
 import { usePreloadImages } from "./usePreloadImages";
 import { WalletButtonProvider } from "./WalletButtonContext";
 import { clearWalletConnectDeepLink } from "./walletConnectDeepLink";
-
-const ThemeIdContext = createContext<string | undefined>(undefined);
-
-const attr = "data-rk";
-
-const createThemeRootProps = (id: string | undefined) => ({ [attr]: id || "" });
-
-const createThemeRootSelector = (id: string | undefined) => {
-  if (id && !/^[a-zA-Z0-9_]+$/.test(id)) {
-    throw new Error(`Invalid ID: ${id}`);
-  }
-
-  return id ? `[${attr}="${id}"]` : `[${attr}]`;
-};
-
-export const useThemeRootProps = () => {
-  const id = useContext(ThemeIdContext);
-  return createThemeRootProps(id);
-};
 
 export type Theme =
   | ThemeVars
@@ -117,7 +99,7 @@ export function RainbowKitProvider({
             <TransactionStoreProvider>
               <AvatarContext.Provider value={avatarContext}>
                 <AppContext.Provider value={appContext}>
-                  <ThemeIdContext.Provider value={id}>
+                  <ThemeIdProvider id={id}>
                     <ShowBalanceProvider>
                       <ModalProvider>
                         {theme ? (
@@ -130,7 +112,7 @@ export function RainbowKitProvider({
                         )}
                       </ModalProvider>
                     </ShowBalanceProvider>
-                  </ThemeIdContext.Provider>
+                  </ThemeIdProvider>
                 </AppContext.Provider>
               </AvatarContext.Provider>
             </TransactionStoreProvider>
