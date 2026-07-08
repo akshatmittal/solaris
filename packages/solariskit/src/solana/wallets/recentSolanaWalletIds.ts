@@ -1,4 +1,9 @@
-import { createWalletIdStorage } from "../../wallets/walletIdStorage";
+import {
+  createWalletIdStorage,
+  getStorageItem,
+  removeStorageItem,
+  setStorageItem,
+} from "../../wallets/walletIdStorage";
 
 const reconnectDisabledStorageKey = "rk-solana-reconnect-disabled";
 
@@ -17,7 +22,7 @@ export function getLatestSolanaWalletId(): string {
 }
 
 export function getLastConnectedSolanaWalletId(): string {
-  if (typeof window !== "undefined" && window.localStorage.getItem(reconnectDisabledStorageKey) === "true") {
+  if (getStorageItem(reconnectDisabledStorageKey) === "true") {
     return "";
   }
 
@@ -25,9 +30,7 @@ export function getLastConnectedSolanaWalletId(): string {
 }
 
 export function addLatestSolanaWalletId(walletId: string): void {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(reconnectDisabledStorageKey);
-  }
+  removeStorageItem(reconnectDisabledStorageKey);
 
   storage.addLatest(walletId);
 }
@@ -37,7 +40,5 @@ export function clearLatestSolanaWalletId(): void {
 }
 
 export function disableSolanaAutoReconnect(): void {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(reconnectDisabledStorageKey, "true");
-  }
+  setStorageItem(reconnectDisabledStorageKey, "true");
 }

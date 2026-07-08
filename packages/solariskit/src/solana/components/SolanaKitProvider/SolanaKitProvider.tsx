@@ -33,11 +33,11 @@ function splitConnectorKitConfig(config: SolanaKitProviderProps["config"]): {
   mobile?: AppProviderProps["mobile"];
 } {
   if (!config) {
-    return {};
+    return { connectorConfig: { autoConnect: true } };
   }
 
-  const { autoConnect: _autoConnect, mobile, ...connectorConfig } = config;
-  return { connectorConfig, mobile };
+  const { autoConnect = true, mobile, ...connectorConfig } = config;
+  return { connectorConfig: { ...connectorConfig, autoConnect }, mobile };
 }
 
 function SolanaAutoConnect() {

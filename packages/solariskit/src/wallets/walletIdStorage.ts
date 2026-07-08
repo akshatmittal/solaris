@@ -19,7 +19,7 @@ function getLocalStorage(): Storage | undefined {
   }
 }
 
-function getStorageItem(key: string): string | null {
+export function getStorageItem(key: string): string | null {
   try {
     return getLocalStorage()?.getItem(key) ?? null;
   } catch {
@@ -27,13 +27,13 @@ function getStorageItem(key: string): string | null {
   }
 }
 
-function setStorageItem(key: string, value: string): void {
+export function setStorageItem(key: string, value: string): void {
   try {
     getLocalStorage()?.setItem(key, value);
   } catch {}
 }
 
-function removeStorageItem(key: string): void {
+export function removeStorageItem(key: string): void {
   try {
     getLocalStorage()?.removeItem(key);
   } catch {}
