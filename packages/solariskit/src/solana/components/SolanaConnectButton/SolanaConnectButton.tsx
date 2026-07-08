@@ -1,59 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import type { SolanaConnectButtonProps } from "../../types";
 
 import { abbreviateETHBalance } from "../../../components/ConnectButton/abbreviateETHBalance";
-import { ConnectButtonView } from "../../../components/ConnectButton/ConnectButtonView";
+import { ConnectButtonView, defaultConnectButtonProps } from "../../../components/ConnectButton/ConnectButtonView";
 import { formatAddress } from "../../../components/ConnectButton/formatAddress";
+import { resolveShowBalance } from "../../../components/ConnectButton/resolveShowBalance";
 import { useShowBalance } from "../../../components/RainbowKitProvider/ShowBalanceContext";
-import { normalizeResponsiveValue } from "../../../css/sprinkles.css";
-import { useIsMounted } from "../../../hooks/useIsMounted";
-import { isMobile } from "../../../utils/isMobile";
+import { useHydrated } from "../../../hooks/useHydrated";
 import { useSolanaBalance, useSolanaWallet } from "../../hooks";
 import { useSolanaAccountModal, useSolanaConnectModal } from "../SolanaKitProvider/SolanaModalContext";
-
-const defaultProps = {
-  accountStatus: "full",
-  label: "Connect Wallet",
-  showBalance: { largeScreen: true, smallScreen: false },
-} as const;
 
 const noop = () => {};
 
 export function SolanaConnectButton({
-  accountStatus = defaultProps.accountStatus,
-  label = defaultProps.label,
-  showBalance = defaultProps.showBalance,
+  accountStatus = defaultConnectButtonProps.accountStatus,
+  label = defaultConnectButtonProps.label,
+  showBalance = defaultConnectButtonProps.showBalance,
 }: SolanaConnectButtonProps) {
   const wallet = useSolanaWallet();
   const { openAccountModal } = useSolanaAccountModal();
   const { openConnectModal } = useSolanaConnectModal();
-  const isMounted = useIsMounted();
   const { setShowBalance } = useShowBalance();
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
 
   useEffect(() => {
     setShowBalance(showBalance);
-    if (!ready) setReady(true);
-  }, [ready, setShowBalance, showBalance]);
+  }, [setShowBalance, showBalance]);
 
-  const shouldShowBalance = (() => {
-    if (typeof showBalance === "boolean") {
-      return showBalance;
-    }
-
-    return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
-  })();
+  const shouldShowBalance = resolveShowBalance(showBalance);
 
   const { lastUpdated, solBalance } = useSolanaBalance({
     enabled: wallet.isConnected && shouldShowBalance,
   });
 
-  if (!ready) {
+  if (!hydrated) {
     return null;
   }
 
-  const mounted = isMounted();
   const account = wallet.account
     ? {
         address: wallet.account,
@@ -69,15 +53,14 @@ export function SolanaConnectButton({
     <ConnectButtonView
       account={account}
       accountStatus={accountStatus}
-      buttonReady={mounted}
+      buttonReady={hydrated}
       isConnected={wallet.isConnected}
       label={label}
-      mounted={mounted}
+      mounted={hydrated}
       onOpenAccountModal={openAccountModal ?? noop}
       onOpenConnectModal={openConnectModal ?? noop}
       showBalance={showBalance}
+      testIdPrefix="solana-"
     />
   );
 }
-
-SolanaConnectButton.__defaultProps = defaultProps;

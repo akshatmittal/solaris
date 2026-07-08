@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 import type { AppProviderProps } from "@solana/connector/react";
 
@@ -14,13 +14,9 @@ import {
 } from "../../../components/RainbowKitProvider/AvatarContext";
 import { ModalSizeOptions, ModalSizeProvider } from "../../../components/RainbowKitProvider/ModalSizeContext";
 import { ShowBalanceProvider } from "../../../components/RainbowKitProvider/ShowBalanceContext";
-import {
-  ThemeIdProvider,
-  createThemeRootProps,
-  createThemeRootSelector,
-} from "../../../components/RainbowKitProvider/ThemeRootContext";
+import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "../../../components/RainbowKitProvider/ThemeRootContext";
 import { useFingerprint } from "../../../components/RainbowKitProvider/useFingerprint";
-import { cssStringFromTheme } from "../../../css/cssStringFromTheme";
+import { WalletButtonProvider } from "../../../components/RainbowKitProvider/WalletButtonContext";
 import { lightTheme } from "../../../themes/lightTheme";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
 import { addLatestSolanaWalletId, getLastConnectedSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
@@ -48,12 +44,17 @@ function SolanaAutoConnect() {
   const attemptedReconnect = useRef(false);
   const connectRef = useRef<ReturnType<typeof useSolanaConnectWallet>["connect"] | null>(null);
   const wallet = useSolanaWallet();
+  const walletRef = useRef(wallet);
   const connectors = useSolanaWalletConnectors();
   const { connect } = useSolanaConnectWallet();
 
   useEffect(() => {
     connectRef.current = connect;
   }, [connect]);
+
+  useEffect(() => {
+    walletRef.current = wallet;
+  }, [wallet]);
 
   useEffect(() => {
     if (attemptedReconnect.current || wallet.isConnected || wallet.isConnecting) {
@@ -73,6 +74,14 @@ function SolanaAutoConnect() {
       }
 
       attemptedReconnect.current = true;
+
+      // Recheck live wallet state: a user-initiated connect started in the
+      // last few milliseconds must not be cancelled by the silent reconnect
+      // (ConnectorKit aborts the older of two overlapping attempts).
+      if (walletRef.current.isConnected || walletRef.current.isConnecting) {
+        return;
+      }
+
       void connectRef
         .current?.(walletId, {
           allowInteractiveFallback: false,
@@ -99,30 +108,18 @@ export function SolanaKitProvider({
 }: SolanaKitProviderProps) {
   useFingerprint();
 
-  if (typeof theme === "function") {
-    throw new Error(
-      'A theme function was provided to the "theme" prop instead of a theme object. You must execute this function to get the resulting theme object.',
-    );
-  }
+  const { themeCss, themeId } = useThemeRoot(id, theme);
 
-  const selector = createThemeRootSelector(id);
-  const appContext = {
-    ...defaultAppInfo,
-    learnMoreUrl: solanaDefaultLearnMoreUrl,
-    ...appInfo,
-  };
+  const appContext = useMemo(
+    () => ({
+      ...defaultAppInfo,
+      learnMoreUrl: solanaDefaultLearnMoreUrl,
+      ...appInfo,
+    }),
+    [appInfo],
+  );
   const avatarContext: AvatarComponent = avatar ?? defaultAvatar;
-  const themeCss = theme
-    ? [
-        `${selector}{${cssStringFromTheme("lightMode" in theme ? theme.lightMode : theme)}}`,
-        "darkMode" in theme
-          ? `@media(prefers-color-scheme:dark){${selector}{${cssStringFromTheme(theme.darkMode, {
-              extends: theme.lightMode,
-            })}}}`
-          : null,
-      ].join("")
-    : null;
-  const { connectorConfig, mobile } = splitConnectorKitConfig(config);
+  const { connectorConfig, mobile } = useMemo(() => splitConnectorKitConfig(config), [config]);
 
   return (
     <AppProvider
@@ -130,26 +127,29 @@ export function SolanaKitProvider({
       mobile={mobile}
     >
       {config?.autoConnect !== false && <SolanaAutoConnect />}
-      <ModalSizeProvider modalSize={modalSize}>
-        <AvatarContext.Provider value={avatarContext}>
-          <AppContext.Provider value={appContext}>
-            <ThemeIdProvider id={id}>
-              <ShowBalanceProvider>
-                <SolanaModalProvider>
-                  {theme ? (
-                    <div {...createThemeRootProps(id)}>
-                      <style>{themeCss}</style>
+      {/* WalletButtonProvider isolates ModalSizeProvider (which reads
+          WalletButtonContext) from an outer EVM RainbowKitProvider when the
+          providers are nested rather than siblings. */}
+      <WalletButtonProvider>
+        <ModalSizeProvider modalSize={modalSize}>
+          <AvatarContext.Provider value={avatarContext}>
+            <AppContext.Provider value={appContext}>
+              <ThemeIdProvider id={themeId}>
+                <ShowBalanceProvider>
+                  <SolanaModalProvider>
+                    <ThemeRootStyle
+                      themeCss={themeCss}
+                      themeId={themeId}
+                    >
                       {children}
-                    </div>
-                  ) : (
-                    children
-                  )}
-                </SolanaModalProvider>
-              </ShowBalanceProvider>
-            </ThemeIdProvider>
-          </AppContext.Provider>
-        </AvatarContext.Provider>
-      </ModalSizeProvider>
+                    </ThemeRootStyle>
+                  </SolanaModalProvider>
+                </ShowBalanceProvider>
+              </ThemeIdProvider>
+            </AppContext.Provider>
+          </AvatarContext.Provider>
+        </ModalSizeProvider>
+      </WalletButtonProvider>
     </AppProvider>
   );
 }

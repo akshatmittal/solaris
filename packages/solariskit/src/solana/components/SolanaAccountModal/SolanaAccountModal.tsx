@@ -16,12 +16,13 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
   const wallet = useSolanaWallet();
   const { disconnect } = useSolanaDisconnectWallet();
   const { lastUpdated, solBalance } = useSolanaBalance({ enabled: open && wallet.isConnected });
+  // Unique per instance so the EVM and Solana account modals never share a
+  // DOM id for their aria-labelledby headings.
+  const titleId = `rk_account_modal_title_${React.useId()}`;
 
   if (!wallet.account) {
     return null;
   }
-
-  const titleId = "rk_account_modal_title";
 
   return (
     <Dialog
@@ -39,8 +40,11 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
           balanceLabel={lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined}
           onClose={onClose}
           onDisconnect={() => {
-            void disconnect();
+            disconnect().catch(() => {
+              // A rejected wallet disconnect keeps the session; state stays consistent.
+            });
           }}
+          titleId={titleId}
         />
       </DialogContent>
     </Dialog>

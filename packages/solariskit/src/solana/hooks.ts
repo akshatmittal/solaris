@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   useBalance,
@@ -81,28 +81,42 @@ export function useSolanaWalletConnectors(): SolanaWalletConnector[] {
 export function useSolanaConnectWallet() {
   const { connect, error, isConnecting, resetError } = useConnectWallet();
 
-  return {
-    // The kit's public API takes plain-string connector ids; the cast bridges
-    // to ConnectorKit's branded id type, which validates ids at runtime.
-    connect: (connectorId: string, options?: SolanaConnectOptions) =>
+  // The kit's public API takes plain-string connector ids; the cast bridges
+  // to ConnectorKit's branded id type, which validates ids at runtime.
+  const connectById = useCallback(
+    (connectorId: string, options?: SolanaConnectOptions) =>
       connect(connectorId as Parameters<typeof connect>[0], options),
-    error,
-    isConnecting,
-    resetError,
-  };
+    [connect],
+  );
+
+  return useMemo(
+    () => ({
+      connect: connectById,
+      error,
+      isConnecting,
+      resetError,
+    }),
+    [connectById, error, isConnecting, resetError],
+  );
 }
 
 export function useSolanaDisconnectWallet(): SolanaDisconnectWalletReturn {
   const { disconnect, isDisconnecting } = useDisconnectWallet();
 
-  return {
-    disconnect: async () => {
-      clearLatestSolanaWalletId();
-      disableSolanaAutoReconnect();
-      await disconnect();
-    },
-    isDisconnecting,
-  };
+  return useMemo(
+    () => ({
+      // Persist only after the disconnect succeeds: a rejected disconnect
+      // leaves the session connected, so the connected indicator and the
+      // auto-reconnect flags must not change.
+      disconnect: async () => {
+        await disconnect();
+        clearLatestSolanaWalletId();
+        disableSolanaAutoReconnect();
+      },
+      isDisconnecting,
+    }),
+    [disconnect, isDisconnecting],
+  );
 }
 
 export function useSolanaCluster(): SolanaClusterReturn {

@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useMemo } from "react";
 
 import type { Chain } from "wagmi/chains";
 
@@ -6,7 +6,6 @@ import { useConnectionEffect } from "wagmi";
 
 import type { ThemeVars } from "../../css/sprinkles.css";
 
-import { cssStringFromTheme } from "../../css/cssStringFromTheme";
 import { lightTheme } from "../../themes/lightTheme";
 import { TransactionStoreProvider } from "../../transactions/TransactionStoreContext";
 import { AppContext, type DisclaimerComponent, defaultAppInfo } from "./AppContext";
@@ -16,7 +15,7 @@ import { ModalSizeOptions, ModalSizeProvider, type ModalSizes } from "./ModalSiz
 import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
-import { ThemeIdProvider, createThemeRootProps, createThemeRootSelector } from "./ThemeRootContext";
+import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "./ThemeRootContext";
 import { useFingerprint } from "./useFingerprint";
 import { usePreloadImages } from "./usePreloadImages";
 import { WalletButtonProvider } from "./WalletButtonContext";
@@ -63,30 +62,17 @@ export function RainbowKitProvider({
 
   useConnectionEffect({ onDisconnect: clearWalletConnectDeepLink });
 
-  if (typeof theme === "function") {
-    throw new Error(
-      'A theme function was provided to the "theme" prop instead of a theme object. You must execute this function to get the resulting theme object.',
-    );
-  }
+  const { themeCss, themeId } = useThemeRoot(id, theme);
 
-  const selector = createThemeRootSelector(id);
-
-  const appContext = {
-    ...defaultAppInfo,
-    ...appInfo,
-  };
+  const appContext = useMemo(
+    () => ({
+      ...defaultAppInfo,
+      ...appInfo,
+    }),
+    [appInfo],
+  );
 
   const avatarContext = avatar ?? defaultAvatar;
-  const themeCss = theme
-    ? [
-        `${selector}{${cssStringFromTheme("lightMode" in theme ? theme.lightMode : theme)}}`,
-        "darkMode" in theme
-          ? `@media(prefers-color-scheme:dark){${selector}{${cssStringFromTheme(theme.darkMode, {
-              extends: theme.lightMode,
-            })}}}`
-          : null,
-      ].join("")
-    : null;
 
   return (
     <RainbowKitChainProvider
@@ -99,17 +85,15 @@ export function RainbowKitProvider({
             <TransactionStoreProvider>
               <AvatarContext.Provider value={avatarContext}>
                 <AppContext.Provider value={appContext}>
-                  <ThemeIdProvider id={id}>
+                  <ThemeIdProvider id={themeId}>
                     <ShowBalanceProvider>
                       <ModalProvider>
-                        {theme ? (
-                          <div {...createThemeRootProps(id)}>
-                            <style>{themeCss}</style>
-                            {children}
-                          </div>
-                        ) : (
-                          children
-                        )}
+                        <ThemeRootStyle
+                          themeCss={themeCss}
+                          themeId={themeId}
+                        >
+                          {children}
+                        </ThemeRootStyle>
                       </ModalProvider>
                     </ShowBalanceProvider>
                   </ThemeIdProvider>

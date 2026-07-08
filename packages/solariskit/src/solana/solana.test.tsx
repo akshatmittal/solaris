@@ -127,7 +127,7 @@ function renderWithSolanaProvider(component: React.ReactElement) {
 }
 
 async function clickChainButton() {
-  const button = await screen.findByTestId("rk-chain-button");
+  const button = await screen.findByTestId("rk-solana-chain-button");
   await user.click(button);
 }
 
@@ -187,7 +187,7 @@ describe("Solana entrypoint", () => {
   it("renders the disconnected Solana connect button", async () => {
     await renderWithSolanaProvider(<SolanaConnectButton />);
 
-    expect(await screen.findByTestId("rk-connect-button")).toHaveTextContent("Connect Wallet");
+    expect(await screen.findByTestId("rk-solana-connect-button")).toHaveTextContent("Connect Wallet");
   });
 
   it("splits a merged Solana config before passing it to ConnectorKit", async () => {
@@ -273,8 +273,8 @@ describe("Solana entrypoint", () => {
 
     await renderWithSolanaProvider(<SolanaConnectButton />);
 
-    expect(await screen.findByTestId("rk-account-button")).toHaveTextContent("5Gv8…3vR8");
-    expect(screen.getByTestId("rk-account-button")).toHaveTextContent("0.123 SOL");
+    expect(await screen.findByTestId("rk-solana-account-button")).toHaveTextContent("5Gv8…3vR8");
+    expect(screen.getByTestId("rk-solana-account-button")).toHaveTextContent("0.123 SOL");
   });
 
   it("copies and disconnects from the Solana account modal", async () => {
@@ -312,7 +312,7 @@ describe("Solana entrypoint", () => {
   it("hides the Solana cluster selector when only one cluster is available", async () => {
     await renderWithSolanaProvider(<SolanaChainSelectButton />);
 
-    expect(screen.queryByTestId("rk-chain-button")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("rk-solana-chain-button")).not.toBeInTheDocument();
   });
 
   it("opens the Solana cluster modal and switches clusters", async () => {

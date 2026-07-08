@@ -2,13 +2,11 @@ import React, { type ReactNode, useContext } from "react";
 
 import { useConnection, useConfig } from "wagmi";
 
-import { normalizeResponsiveValue } from "../../css/sprinkles.css";
 import { useIsMounted } from "../../hooks/useIsMounted";
 import { useProfile } from "../../hooks/useProfile";
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
-import { isMobile } from "../../utils/isMobile";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 import { type AuthenticationStatus, useAuthenticationStatus } from "../RainbowKitProvider/AuthenticationContext";
 import { useAccountModal, useChainModal, useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
@@ -18,6 +16,7 @@ import { ShowRecentTransactionsContext } from "../RainbowKitProvider/ShowRecentT
 import { abbreviateETHBalance } from "./abbreviateETHBalance";
 import { formatAddress } from "./formatAddress";
 import { formatENS } from "./formatENS";
+import { resolveShowBalance } from "./resolveShowBalance";
 
 const noop = () => {};
 
@@ -74,19 +73,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
 
   const { showBalance } = useShowBalance();
 
-  const computeShouldShowBalance = () => {
-    if (typeof showBalance === "boolean") {
-      return showBalance;
-    }
-
-    if (showBalance) {
-      return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
-    }
-
-    return true;
-  };
-
-  const shouldShowBalance = computeShouldShowBalance();
+  const shouldShowBalance = resolveShowBalance(showBalance);
 
   const { balance, ensAvatar, ensName } = useProfile({
     address,

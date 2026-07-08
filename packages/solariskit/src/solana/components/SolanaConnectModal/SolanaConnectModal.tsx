@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Box } from "../../../components/Box/Box";
 import { ConnectModalIntro } from "../../../components/ConnectModal/ConnectModalIntro";
@@ -12,7 +12,7 @@ import { Text } from "../../../components/Text/Text";
 import { t } from "../../../translations";
 import { isMobile } from "../../../utils/isMobile";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
-import { useSolanaConnectWallet, useSolanaWalletConnectors } from "../../hooks";
+import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
 import {
   addLatestSolanaWalletId,
   addRecentSolanaWalletId,
@@ -32,13 +32,28 @@ export interface SolanaConnectModalProps {
 }
 
 export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
-  const titleId = "rk_connect_title";
+  // Unique per instance so the EVM and Solana connect modals never share a
+  // DOM id for their aria-labelledby headings.
+  const titleId = `rk_connect_title_${React.useId()}`;
   const connectors = useSolanaWalletConnectors();
+  const walletState = useSolanaWallet();
   const { connect, error, isConnecting, resetError } = useSolanaConnectWallet();
   const [selectedWalletId, setSelectedWalletId] = useState<string | undefined>();
   const [walletStep, setWalletStep] = useState<SolanaWalletStep>(SolanaWalletStep.List);
   const modalSize = React.useContext(ModalSizeContext);
   const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
+
+  // The modal stays mounted while closed (unlike the EVM ConnectOptions,
+  // which unmount with the Dialog), so reset transient state on close: no
+  // stale selection highlight, error text, or compact learn-more step on
+  // the next open.
+  useEffect(() => {
+    if (!open) {
+      setSelectedWalletId(undefined);
+      setWalletStep(SolanaWalletStep.List);
+      resetError();
+    }
+  }, [open, resetError]);
 
   const wallets = useMemo(() => {
     const recentIds = new Set(getRecentSolanaWalletIds());
@@ -67,7 +82,10 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   }, [wallets]);
 
   const selectWallet = async (wallet: WalletListViewItem) => {
-    if (isConnecting) return;
+    // walletState.isConnecting covers attempts started elsewhere (a
+    // SolanaWalletButton or the silent auto-reconnect); starting another
+    // connect would cancel the in-flight one.
+    if (isConnecting || walletState.isConnecting) return;
 
     if (!wallet.ready) {
       window.open(SOLANA_GET_WALLET_URL, "_blank", "noopener,noreferrer");

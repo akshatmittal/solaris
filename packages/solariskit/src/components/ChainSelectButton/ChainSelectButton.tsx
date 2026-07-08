@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { useConfig, useConnection } from "wagmi";
 
 import type { ResponsiveValue } from "../../css/sprinkles.css";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
-import { useIsMounted } from "../../hooks/useIsMounted";
+import { useHydrated } from "../../hooks/useHydrated";
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 import { useChainModal } from "../RainbowKitProvider/ModalContext";
 import { useRainbowKitChains, useRainbowKitChainsById } from "../RainbowKitProvider/RainbowKitChainContext";
-import { NetworkSelectButtonView } from "./NetworkSelectButtonView";
+import { NetworkSelectButtonView, defaultNetworkSelectChainStatus } from "./NetworkSelectButtonView";
 
 export type ChainStatus = "full" | "icon" | "name" | "none";
 
@@ -19,11 +19,7 @@ export interface ChainSelectButtonProps {
   chainStatus?: ResponsiveValue<ChainStatus>;
 }
 
-const defaultProps = {
-  chainStatus: { largeScreen: "full", smallScreen: "icon" },
-} as const;
-
-export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: ChainSelectButtonProps) {
+export function ChainSelectButton({ chainStatus = defaultNetworkSelectChainStatus }: ChainSelectButtonProps) {
   const chains = useRainbowKitChains();
   const chainsById = useRainbowKitChainsById();
   const connectionStatus = useConnectionStatus();
@@ -32,8 +28,7 @@ export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: Ch
   const chainId = useSelectedChainId(connectedChainId);
   const { chains: wagmiChains } = useConfig();
   const isConnectedChainSupported = connectedChainId ? isChainIdSupported(wagmiChains, connectedChainId) : true;
-  const isMounted = useIsMounted();
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
   const chainMetadata = chainId ? chainsById[chainId] : undefined;
   const resolvedChainIconUrl = useAsyncImage(chainMetadata?.iconUrl ?? undefined);
   const chain = chainId
@@ -47,17 +42,13 @@ export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: Ch
       }
     : undefined;
 
-  useEffect(() => {
-    if (!ready) setReady(true);
-  }, [ready]);
-
-  if (!ready) {
+  if (!hydrated) {
     return null;
   }
 
   return (
     <NetworkSelectButtonView
-      buttonReady={isMounted() && connectionStatus !== "loading"}
+      buttonReady={connectionStatus !== "loading"}
       chainStatus={chainStatus}
       network={chain}
       networkCount={chains.length}
@@ -65,5 +56,3 @@ export function ChainSelectButton({ chainStatus = defaultProps.chainStatus }: Ch
     />
   );
 }
-
-ChainSelectButton.__defaultProps = defaultProps;

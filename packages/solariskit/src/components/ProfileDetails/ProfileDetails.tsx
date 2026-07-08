@@ -20,9 +20,18 @@ interface ProfileDetailsProps {
   balance: ReturnType<typeof useProfile>["balance"];
   onClose: () => void;
   onDisconnect: () => void;
+  titleId: string;
 }
 
-export function ProfileDetails({ address, ensAvatar, ensName, balance, onClose, onDisconnect }: ProfileDetailsProps) {
+export function ProfileDetails({
+  address,
+  ensAvatar,
+  ensName,
+  balance,
+  onClose,
+  onDisconnect,
+  titleId,
+}: ProfileDetailsProps) {
   const showRecentTransactions = useContext(ShowRecentTransactionsContext);
 
   if (!address) {
@@ -41,6 +50,7 @@ export function ProfileDetails({ address, ensAvatar, ensName, balance, onClose, 
       balanceLabel={balance && displayBalance ? `${displayBalance} ${balance.symbol}` : undefined}
       onClose={onClose}
       onDisconnect={onDisconnect}
+      titleId={titleId}
       transactions={showRecentTransactions ? <TxList address={address} /> : undefined}
     />
   );

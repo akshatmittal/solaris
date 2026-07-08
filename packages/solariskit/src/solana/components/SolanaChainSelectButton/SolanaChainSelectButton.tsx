@@ -1,35 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import type { SolanaChainSelectButtonProps } from "../../types";
 
-import { NetworkSelectButtonView } from "../../../components/ChainSelectButton/NetworkSelectButtonView";
+import {
+  NetworkSelectButtonView,
+  defaultNetworkSelectChainStatus,
+} from "../../../components/ChainSelectButton/NetworkSelectButtonView";
 import { getChainIconUrl } from "../../../components/RainbowKitProvider/provideRainbowKitChains";
-import { useIsMounted } from "../../../hooks/useIsMounted";
+import { useHydrated } from "../../../hooks/useHydrated";
 import { useSolanaCluster } from "../../hooks";
 import { useSolanaChainModal } from "../SolanaKitProvider/SolanaModalContext";
 
-const defaultProps = {
-  chainStatus: { largeScreen: "full", smallScreen: "icon" },
-} as const;
 const solanaIconUrl = getChainIconUrl("solana");
 
-export function SolanaChainSelectButton({ chainStatus = defaultProps.chainStatus }: SolanaChainSelectButtonProps) {
+export function SolanaChainSelectButton({
+  chainStatus = defaultNetworkSelectChainStatus,
+}: SolanaChainSelectButtonProps) {
   const { cluster, clusters } = useSolanaCluster();
   const { openChainModal } = useSolanaChainModal();
-  const isMounted = useIsMounted();
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
 
-  useEffect(() => {
-    if (!ready) setReady(true);
-  }, [ready]);
-
-  if (!ready) {
+  if (!hydrated) {
     return null;
   }
 
   return (
     <NetworkSelectButtonView
-      buttonReady={isMounted()}
+      buttonReady={hydrated}
       chainStatus={chainStatus}
       network={
         cluster
@@ -44,8 +41,7 @@ export function SolanaChainSelectButton({ chainStatus = defaultProps.chainStatus
       }
       networkCount={clusters.length}
       onOpenNetworkModal={openChainModal}
+      testIdPrefix="solana-"
     />
   );
 }
-
-SolanaChainSelectButton.__defaultProps = defaultProps;

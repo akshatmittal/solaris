@@ -19,8 +19,7 @@ export enum WalletStep {
   Connect = "CONNECT",
 }
 
-export function DesktopOptions({ onClose }: { onClose: () => void }) {
-  const titleId = "rk_connect_title";
+export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
@@ -33,6 +32,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
 
   const initialized = useRef(false);
   const selectWalletRef = useRef<((wallet: WalletConnector) => Promise<void>) | null>(null);
+  const qrRequestIdRef = useRef(0);
 
   const { connector } = useContext(WalletButtonContext);
 
@@ -69,9 +69,15 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   };
 
   const onQrCode = async (wallet: WalletConnector) => {
+    // Token guards against out-of-order async completion: clicking wallet B
+    // right after wallet A must not let A's slower QR fetch/timeout apply
+    // A's details over B's.
+    const requestId = ++qrRequestIdRef.current;
     const sWallet = wallets.find((w) => wallet.id === w.id);
 
     const uri = await sWallet?.getQrCodeUri?.();
+
+    if (requestId !== qrRequestIdRef.current) return;
 
     setQrCodeUri(uri);
 
@@ -79,6 +85,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     // otherwise users will see a flash of the "connecting" state.
     setTimeout(
       () => {
+        if (requestId !== qrRequestIdRef.current) return;
         setSelectedWallet(sWallet);
         changeWalletStep(WalletStep.Connect);
       },

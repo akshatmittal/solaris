@@ -24,7 +24,11 @@ export interface NetworkSelectButtonViewProps {
   network?: NetworkSelectButtonNetwork;
   networkCount: number;
   onOpenNetworkModal?: () => void;
+  /** Distinguishes testIds when multiple ecosystems render this view on one page. */
+  testIdPrefix?: string;
 }
+
+export const defaultNetworkSelectChainStatus = { largeScreen: "full", smallScreen: "icon" } as const;
 
 export function NetworkSelectButtonView({
   buttonReady,
@@ -32,6 +36,7 @@ export function NetworkSelectButtonView({
   network,
   networkCount,
   onOpenNetworkModal,
+  testIdPrefix = "",
 }: NetworkSelectButtonViewProps) {
   const unsupportedNetwork = network?.unsupported ?? false;
 
@@ -62,7 +67,7 @@ export function NetworkSelectButtonView({
       onClick={buttonReady ? onOpenNetworkModal : undefined}
       paddingX="10"
       paddingY="8"
-      testId={unsupportedNetwork ? "wrong-network-button" : "chain-button"}
+      testId={`${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
       transition="default"
       type="button"
       {...(!buttonReady && {

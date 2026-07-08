@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import type { ResponsiveValue } from "../../css/sprinkles.css";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
+import { useHydrated } from "../../hooks/useHydrated";
 import { useShowBalance } from "../RainbowKitProvider/ShowBalanceContext";
 import { ConnectButtonRenderer } from "./ConnectButtonRenderer";
-import { type AccountStatus, ConnectButtonView } from "./ConnectButtonView";
+import { type AccountStatus, ConnectButtonView, defaultConnectButtonProps } from "./ConnectButtonView";
 
 export interface ConnectButtonProps {
   accountStatus?: ResponsiveValue<AccountStatus>;
@@ -13,11 +14,7 @@ export interface ConnectButtonProps {
   label?: string;
 }
 
-const defaultProps = {
-  accountStatus: "full",
-  label: "Connect Wallet",
-  showBalance: { largeScreen: true, smallScreen: false },
-} as const;
+const defaultProps = defaultConnectButtonProps;
 
 export function ConnectButton({
   accountStatus = defaultProps.accountStatus,
@@ -26,14 +23,13 @@ export function ConnectButton({
 }: ConnectButtonProps) {
   const connectionStatus = useConnectionStatus();
   const { setShowBalance } = useShowBalance();
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
 
   useEffect(() => {
     setShowBalance(showBalance);
-    if (!ready) setReady(true);
-  }, [ready, setShowBalance, showBalance]);
+  }, [setShowBalance, showBalance]);
 
-  return ready ? (
+  return hydrated ? (
     <ConnectButtonRenderer>
       {({ account, mounted, openAccountModal, openConnectModal }) => {
         const buttonReady = mounted && connectionStatus !== "loading";
@@ -56,5 +52,4 @@ export function ConnectButton({
   ) : null;
 }
 
-ConnectButton.__defaultProps = defaultProps;
 ConnectButton.Custom = ConnectButtonRenderer;

@@ -90,8 +90,7 @@ export function WalletButton({
   );
 }
 
-export function MobileOptions({ onClose }: { onClose: () => void }) {
-  const titleId = "rk_connect_title";
+export function MobileOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
   const wallets = useWalletConnectors().filter((wallet) => wallet.isRainbowKitConnector);
 
   return (

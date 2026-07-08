@@ -44,12 +44,15 @@ export function SolanaModalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (wallet.isConnected) {
-      closeConnectModal();
+      // Mirror the EVM ModalContext: a completed connection (including the
+      // silent auto-reconnect) closes every open modal, not just the connect
+      // modal — e.g. a chain modal opened while disconnected.
+      closeModals();
       return;
     }
 
     closeAccountModal();
-  }, [closeAccountModal, closeConnectModal, wallet.isConnected]);
+  }, [closeAccountModal, closeModals, wallet.isConnected]);
 
   useEffect(() => {
     if (wallet.status === "disconnected") {

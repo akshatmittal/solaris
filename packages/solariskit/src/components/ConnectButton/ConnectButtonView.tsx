@@ -10,6 +10,12 @@ import { DropdownIcon } from "../Icons/Dropdown";
 
 export type AccountStatus = "full" | "avatar" | "address";
 
+export const defaultConnectButtonProps = {
+  accountStatus: "full",
+  label: "Connect Wallet",
+  showBalance: { largeScreen: true, smallScreen: false },
+} as const;
+
 export interface ConnectButtonAccount {
   address: string;
   displayBalance?: string;
@@ -28,6 +34,8 @@ export interface ConnectButtonViewProps {
   onOpenAccountModal: () => void;
   onOpenConnectModal: () => void;
   showBalance: ResponsiveValue<boolean>;
+  /** Distinguishes testIds when multiple ecosystems render this view on one page. */
+  testIdPrefix?: string;
 }
 
 export function ConnectButtonView({
@@ -40,6 +48,7 @@ export function ConnectButtonView({
   onOpenAccountModal,
   onOpenConnectModal,
   showBalance,
+  testIdPrefix = "",
 }: ConnectButtonViewProps) {
   return (
     <Box
@@ -69,7 +78,7 @@ export function ConnectButtonView({
           fontFamily="body"
           fontWeight="bold"
           onClick={onOpenAccountModal}
-          testId="account-button"
+          testId={`${testIdPrefix}account-button`}
           transition="default"
           type="button"
         >
@@ -152,7 +161,7 @@ export function ConnectButtonView({
           key="connect"
           onClick={onOpenConnectModal}
           paddingX="14"
-          testId="connect-button"
+          testId={`${testIdPrefix}connect-button`}
           transition="default"
           type="button"
         >

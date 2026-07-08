@@ -179,7 +179,9 @@ export function NetworkModalView({
   searchThreshold,
 }: NetworkModalViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const titleId = "rk_chain_modal_title";
+  // useId keeps the heading id unique when several ecosystems (EVM + Solana)
+  // mount their network modals on the same page.
+  const titleId = `rk_chain_modal_title_${React.useId()}`;
   const mobile = isMobile();
   const chainIconSize = mobile ? "36" : "28";
   const shouldShowSearch = networks.length > searchThreshold;

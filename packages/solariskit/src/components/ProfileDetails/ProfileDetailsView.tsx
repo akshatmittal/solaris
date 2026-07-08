@@ -18,6 +18,8 @@ export interface ProfileDetailsViewProps {
   balanceLabel?: string;
   onClose: () => void;
   onDisconnect: () => void;
+  /** Heading id the surrounding Dialog's aria-labelledby points at. */
+  titleId: string;
   transactions?: ReactNode;
 }
 
@@ -28,6 +30,7 @@ export function ProfileDetailsView({
   balanceLabel,
   onClose,
   onDisconnect,
+  titleId,
   transactions,
 }: ProfileDetailsViewProps) {
   const [copiedAddress, setCopiedAddress] = useState(false);
@@ -45,7 +48,6 @@ export function ProfileDetailsView({
     }
   }, [copiedAddress]);
 
-  const titleId = "rk_profile_title";
   const mobile = isMobile();
 
   return (
