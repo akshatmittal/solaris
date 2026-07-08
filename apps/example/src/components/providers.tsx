@@ -4,16 +4,31 @@ import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, getDefaultConfig } from "solariskit";
+import { SolanaKitProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
 import { http, WagmiProvider } from "wagmi";
 import { base, bsc, mainnet, polygon } from "wagmi/chains";
 import "solariskit/styles.css";
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "demo";
+const appName = "Solaris Example";
+const appUrl = "http://localhost:3000";
+const solanaClusters = [
+  {
+    id: "solana:mainnet",
+    label: "Mainnet",
+    url: process.env.NEXT_PUBLIC_SOLANA_MAINNET_RPC_URL ?? "https://public.rpc.solanavibestation.com",
+  },
+  {
+    id: "solana:devnet",
+    label: "Devnet",
+    url: process.env.NEXT_PUBLIC_SOLANA_DEVNET_RPC_URL ?? "https://api.devnet.solana.com",
+  },
+] satisfies SolanaCluster[];
 
-const config = getDefaultConfig({
+const ethereumConfig = getDefaultConfig({
   appDescription: "",
-  appName: "Solaris Example",
-  appUrl: "http://localhost:3000",
+  appName,
+  appUrl,
   chains: [mainnet, base, bsc, polygon],
   projectId: walletConnectProjectId,
   ssr: true,
@@ -25,14 +40,43 @@ const config = getDefaultConfig({
   },
 });
 
-export function Providers({ children }: PropsWithChildren) {
+const solanaConfig = getDefaultSolanaConfig({
+  appName,
+  appUrl,
+  autoConnect: true,
+  clusters: solanaClusters,
+  enableMobile: true,
+  network: "mainnet",
+  wallets: {
+    featured: ["Phantom", "Solflare", "Backpack"],
+  },
+});
+
+export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={ethereumConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
+        <RainbowKitProvider
+          id="ethereum"
+          modalSize="compact"
+        >
+          {children}
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+  );
+}
+
+export function SolanaProviders({ children }: PropsWithChildren) {
+  return (
+    <SolanaKitProvider
+      config={solanaConfig}
+      id="solana"
+      modalSize="compact"
+    >
+      {children}
+    </SolanaKitProvider>
   );
 }

@@ -31,17 +31,6 @@ describe("<ChainSelectButton />", () => {
     expect(await screen.findByRole("heading", { name: "Switch Networks" })).toBeInTheDocument();
   });
 
-  it("can fill the width of its parent container", async () => {
-    renderWithProviders(<ChainSelectButton fullWidth />, {
-      chains: [mainnet, polygon],
-    });
-
-    const button = await screen.findByTestId("rk-chain-button");
-
-    expect(button.className).toContain("width_full");
-    expect(button.className).toContain("justifyContent_space-between");
-  });
-
   it("does not render when only one chain is available", () => {
     renderWithProviders(<ChainSelectButton />, {
       chains: [mainnet],

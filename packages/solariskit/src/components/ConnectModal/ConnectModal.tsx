@@ -14,7 +14,9 @@ export interface ConnectModalProps {
 }
 
 export function ConnectModal({ onClose, open }: ConnectModalProps) {
-  const titleId = "rk_connect_title";
+  // Unique per instance so two connect modals (e.g. EVM + Solana islands)
+  // never share a DOM id for their aria-labelledby headings.
+  const titleId = `rk_connect_title_${React.useId()}`;
   const connectionStatus = useConnectionStatus();
 
   const { mutate: disconnect } = useDisconnect();
@@ -47,7 +49,10 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
           padding="0"
           wide
         >
-          <ConnectOptions onClose={onConnectModalCancel} />
+          <ConnectOptions
+            onClose={onConnectModalCancel}
+            titleId={titleId}
+          />
         </DialogContent>
       </Dialog>
     );

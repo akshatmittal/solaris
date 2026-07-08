@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { type ResponsiveValue, mapResponsiveValue, normalizeResponsiveValue } from "../../css/sprinkles.css";
-import { touchableStyles } from "../../css/touchableStyles";
+import type { ResponsiveValue } from "../../css/sprinkles.css";
+
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
-import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
-import { Avatar } from "../Avatar/Avatar";
-import { Box } from "../Box/Box";
-import { DropdownIcon } from "../Icons/Dropdown";
+import { useHydrated } from "../../hooks/useHydrated";
 import { useShowBalance } from "../RainbowKitProvider/ShowBalanceContext";
 import { ConnectButtonRenderer } from "./ConnectButtonRenderer";
-
-type AccountStatus = "full" | "avatar" | "address";
+import { type AccountStatus, ConnectButtonView, defaultConnectButtonProps } from "./ConnectButtonView";
 
 export interface ConnectButtonProps {
   accountStatus?: ResponsiveValue<AccountStatus>;
@@ -19,11 +14,7 @@ export interface ConnectButtonProps {
   label?: string;
 }
 
-const defaultProps = {
-  accountStatus: "full",
-  label: "Connect Wallet",
-  showBalance: { largeScreen: true, smallScreen: false },
-} as const;
+const defaultProps = defaultConnectButtonProps;
 
 export function ConnectButton({
   accountStatus = defaultProps.accountStatus,
@@ -32,142 +23,33 @@ export function ConnectButton({
 }: ConnectButtonProps) {
   const connectionStatus = useConnectionStatus();
   const { setShowBalance } = useShowBalance();
-  const [ready, setReady] = useState(false);
+  const hydrated = useHydrated();
 
   useEffect(() => {
     setShowBalance(showBalance);
-    if (!ready) setReady(true);
-  }, [ready, setShowBalance, showBalance]);
+  }, [setShowBalance, showBalance]);
 
-  return ready ? (
+  return hydrated ? (
     <ConnectButtonRenderer>
       {({ account, mounted, openAccountModal, openConnectModal }) => {
-        const ready = mounted && connectionStatus !== "loading";
+        const buttonReady = mounted && connectionStatus !== "loading";
 
         return (
-          <Box
-            display="flex"
-            {...(!ready && {
-              "aria-hidden": true,
-              style: {
-                opacity: 0,
-                pointerEvents: "none",
-                userSelect: "none",
-              },
-            })}
-          >
-            {ready && account && connectionStatus === "connected" ? (
-              <Box
-                alignItems="center"
-                as="button"
-                background="connectButtonBackground"
-                borderRadius="connectButton"
-                boxShadow="connectButton"
-                className={touchableStyles({
-                  active: "shrink",
-                  hover: "grow",
-                })}
-                color="connectButtonText"
-                display="flex"
-                fontFamily="body"
-                fontWeight="bold"
-                onClick={openAccountModal}
-                testId="account-button"
-                transition="default"
-                type="button"
-              >
-                {account.displayBalance && (
-                  <Box
-                    display={mapResponsiveValue(showBalance, (value) => (value ? "block" : "none"))}
-                    padding="8"
-                    paddingLeft="12"
-                  >
-                    {account.displayBalance}
-                  </Box>
-                )}
-                <Box
-                  background={
-                    normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"]
-                      ? "connectButtonInnerBackground"
-                      : "connectButtonBackground"
-                  }
-                  borderColor="connectButtonBackground"
-                  borderRadius="connectButton"
-                  borderStyle="solid"
-                  borderWidth="2"
-                  color="connectButtonText"
-                  fontFamily="body"
-                  fontWeight="bold"
-                  paddingX="8"
-                  paddingY="6"
-                  transition="default"
-                >
-                  <Box
-                    alignItems="center"
-                    display="flex"
-                    gap="6"
-                    height="24"
-                  >
-                    <Box
-                      display={mapResponsiveValue(accountStatus, (value) =>
-                        value === "full" || value === "avatar" ? "block" : "none",
-                      )}
-                    >
-                      <Avatar
-                        address={account.address}
-                        imageUrl={account.ensAvatar}
-                        loading={account.hasPendingTransactions}
-                        size={24}
-                      />
-                    </Box>
-
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                      gap="6"
-                    >
-                      <Box
-                        display={mapResponsiveValue(accountStatus, (value) =>
-                          value === "full" || value === "address" ? "block" : "none",
-                        )}
-                      >
-                        {account.displayName}
-                      </Box>
-                      <DropdownIcon />
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            ) : (
-              <Box
-                as="button"
-                background="accentColor"
-                borderRadius="connectButton"
-                boxShadow="connectButton"
-                className={touchableStyles({
-                  active: "shrink",
-                  hover: "grow",
-                })}
-                color="accentColorForeground"
-                fontFamily="body"
-                fontWeight="bold"
-                height="40"
-                key="connect"
-                onClick={openConnectModal}
-                paddingX="14"
-                testId="connect-button"
-                transition="default"
-                type="button"
-              >
-                {mounted && label === "Connect Wallet" ? t("connect_wallet.label") : label}
-              </Box>
-            )}
-          </Box>
+          <ConnectButtonView
+            account={account}
+            accountStatus={accountStatus}
+            buttonReady={buttonReady}
+            isConnected={connectionStatus === "connected"}
+            label={label}
+            mounted={mounted}
+            onOpenAccountModal={openAccountModal}
+            onOpenConnectModal={openConnectModal}
+            showBalance={showBalance}
+          />
         );
       }}
     </ConnectButtonRenderer>
   ) : null;
 }
 
-ConnectButton.__defaultProps = defaultProps;
 ConnectButton.Custom = ConnectButtonRenderer;

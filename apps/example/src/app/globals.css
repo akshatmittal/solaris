@@ -33,25 +33,39 @@ code {
 }
 
 .page-stack {
-  width: min(680px, 100%);
+  width: min(1040px, 100%);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
 }
 
-.hero,
-.showcase {
-  padding: 40px;
+.hero {
+  text-align: center;
+}
+
+.network-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.network-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 440px;
+  padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
+  border-radius: 8px;
   background: rgba(6, 12, 24, 0.78);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(18px);
   text-align: center;
 }
 
-.showcase {
-  padding: 24px;
+.solana-card {
+  border-color: rgba(103, 232, 154, 0.24);
 }
 
 .eyebrow {
@@ -63,19 +77,30 @@ code {
   text-transform: uppercase;
 }
 
-.hero h1 {
-  margin: 0;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  line-height: 0.95;
+.solana-card .eyebrow {
+  color: #8ee6b5;
 }
 
-.lede {
-  margin: 20px 0 0;
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1;
+}
+
+.network-card h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.card-copy {
+  margin: 16px 0 0;
   max-width: 52ch;
   margin-inline: auto;
   color: rgba(245, 247, 251, 0.78);
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .actions {
@@ -95,15 +120,15 @@ code {
   align-items: center;
 }
 
-.showcase-control {
-  width: 100%;
+.wallet-actions.compact {
+  margin-top: 4px;
 }
 
 .send-transaction-button {
   min-height: 40px;
   padding: 0 16px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 8px;
   background: #f5f7fb;
   color: #061020;
   cursor: pointer;
@@ -129,18 +154,49 @@ code {
   color: #ffb4b4;
 }
 
+.wallet-state {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  text-align: left;
+}
+
+.wallet-state div {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+
+.wallet-state dt,
+.wallet-state dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.wallet-state dt {
+  color: rgba(245, 247, 251, 0.58);
+  font-weight: 700;
+}
+
+.wallet-state dd {
+  color: rgba(245, 247, 251, 0.82);
+}
+
 @media (max-width: 720px) {
   .page-shell {
     padding: 20px;
   }
 
-  .hero {
-    padding: 28px;
-    border-radius: 22px;
+  .network-grid {
+    grid-template-columns: 1fr;
   }
 
-  .showcase {
+  .network-card {
+    min-height: 0;
     padding: 20px;
-    border-radius: 22px;
   }
 }

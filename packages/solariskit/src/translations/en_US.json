@@ -13,7 +13,7 @@
   },
   "connect": {
     "new_to_ethereum": {
-      "description": "New to Ethereum wallets?",
+      "description": "New to wallets?",
       "learn_more": {
         "label": "Learn More"
       }
@@ -67,7 +67,7 @@
   "intro": {
     "description": "A wallet is used to send, receive, store, and display digital assets. It's also a new way to log in, without needing to create new accounts and passwords on every website.",
     "digital_asset": {
-      "description": "Wallets are used to send, receive, store, and display digital assets like Ethereum and NFTs.",
+      "description": "Wallets are used to send, receive, store, and display digital assets like tokens and NFTs.",
       "title": "A Home for your Digital Assets"
     },
     "get": {

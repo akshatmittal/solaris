@@ -6,16 +6,22 @@ import { DesktopOptions } from "./DesktopOptions";
 import { MobileOptions } from "./MobileOptions";
 import { MobileStatus } from "./MobileStatus";
 
-export default function ConnectOptions({ onClose }: { onClose: () => void }) {
+export default function ConnectOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
   const { connector } = useContext(WalletButtonContext);
 
   return isMobile() ? (
     connector ? (
       <MobileStatus onClose={onClose} />
     ) : (
-      <MobileOptions onClose={onClose} />
+      <MobileOptions
+        onClose={onClose}
+        titleId={titleId}
+      />
     )
   ) : (
-    <DesktopOptions onClose={onClose} />
+    <DesktopOptions
+      onClose={onClose}
+      titleId={titleId}
+    />
   );
 }

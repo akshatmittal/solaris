@@ -1,26 +1,17 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { groupBy } from "../../utils/groupBy";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { Box } from "../Box/Box";
-import { CloseButton } from "../CloseButton/CloseButton";
 import { ConnectModalIntro } from "../ConnectModal/ConnectModalIntro";
-import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
-import { DisclaimerText } from "../Disclaimer/DisclaimerText";
-import { BackIcon } from "../Icons/Back";
-import { InfoButton } from "../InfoButton/InfoButton";
-import { ModalSelection } from "../ModalSelection/ModalSelection";
-import { AppContext } from "../RainbowKitProvider/AppContext";
 import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
-import { Text } from "../Text/Text";
 import { ConnectDetail } from "./ConnectDetails";
+import { ConnectModalShellView } from "./ConnectModalShellView";
 import { GET_WALLET_URL } from "./constants";
-import { ScrollClassName, sidebar, sidebarCompactMode } from "./DesktopOptions.css";
+import { WalletListView } from "./WalletListView";
 
 export enum WalletStep {
   None = "NONE",
@@ -28,8 +19,7 @@ export enum WalletStep {
   Connect = "CONNECT",
 }
 
-export function DesktopOptions({ onClose }: { onClose: () => void }) {
-  const titleId = "rk_connect_title";
+export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
@@ -38,11 +28,11 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
   const modalSize = useContext(ModalSizeContext);
   const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
-  const { disclaimer: Disclaimer } = useContext(AppContext);
   const safari = isSafari();
 
   const initialized = useRef(false);
   const selectWalletRef = useRef<((wallet: WalletConnector) => Promise<void>) | null>(null);
+  const qrRequestIdRef = useRef(0);
 
   const { connector } = useContext(WalletButtonContext);
 
@@ -57,8 +47,6 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
-
-  const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
 
   const connectToWallet = (wallet: WalletConnector) => {
     setConnectionError(false);
@@ -81,9 +69,15 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   };
 
   const onQrCode = async (wallet: WalletConnector) => {
+    // Token guards against out-of-order async completion: clicking wallet B
+    // right after wallet A must not let A's slower QR fetch/timeout apply
+    // A's details over B's.
+    const requestId = ++qrRequestIdRef.current;
     const sWallet = wallets.find((w) => wallet.id === w.id);
 
     const uri = await sWallet?.getQrCodeUri?.();
+
+    if (requestId !== qrRequestIdRef.current) return;
 
     setQrCodeUri(uri);
 
@@ -91,6 +85,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     // otherwise users will see a flash of the "connecting" state.
     setTimeout(
       () => {
+        if (requestId !== qrRequestIdRef.current) return;
         setSelectedWallet(sWallet);
         changeWalletStep(WalletStep.Connect);
       },
@@ -141,7 +136,7 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
   let walletContent = null;
   let headerLabel = null;
   let headerBackButtonLink: WalletStep | null = null;
-  let headerBackButtonCallback: () => void;
+  let headerBackButtonCallback: (() => void) | undefined;
 
   useEffect(() => {
     setConnectionError(false);
@@ -187,267 +182,33 @@ export function DesktopOptions({ onClose }: { onClose: () => void }) {
     default:
       break;
   }
+  const backButtonLink = headerBackButtonLink;
+
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      style={{ maxHeight: compactModeEnabled ? 468 : 504 }}
-    >
-      {(compactModeEnabled ? walletStep === WalletStep.None : true) && (
-        <Box
-          className={compactModeEnabled ? sidebarCompactMode : sidebar}
-          display="flex"
-          flexDirection="column"
-          marginTop="16"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-          >
-            {compactModeEnabled && Disclaimer && (
-              <Box
-                marginLeft="16"
-                width="28"
-              >
-                <InfoButton onClick={() => changeWalletStep(WalletStep.LearnCompact)} />
-              </Box>
-            )}
-            {compactModeEnabled && !Disclaimer && (
-              <Box
-                marginLeft="16"
-                width="28"
-              />
-            )}
-            <Box
-              marginLeft={compactModeEnabled ? "0" : "6"}
-              paddingBottom="8"
-              paddingTop="2"
-              paddingX="18"
-            >
-              <Text
-                as="h1"
-                color="modalText"
-                id={titleId}
-                size="18"
-                weight="heavy"
-                testId={"connect-header-label"}
-              >
-                {t("connect.title")}
-              </Text>
-            </Box>
-            {compactModeEnabled && (
-              <Box marginRight="16">
-                <CloseButton onClose={onClose} />
-              </Box>
-            )}
-          </Box>
-          <Box
-            className={ScrollClassName}
-            paddingBottom="18"
-          >
-            {Object.entries(groupedWallets).map(
-              ([groupName, wallets]) =>
-                wallets.length > 0 && (
-                  <Fragment key={groupName}>
-                    {groupName ? (
-                      <Box
-                        marginBottom="8"
-                        marginTop="16"
-                        marginX="6"
-                      >
-                        <Text
-                          color={groupName === "Installed" ? "accentColor" : "modalTextSecondary"}
-                          size="14"
-                          weight="bold"
-                        >
-                          {supportedGroupNames.includes(groupName)
-                            ? t(`connector_group.${groupName.toLowerCase()}`)
-                            : groupName}
-                        </Text>
-                      </Box>
-                    ) : null}
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      gap="4"
-                    >
-                      {wallets.map((wallet) => {
-                        return (
-                          <ModalSelection
-                            currentlySelected={wallet.id === selectedOptionId}
-                            iconBackground={wallet.iconBackground}
-                            iconUrl={wallet.iconUrl}
-                            key={wallet.id}
-                            name={wallet.name}
-                            onClick={() => selectWallet(wallet)}
-                            ready={wallet.ready}
-                            recent={wallet.recent}
-                            testId={`wallet-option-${wallet.id}`}
-                            isRainbowKitConnector={wallet.isRainbowKitConnector}
-                          />
-                        );
-                      })}
-                    </Box>
-                  </Fragment>
-                ),
-            )}
-          </Box>
-          {compactModeEnabled && (
-            <>
-              <Box
-                background="generalBorder"
-                height="1"
-                marginTop="-1"
-              />
-              {Disclaimer ? (
-                <Box
-                  paddingX="24"
-                  paddingY="16"
-                  textAlign="center"
-                >
-                  <Disclaimer
-                    Link={DisclaimerLink}
-                    Text={DisclaimerText}
-                  />
-                </Box>
-              ) : (
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  justifyContent="space-between"
-                  paddingX="24"
-                  paddingY="16"
-                >
-                  <Box paddingY="4">
-                    <Text
-                      color="modalTextSecondary"
-                      size="14"
-                      weight="medium"
-                    >
-                      {t("connect.new_to_ethereum.description")}
-                    </Text>
-                  </Box>
-                  <Box
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="row"
-                    gap="4"
-                    justifyContent="center"
-                  >
-                    <Box
-                      className={touchableStyles({
-                        active: "shrink",
-                        hover: "grow",
-                      })}
-                      cursor="pointer"
-                      onClick={() => changeWalletStep(WalletStep.LearnCompact)}
-                      paddingY="4"
-                      style={{ willChange: "transform" }}
-                      transition="default"
-                    >
-                      <Text
-                        color="accentColor"
-                        size="14"
-                        weight="bold"
-                      >
-                        {t("connect.new_to_ethereum.learn_more.label")}
-                      </Text>
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-            </>
-          )}
-        </Box>
-      )}
-      {(compactModeEnabled ? walletStep !== WalletStep.None : true) && (
-        <>
-          {!compactModeEnabled && (
-            <Box
-              background="generalBorder"
-              minWidth="1"
-              width="1"
-            />
-          )}
-          <Box
-            display="flex"
-            flexDirection="column"
-            margin="16"
-            style={{ flexGrow: 1 }}
-          >
-            <Box
-              alignItems="center"
-              display="flex"
-              justifyContent="space-between"
-              marginBottom="12"
-            >
-              <Box width="28">
-                {headerBackButtonLink && (
-                  <Box
-                    as="button"
-                    className={touchableStyles({
-                      active: "shrinkSm",
-                      hover: "growLg",
-                    })}
-                    color="accentColor"
-                    onClick={() => {
-                      if (headerBackButtonLink) {
-                        changeWalletStep(headerBackButtonLink);
-                      }
-                      headerBackButtonCallback?.();
-                    }}
-                    paddingX="8"
-                    paddingY="4"
-                    style={{
-                      boxSizing: "content-box",
-                      height: 17,
-                      willChange: "transform",
-                    }}
-                    transition="default"
-                    type="button"
-                  >
-                    <BackIcon />
-                  </Box>
-                )}
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                style={{ flexGrow: 1 }}
-              >
-                {headerLabel && (
-                  <Text
-                    color="modalText"
-                    size="18"
-                    textAlign="center"
-                    weight="heavy"
-                  >
-                    {headerLabel}
-                  </Text>
-                )}
-              </Box>
-              <CloseButton onClose={onClose} />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              style={{ minHeight: compactModeEnabled ? 396 : 432 }}
-            >
-              <Box
-                alignItems="center"
-                display="flex"
-                flexDirection="column"
-                gap="6"
-                height="full"
-                justifyContent="center"
-                marginX="8"
-              >
-                {walletContent}
-              </Box>
-            </Box>
-          </Box>
-        </>
-      )}
-    </Box>
+    <ConnectModalShellView
+      compactModeEnabled={compactModeEnabled}
+      onClose={onClose}
+      onCompactInfoClick={() => changeWalletStep(WalletStep.LearnCompact)}
+      onRightPaneBack={
+        backButtonLink
+          ? () => {
+              changeWalletStep(backButtonLink);
+              headerBackButtonCallback?.();
+            }
+          : undefined
+      }
+      rightPaneContent={walletContent}
+      rightPaneHeaderLabel={headerLabel}
+      showRightPane={compactModeEnabled ? walletStep !== WalletStep.None : true}
+      showSidebar={compactModeEnabled ? walletStep === WalletStep.None : true}
+      titleId={titleId}
+      walletList={
+        <WalletListView
+          groupedWallets={groupedWallets}
+          onSelectWallet={(wallet) => selectWallet(wallet as WalletConnector)}
+          selectedWalletId={selectedOptionId}
+        />
+      }
+    />
   );
 }

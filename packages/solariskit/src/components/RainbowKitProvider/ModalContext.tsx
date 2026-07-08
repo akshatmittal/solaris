@@ -8,7 +8,7 @@ import { ChainModal } from "../ChainModal/ChainModal";
 import { ConnectModal } from "../ConnectModal/ConnectModal";
 import { useAuthenticationStatus } from "./AuthenticationContext";
 
-function useModalStateValue() {
+export function useModalStateValue() {
   const [isModalOpen, setModalOpen] = useState(false);
 
   return {

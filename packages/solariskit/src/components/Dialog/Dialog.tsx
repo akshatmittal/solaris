@@ -4,7 +4,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import { isMobile } from "../../utils/isMobile";
 import { Box } from "../Box/Box";
-import { useThemeRootProps } from "../RainbowKitProvider/RainbowKitProvider";
+import { useThemeRootProps } from "../RainbowKitProvider/ThemeRootContext";
 import * as styles from "./Dialog.css";
 import { FocusTrap } from "./FocusTrap";
 
@@ -18,13 +18,30 @@ interface DialogProps {
   children: ReactNode;
 }
 
+// Stack of currently open dialogs across every provider instance on the
+// page, so Escape only closes the most recently opened one instead of every
+// open dialog at once (e.g. an EVM and a Solana modal open simultaneously).
+const openDialogStack: symbol[] = [];
+
 export function Dialog({ children, onClose, open, titleId }: DialogProps) {
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => open && event.key === "Escape" && onClose();
+    if (!open) return;
+
+    const token = Symbol("rk-dialog");
+    openDialogStack.push(token);
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && openDialogStack[openDialogStack.length - 1] === token) {
+        onClose();
+      }
+    };
 
     document.addEventListener("keydown", handleEscape);
 
-    return () => document.removeEventListener("keydown", handleEscape);
+    return () => {
+      openDialogStack.splice(openDialogStack.indexOf(token), 1);
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, [open, onClose]);
 
   const [bodyScrollable, setBodyScrollable] = useState(true);
