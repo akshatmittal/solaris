@@ -1,9 +1,9 @@
-import type { DefaultConfigOptions } from "@solana/connector";
+import type { DefaultConfigOptions } from "@solana/connector/headless";
 
 import {
   getDefaultConfig as getConnectorDefaultConfig,
   getDefaultMobileConfig as getConnectorDefaultMobileConfig,
-} from "@solana/connector/react";
+} from "@solana/connector/headless";
 
 import type { SolanaKitConfig, SolanaNetwork } from "../types";
 

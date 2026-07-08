@@ -6,11 +6,7 @@ import { WalletButtonView } from "../../../components/WalletButton/WalletButtonV
 import { useIsMounted } from "../../../hooks/useIsMounted";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
-import {
-  addLatestSolanaWalletId,
-  addRecentSolanaWalletId,
-  getLatestSolanaWalletId,
-} from "../../wallets/recentSolanaWalletIds";
+import { addLatestSolanaWalletId, addRecentSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
 import { useSolanaConnectModal } from "../SolanaKitProvider/SolanaModalContext";
 
 export interface SolanaWalletButtonRendererProps {
@@ -93,7 +89,7 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
   return (
     <>
       {children({
-        connected: wallet.isConnected && getLatestSolanaWalletId() === connector.id,
+        connected: wallet.isConnected && wallet.connectorId === connector.id,
         connector: {
           iconUrl: connector.icon || fallbackWalletIcon,
           id: connector.id,

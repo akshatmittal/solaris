@@ -36,7 +36,7 @@ function splitConnectorKitConfig(config: SolanaKitProviderProps["config"]): {
     return {};
   }
 
-  const { mobile, ...connectorConfig } = config;
+  const { autoConnect: _autoConnect, mobile, ...connectorConfig } = config;
   return { connectorConfig, mobile };
 }
 

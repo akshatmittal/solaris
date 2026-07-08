@@ -35,8 +35,14 @@ export function ProfileDetailsView({
 }: ProfileDetailsViewProps) {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const copyAddressAction = useCallback(() => {
-    navigator.clipboard.writeText(address);
-    setCopiedAddress(true);
+    try {
+      void navigator.clipboard.writeText(address).then(
+        () => setCopiedAddress(true),
+        () => setCopiedAddress(false),
+      );
+    } catch {
+      setCopiedAddress(false);
+    }
   }, [address]);
 
   useEffect(() => {
@@ -107,7 +113,6 @@ export function ProfileDetailsView({
                 <Text
                   as="h1"
                   color="modalTextSecondary"
-                  id={titleId}
                   size={mobile ? "16" : "14"}
                   weight="semibold"
                 >

@@ -191,7 +191,10 @@ export function NetworkModalView({
       return true;
     }
 
-    return name?.toLowerCase().includes(normalizedSearchQuery) === true || String(id).includes(normalizedSearchQuery);
+    return (
+      name?.toLowerCase().includes(normalizedSearchQuery) === true ||
+      String(id).toLowerCase().includes(normalizedSearchQuery)
+    );
   });
 
   useEffect(() => {

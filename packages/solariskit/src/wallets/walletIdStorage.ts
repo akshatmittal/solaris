@@ -11,6 +11,34 @@ function dedupe<T>(array: T[]): T[] {
   return [...new Set(array)];
 }
 
+function getLocalStorage(): Storage | undefined {
+  try {
+    return typeof window !== "undefined" ? window.localStorage : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function getStorageItem(key: string): string | null {
+  try {
+    return getLocalStorage()?.getItem(key) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function setStorageItem(key: string, value: string): void {
+  try {
+    getLocalStorage()?.setItem(key, value);
+  } catch {}
+}
+
+function removeStorageItem(key: string): void {
+  try {
+    getLocalStorage()?.removeItem(key);
+  } catch {}
+}
+
 export interface WalletIdStorage {
   addLatest: (walletId: string) => void;
   addRecent: (walletId: string) => void;
@@ -20,28 +48,21 @@ export interface WalletIdStorage {
 }
 
 export function createWalletIdStorage(keys: { latest: string; recent: string }): WalletIdStorage {
-  const getRecent = (): string[] =>
-    typeof window !== "undefined" ? safeParseJsonArray(window.localStorage.getItem(keys.recent)) : [];
+  const getRecent = (): string[] => safeParseJsonArray(getStorageItem(keys.recent));
 
   return {
     addLatest: (walletId) => {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(keys.latest, walletId);
-      }
+      setStorageItem(keys.latest, walletId);
     },
     addRecent: (walletId) => {
       const newValue = dedupe([walletId, ...getRecent()]);
 
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(keys.recent, JSON.stringify(newValue));
-      }
+      setStorageItem(keys.recent, JSON.stringify(newValue));
     },
     clearLatest: () => {
-      if (typeof window !== "undefined") {
-        window.localStorage.removeItem(keys.latest);
-      }
+      removeStorageItem(keys.latest);
     },
-    getLatest: () => (typeof window !== "undefined" ? window.localStorage.getItem(keys.latest) || "" : ""),
+    getLatest: () => getStorageItem(keys.latest) || "",
     getRecent,
   };
 }

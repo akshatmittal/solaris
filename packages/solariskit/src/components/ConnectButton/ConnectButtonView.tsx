@@ -1,12 +1,12 @@
 import React from "react";
 
-import { type ResponsiveValue, mapResponsiveValue, normalizeResponsiveValue } from "../../css/sprinkles.css";
+import { type ResponsiveValue, mapResponsiveValue } from "../../css/sprinkles.css";
 import { touchableStyles } from "../../css/touchableStyles";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { Avatar } from "../Avatar/Avatar";
 import { Box } from "../Box/Box";
 import { DropdownIcon } from "../Icons/Dropdown";
+import { resolveShowBalance } from "./resolveShowBalance";
 
 export type AccountStatus = "full" | "avatar" | "address";
 
@@ -50,6 +50,8 @@ export function ConnectButtonView({
   showBalance,
   testIdPrefix = "",
 }: ConnectButtonViewProps) {
+  const shouldShowBalance = resolveShowBalance(showBalance);
+
   return (
     <Box
       display="flex"
@@ -92,11 +94,7 @@ export function ConnectButtonView({
             </Box>
           )}
           <Box
-            background={
-              normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"]
-                ? "connectButtonInnerBackground"
-                : "connectButtonBackground"
-            }
+            background={shouldShowBalance ? "connectButtonInnerBackground" : "connectButtonBackground"}
             borderColor="connectButtonBackground"
             borderRadius="connectButton"
             borderStyle="solid"
