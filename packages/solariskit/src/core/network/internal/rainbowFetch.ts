@@ -1,6 +1,9 @@
 export const RAINBOW_FETCH_ERROR = "rainbowFetchError";
 
-export interface RainbowFetchRequestOpts extends RequestInit {
+type RainbowFetchBody = RequestInit["body"] | Record<string, unknown> | readonly unknown[];
+
+export interface RainbowFetchRequestOpts extends Omit<RequestInit, "body"> {
+  body?: RainbowFetchBody;
   params?: ConstructorParameters<typeof URLSearchParams>[0]; // type of first argument of URLSearchParams constructor.
   timeout?: number;
 }
@@ -23,7 +26,7 @@ export async function rainbowFetch<TData>(url: RequestInfo, opts: RainbowFetchRe
 
   const { body, params, headers, ...otherOpts } = requestOptions;
 
-  const requestBody = body && typeof body === "object" ? JSON.stringify(body) : body;
+  const requestBody: RequestInit["body"] = body && typeof body === "object" ? JSON.stringify(body) : body;
 
   const response = await fetch(`${url}${createParams(params)}`, {
     ...otherOpts,
@@ -69,8 +72,8 @@ function createParams(params: RainbowFetchRequestOpts["params"]) {
 
 interface RainbowFetchError extends Error {
   response?: Response;
-  responseBody?: any;
-  requestBody?: RequestInit["body"];
+  responseBody?: unknown;
+  requestBody?: RainbowFetchBody;
 }
 
 function generateError({
@@ -78,11 +81,16 @@ function generateError({
   response,
   responseBody,
 }: {
-  requestBody: RequestInit["body"];
+  requestBody: RainbowFetchBody | undefined;
   response: Response;
-  responseBody: any;
+  responseBody: unknown;
 }) {
-  const message = responseBody?.error || response?.statusText || "There was an error with the request.";
+  const responseBodyError =
+    responseBody && typeof responseBody === "object" && "error" in responseBody ? responseBody.error : undefined;
+  const message =
+    (typeof responseBodyError === "string" ? responseBodyError : undefined) ||
+    response?.statusText ||
+    "There was an error with the request.";
 
   const error: RainbowFetchError = new Error(message);
 
@@ -154,7 +162,7 @@ export class RainbowFetchClient {
   /**
    * Perform a POST request with the RainbowFetchClient.
    */
-  post<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+  post<TData>(url?: RequestInfo, body?: RainbowFetchBody, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...opts,
@@ -166,7 +174,7 @@ export class RainbowFetchClient {
   /**
    * Perform a PUT request with the RainbowFetchClient.
    */
-  put<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+  put<TData>(url?: RequestInfo, body?: RainbowFetchBody, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...opts,
@@ -178,7 +186,7 @@ export class RainbowFetchClient {
   /**
    * Perform a PATCH request with the RainbowFetchClient.
    */
-  patch<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+  patch<TData>(url?: RequestInfo, body?: RainbowFetchBody, opts?: RainbowFetchRequestOpts) {
     return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...this.opts,
       ...opts,

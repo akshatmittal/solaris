@@ -12,7 +12,7 @@ export const computeWalletConnectMetaData = ({
   appDescription,
   appUrl,
   appIcon,
-}: ComputeMetaDataParameters): RainbowKitWalletConnectParameters["metadata"] => {
+}: ComputeMetaDataParameters): NonNullable<RainbowKitWalletConnectParameters["metadata"]> => {
   return {
     name: appName,
     description: appDescription ?? appName,

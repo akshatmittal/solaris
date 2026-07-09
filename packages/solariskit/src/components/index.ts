@@ -16,8 +16,6 @@ export type { AvatarProps } from "./Avatar/Avatar";
 export { EmojiAvatar } from "./Avatar/EmojiAvatar";
 export type { AvatarComponentProps as EmojiAvatarProps } from "./RainbowKitProvider/AvatarContext";
 
-export { emojiAvatarForAddress } from "./Avatar/emojiAvatarForAddress";
-
 export { AccountModal } from "./AccountModal/AccountModal";
 export type { AccountModalProps } from "./AccountModal/AccountModal";
 

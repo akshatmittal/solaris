@@ -1,4 +1,4 @@
-export function uniqueBy<key extends string, item extends Record<key, any>>(items: item[], key: key): item[] {
+export function uniqueBy<key extends string, item extends Record<key, unknown>>(items: item[], key: key): item[] {
   const filtered: item[] = [];
 
   for (const item of items) {

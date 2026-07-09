@@ -77,8 +77,6 @@ vi.mock("@solana/connector/react", () => ({
     solanaMock.appProviderProps.push({ connectorConfig, mobile });
     return children;
   },
-  getDefaultConfig: vi.fn((options: unknown) => ({ options })),
-  getDefaultMobileConfig: vi.fn((options: unknown) => ({ options })),
   useBalance: vi.fn(() => solanaMock.balance),
   useCluster: vi.fn(() => ({
     cluster: solanaMock.cluster,
@@ -112,6 +110,11 @@ vi.mock("@solana/connector/react", () => ({
   })),
   useWallet: vi.fn(() => solanaMock.wallet),
   useWalletConnectors: vi.fn(() => solanaMock.connectors),
+}));
+
+vi.mock("@solana/connector/headless", () => ({
+  getDefaultConfig: vi.fn((options: unknown) => ({ options })),
+  getDefaultMobileConfig: vi.fn((options: unknown) => ({ options })),
 }));
 
 import { SolanaAccountModal } from "./components/SolanaAccountModal/SolanaAccountModal";

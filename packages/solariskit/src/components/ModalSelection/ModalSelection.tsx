@@ -9,7 +9,7 @@ import * as styles from "./ModalSelection.css";
 
 type Props = {
   onClick?: React.MouseEventHandler<HTMLElement> | undefined;
-  as?: React.ElementType<any>;
+  as?: React.ElementType;
   currentlySelected?: boolean;
   ready?: boolean;
   recent?: boolean;

@@ -1,36 +1,36 @@
 import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import type { Address } from "viem";
+import type { Address, SignableMessage } from "viem";
 
 import { type Config, useConnection, useConnectionEffect } from "wagmi";
 
 export type AuthenticationStatus = "loading" | "unauthenticated" | "authenticated";
 
-export interface AuthenticationAdapter<Message> {
+export interface AuthenticationAdapter<Message extends SignableMessage> {
   getNonce: () => Promise<string>;
   createMessage: (args: { nonce: string; address: Address; chainId: number }) => Promise<Message> | Message;
   verify: (args: { message: Message; signature: string }) => Promise<boolean>;
   signOut: () => Promise<void>;
 }
 
-export interface AuthenticationConfig<Message> {
+export interface AuthenticationConfig<Message extends SignableMessage> {
   adapter: AuthenticationAdapter<Message>;
   status: AuthenticationStatus;
 }
 
 // Right now this function only serves to infer the generic Message type
-export function createAuthenticationAdapter<Message>(adapter: AuthenticationAdapter<Message>) {
+export function createAuthenticationAdapter<Message extends SignableMessage>(adapter: AuthenticationAdapter<Message>) {
   return adapter;
 }
 
-const AuthenticationContext = createContext<AuthenticationConfig<any> | null>(null);
+const AuthenticationContext = createContext<AuthenticationConfig<SignableMessage> | null>(null);
 
-interface RainbowKitAuthenticationProviderProps<Message> extends AuthenticationConfig<Message> {
+interface RainbowKitAuthenticationProviderProps<Message extends SignableMessage> extends AuthenticationConfig<Message> {
   enabled?: boolean;
   children: ReactNode;
 }
 
-export function RainbowKitAuthenticationProvider<Message = unknown>({
+export function RainbowKitAuthenticationProvider<Message extends SignableMessage = SignableMessage>({
   adapter,
   children,
   enabled = true,
@@ -96,7 +96,18 @@ export function RainbowKitAuthenticationProvider<Message = unknown>({
 
   return (
     <AuthenticationContext.Provider
-      value={useMemo(() => (enabled ? { adapter, status } : null), [enabled, adapter, status])}
+      value={useMemo(() => {
+        if (!enabled) return null;
+
+        const contextAdapter: AuthenticationAdapter<SignableMessage> = {
+          createMessage: adapter.createMessage,
+          getNonce: adapter.getNonce,
+          signOut: adapter.signOut,
+          verify: ({ message, signature }) => adapter.verify({ message: message as Message, signature }),
+        };
+
+        return { adapter: contextAdapter, status };
+      }, [enabled, adapter, status])}
     >
       {children}
     </AuthenticationContext.Provider>

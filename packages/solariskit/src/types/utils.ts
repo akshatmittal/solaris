@@ -68,27 +68,25 @@ export type WalletProviderFlags =
 
 export type WalletProvider = Evaluate<
   EIP1193Provider & {
-    [key in WalletProviderFlags]?: true | undefined;
+    [key in WalletProviderFlags]?: true;
   } & {
-    providers?: any[] | undefined;
+    providers?: WalletProvider[];
     /** Only exists in MetaMask as of 2022/04/03 */
-    _events?: { connect?: (() => void) | undefined } | undefined;
+    _events?: { connect?: () => void };
     /** Only exists in MetaMask as of 2022/04/03 */
-    _state?:
-      | {
-          accounts?: string[];
-          initialized?: boolean;
-          isConnected?: boolean;
-          isPermanentlyDisconnected?: boolean;
-          isUnlocked?: boolean;
-        }
-      | undefined;
+    _state?: {
+      accounts?: string[];
+      initialized?: boolean;
+      isConnected?: boolean;
+      isPermanentlyDisconnected?: boolean;
+      isUnlocked?: boolean;
+    };
   }
 >;
 
 export type WindowProvider = {
-  coinbaseWalletExtension?: WalletProvider | undefined;
-  ethereum?: WalletProvider | undefined;
-  phantom?: { ethereum: WalletProvider } | undefined;
-  providers?: any[] | undefined; // Adjust the type as needed
+  coinbaseWalletExtension?: WalletProvider;
+  ethereum?: WalletProvider;
+  phantom?: { ethereum: WalletProvider };
+  providers?: WalletProvider[];
 };
