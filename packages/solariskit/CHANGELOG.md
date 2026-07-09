@@ -1,5 +1,12 @@
 # solariskit
 
+## 1.6.0
+
+### Minor Changes
+
+- 8d873c1: Upgrade the supported Solana stack to `@solana/kit` v6 and refresh project dependencies to their latest compatible releases.
+- 8d873c1: Tighten selected internal utility and provider types, and remove the unused `emojiAvatarForAddress` helper export.
+
 ## 1.5.0
 
 ### Minor Changes
