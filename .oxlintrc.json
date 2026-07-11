@@ -6,7 +6,6 @@
     "**/dist/**",
     "**/.next/**",
     "**/.turbo/**",
-    "**/coverage/**",
     "**/.pnpm-store/**",
     "**/.output/**",
     "**/.tanstack/**",

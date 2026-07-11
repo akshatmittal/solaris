@@ -8,9 +8,6 @@
       "outputs": ["dist/**", ".next/**"],
       "dependsOn": ["^build"]
     },
-    "test": {
-      "dependsOn": ["^build"]
-    },
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
