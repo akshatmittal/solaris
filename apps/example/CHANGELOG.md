@@ -1,5 +1,13 @@
 # example
 
+## 0.0.7
+
+### Patch Changes
+
+- Updated dependencies [215fd43]
+- Updated dependencies [2a09694]
+  - solariskit@1.6.1
+
 ## 0.0.6
 
 ### Patch Changes

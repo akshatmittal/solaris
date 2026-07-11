@@ -1,5 +1,12 @@
 # solariskit
 
+## 1.6.1
+
+### Patch Changes
+
+- 215fd43: Align the compact Solana connect modal sizing with the EVM connect modal, update the default Solana learn-more destination, and show an actionable empty state when no wallets are detected.
+- 2a09694: Remove the repository test suite and its supporting tooling.
+
 ## 1.6.0
 
 ### Minor Changes
