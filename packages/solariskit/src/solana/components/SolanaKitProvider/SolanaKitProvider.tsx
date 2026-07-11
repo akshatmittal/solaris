@@ -25,7 +25,7 @@ import { SolanaModalProvider } from "./SolanaModalContext";
 export type { SolanaKitProviderProps } from "../../types";
 
 const defaultTheme = lightTheme();
-const solanaDefaultLearnMoreUrl = "https://solana.com/learn";
+const solanaDefaultLearnMoreUrl = "https://solana.com/solana-wallets";
 const reconnectDelayMs = 250;
 
 function splitConnectorKitConfig(config: SolanaKitProviderProps["config"]): {

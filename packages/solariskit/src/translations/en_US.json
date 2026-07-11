@@ -12,6 +12,10 @@
     "wrong_network": "Wrong network detected, switch or disconnect to continue."
   },
   "connect": {
+    "empty": {
+      "description": "Install a wallet to connect to this app.",
+      "title": "We could not detect a supported wallet in your browser."
+    },
     "new_to_ethereum": {
       "description": "New to wallets?",
       "learn_more": {

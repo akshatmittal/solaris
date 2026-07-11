@@ -4,6 +4,7 @@ import { Box } from "../../../components/Box/Box";
 import { ConnectModalIntro } from "../../../components/ConnectModal/ConnectModalIntro";
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
 import { MobileWalletItemView, MobileWalletListView } from "../../../components/ConnectOptions/MobileWalletListView";
+import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletListEmptyState";
 import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
@@ -24,7 +25,7 @@ enum SolanaWalletStep {
   LearnCompact = "LEARN_COMPACT",
 }
 
-const SOLANA_GET_WALLET_URL = "https://solana.com/ecosystem/explore?categories=wallet";
+const SOLANA_GET_WALLET_URL = "https://solana.com/solana-wallets";
 
 export interface SolanaConnectModalProps {
   open: boolean;
@@ -107,13 +108,21 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   };
 
   const mobile = isMobile();
+  const readyWallets = wallets.filter((wallet) => wallet.ready);
   const walletList = (
     <>
-      <WalletListView
-        groupedWallets={groupedWallets}
-        onSelectWallet={selectWallet}
-        selectedWalletId={selectedWalletId}
-      />
+      {wallets.length > 0 ? (
+        <WalletListView
+          groupedWallets={groupedWallets}
+          onSelectWallet={selectWallet}
+          selectedWalletId={selectedWalletId}
+        />
+      ) : (
+        <WalletListEmptyState
+          getWalletUrl={SOLANA_GET_WALLET_URL}
+          showAction={compactModeEnabled}
+        />
+      )}
       {error ? (
         <Box
           marginTop="12"
@@ -140,31 +149,40 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       <DialogContent
         bottomSheetOnMobile
         padding="0"
-        wide={!compactModeEnabled}
+        wide
       >
         {mobile ? (
           <MobileWalletListView
             getWalletUrl={SOLANA_GET_WALLET_URL}
             onClose={onClose}
             titleId={titleId}
-            walletItems={wallets
-              .filter((wallet) => wallet.ready)
-              .map((wallet) => (
-                <Box
-                  key={wallet.id}
-                  width="60"
-                >
-                  <MobileWalletItemView
-                    connecting={isConnecting && selectedWalletId === wallet.id}
-                    iconUrl={wallet.iconUrl}
-                    id={wallet.id}
-                    name={wallet.name}
-                    onClick={() => selectWallet(wallet)}
-                    ready={wallet.ready}
-                    recent={wallet.recent}
+            walletItems={
+              readyWallets.length > 0 ? (
+                readyWallets.map((wallet) => (
+                  <Box
+                    key={wallet.id}
+                    width="60"
+                  >
+                    <MobileWalletItemView
+                      connecting={isConnecting && selectedWalletId === wallet.id}
+                      iconUrl={wallet.iconUrl}
+                      id={wallet.id}
+                      name={wallet.name}
+                      onClick={() => selectWallet(wallet)}
+                      ready={wallet.ready}
+                      recent={wallet.recent}
+                    />
+                  </Box>
+                ))
+              ) : (
+                <Box width="full">
+                  <WalletListEmptyState
+                    getWalletUrl={SOLANA_GET_WALLET_URL}
+                    showAction={false}
                   />
                 </Box>
-              ))}
+              )
+            }
           />
         ) : (
           <ConnectModalShellView

@@ -4,6 +4,9 @@ import { screen, waitFor } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { ConnectModalIntro } from "../components/ConnectModal/ConnectModalIntro";
+import * as dialogContentStyles from "../components/Dialog/DialogContent.css";
+
 const solanaMock = vi.hoisted(() => ({
   balance: {
     abort: vi.fn(),
@@ -247,6 +250,15 @@ describe("Solana entrypoint", () => {
     });
   });
 
+  it("uses the Solana wallets page as the default learn-more destination", async () => {
+    await renderWithSolanaProvider(<ConnectModalIntro getWallet={() => {}} />);
+
+    expect(screen.getByRole("link", { name: "Learn More" })).toHaveAttribute(
+      "href",
+      "https://solana.com/solana-wallets",
+    );
+  });
+
   it("connects to a ready wallet from the Solana connect modal and records it as recent", async () => {
     await renderWithTestingLibrary(
       <SolanaConnectModal
@@ -260,6 +272,88 @@ describe("Solana entrypoint", () => {
     expect(solanaMock.connect).toHaveBeenCalledWith("wallet-standard:phantom", undefined);
     expect(JSON.parse(localStorage.getItem("rk-solana-recent") ?? "[]")).toEqual(["wallet-standard:phantom"]);
     expect(localStorage.getItem("rk-solana-latest-id")).toBe("wallet-standard:phantom");
+  });
+
+  it("uses the shared compact dialog shell for the Solana connect modal", async () => {
+    await renderWithTestingLibrary(
+      <SolanaKitProvider modalSize="compact">
+        <SolanaConnectModal
+          onClose={() => {}}
+          open
+        />
+      </SolanaKitProvider>,
+    );
+
+    const dialogContent = screen
+      .getByRole("dialog")
+      .getElementsByClassName(dialogContentStyles.dialogContentCompactMode);
+    expect(dialogContent).toHaveLength(1);
+  });
+
+  it("shows an empty state when no Solana wallets are detected", async () => {
+    solanaMock.connectors = [];
+
+    await renderWithTestingLibrary(
+      <SolanaKitProvider modalSize="compact">
+        <SolanaConnectModal
+          onClose={() => {}}
+          open
+        />
+      </SolanaKitProvider>,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("No wallets found");
+    expect(screen.getByRole("status")).toHaveTextContent("Install a wallet to connect to this app.");
+    expect(screen.getByRole("link", { name: "Get a Wallet" })).toHaveAttribute(
+      "href",
+      "https://solana.com/solana-wallets",
+    );
+  });
+
+  it("shows one get-wallet action in the wide empty state", async () => {
+    solanaMock.connectors = [];
+
+    await renderWithTestingLibrary(
+      <SolanaKitProvider>
+        <SolanaConnectModal
+          onClose={() => {}}
+          open
+        />
+      </SolanaKitProvider>,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("No wallets found");
+    expect(screen.getAllByText("Get a Wallet")).toHaveLength(1);
+  });
+
+  it("shows the empty state on mobile when no Solana wallets are ready", async () => {
+    solanaMock.connectors = [
+      {
+        chains: ["solana:mainnet"],
+        features: ["standard:connect"],
+        icon: "",
+        id: "wallet-standard:phantom",
+        name: "Phantom",
+        ready: false,
+      },
+    ];
+    const userAgent = vi.spyOn(navigator, "userAgent", "get").mockReturnValue("iPhone");
+
+    try {
+      await renderWithTestingLibrary(
+        <SolanaKitProvider modalSize="compact">
+          <SolanaConnectModal
+            onClose={() => {}}
+            open
+          />
+        </SolanaKitProvider>,
+      );
+
+      expect(screen.getByRole("status")).toHaveTextContent("No wallets found");
+      expect(screen.getAllByRole("link", { name: "Get a Wallet" })).toHaveLength(1);
+    } finally {
+      userAgent.mockRestore();
+    }
   });
 
   it("renders the connected Solana account and SOL balance", async () => {
