@@ -153,6 +153,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       >
         {mobile ? (
           <MobileWalletListView
+            error={error?.message}
             getWalletUrl={SOLANA_GET_WALLET_URL}
             onClose={onClose}
             titleId={titleId}

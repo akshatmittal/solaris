@@ -26,7 +26,7 @@ export interface WalletButtonRendererProps {
 export function WalletButtonRenderer({
   // Wallet is the same as `connector.id` which is injected into
   // wagmi connectors
-  wallet = "rainbow",
+  wallet = "injected",
   children,
 }: WalletButtonRendererProps) {
   const isMounted = useIsMounted();

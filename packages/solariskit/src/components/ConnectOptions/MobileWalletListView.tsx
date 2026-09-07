@@ -148,6 +148,7 @@ export function MobileWalletItemView({
 }
 
 export interface MobileWalletListViewProps {
+  error?: string;
   getWalletUrl: string;
   onClose: () => void;
   titleId: string;
@@ -160,7 +161,13 @@ export interface MobileWalletListViewProps {
  * disclaimer. The EVM MobileOptions and the Solana connect modal both
  * parameterize this view.
  */
-export function MobileWalletListView({ getWalletUrl, onClose, titleId, walletItems }: MobileWalletListViewProps) {
+export function MobileWalletListView({
+  error,
+  getWalletUrl,
+  onClose,
+  titleId,
+  walletItems,
+}: MobileWalletListViewProps) {
   const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
   return (
@@ -234,6 +241,23 @@ export function MobileWalletListView({ getWalletUrl, onClose, titleId, walletIte
           >
             {walletItems}
           </Box>
+
+          {error && (
+            <Box
+              background="profileForeground"
+              paddingBottom="16"
+              paddingX="20"
+              role="alert"
+            >
+              <Text
+                color="error"
+                size="14"
+                weight="medium"
+              >
+                {error}
+              </Text>
+            </Box>
+          )}
 
           <Box
             background="generalBorder"

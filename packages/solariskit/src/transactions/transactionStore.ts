@@ -2,6 +2,7 @@ import type { Address, PublicClient, TransactionReceipt } from "viem";
 
 import { waitForTransactionReceipt } from "viem/actions";
 
+import { setStorageItem } from "../wallets/walletIdStorage";
 import { getTransactionProvider } from "./getTransactionProvider";
 
 const storageKey = "rk-transactions";
@@ -19,17 +20,13 @@ export type NewTransaction = Omit<Transaction, "status">;
 
 type Data = Record<string, Record<number, Transaction[] | undefined>>;
 
-function safeParseJsonData(string: string | null): Data {
+function loadData(fallback: Data = {}): Data {
   try {
-    const value = string ? JSON.parse(string) : {};
-    return typeof value === "object" ? value : {};
+    if (typeof window === "undefined") return fallback;
+    return JSON.parse(window.localStorage.getItem(storageKey) ?? "{}") as Data;
   } catch {
-    return {};
+    return fallback;
   }
-}
-
-function loadData(): Data {
-  return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null);
 }
 
 const transactionHashRegex = /^0x([A-Fa-f0-9]{64})$/;
@@ -57,6 +54,7 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 
 export function createTransactionStore({ provider: initialProvider }: { provider: PublicClient }) {
   let data: Data = loadData();
+  let unsaved: Record<string, Record<number, { transactions: Transaction[]; cleared: boolean }>> = {};
 
   let transactionProvider: PublicClient;
   const listeners: Set<() => void> = new Set();
@@ -92,9 +90,14 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   }
 
   function clearTransactions(account: string, chainId: number): void {
-    updateTransactions(account, chainId, () => {
-      return [];
-    });
+    updateTransactions(
+      account,
+      chainId,
+      () => {
+        return [];
+      },
+      true,
+    );
   }
 
   function setTransactionStatus(account: string, chainId: number, hash: string, status: TransactionStatus): void {
@@ -156,33 +159,40 @@ export function createTransactionStore({ provider: initialProvider }: { provider
     account: string,
     chainId: number,
     updateFn: (transactions: Transaction[]) => Transaction[],
+    clear = false,
   ): void {
-    // Ensure we’re always operating on the latest data in case we have
-    // multiple instances/tabs/etc. since we write all data back to
-    // local storage after updating
-    data = loadData();
+    // Keep one retained snapshot per dirty account/chain, not a mutation history.
+    // Local hashes win conflicts; a local clear replaces its entire chain.
+    data = loadData(data);
+    for (const [account, chains] of Object.entries(unsaved)) {
+      data[account] ??= {};
+      for (const [chain, pending] of Object.entries(chains)) {
+        const chainId = Number(chain);
+        const hashes = new Set(pending.transactions.map(({ hash }) => hash));
+        data[account][chainId] = retainTransactions([
+          ...pending.transactions,
+          ...(pending.cleared ? [] : (data[account][chainId] ?? []).filter(({ hash }) => !hashes.has(hash))),
+        ]);
+      }
+    }
 
-    data[account] = data[account] ?? {};
-
-    let completedTransactionCount = 0;
-    const MAX_COMPLETED_TRANSACTIONS = 10;
-    const transactions = updateFn(data[account][chainId] ?? [])
-      // Keep the list of completed transactions from growing indefinitely
-      .filter(({ status }) => {
-        return status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS;
-      });
-
+    data[account] ??= {};
+    const transactions = retainTransactions(updateFn(data[account][chainId] ?? []));
     data[account][chainId] = transactions.length > 0 ? transactions : undefined;
+    unsaved[account] ??= {};
+    unsaved[account][chainId] = { transactions, cleared: clear || !!unsaved[account][chainId]?.cleared };
 
-    persistData();
+    if (setStorageItem(storageKey, JSON.stringify(data))) unsaved = {};
     notifyListeners();
     waitForPendingTransactions(account, chainId);
   }
 
-  function persistData(): void {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(storageKey, JSON.stringify(data));
-    }
+  function retainTransactions(transactions: Transaction[]): Transaction[] {
+    let completedTransactionCount = 0;
+    const MAX_COMPLETED_TRANSACTIONS = 10;
+    return transactions.filter(({ status }) =>
+      status === "pending" ? true : completedTransactionCount++ < MAX_COMPLETED_TRANSACTIONS,
+    );
   }
 
   function notifyListeners(): void {

@@ -1,9 +1,9 @@
+import { removeStorageItem, setStorageItem } from "../../wallets/walletIdStorage";
+
 const storageKey = "WALLETCONNECT_DEEPLINK_CHOICE";
 
 export function setWalletConnectDeepLink({ mobileUri, name }: { mobileUri: string; name: string }) {
-  if (typeof window === "undefined") return;
-
-  window.localStorage.setItem(
+  setStorageItem(
     storageKey,
     JSON.stringify({
       href: mobileUri.split("?")[0],
@@ -13,7 +13,5 @@ export function setWalletConnectDeepLink({ mobileUri, name }: { mobileUri: strin
 }
 
 export function clearWalletConnectDeepLink() {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(storageKey);
-  }
+  removeStorageItem(storageKey);
 }

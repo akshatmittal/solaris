@@ -27,10 +27,15 @@ export function getStorageItem(key: string): string | null {
   }
 }
 
-export function setStorageItem(key: string, value: string): void {
+export function setStorageItem(key: string, value: string): boolean {
   try {
-    getLocalStorage()?.setItem(key, value);
-  } catch {}
+    const storage = getLocalStorage();
+    if (!storage) return false;
+    storage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function removeStorageItem(key: string): void {

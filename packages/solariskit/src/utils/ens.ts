@@ -1,5 +1,7 @@
 import { type Address, isAddress } from "viem";
 
+import { getStorageItem, removeStorageItem, setStorageItem } from "../wallets/walletIdStorage";
+
 interface EnsData {
   ensName: string;
   expires: number;
@@ -19,13 +21,13 @@ function safeParseJsonData(string: string | null): EnsData | null {
 }
 
 export function addEnsName(address: Address, ensName: string) {
-  if (!isAddress(address) || typeof window === "undefined") return;
+  if (!isAddress(address)) return;
 
   const now = new Date();
 
   const expiry = new Date(now.getTime() + 180 * 60_000); // Set expiry to 3 hours from now
 
-  window.localStorage.setItem(
+  setStorageItem(
     getStorageEnsNameKey(address),
     JSON.stringify({
       ensName,
@@ -35,23 +37,21 @@ export function addEnsName(address: Address, ensName: string) {
 }
 
 export function getEnsName(address: Address): string | null {
-  if (typeof window === "undefined") return null;
-
-  const data = safeParseJsonData(window.localStorage.getItem(getStorageEnsNameKey(address)));
+  const data = safeParseJsonData(getStorageItem(getStorageEnsNameKey(address)));
 
   if (!data) return null;
 
   const { ensName, expires } = data;
 
   if (typeof ensName !== "string" || Number.isNaN(Number(expires))) {
-    window.localStorage.removeItem(getStorageEnsNameKey(address));
+    removeStorageItem(getStorageEnsNameKey(address));
     return null;
   }
 
   const now = new Date();
 
   if (now.getTime() > Number(expires)) {
-    window.localStorage.removeItem(getStorageEnsNameKey(address));
+    removeStorageItem(getStorageEnsNameKey(address));
     return null;
   }
 

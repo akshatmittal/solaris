@@ -1,4 +1,13 @@
-import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  type ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import type { Address, SignableMessage } from "viem";
 
@@ -42,13 +51,19 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
   // Used to track whether an active connector is changed to log user out.
   // Wagmi supports multiple connections.
   const [currentConnectorUid, setCurrentConnectorUid] = useState<string>();
+  const pendingSignOut = useRef(false);
 
-  useConnectionEffect({
-    onDisconnect: () => {
+  const signOut = useCallback(() => {
+    setCurrentConnectorUid(undefined);
+    if (enabled) {
+      pendingSignOut.current = false;
       adapter.signOut();
-      setCurrentConnectorUid(undefined);
-    },
-  });
+    } else if (status === "authenticated") {
+      pendingSignOut.current = true;
+    }
+  }, [adapter, enabled, status]);
+
+  useConnectionEffect({ onDisconnect: signOut });
 
   const handleChangedAccount = useCallback(
     (data: Parameters<Config["_internal"]["events"]["change"]>[0]) => {
@@ -56,11 +71,10 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
       if (data.accounts) {
         // If account is changed we automatically log user out.
         // Current connector uid only should be available only at "authenticated"
-        setCurrentConnectorUid(undefined);
-        adapter.signOut();
+        signOut();
       }
     },
-    [adapter],
+    [signOut],
   );
 
   // Wait for user authentication before listening to "change" event.
@@ -88,11 +102,16 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
       // If the current connector is not
       // equal to previous connector then logout
       if (connector?.uid !== currentConnectorUid) {
-        setCurrentConnectorUid(undefined);
-        adapter.signOut();
+        signOut();
       }
     }
-  }, [adapter, connector?.emitter, connector?.uid, currentConnectorUid, status]);
+  }, [connector?.emitter, connector?.uid, currentConnectorUid, signOut, status]);
+
+  // Observe wallet changes while disabled, but defer adapter side effects.
+  useEffect(() => {
+    if (status !== "authenticated") pendingSignOut.current = false;
+    if (enabled && pendingSignOut.current) signOut();
+  }, [enabled, signOut, status]);
 
   return (
     <AuthenticationContext.Provider
