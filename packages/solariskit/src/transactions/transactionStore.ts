@@ -2,6 +2,7 @@ import type { Address, PublicClient, TransactionReceipt } from "viem";
 
 import { waitForTransactionReceipt } from "viem/actions";
 
+import { setStorageItem } from "../wallets/walletIdStorage";
 import { getTransactionProvider } from "./getTransactionProvider";
 
 const storageKey = "rk-transactions";
@@ -28,8 +29,12 @@ function safeParseJsonData(string: string | null): Data {
   }
 }
 
-function loadData(): Data {
-  return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null);
+function loadData(fallback: Data = {}): Data {
+  try {
+    return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null);
+  } catch {
+    return fallback;
+  }
 }
 
 const transactionHashRegex = /^0x([A-Fa-f0-9]{64})$/;
@@ -57,6 +62,7 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 
 export function createTransactionStore({ provider: initialProvider }: { provider: PublicClient }) {
   let data: Data = loadData();
+  let persisted = true;
 
   let transactionProvider: PublicClient;
   const listeners: Set<() => void> = new Set();
@@ -159,8 +165,9 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   ): void {
     // Ensure we’re always operating on the latest data in case we have
     // multiple instances/tabs/etc. since we write all data back to
-    // local storage after updating
-    data = loadData();
+    // local storage after updating. Keep in-memory updates if storage is
+    // unavailable or the previous write failed (e.g. storage quota exceeded).
+    if (persisted) data = loadData(data);
 
     data[account] = data[account] ?? {};
 
@@ -180,9 +187,7 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   }
 
   function persistData(): void {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(storageKey, JSON.stringify(data));
-    }
+    persisted = setStorageItem(storageKey, JSON.stringify(data));
   }
 
   function notifyListeners(): void {

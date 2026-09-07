@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from "react";
 
+import { setStorageItem } from "../../wallets/walletIdStorage";
+
 const storageKey = "rk-version";
 
 function setRainbowKitVersion({ version }: { version: string }) {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(storageKey, version);
-  }
+  setStorageItem(storageKey, version);
 }
 
 export function useFingerprint() {

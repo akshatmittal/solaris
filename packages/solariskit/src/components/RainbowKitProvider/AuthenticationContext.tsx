@@ -45,7 +45,7 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
 
   useConnectionEffect({
     onDisconnect: () => {
-      adapter.signOut();
+      if (enabled) adapter.signOut();
       setCurrentConnectorUid(undefined);
     },
   });
@@ -53,20 +53,25 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
   const handleChangedAccount = useCallback(
     (data: Parameters<Config["_internal"]["events"]["change"]>[0]) => {
       // Only if account changes
-      if (data.accounts) {
+      if (enabled && data.accounts) {
         // If account is changed we automatically log user out.
         // Current connector uid only should be available only at "authenticated"
         setCurrentConnectorUid(undefined);
         adapter.signOut();
       }
     },
-    [adapter],
+    [adapter, enabled],
   );
 
   // Wait for user authentication before listening to "change" event.
   // Avoid listening immediately after wallet connection due to potential SIWE authentication delay.
   // Ensure to turn off the "change" event listener for cleanup.
   useEffect(() => {
+    if (!enabled) {
+      setCurrentConnectorUid(undefined);
+      return;
+    }
+
     // Wagmi renders emitter's partially on page load. We wanna make sure
     // the event emitters gets updated before proceeding
     if (typeof connector?.emitter?.on === "function" && status === "authenticated") {
@@ -81,10 +86,10 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
         connector.emitter.off("change", handleChangedAccount);
       };
     }
-  }, [connector?.emitter, connector?.uid, handleChangedAccount, status]);
+  }, [connector?.emitter, connector?.uid, enabled, handleChangedAccount, status]);
 
   useEffect(() => {
-    if (currentConnectorUid && typeof connector?.emitter?.on === "function" && status === "authenticated") {
+    if (enabled && currentConnectorUid && typeof connector?.emitter?.on === "function" && status === "authenticated") {
       // If the current connector is not
       // equal to previous connector then logout
       if (connector?.uid !== currentConnectorUid) {
@@ -92,7 +97,7 @@ export function RainbowKitAuthenticationProvider<Message extends SignableMessage
         adapter.signOut();
       }
     }
-  }, [adapter, connector?.emitter, connector?.uid, currentConnectorUid, status]);
+  }, [adapter, connector?.emitter, connector?.uid, currentConnectorUid, enabled, status]);
 
   return (
     <AuthenticationContext.Provider

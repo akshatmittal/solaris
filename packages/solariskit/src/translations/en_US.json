@@ -115,6 +115,7 @@
       "cancel": "Cancel",
       "preparing": "Preparing message...",
       "preparing_error": "Error preparing message, please retry!",
+      "retry": "Retry",
       "send": "Sign message"
     },
     "signature": {

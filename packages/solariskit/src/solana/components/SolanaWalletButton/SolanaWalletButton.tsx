@@ -61,7 +61,7 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
           error: isError,
           loading: false,
           mounted: isMounted(),
-          ready: false,
+          ready: !wallet.isConnecting && !!openConnectModal,
         })}
       </>
     );

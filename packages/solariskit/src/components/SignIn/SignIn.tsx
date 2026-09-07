@@ -25,9 +25,10 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
   const authAdapter = useAuthenticationAdapter();
 
   const getNonce = useCallback(async () => {
+    setState((x) => ({ ...x, errorMessage: undefined, status: "creatingMessage" }));
     try {
       const nonce = await authAdapter.getNonce();
-      setState((x) => ({ ...x, nonce }));
+      setState((x) => ({ ...x, nonce, status: "idle" }));
     } catch {
       setState((x) => ({
         ...x,
@@ -51,6 +52,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
   const mobile = isMobile();
   const { address, chain: activeChain } = useConnection();
   const { mutateAsync: signMessage } = useSignMessage();
+  const canRetryNonce = status === "idle" && !state.nonce && !!state.errorMessage;
 
   const signIn = async () => {
     try {
@@ -217,17 +219,19 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
           width="full"
         >
           <ActionButton
-            disabled={!state.nonce || status === "creatingMessage" || status === "signing" || status === "verifying"}
+            disabled={status !== "idle" || (!state.nonce && !canRetryNonce)}
             label={
-              !state.nonce || status === "creatingMessage"
-                ? t("sign_in.message.preparing")
-                : status === "signing"
-                  ? t("sign_in.signature.waiting")
-                  : status === "verifying"
-                    ? t("sign_in.signature.verifying")
-                    : t("sign_in.message.send")
+              canRetryNonce
+                ? t("sign_in.message.retry")
+                : !state.nonce || status === "creatingMessage"
+                  ? t("sign_in.message.preparing")
+                  : status === "signing"
+                    ? t("sign_in.signature.waiting")
+                    : status === "verifying"
+                      ? t("sign_in.signature.verifying")
+                      : t("sign_in.message.send")
             }
-            onClick={signIn}
+            onClick={canRetryNonce ? getNonce : signIn}
             size={mobile ? "large" : "medium"}
             testId="auth-message-button"
           />
