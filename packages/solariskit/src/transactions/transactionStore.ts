@@ -191,7 +191,7 @@ export function createTransactionStore({ provider: initialProvider }: { provider
     let completedTransactionCount = 0;
     const MAX_COMPLETED_TRANSACTIONS = 10;
     return transactions.filter(({ status }) =>
-      status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS,
+      status === "pending" ? true : completedTransactionCount++ < MAX_COMPLETED_TRANSACTIONS,
     );
   }
 
