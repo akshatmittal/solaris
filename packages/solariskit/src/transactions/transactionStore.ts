@@ -54,7 +54,7 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 
 export function createTransactionStore({ provider: initialProvider }: { provider: PublicClient }) {
   let data: Data = loadData();
-  const pendingUpdates: ((data: Data) => void)[] = [];
+  let unsaved: Record<string, Record<number, { transactions: Transaction[]; cleared: boolean }>> = {};
 
   let transactionProvider: PublicClient;
   const listeners: Set<() => void> = new Set();
@@ -90,9 +90,14 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   }
 
   function clearTransactions(account: string, chainId: number): void {
-    updateTransactions(account, chainId, () => {
-      return [];
-    });
+    updateTransactions(
+      account,
+      chainId,
+      () => {
+        return [];
+      },
+      true,
+    );
   }
 
   function setTransactionStatus(account: string, chainId: number, hash: string, status: TransactionStatus): void {
@@ -154,31 +159,40 @@ export function createTransactionStore({ provider: initialProvider }: { provider
     account: string,
     chainId: number,
     updateFn: (transactions: Transaction[]) => Transaction[],
+    clear = false,
   ): void {
-    pendingUpdates.push((data) => {
-      data[account] = data[account] ?? {};
-
-      let completedTransactionCount = 0;
-      const MAX_COMPLETED_TRANSACTIONS = 10;
-      const transactions = updateFn(data[account][chainId] ?? [])
-        // Keep the list of completed transactions from growing indefinitely
-        .filter(({ status }) => {
-          return status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS;
-        });
-
-      data[account][chainId] = transactions.length > 0 ? transactions : undefined;
-    });
-
-    // Reapply unsaved mutations to the latest snapshot, preserving other tabs'
-    // unrelated transactions. Local mutations win in order for the same hash;
-    // a local clear wins for its account/chain. These mutations are idempotent
-    // when a failed read falls back to the already-updated in-memory data.
+    // Keep one retained snapshot per dirty account/chain, not a mutation history.
+    // Local hashes win conflicts; a local clear replaces its entire chain.
     data = loadData(data);
-    for (const update of pendingUpdates) update(data);
+    for (const [account, chains] of Object.entries(unsaved)) {
+      data[account] ??= {};
+      for (const [chain, pending] of Object.entries(chains)) {
+        const chainId = Number(chain);
+        const hashes = new Set(pending.transactions.map(({ hash }) => hash));
+        data[account][chainId] = retainTransactions([
+          ...pending.transactions,
+          ...(pending.cleared ? [] : (data[account][chainId] ?? []).filter(({ hash }) => !hashes.has(hash))),
+        ]);
+      }
+    }
 
-    if (setStorageItem(storageKey, JSON.stringify(data))) pendingUpdates.length = 0;
+    data[account] ??= {};
+    const transactions = retainTransactions(updateFn(data[account][chainId] ?? []));
+    data[account][chainId] = transactions.length > 0 ? transactions : undefined;
+    unsaved[account] ??= {};
+    unsaved[account][chainId] = { transactions, cleared: clear || !!unsaved[account][chainId]?.cleared };
+
+    if (setStorageItem(storageKey, JSON.stringify(data))) unsaved = {};
     notifyListeners();
     waitForPendingTransactions(account, chainId);
+  }
+
+  function retainTransactions(transactions: Transaction[]): Transaction[] {
+    let completedTransactionCount = 0;
+    const MAX_COMPLETED_TRANSACTIONS = 10;
+    return transactions.filter(({ status }) =>
+      status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS,
+    );
   }
 
   function notifyListeners(): void {
