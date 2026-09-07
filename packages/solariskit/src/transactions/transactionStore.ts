@@ -20,39 +20,10 @@ export type NewTransaction = Omit<Transaction, "status">;
 
 type Data = Record<string, Record<number, Transaction[] | undefined>>;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function safeParseJsonData(string: string | null, fallback: Data): Data {
-  try {
-    const value: unknown = string === null ? {} : JSON.parse(string);
-    if (!isRecord(value)) return fallback;
-
-    for (const chains of Object.values(value)) {
-      if (!isRecord(chains)) return fallback;
-      for (const [chainId, transactions] of Object.entries(chains)) {
-        if (!/^\d+$/.test(chainId) || !Array.isArray(transactions)) return fallback;
-        for (const transaction of transactions) {
-          if (
-            !isRecord(transaction) ||
-            validateTransaction(transaction).length > 0 ||
-            (transaction.status !== "pending" && transaction.status !== "confirmed" && transaction.status !== "failed")
-          ) {
-            return fallback;
-          }
-        }
-      }
-    }
-    return value as Data;
-  } catch {
-    return fallback;
-  }
-}
-
 function loadData(fallback: Data = {}): Data {
   try {
-    return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null, fallback);
+    if (typeof window === "undefined") return fallback;
+    return JSON.parse(window.localStorage.getItem(storageKey) ?? "{}") as Data;
   } catch {
     return fallback;
   }
@@ -60,12 +31,10 @@ function loadData(fallback: Data = {}): Data {
 
 const transactionHashRegex = /^0x([A-Fa-f0-9]{64})$/;
 
-function validateTransaction(transaction: unknown): string[] {
-  if (!isRecord(transaction)) return ["Invalid transaction"];
-
+function validateTransaction(transaction: Transaction | NewTransaction): string[] {
   const errors: string[] = [];
 
-  if (typeof transaction.hash !== "string" || !transactionHashRegex.test(transaction.hash)) {
+  if (!transactionHashRegex.test(transaction.hash)) {
     errors.push("Invalid transaction hash");
   }
 
@@ -75,9 +44,7 @@ function validateTransaction(transaction: unknown): string[] {
 
   if (
     typeof transaction.confirmations !== "undefined" &&
-    (typeof transaction.confirmations !== "number" ||
-      !Number.isInteger(transaction.confirmations) ||
-      transaction.confirmations < 1)
+    (!Number.isInteger(transaction.confirmations) || transaction.confirmations < 1)
   ) {
     errors.push("Transaction confirmations must be a positiver integer");
   }
