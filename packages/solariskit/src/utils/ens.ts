@@ -21,7 +21,7 @@ function safeParseJsonData(string: string | null): EnsData | null {
 }
 
 export function addEnsName(address: Address, ensName: string) {
-  if (!isAddress(address) || typeof window === "undefined") return;
+  if (!isAddress(address)) return;
 
   const now = new Date();
 
@@ -37,8 +37,6 @@ export function addEnsName(address: Address, ensName: string) {
 }
 
 export function getEnsName(address: Address): string | null {
-  if (typeof window === "undefined") return null;
-
   const data = safeParseJsonData(getStorageItem(getStorageEnsNameKey(address)));
 
   if (!data) return null;

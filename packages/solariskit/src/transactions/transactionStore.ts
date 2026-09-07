@@ -176,13 +176,9 @@ export function createTransactionStore({ provider: initialProvider }: { provider
     data = loadData(data);
     for (const update of pendingUpdates) update(data);
 
-    persistData();
+    if (setStorageItem(storageKey, JSON.stringify(data))) pendingUpdates.length = 0;
     notifyListeners();
     waitForPendingTransactions(account, chainId);
-  }
-
-  function persistData(): void {
-    if (setStorageItem(storageKey, JSON.stringify(data))) pendingUpdates.length = 0;
   }
 
   function notifyListeners(): void {
