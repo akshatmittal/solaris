@@ -20,18 +20,39 @@ export type NewTransaction = Omit<Transaction, "status">;
 
 type Data = Record<string, Record<number, Transaction[] | undefined>>;
 
-function safeParseJsonData(string: string | null): Data {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function safeParseJsonData(string: string | null, fallback: Data): Data {
   try {
-    const value = string ? JSON.parse(string) : {};
-    return typeof value === "object" ? value : {};
+    const value: unknown = string === null ? {} : JSON.parse(string);
+    if (!isRecord(value)) return fallback;
+
+    for (const chains of Object.values(value)) {
+      if (!isRecord(chains)) return fallback;
+      for (const [chainId, transactions] of Object.entries(chains)) {
+        if (!/^\d+$/.test(chainId) || !Array.isArray(transactions)) return fallback;
+        for (const transaction of transactions) {
+          if (
+            !isRecord(transaction) ||
+            validateTransaction(transaction).length > 0 ||
+            (transaction.status !== "pending" && transaction.status !== "confirmed" && transaction.status !== "failed")
+          ) {
+            return fallback;
+          }
+        }
+      }
+    }
+    return value as Data;
   } catch {
-    return {};
+    return fallback;
   }
 }
 
 function loadData(fallback: Data = {}): Data {
   try {
-    return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null);
+    return safeParseJsonData(typeof window !== "undefined" ? window.localStorage.getItem(storageKey) : null, fallback);
   } catch {
     return fallback;
   }
@@ -39,10 +60,12 @@ function loadData(fallback: Data = {}): Data {
 
 const transactionHashRegex = /^0x([A-Fa-f0-9]{64})$/;
 
-function validateTransaction(transaction: Transaction | NewTransaction): string[] {
+function validateTransaction(transaction: unknown): string[] {
+  if (!isRecord(transaction)) return ["Invalid transaction"];
+
   const errors: string[] = [];
 
-  if (!transactionHashRegex.test(transaction.hash)) {
+  if (typeof transaction.hash !== "string" || !transactionHashRegex.test(transaction.hash)) {
     errors.push("Invalid transaction hash");
   }
 
@@ -52,7 +75,9 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 
   if (
     typeof transaction.confirmations !== "undefined" &&
-    (!Number.isInteger(transaction.confirmations) || transaction.confirmations < 1)
+    (typeof transaction.confirmations !== "number" ||
+      !Number.isInteger(transaction.confirmations) ||
+      transaction.confirmations < 1)
   ) {
     errors.push("Transaction confirmations must be a positiver integer");
   }
@@ -62,7 +87,7 @@ function validateTransaction(transaction: Transaction | NewTransaction): string[
 
 export function createTransactionStore({ provider: initialProvider }: { provider: PublicClient }) {
   let data: Data = loadData();
-  let persisted = true;
+  const pendingUpdates: ((data: Data) => void)[] = [];
 
   let transactionProvider: PublicClient;
   const listeners: Set<() => void> = new Set();
@@ -163,23 +188,26 @@ export function createTransactionStore({ provider: initialProvider }: { provider
     chainId: number,
     updateFn: (transactions: Transaction[]) => Transaction[],
   ): void {
-    // Ensure we’re always operating on the latest data in case we have
-    // multiple instances/tabs/etc. since we write all data back to
-    // local storage after updating. Keep in-memory updates if storage is
-    // unavailable or the previous write failed (e.g. storage quota exceeded).
-    if (persisted) data = loadData(data);
+    pendingUpdates.push((data) => {
+      data[account] = data[account] ?? {};
 
-    data[account] = data[account] ?? {};
+      let completedTransactionCount = 0;
+      const MAX_COMPLETED_TRANSACTIONS = 10;
+      const transactions = updateFn(data[account][chainId] ?? [])
+        // Keep the list of completed transactions from growing indefinitely
+        .filter(({ status }) => {
+          return status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS;
+        });
 
-    let completedTransactionCount = 0;
-    const MAX_COMPLETED_TRANSACTIONS = 10;
-    const transactions = updateFn(data[account][chainId] ?? [])
-      // Keep the list of completed transactions from growing indefinitely
-      .filter(({ status }) => {
-        return status === "pending" ? true : completedTransactionCount++ <= MAX_COMPLETED_TRANSACTIONS;
-      });
+      data[account][chainId] = transactions.length > 0 ? transactions : undefined;
+    });
 
-    data[account][chainId] = transactions.length > 0 ? transactions : undefined;
+    // Reapply unsaved mutations to the latest snapshot, preserving other tabs'
+    // unrelated transactions. Local mutations win in order for the same hash;
+    // a local clear wins for its account/chain. These mutations are idempotent
+    // when a failed read falls back to the already-updated in-memory data.
+    data = loadData(data);
+    for (const update of pendingUpdates) update(data);
 
     persistData();
     notifyListeners();
@@ -187,7 +215,7 @@ export function createTransactionStore({ provider: initialProvider }: { provider
   }
 
   function persistData(): void {
-    persisted = setStorageItem(storageKey, JSON.stringify(data));
+    if (setStorageItem(storageKey, JSON.stringify(data))) pendingUpdates.length = 0;
   }
 
   function notifyListeners(): void {
