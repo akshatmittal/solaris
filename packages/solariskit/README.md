@@ -27,7 +27,7 @@ In an existing React app:
 npm install solariskit wagmi@^3 viem@^2 @tanstack/react-query@^5
 ```
 
-The default EVM wallet list includes Safe, injected browser wallets, Base, MetaMask Mobile, and WalletConnect.
+The default EVM wallet list includes Safe, injected browser wallets, Coinbase Wallet, MetaMask Mobile, and WalletConnect.
 Install the optional peers used by that list:
 
 ```bash
@@ -38,7 +38,7 @@ npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @s
 | --------------------------------- | --------------------------------------------------------------- |
 | Injected browser wallets          | None                                                            |
 | WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
-| Base Account                      | `@base-org/account`                                             |
+| Coinbase Wallet                   | `@base-org/account`                                             |
 | Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
 | Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`               |
 
@@ -118,9 +118,10 @@ Use browser-safe RPC credentials and restrict them at your RPC provider; never e
 
 ### Custom wallet lists
 
-The wallet factories exported by `solariskit/wallets` are `base`, `injectedWallet`, `metaMaskWallet`, `safeWallet`, and
-`walletConnectWallet`. `metaMaskWallet` is the MetaMask Mobile integration; browser extension wallets are discovered
-through the injected wallet flow.
+The wallet factories exported by `solariskit/wallets` are `coinbaseWallet`, `injectedWallet`, `metaMaskWallet`,
+`safeWallet`, and `walletConnectWallet`. `base` and `baseAccount` remain as deprecated aliases for `coinbaseWallet`.
+`metaMaskWallet` is the MetaMask Mobile integration; browser extension wallets are discovered through the injected
+wallet flow.
 
 For an injected-only setup with no optional wallet SDKs or WalletConnect project:
 
