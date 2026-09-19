@@ -1,5 +1,5 @@
 import { type CreateConnectorFn, createConnector } from "wagmi";
-import { type BaseAccountParameters, baseAccount as baseAccountConnector } from "wagmi/connectors";
+import { type CoinbaseWalletParameters, coinbaseWallet as coinbaseWalletConnector } from "wagmi/connectors";
 
 import type { Wallet, WalletDetailsParams } from "../../Wallet";
 
@@ -8,8 +8,7 @@ export interface CoinbaseWalletOptions {
   appIcon?: string;
 }
 
-// supports preference, paymasterUrls, subAccounts
-type AcceptedCoinbaseWalletParameters = Omit<BaseAccountParameters, "appName" | "appLogoUrl">;
+type AcceptedCoinbaseWalletParameters = Omit<CoinbaseWalletParameters, "appName" | "appLogoUrl">;
 
 interface CoinbaseWallet extends AcceptedCoinbaseWalletParameters {
   (params: CoinbaseWalletOptions): Wallet;
@@ -21,22 +20,22 @@ export const coinbaseWallet: CoinbaseWallet = ({ appName, appIcon }: CoinbaseWal
   const { preference, ...optionalConfig } = coinbaseWallet;
 
   return {
-    id: "base",
-    aliases: ["baseAccount", "coinbase", "coinbaseWallet"],
+    id: "coinbase",
+    aliases: ["coinbaseWallet"],
     name: "Coinbase Wallet",
     shortName: "Coinbase",
-    rdns: "app.base.account",
-    iconUrl: async () => (await import("./base.svg")).default,
+    rdns: "com.coinbase.wallet",
+    iconUrl: async () => (await import("./coinbaseWallet.svg")).default,
     iconAccent: "#2C5FF6",
     iconBackground: "#2C5FF6",
-    // a popup will appear prompting the user to connect or create a wallet via passkey.
     installed: true,
     createConnector: (walletDetails: WalletDetailsParams) => {
-      const connector: CreateConnectorFn = baseAccountConnector({
+      const connector: CreateConnectorFn = coinbaseWalletConnector({
         appName,
         appLogoUrl: appIcon,
         ...optionalConfig,
         preference: {
+          options: "all",
           telemetry: false,
           ...preference,
         },
@@ -49,18 +48,3 @@ export const coinbaseWallet: CoinbaseWallet = ({ appName, appIcon }: CoinbaseWal
     },
   };
 };
-
-/**
- * @deprecated Use `CoinbaseWalletOptions` instead.
- */
-export type BaseOptions = CoinbaseWalletOptions;
-
-/**
- * @deprecated Use `coinbaseWallet` instead. This alias will be removed in a future version.
- */
-export const base = coinbaseWallet;
-
-/**
- * @deprecated Use `coinbaseWallet` instead. This alias will be removed in a future version.
- */
-export const baseAccount = coinbaseWallet;

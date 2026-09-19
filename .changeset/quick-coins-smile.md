@@ -1,5 +1,5 @@
 ---
-"solariskit": minor
+"solariskit": major
 ---
 
-Rebrand the Base wallet integration as Coinbase Wallet while retaining `base` and `baseAccount` as deprecated aliases, and refresh project dependencies to their latest compatible releases.
+Replace the Base wallet integration with Coinbase Wallet backed by `@coinbase/wallet-sdk`, remove the deprecated `base`, `baseAccount`, and `BaseOptions` exports, and refresh project dependencies to their latest compatible releases.

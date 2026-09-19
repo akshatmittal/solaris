@@ -3,7 +3,7 @@ import type { CreateConnectorFn } from "wagmi";
 import type { WalletList } from "./Wallet";
 
 import { type ConnectorsForWalletsParameters, connectorsForWallets } from "./connectorsForWallets";
-import { coinbaseWallet } from "./walletConnectors/base/base";
+import { coinbaseWallet } from "./walletConnectors/coinbaseWallet/coinbaseWallet";
 import { injectedWallet } from "./walletConnectors/injectedWallet/injectedWallet";
 import { metaMaskWallet } from "./walletConnectors/metaMaskWallet/metaMaskWallet";
 import { safeWallet } from "./walletConnectors/safeWallet/safeWallet";

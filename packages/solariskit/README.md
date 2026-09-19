@@ -31,14 +31,14 @@ The default EVM wallet list includes Safe, injected browser wallets, Coinbase Wa
 Install the optional peers used by that list:
 
 ```bash
-npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @safe-global/safe-apps-provider@^0.18.6 @safe-global/safe-apps-sdk@^9.1.0
+npm install @walletconnect/ethereum-provider@^2.21.1 @coinbase/wallet-sdk@^4.3.6 @safe-global/safe-apps-provider@^0.18.6 @safe-global/safe-apps-sdk@^9.1.0
 ```
 
 | Integration                       | Additional dependencies                                         |
 | --------------------------------- | --------------------------------------------------------------- |
 | Injected browser wallets          | None                                                            |
 | WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
-| Coinbase Wallet                   | `@base-org/account`                                             |
+| Coinbase Wallet                   | `@coinbase/wallet-sdk`                                          |
 | Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
 | Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`               |
 
@@ -119,9 +119,8 @@ Use browser-safe RPC credentials and restrict them at your RPC provider; never e
 ### Custom wallet lists
 
 The wallet factories exported by `solariskit/wallets` are `coinbaseWallet`, `injectedWallet`, `metaMaskWallet`,
-`safeWallet`, and `walletConnectWallet`. `base` and `baseAccount` remain as deprecated aliases for `coinbaseWallet`.
-`metaMaskWallet` is the MetaMask Mobile integration; browser extension wallets are discovered through the injected
-wallet flow.
+`safeWallet`, and `walletConnectWallet`. `metaMaskWallet` is the MetaMask Mobile integration; browser extension wallets
+are discovered through the injected wallet flow.
 
 For an injected-only setup with no optional wallet SDKs or WalletConnect project:
 

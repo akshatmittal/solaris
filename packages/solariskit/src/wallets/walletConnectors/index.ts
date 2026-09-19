@@ -1,4 +1,4 @@
-export * from "./base/base";
+export * from "./coinbaseWallet/coinbaseWallet";
 
 import { injectedWallet } from "./injectedWallet/injectedWallet";
 import { metaMaskWallet } from "./metaMaskWallet/metaMaskWallet";
