@@ -1,10 +1,9 @@
 import React from "react";
 
-import { Cuer } from "cuer";
-
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
 import { Box, type BoxProps } from "../Box/Box";
 import { QRCodeBackgroundClassName } from "../ConnectOptions/DesktopOptions.css";
+import { QRCodeSvg } from "./QRCodeSvg";
 
 export type ErrorCorrectionLevel = "low" | "medium" | "quartile" | "high";
 
@@ -48,25 +47,10 @@ export function QRCode({
         }}
         userSelect="none"
       >
-        <Cuer.Root
-          errorCorrection={ecc}
-          size={size}
-          value={uri}
-        >
-          <Cuer.Cells
-            className={undefined}
-            fill="currentColor"
-            filter={undefined}
-            radius={1}
-          />
-          <Cuer.Finder
-            className={undefined}
-            fill="currentColor"
-            radius={0.25}
-            stroke={undefined}
-          />
-          {resolvedLogoUrl && (
-            <Cuer.Arena>
+        <QRCodeSvg
+          ecc={ecc}
+          logo={
+            resolvedLogoUrl ? (
               <img
                 alt="Wallet Logo"
                 src={resolvedLogoUrl}
@@ -78,9 +62,11 @@ export function QRCode({
                   width: "88%",
                 }}
               />
-            </Cuer.Arena>
-          )}
-        </Cuer.Root>
+            ) : undefined
+          }
+          size={size}
+          value={uri}
+        />
       </Box>
     </Box>
   );
