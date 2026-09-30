@@ -46,7 +46,7 @@ npm install @x402/core@^2.25.0 @x402/evm@^2.25.0 @x402/svm@^2.25.0
 | WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
 | Base Account                      | `@base-org/account`                                             |
 | Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
-| Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`               |
+| Solana                            | `@solana/connector@0.2.4`, `@solana/kit@^6.10.0`                |
 
 These peers are optional at the package level, but required when using the corresponding integration.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
@@ -218,8 +218,12 @@ connecting a wallet alone does not authenticate a user.
 Install the optional Solana peers in addition to the core installation:
 
 ```bash
-npm install @solana/connector@^0.2.6 @solana/kit@^6.10.0
+npm install @solana/connector@0.2.4 @solana/kit@^6.10.0
 ```
+
+Connector 0.2.6 and Kit 8 upgrades are deferred. Connector 0.2.6 requires Kit 7 internally, adding another
+Solana dependency version alongside application Kit 6. Retaining Connector 0.2.4 preserves the existing
+dependency stack; it does not eliminate the stack's existing transitive Solana versions.
 
 ```tsx
 "use client";
