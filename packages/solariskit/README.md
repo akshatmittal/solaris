@@ -34,13 +34,19 @@ Install the optional peers used by that list:
 npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @safe-global/safe-apps-provider@^0.18.6 @safe-global/safe-apps-sdk@^9.1.0
 ```
 
-| Integration                       | Additional dependencies                                         |
-| --------------------------------- | --------------------------------------------------------------- |
-| Injected browser wallets          | None                                                            |
-| WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
-| Base Account                      | `@base-org/account`                                             |
-| Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
-| Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`               |
+Base Account 2.5.13 with CDP SDK 1.57.0 also requires the SDK's optional x402 peers for SSR bundling:
+
+```bash
+npm install @x402/core@^2.25.0 @x402/evm@^2.25.0 @x402/svm@^2.25.0
+```
+
+| Integration                       | Additional dependencies                                                  |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| Injected browser wallets          | None                                                                     |
+| WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                                       |
+| Base Account                      | `@base-org/account`                                                      |
+| Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk`          |
+| Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`, `^7.0.0`, or `^8.4.0` |
 
 These peers are optional at the package level, but required when using the corresponding integration.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
@@ -212,7 +218,7 @@ connecting a wallet alone does not authenticate a user.
 Install the optional Solana peers in addition to the core installation:
 
 ```bash
-npm install @solana/connector@^0.2.4 @solana/kit@^6.10.0
+npm install @solana/connector@^0.2.6 @solana/kit@^8.4.0
 ```
 
 ```tsx
