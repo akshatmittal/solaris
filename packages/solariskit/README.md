@@ -40,7 +40,7 @@ npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @s
 | WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
 | Base Account                      | `@base-org/account`                                             |
 | Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
-| Solana                            | `@solana/connector@^0.2.4`, `@solana/kit@^6.10.0`               |
+| Solana                            | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
 
 These peers are optional at the package level, but required when using the corresponding integration.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
@@ -212,7 +212,7 @@ connecting a wallet alone does not authenticate a user.
 Install the optional Solana peers in addition to the core installation:
 
 ```bash
-npm install @solana/connector@^0.2.4 @solana/kit@^6.10.0
+npm install @solana/connector@^0.3.0 @solana/kit@^8.6.0
 ```
 
 ```tsx
@@ -252,6 +252,23 @@ export default function SolanaApp() {
 This uses Wallet Standard discovery through `@solana/connector`. The Solana provider does not need a Wagmi or external
 Query provider. WalletConnect is **not supported** by the Solana integration, and no WalletConnect project ID is needed.
 Use your own production RPC endpoint when moving from devnet to mainnet.
+
+`@solana/connector` lazy-imports `@solana/web3.js` only to convert legacy web3.js transaction objects, which the Kit signer never uses. You do not need to install `@solana/web3.js`, but your bundler must resolve the import. In Next.js with Turbopack, alias it to an empty module (a file containing `export {};`):
+
+```ts
+// next.config.ts
+const nextConfig = {
+  turbopack: {
+    resolveAlias: {
+      "@solana/web3.js": "./src/empty.ts",
+    },
+  },
+};
+```
+
+If pnpm still installs it as a `@solana/connector` peer, remove it with the override `"@solana/connector>@solana/web3.js": "-"`.
+
+`useSolanaKitTransactionSigner` returns no signer when it cannot get a wallet chain from the active cluster, for example with a custom cluster ID. For a custom cluster, give the chain, for example `useSolanaKitTransactionSigner({ chain: "solana:devnet" })`.
 
 The Solana entry point also exports:
 

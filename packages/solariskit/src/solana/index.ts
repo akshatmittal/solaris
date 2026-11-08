@@ -38,6 +38,7 @@ export type {
   SolanaConnectorConfig,
   SolanaDisconnectWalletReturn,
   SolanaKitConfig,
+  SolanaKitTransactionSignerOptions,
   SolanaKitTransactionSignerReturn,
   SolanaMobileWalletAdapterConfig,
   SolanaNetwork,

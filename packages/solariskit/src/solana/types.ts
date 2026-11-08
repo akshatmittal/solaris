@@ -31,6 +31,7 @@ export type {
   UseBalanceReturn as SolanaBalanceReturn,
   UseClusterReturn as SolanaClusterReturn,
   UseDisconnectWalletReturn as SolanaDisconnectWalletReturn,
+  UseKitTransactionSignerOptions as SolanaKitTransactionSignerOptions,
   UseKitTransactionSignerReturn as SolanaKitTransactionSignerReturn,
   UseSolanaClientReturn as SolanaClientReturn,
 } from "@solana/connector/react";
