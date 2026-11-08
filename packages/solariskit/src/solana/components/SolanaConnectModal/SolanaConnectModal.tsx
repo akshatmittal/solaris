@@ -14,11 +14,7 @@ import { t } from "../../../translations";
 import { isMobile } from "../../../utils/isMobile";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
-import {
-  addLatestSolanaWalletId,
-  addRecentSolanaWalletId,
-  getRecentSolanaWalletIds,
-} from "../../wallets/recentSolanaWalletIds";
+import { addRecentSolanaWalletId, getRecentSolanaWalletIds } from "../../wallets/recentSolanaWalletIds";
 
 enum SolanaWalletStep {
   List = "LIST",
@@ -98,9 +94,6 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
 
     try {
       await connect(wallet.id);
-      // Only persist after a successful connect: addLatestSolanaWalletId also
-      // re-enables auto-reconnect, which must not happen on a rejected attempt.
-      addLatestSolanaWalletId(wallet.id);
       addRecentSolanaWalletId(wallet.id);
     } catch {
       // ConnectorKit exposes the error through the hook.

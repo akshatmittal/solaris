@@ -4,7 +4,7 @@ packages:
   - "tooling/*"
 
 catalog:
-  "@tanstack/react-query": ^5.101.2
+  "@tanstack/react-query": ^5.107.1
   "@types/node": ^26.1.1
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
@@ -38,6 +38,7 @@ overrides:
   "@solana/connector>@solana/keychain-privy": "-"
   "@solana/connector>@solana/keychain-turnkey": "-"
   "@solana/connector>@solana/keychain-vault": "-"
+  "@solana/connector>@solana/web3.js": "-"
   "@solana/connector>@walletconnect/universal-provider": "-"
 
 packageExtensions:

@@ -6,7 +6,7 @@ import { WalletButtonView } from "../../../components/WalletButton/WalletButtonV
 import { useIsMounted } from "../../../hooks/useIsMounted";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
-import { addLatestSolanaWalletId, addRecentSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
+import { addRecentSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
 import { useSolanaConnectModal } from "../SolanaKitProvider/SolanaModalContext";
 
 export interface SolanaWalletButtonRendererProps {
@@ -77,7 +77,6 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
       setLoading(true);
       if (isError) setIsError(false);
       await connect(connector.id);
-      addLatestSolanaWalletId(connector.id);
       addRecentSolanaWalletId(connector.id);
     } catch {
       setIsError(true);

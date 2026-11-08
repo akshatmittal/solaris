@@ -18,11 +18,10 @@ import type {
   SolanaClusterReturn,
   SolanaConnectOptions,
   SolanaDisconnectWalletReturn,
+  SolanaKitTransactionSignerOptions,
   SolanaKitTransactionSignerReturn,
   SolanaWalletConnector,
 } from "./types";
-
-import { clearLatestSolanaWalletId, disableSolanaAutoReconnect } from "./wallets/recentSolanaWalletIds";
 
 export interface SolanaWalletAccount {
   address: string;
@@ -101,22 +100,7 @@ export function useSolanaConnectWallet() {
 }
 
 export function useSolanaDisconnectWallet(): SolanaDisconnectWalletReturn {
-  const { disconnect, isDisconnecting } = useDisconnectWallet();
-
-  return useMemo(
-    () => ({
-      // Persist only after the disconnect succeeds: a rejected disconnect
-      // leaves the session connected, so the connected indicator and the
-      // auto-reconnect flags must not change.
-      disconnect: async () => {
-        await disconnect();
-        clearLatestSolanaWalletId();
-        disableSolanaAutoReconnect();
-      },
-      isDisconnecting,
-    }),
-    [disconnect, isDisconnecting],
-  );
+  return useDisconnectWallet();
 }
 
 export function useSolanaCluster(): SolanaClusterReturn {
@@ -131,6 +115,8 @@ export function useSolanaClient(): SolanaClientReturn {
   return useConnectorSolanaClient();
 }
 
-export function useSolanaKitTransactionSigner(): SolanaKitTransactionSignerReturn {
-  return useKitTransactionSigner();
+export function useSolanaKitTransactionSigner(
+  options?: SolanaKitTransactionSignerOptions,
+): SolanaKitTransactionSignerReturn {
+  return useKitTransactionSigner(options);
 }
