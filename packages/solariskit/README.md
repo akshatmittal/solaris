@@ -215,6 +215,8 @@ Install the optional Solana peers in addition to the core installation:
 npm install @solana/connector@^0.3.0 @solana/kit@^8.6.0
 ```
 
+The Solana integration needs `@tanstack/react-query` 5.103.1 or later. `@solana/connector` depends on `@solana/react`, which has this peer range.
+
 ```tsx
 "use client";
 

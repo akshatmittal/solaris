@@ -2,7 +2,7 @@
 "solariskit": minor
 ---
 
-Upgrade the Solana stack to `@solana/connector` 0.3.0 and `@solana/kit` v8. The `@solana/connector` peer range is now `^0.3.0` and the `@solana/kit` peer range is now `^8.6.0`.
+Upgrade the Solana stack to `@solana/connector` 0.3.0 and `@solana/kit` v8. The `@solana/connector` peer range is now `^0.3.0` and the `@solana/kit` peer range is now `^8.6.0`. Solana consumers need `@tanstack/react-query` 5.103.1 or later, the peer range of `@solana/react`, which connector 0.3.0 depends on.
 
 `@solana/web3.js` is no longer needed. `@solana/connector` lazy-imports it only for legacy web3.js transaction objects, which the Kit signer never uses. Bundlers must still resolve the import, so alias it to an empty module (see the README).
 
