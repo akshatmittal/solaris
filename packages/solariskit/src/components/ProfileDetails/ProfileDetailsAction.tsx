@@ -3,7 +3,7 @@ import React, { type JSX } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, radii } from "../../css/vars.stylex";
+import { colors, motion, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   action: {
@@ -19,8 +19,9 @@ const styles = stylex.create({
     gap: 8,
     height: 44,
     justifyContent: "center",
-    transitionDuration: "120ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
   },
   icon: {
     color: colors.modalTextSecondary,

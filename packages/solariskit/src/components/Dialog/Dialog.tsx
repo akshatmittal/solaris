@@ -4,7 +4,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { blurs, colors, fonts } from "../../css/vars.stylex";
+import { blurs, colors, fonts, motion } from "../../css/vars.stylex";
 import { isMobile } from "../../utils/isMobile";
 import { useThemeRootProps } from "../RainbowKitProvider/ThemeRootContext";
 import { FocusTrap } from "./FocusTrap";
@@ -46,7 +46,7 @@ const bleed = 200;
 const styles = stylex.create({
   overlay: {
     alignItems: "center",
-    animationDuration: "150ms",
+    animationDuration: motion.enter,
     animationName: fadeIn,
     animationTimingFunction: "ease-out",
     backdropFilter: blurs.modalOverlay,
@@ -72,14 +72,14 @@ const styles = stylex.create({
     alignItems: "flex-end",
   },
   overlayClosing: {
-    animationDuration: "200ms",
+    animationDuration: motion.exit,
     animationFillMode: "forwards",
     animationName: fadeOut,
     animationTimingFunction: "ease-in",
     pointerEvents: "none",
   },
   content: {
-    animationDuration: "200ms",
+    animationDuration: motion.enter,
     animationName: { default: riseIn, [reducedMotion]: fadeIn },
     animationTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
     display: "flex",
@@ -88,17 +88,17 @@ const styles = stylex.create({
     position: "relative",
   },
   contentMobile: {
-    animationDuration: "300ms",
+    animationDuration: motion.sheetEnter,
     animationName: { default: slideUp, [reducedMotion]: fadeIn },
   },
   contentClosing: {
-    animationDuration: "150ms",
+    animationDuration: motion.exit,
     animationFillMode: "forwards",
     animationName: { default: riseOut, [reducedMotion]: fadeOut },
     animationTimingFunction: "ease-in",
   },
   contentMobileClosing: {
-    animationDuration: "200ms",
+    animationDuration: motion.sheetExit,
     animationName: { default: slideDown, [reducedMotion]: fadeOut },
   },
 });
@@ -148,12 +148,12 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
     setPresent(true);
   }
   const closing = present && !open;
-  // Unmount after the exit animation. A timer also works when the host page disables animations.
+  // Unmount after the longest exit animation (motion.sheetExit). A timer also works when the host page disables animations.
   useEffect(() => {
     if (!closing) {
       return;
     }
-    const timeout = window.setTimeout(() => setPresent(false), 200);
+    const timeout = window.setTimeout(() => setPresent(false), 150);
     return () => window.clearTimeout(timeout);
   }, [closing]);
   // While closing, keep the last open content so it does not change during the exit animation.

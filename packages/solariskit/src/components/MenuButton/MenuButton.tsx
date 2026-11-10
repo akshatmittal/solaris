@@ -3,7 +3,7 @@ import React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, radii } from "../../css/vars.stylex";
+import { colors, motion, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   row: {
@@ -20,8 +20,9 @@ const styles = stylex.create({
     outlineOffset: -2,
     paddingBlock: 8,
     paddingInline: 12,
-    transitionDuration: "120ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
     width: "100%",
   },
   selected: {

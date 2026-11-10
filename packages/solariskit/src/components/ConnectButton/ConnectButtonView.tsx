@@ -4,7 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
 import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
-import { colors, fonts, radii, shadows } from "../../css/vars.stylex";
+import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
 import { DropdownIcon } from "../Icons/Dropdown";
@@ -21,8 +21,9 @@ export const triggerStyles = stylex.create({
     fontWeight: 600,
     height: 40,
     lineHeight: "20px",
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
     whiteSpace: "nowrap",
     WebkitFontSmoothing: "antialiased",
   },
@@ -60,7 +61,7 @@ const styles = stylex.create({
     paddingInline: 8,
   },
   balanceLoader: {
-    animationDuration: "1.2s",
+    animationDuration: motion.spin,
     animationIterationCount: "infinite",
     animationName: { default: pulse, "@media (prefers-reduced-motion: reduce)": "none" },
     backgroundColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,

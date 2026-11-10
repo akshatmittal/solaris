@@ -3,7 +3,7 @@ import React, { type ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   link: {
@@ -16,8 +16,9 @@ const styles = stylex.create({
     lineHeight: "20px",
     opacity: { default: 1, ":hover": 0.75 },
     textDecoration: "none",
-    transitionDuration: "120ms",
+    transitionDuration: motion.fast,
     transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
   },
   // Keeps a 44px touch target without changing the visual size.
   tall: {

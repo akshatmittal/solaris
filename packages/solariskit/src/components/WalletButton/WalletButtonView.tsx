@@ -3,7 +3,7 @@ import React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, fonts, radii, shadows } from "../../css/vars.stylex";
+import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { SpinnerIcon } from "../Icons/Spinner";
@@ -28,8 +28,9 @@ const styles = stylex.create({
     paddingBlock: 6,
     paddingLeft: 6,
     paddingRight: 14,
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
     WebkitFontSmoothing: "antialiased",
   },
   disabled: {

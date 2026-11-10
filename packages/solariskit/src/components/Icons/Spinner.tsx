@@ -2,6 +2,8 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { motion } from "../../css/vars.stylex";
+
 const spin = stylex.keyframes({
   from: { transform: "rotate(0deg)" },
   to: { transform: "rotate(360deg)" },
@@ -9,7 +11,7 @@ const spin = stylex.keyframes({
 
 const styles = stylex.create({
   icon: {
-    animationDuration: "0.8s",
+    animationDuration: motion.spin,
     animationIterationCount: "infinite",
     animationName: spin,
     animationTimingFunction: "linear",

@@ -4,7 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 import { useConnection } from "wagmi";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { useClearRecentTransactions } from "../../transactions/useClearRecentTransactions";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { t } from "../../translations";
@@ -41,8 +41,9 @@ const styles = stylex.create({
     lineHeight: "18px",
     marginBlock: -8,
     paddingBlock: 8,
-    transitionDuration: "120ms",
+    transitionDuration: motion.fast,
     transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
   },
   empty: {
     paddingBlock: 8,

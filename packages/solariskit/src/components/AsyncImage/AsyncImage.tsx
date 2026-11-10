@@ -2,6 +2,7 @@ import React, { useReducer } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { motion } from "../../css/vars.stylex";
 import { type AsyncImageSrc, useAsyncImage } from "./useAsyncImage";
 
 const styles = stylex.create({
@@ -16,8 +17,9 @@ const styles = stylex.create({
     left: 0,
     position: "absolute",
     top: 0,
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
     userSelect: "none",
     WebkitTouchCallout: "none",
     WebkitUserSelect: "none",

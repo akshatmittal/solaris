@@ -4,7 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 
 import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 
-import { colors, radii } from "../../css/vars.stylex";
+import { colors, motion, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
@@ -38,8 +38,9 @@ const styles = stylex.create({
     margin: 0,
     outlineStyle: "none",
     paddingInline: 14,
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "border-color",
+    transitionTimingFunction: "ease-out",
     width: "100%",
     "::placeholder": {
       color: colors.modalTextSecondary,

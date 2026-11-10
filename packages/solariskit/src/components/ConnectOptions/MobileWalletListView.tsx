@@ -3,7 +3,7 @@ import React, { type ReactNode, useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
@@ -23,7 +23,7 @@ const styles = stylex.create({
     position: "absolute",
   },
   rotatingBorder: {
-    animationDuration: "1s",
+    animationDuration: motion.spin,
     animationIterationCount: "infinite",
     animationName: snakeBorder,
     animationTimingFunction: "linear",

@@ -5,7 +5,7 @@ import { UserRejectedRequestError } from "viem";
 import { useConnection, useSignMessage } from "wagmi";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { ActionButton } from "../Button/ActionButton";
@@ -56,8 +56,9 @@ const styles = stylex.create({
     minHeight: 44,
     opacity: { default: 1, ":hover": 0.7 },
     paddingInline: 12,
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
   },
 });
 

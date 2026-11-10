@@ -59,6 +59,16 @@ export const blurs = stylex.defineConsts({
   modalOverlay: "var(--rk-blurs-modalOverlay)",
 });
 
+// One duration set for every transition and animation. Exits are faster than entries.
+export const motion = stylex.defineConsts({
+  enter: "150ms",
+  exit: "100ms",
+  fast: "100ms",
+  sheetEnter: "200ms",
+  sheetExit: "150ms",
+  spin: "1s",
+});
+
 export const media = stylex.defineConsts({
   largeScreen: "@media screen and (min-width: 768px)",
 });

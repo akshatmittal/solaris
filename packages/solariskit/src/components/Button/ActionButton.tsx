@@ -3,7 +3,7 @@ import React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, radii } from "../../css/vars.stylex";
+import { colors, motion, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   base: {
@@ -12,8 +12,9 @@ const styles = stylex.create({
     display: "flex",
     fontWeight: 600,
     justifyContent: "center",
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color, opacity",
+    transitionTimingFunction: "ease-out",
     whiteSpace: "nowrap",
   },
   small: { fontSize: 14, height: 36, paddingInline: 14 },

@@ -5,7 +5,7 @@ import { useConnection } from "wagmi";
 
 import type { Transaction } from "../../transactions/transactionStore";
 
-import { colors, radii } from "../../css/vars.stylex";
+import { colors, motion, radii } from "../../css/vars.stylex";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
 import { CancelIcon } from "../Icons/Cancel";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
@@ -26,8 +26,9 @@ const styles = stylex.create({
   },
   link: {
     backgroundColor: { default: "transparent", ":hover": colors.menuItemBackground },
-    transitionDuration: "120ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
   },
   icon: {
     alignItems: "center",

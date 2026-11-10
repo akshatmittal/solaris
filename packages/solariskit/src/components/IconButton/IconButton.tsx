@@ -3,7 +3,7 @@ import React, { type ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   button: {
@@ -15,8 +15,9 @@ const styles = stylex.create({
     flexShrink: 0,
     height: 32,
     justifyContent: "center",
-    transitionDuration: "150ms",
+    transitionDuration: motion.fast,
     transitionProperty: "background-color, color",
+    transitionTimingFunction: "ease-out",
     width: 32,
   },
 });

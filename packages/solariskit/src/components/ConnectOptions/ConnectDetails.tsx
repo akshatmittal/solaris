@@ -2,7 +2,7 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
@@ -63,7 +63,7 @@ const styles = stylex.create({
     stroke: colors.error,
   },
   ringArc: {
-    animationDuration: "1.2s",
+    animationDuration: motion.spin,
     animationIterationCount: "infinite",
     animationName: orbit,
     animationTimingFunction: "linear",
