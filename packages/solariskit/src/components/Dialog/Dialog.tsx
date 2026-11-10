@@ -71,7 +71,6 @@ const styles = stylex.create({
   overlayMobile: {
     alignItems: "flex-end",
   },
-  // The dialog stays mounted until this animation ends.
   overlayClosing: {
     animationDuration: "200ms",
     animationFillMode: "forwards",
@@ -149,6 +148,14 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
     setPresent(true);
   }
   const closing = present && !open;
+  // Unmount after the exit animation. A timer also works when the host page disables animations.
+  useEffect(() => {
+    if (!closing) {
+      return;
+    }
+    const timeout = window.setTimeout(() => setPresent(false), 200);
+    return () => window.clearTimeout(timeout);
+  }, [closing]);
   // While closing, keep the last open content so it does not change during the exit animation.
   const shownChildren = useRef(children);
   if (open) {
@@ -170,11 +177,6 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
                   {...stylex.props(styles.overlay, mobile && styles.overlayMobile, closing && styles.overlayClosing)}
                   aria-labelledby={titleId}
                   aria-modal
-                  onAnimationEnd={(event) => {
-                    if (closing && event.target === event.currentTarget) {
-                      setPresent(false);
-                    }
-                  }}
                   onClick={handleBackdropClick}
                   role="dialog"
                 >
