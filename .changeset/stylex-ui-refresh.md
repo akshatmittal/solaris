@@ -10,13 +10,13 @@ The theme API does not change. `lightTheme`, `darkTheme`, `midnightTheme`, `cssS
 
 The modals and buttons keep the same elements and layout, with a cleaner design:
 
-- Typography uses the system UI font stack with a 400/500/600 weight scale. Labels use sentence case ("Connect wallet", "Get a wallet", "Learn more").
+- Typography uses the system UI font stack with a 400/500/600 weight scale. Dialog titles, section titles, and buttons use Title Case ("Connect Wallet", "Switch Network", "Verify Account", "Copy Address"). Descriptions and status text use sentence case.
 - The light theme accent is `#0A66E0` for 4.5:1 text contrast. The dark blue preset uses dark text on its accent fill.
 - Wallet and network rows are transparent with a hover fill. The selected network has a 10% accent tint and a "Connected" label. Wallet and network icons have no border. MetaMask Mobile uses the same fox icon as the MetaMask extension.
 - All compact modals are 360px wide with a 24px content inset. The wide modal left-aligns both pane titles.
 - Connecting shows a progress ring around the wallet icon. A declined connection shows an error ring, "Connection declined", and a primary Retry button, and the layout does not move between the two states.
 - The QR code has no border card in light mode, and its modules align with the content edge. Its button reads "Get <wallet>".
-- The account modal has clearer actions, a green "Copied" state, a "Clear all" link, and a pending-transaction dot on the avatar.
+- The account modal has clearer actions, a green "Copied" state, a "Clear All" link, and a pending-transaction dot on the avatar.
 - The sign-in view and the empty state use line icons instead of images.
 - The mobile sheet has a drag handle and a 4-column wallet grid with full names. Screens narrower than 375px use 2 columns.
 - The account button shows a loader while the balance loads, and hides the balance and its divider if loading fails. `ConnectButton.Custom` gets `account.isBalanceLoading`.

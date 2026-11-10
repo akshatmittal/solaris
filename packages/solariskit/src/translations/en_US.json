@@ -8,7 +8,7 @@
       "no_results": "No networks match your search.",
       "placeholder": "Search"
     },
-    "title": "Switch network",
+    "title": "Switch Network",
     "wrong_network": "Wrong network detected, switch or disconnect to continue."
   },
   "connect": {
@@ -19,7 +19,7 @@
     "new_to_ethereum": {
       "description": "New to wallets?",
       "learn_more": {
-        "label": "Learn more"
+        "label": "Learn More"
       }
     },
     "recent": "Recent",
@@ -41,7 +41,7 @@
       "declined_description": "Try again, or choose another wallet.",
       "opening": "Opening %{wallet}…"
     },
-    "title": "Connect a wallet",
+    "title": "Connect Wallet",
     "walletconnect": {
       "description": {
         "compact": "Need the WalletConnect modal?",
@@ -53,14 +53,14 @@
     }
   },
   "connect_scan": {
-    "fallback_title": "Scan with your phone",
+    "fallback_title": "Scan with Your Phone",
     "title": "Scan with %{wallet}"
   },
   "connect_wallet": {
-    "label": "Connect wallet",
+    "label": "Connect Wallet",
     "pending": "Transaction pending",
     "wrong_network": {
-      "label": "Wrong network"
+      "label": "Wrong Network"
     }
   },
   "connector_group": {
@@ -78,48 +78,48 @@
       "title": "A home for your digital assets"
     },
     "get": {
-      "label": "Get a wallet"
+      "label": "Get a Wallet"
     },
     "learn_more": {
-      "label": "Learn more"
+      "label": "Learn More"
     },
     "login": {
       "description": "Instead of creating new accounts and passwords on every website, just connect your wallet.",
       "title": "A new way to log in"
     },
-    "title": "What is a wallet?"
+    "title": "What Is a Wallet?"
   },
   "profile": {
     "copy_address": {
       "copied": "Copied",
-      "label": "Copy address"
+      "label": "Copy Address"
     },
     "disconnect": {
       "label": "Disconnect"
     },
     "explorer": {
-      "label": "View on explorer"
+      "label": "View on Explorer"
     },
     "transactions": {
       "clear": {
-        "label": "Clear all"
+        "label": "Clear All"
       },
       "description": "%{appName} transactions will appear here.",
       "description_fallback": "Your transactions will appear here.",
       "recent": {
-        "title": "Recent transactions"
+        "title": "Recent Transactions"
       }
     }
   },
   "sign_in": {
     "description": "Sign a message in your wallet to confirm you own this account. It does not send a transaction or cost gas.",
-    "label": "Verify your account",
+    "label": "Verify Account",
     "message": {
       "cancel": "Cancel",
       "preparing": "Preparing message…",
       "preparing_error": "Error preparing message, please retry!",
       "retry": "Retry",
-      "send": "Sign message"
+      "send": "Sign Message"
     },
     "signature": {
       "oops_error": "Oops, something went wrong!",
