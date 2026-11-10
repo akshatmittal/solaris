@@ -5,11 +5,17 @@ export const colors = stylex.defineConsts({
   accentColor: "var(--rk-colors-accentColor)",
   accentColorForeground: "var(--rk-colors-accentColorForeground)",
   accentSoft: "color-mix(in srgb, var(--rk-colors-accentColor) 10%, transparent)",
+  // Trigger hover fills: the surface with 8% of its text color mixed in.
+  accentHover: "color-mix(in srgb, var(--rk-colors-accentColorForeground) 8%, var(--rk-colors-accentColor))",
   actionButtonSecondaryBackground: "var(--rk-colors-actionButtonSecondaryBackground)",
   closeButton: "var(--rk-colors-closeButton)",
   closeButtonBackground: "var(--rk-colors-closeButtonBackground)",
   connectButtonBackground: "var(--rk-colors-connectButtonBackground)",
   connectButtonBackgroundError: "var(--rk-colors-connectButtonBackgroundError)",
+  connectButtonErrorHover:
+    "color-mix(in srgb, var(--rk-colors-connectButtonTextError) 8%, var(--rk-colors-connectButtonBackgroundError))",
+  connectButtonHover:
+    "color-mix(in srgb, var(--rk-colors-connectButtonText) 8%, var(--rk-colors-connectButtonBackground))",
   connectButtonInnerBackground: "var(--rk-colors-connectButtonInnerBackground)",
   connectButtonText: "var(--rk-colors-connectButtonText)",
   connectButtonTextError: "var(--rk-colors-connectButtonTextError)",

@@ -14,13 +14,13 @@ import { DropdownIcon } from "../Icons/Dropdown";
 
 const styles = stylex.create({
   button: {
-    backgroundColor: colors.connectButtonBackground,
+    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
     color: colors.connectButtonText,
     gap: 8,
     paddingInline: 12,
   },
   unsupported: {
-    backgroundColor: colors.connectButtonBackgroundError,
+    backgroundColor: { default: colors.connectButtonBackgroundError, ":hover": colors.connectButtonErrorHover },
     color: colors.connectButtonTextError,
   },
 });

@@ -13,12 +13,6 @@ import { resolveShowBalance } from "./resolveShowBalance";
 export const triggerStyles = stylex.create({
   button: {
     alignItems: "center",
-    // An 8% wash of the text color, visible on light, dark and black surfaces.
-    backgroundImage: {
-      default: null,
-      ":hover":
-        "linear-gradient(color-mix(in srgb, currentColor 8%, transparent), color-mix(in srgb, currentColor 8%, transparent))",
-    },
     borderRadius: radii.connectButton,
     boxShadow: shadows.connectButton,
     display: "flex",
@@ -27,6 +21,8 @@ export const triggerStyles = stylex.create({
     fontWeight: 600,
     height: 40,
     lineHeight: "20px",
+    transitionDuration: "150ms",
+    transitionProperty: "background-color",
     whiteSpace: "nowrap",
     WebkitFontSmoothing: "antialiased",
   },
@@ -48,13 +44,13 @@ const pulse = stylex.keyframes({
 const styles = stylex.create({
   wrapper: { display: "flex" },
   connect: {
-    backgroundColor: colors.accentColor,
+    backgroundColor: { default: colors.accentColor, ":hover": colors.accentHover },
     boxShadow: "none",
     color: colors.accentColorForeground,
     paddingInline: 16,
   },
   account: {
-    backgroundColor: colors.connectButtonBackground,
+    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
     color: colors.connectButtonText,
     gap: 4,
     padding: 4,

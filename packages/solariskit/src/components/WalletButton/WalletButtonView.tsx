@@ -11,12 +11,7 @@ import { SpinnerIcon } from "../Icons/Spinner";
 const styles = stylex.create({
   button: {
     alignItems: "center",
-    backgroundColor: colors.connectButtonBackground,
-    backgroundImage: {
-      default: null,
-      ":hover":
-        "linear-gradient(color-mix(in srgb, currentColor 8%, transparent), color-mix(in srgb, currentColor 8%, transparent))",
-    },
+    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
     borderColor: colors.generalBorder,
     borderRadius: radii.menuButton,
     borderStyle: "solid",
@@ -33,6 +28,8 @@ const styles = stylex.create({
     paddingBlock: 6,
     paddingLeft: 6,
     paddingRight: 14,
+    transitionDuration: "150ms",
+    transitionProperty: "background-color",
     WebkitFontSmoothing: "antialiased",
   },
   disabled: {
