@@ -17,10 +17,7 @@
       "title": "No supported wallet detected"
     },
     "new_to_ethereum": {
-      "description": "New to wallets?",
-      "learn_more": {
-        "label": "Learn More"
-      }
+      "description": "New to wallets?"
     },
     "recent": "Recent",
     "secondary_action": {
@@ -72,22 +69,14 @@
     "recommended": "Recommended"
   },
   "intro": {
-    "description": "A wallet holds your digital assets and lets you log in to apps without new accounts or passwords.",
-    "digital_asset": {
-      "description": "Wallets are used to send, receive, store, and display digital assets like tokens and NFTs.",
-      "title": "A home for your digital assets"
-    },
+    "description": "Select a wallet from the list to connect to this app.",
     "get": {
       "label": "Get a Wallet"
     },
     "learn_more": {
       "label": "Learn More"
     },
-    "login": {
-      "description": "Instead of creating new accounts and passwords on every website, just connect your wallet.",
-      "title": "A new way to log in"
-    },
-    "title": "What Is a Wallet?"
+    "title": "Choose a wallet"
   },
   "profile": {
     "copy_address": {

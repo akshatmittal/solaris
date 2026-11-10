@@ -9,7 +9,6 @@ import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
 import { IconButton } from "../IconButton/IconButton";
 import { BackIcon } from "../Icons/Back";
-import { InfoIcon } from "../Icons/Info";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
@@ -81,8 +80,8 @@ const styles = stylex.create({
 export interface ConnectModalShellViewProps {
   compactModeEnabled: boolean;
   hideFooter?: boolean;
+  getWalletUrl: string;
   onClose: () => void;
-  onCompactInfoClick: () => void;
   onRightPaneBack?: () => void;
   rightPaneContent: ReactNode;
   rightPaneHeaderLabel?: ReactNode;
@@ -100,9 +99,9 @@ export interface ConnectModalShellViewProps {
  */
 export function ConnectModalShellView({
   compactModeEnabled,
+  getWalletUrl,
   hideFooter = false,
   onClose,
-  onCompactInfoClick,
   onRightPaneBack,
   rightPaneContent,
   rightPaneHeaderLabel,
@@ -124,17 +123,6 @@ export function ConnectModalShellView({
             <DialogHeader
               align={compactModeEnabled ? "center" : "start"}
               size={compactModeEnabled ? "18" : "17"}
-              left={
-                compactModeEnabled &&
-                Disclaimer && (
-                  <IconButton
-                    aria-label="Info"
-                    onClick={onCompactInfoClick}
-                  >
-                    <InfoIcon />
-                  </IconButton>
-                )
-              }
               onClose={compactModeEnabled ? onClose : undefined}
               testId="connect-header-label"
               title={t("connect.title")}
@@ -160,7 +148,7 @@ export function ConnectModalShellView({
                 >
                   {t("connect.new_to_ethereum.description")}
                 </Text>
-                <TextLink onClick={onCompactInfoClick}>{t("connect.new_to_ethereum.learn_more.label")}</TextLink>
+                <TextLink href={getWalletUrl}>{t("intro.get.label")}</TextLink>
               </div>
             ))}
         </div>

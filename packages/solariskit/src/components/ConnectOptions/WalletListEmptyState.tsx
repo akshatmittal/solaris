@@ -52,7 +52,7 @@ export function WalletListEmptyState({
       role="status"
     >
       <div {...stylex.props(styles.icon)}>
-        <IconTile large>
+        <IconTile>
           <WalletIcon size={28} />
         </IconTile>
       </div>

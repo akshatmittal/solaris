@@ -28,27 +28,6 @@ export const WalletIcon = ({ size = 24 }: { size?: number }) => (
   </svg>
 );
 
-export const KeyIcon = () => (
-  <svg
-    aria-hidden
-    fill="none"
-    height="24"
-    viewBox="0 0 24 24"
-    width="24"
-  >
-    <circle
-      {...strokeProps}
-      cx="8"
-      cy="15"
-      r="4"
-    />
-    <path
-      {...strokeProps}
-      d="M10.85 12.15L19 4m-3 3l2.5 2.5M14 9l2 2"
-    />
-  </svg>
-);
-
 export const SignatureIcon = () => (
   <svg
     aria-hidden

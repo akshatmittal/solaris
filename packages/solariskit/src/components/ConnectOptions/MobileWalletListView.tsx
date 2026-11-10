@@ -6,7 +6,6 @@ import { reset } from "../../css/reset";
 import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { ActionButton } from "../Button/ActionButton";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
@@ -109,25 +108,16 @@ const styles = stylex.create({
     paddingBottom: 16,
     paddingInline: 20,
   },
-  divider: {
-    backgroundColor: colors.generalBorder,
-    height: 1,
-    marginBottom: 24,
-  },
-  intro: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 6,
-    paddingInline: 24,
-    textAlign: "center",
-  },
-  actions: {
+  footer: {
     alignItems: "center",
+    borderTopColor: colors.generalBorder,
+    borderTopStyle: "solid",
+    borderTopWidth: 1,
     display: "flex",
-    flexDirection: "column",
-    gap: 8,
-    paddingInline: 16,
-    paddingTop: 20,
+    justifyContent: "space-between",
+    minHeight: 52,
+    paddingBlock: 4,
+    paddingInline: 24,
   },
   disclaimer: {
     marginInline: 24,
@@ -249,8 +239,7 @@ export interface MobileWalletListViewProps {
 
 /**
  * Chain-agnostic mobile connect sheet: title header, horizontally scrolling
- * wallet row, intro copy, get-wallet/learn-more actions, and the optional
- * disclaimer. The EVM MobileOptions and the Solana connect modal both
+ * wallet row, a get-wallet link, and the optional disclaimer. The EVM MobileOptions and the Solana connect modal both
  * parameterize this view.
  */
 export function MobileWalletListView({
@@ -260,7 +249,7 @@ export function MobileWalletListView({
   titleId,
   walletItems,
 }: MobileWalletListViewProps) {
-  const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
+  const { disclaimer: Disclaimer } = useContext(AppContext);
 
   return (
     <div {...stylex.props(styles.container)}>
@@ -287,36 +276,15 @@ export function MobileWalletListView({
           </Text>
         </div>
       )}
-      <div {...stylex.props(styles.divider)} />
-      <div {...stylex.props(styles.intro)}>
-        <Text
-          color="modalText"
-          size="16"
-          weight="semibold"
-        >
-          {t("intro.title")}
-        </Text>
+      <div {...stylex.props(styles.footer)}>
         <Text
           color="modalTextSecondary"
           size="14"
           weight="regular"
         >
-          {t("intro.description")}
+          {t("connect.new_to_ethereum.description")}
         </Text>
-      </div>
-      <div {...stylex.props(styles.actions)}>
-        <ActionButton
-          fullWidth
-          href={getWalletUrl}
-          label={t("intro.get.label")}
-          size="large"
-        />
-        <TextLink
-          href={learnMoreUrl}
-          tall
-        >
-          {t("intro.learn_more.label")}
-        </TextLink>
+        <TextLink href={getWalletUrl}>{t("intro.get.label")}</TextLink>
       </div>
       {Disclaimer && (
         <div {...stylex.props(styles.disclaimer)}>

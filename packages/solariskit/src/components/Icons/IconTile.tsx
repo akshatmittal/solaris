@@ -8,21 +8,14 @@ const styles = stylex.create({
   tile: {
     alignItems: "center",
     backgroundColor: colors.accentSoft,
-    borderRadius: 10,
+    borderRadius: 9999,
     color: colors.accentColor,
     display: "flex",
     flexShrink: 0,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
-  },
-  large: {
-    borderRadius: 9999,
     height: 64,
+    justifyContent: "center",
     width: 64,
   },
 });
 
-export const IconTile = ({ children, large = false }: { children: ReactNode; large?: boolean }) => (
-  <div {...stylex.props(styles.tile, large && styles.large)}>{children}</div>
-);
+export const IconTile = ({ children }: { children: ReactNode }) => <div {...stylex.props(styles.tile)}>{children}</div>;

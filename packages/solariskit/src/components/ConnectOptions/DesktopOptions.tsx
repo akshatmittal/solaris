@@ -15,7 +15,6 @@ import { WalletListView } from "./WalletListView";
 
 export enum WalletStep {
   None = "NONE",
-  LearnCompact = "LEARN_COMPACT",
   Connect = "CONNECT",
 }
 
@@ -144,23 +143,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   switch (walletStep) {
     case WalletStep.None:
-      walletContent = (
-        <ConnectModalIntro
-          compact={compactModeEnabled}
-          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
-        />
-      );
-      headerLabel = t("intro.title");
-      break;
-    case WalletStep.LearnCompact:
-      walletContent = (
-        <ConnectModalIntro
-          compact={compactModeEnabled}
-          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
-        />
-      );
-      headerLabel = t("intro.title");
-      headerBackButtonLink = WalletStep.None;
+      walletContent = <ConnectModalIntro getWalletUrl={GET_WALLET_URL} />;
       break;
     case WalletStep.Connect:
       walletContent = selectedWallet && (
@@ -191,8 +174,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   return (
     <ConnectModalShellView
       compactModeEnabled={compactModeEnabled}
+      getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
-      onCompactInfoClick={() => changeWalletStep(WalletStep.LearnCompact)}
       onRightPaneBack={
         backButtonLink
           ? () => {

@@ -188,7 +188,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
     <div {...stylex.props(styles.container)}>
       <DialogHeader onClose={onClose} />
       <div {...stylex.props(styles.content)}>
-        <IconTile large>
+        <IconTile>
           <SignatureIcon />
         </IconTile>
         <div {...stylex.props(styles.text)}>
