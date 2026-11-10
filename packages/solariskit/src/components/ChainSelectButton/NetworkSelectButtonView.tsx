@@ -99,6 +99,7 @@ export function NetworkSelectButtonView({
           ) : null}
           <span
             {...stylex.props(
+              triggerStyles.label,
               responsiveDisplay(
                 chainStatus,
                 (value) => value === "full" || value === "name" || (value === "icon" && !network.iconUrl),

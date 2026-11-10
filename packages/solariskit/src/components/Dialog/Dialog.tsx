@@ -1,4 +1,4 @@
-import React, { type MouseEventHandler, type ReactNode, useCallback, useEffect, useState } from "react";
+import React, { type MouseEventHandler, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
 
@@ -24,6 +24,21 @@ const slideUp = stylex.keyframes({
   to: { transform: "none" },
 });
 
+const fadeOut = stylex.keyframes({
+  from: { opacity: 1 },
+  to: { opacity: 0 },
+});
+
+const riseOut = stylex.keyframes({
+  from: { opacity: 1, transform: "none" },
+  to: { opacity: 0, transform: "translateY(8px) scale(0.98)" },
+});
+
+const slideDown = stylex.keyframes({
+  from: { transform: "none" },
+  to: { transform: "translateY(100%)" },
+});
+
 const reducedMotion = "@media (prefers-reduced-motion: reduce)";
 
 const bleed = 200;
@@ -32,7 +47,7 @@ const styles = stylex.create({
   overlay: {
     alignItems: "center",
     animationDuration: "150ms",
-    animationName: { default: fadeIn, [reducedMotion]: "none" },
+    animationName: fadeIn,
     animationTimingFunction: "ease-out",
     backdropFilter: blurs.modalOverlay,
     backgroundColor: colors.modalBackdrop,
@@ -56,9 +71,17 @@ const styles = stylex.create({
   overlayMobile: {
     alignItems: "flex-end",
   },
+  // The dialog stays mounted until this animation ends.
+  overlayClosing: {
+    animationDuration: "200ms",
+    animationFillMode: "forwards",
+    animationName: fadeOut,
+    animationTimingFunction: "ease-in",
+    pointerEvents: "none",
+  },
   content: {
     animationDuration: "200ms",
-    animationName: { default: riseIn, [reducedMotion]: "none" },
+    animationName: { default: riseIn, [reducedMotion]: fadeIn },
     animationTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
     display: "flex",
     flexDirection: "column",
@@ -67,7 +90,17 @@ const styles = stylex.create({
   },
   contentMobile: {
     animationDuration: "300ms",
-    animationName: { default: slideUp, [reducedMotion]: "none" },
+    animationName: { default: slideUp, [reducedMotion]: fadeIn },
+  },
+  contentClosing: {
+    animationDuration: "150ms",
+    animationFillMode: "forwards",
+    animationName: { default: riseOut, [reducedMotion]: fadeOut },
+    animationTimingFunction: "ease-in",
+  },
+  contentMobileClosing: {
+    animationDuration: "200ms",
+    animationName: { default: slideDown, [reducedMotion]: fadeOut },
   },
 });
 
@@ -111,30 +144,51 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
     setBodyScrollable(getComputedStyle(window.document.body).overflow !== "hidden");
   }, []);
 
+  const [present, setPresent] = useState(open);
+  if (open && !present) {
+    setPresent(true);
+  }
+  const closing = present && !open;
+  // While closing, keep the last open content so it does not change during the exit animation.
+  const shownChildren = useRef(children);
+  if (open) {
+    shownChildren.current = children;
+  }
+
   const handleBackdropClick = useCallback(() => onClose(), [onClose]);
   const themeRootProps = useThemeRootProps();
   const mobile = isMobile();
 
   return (
     <>
-      {open
+      {present
         ? createPortal(
             <RemoveScroll enabled={bodyScrollable}>
               <div {...themeRootProps}>
                 <div
                   {...themeRootProps}
-                  {...stylex.props(styles.overlay, mobile && styles.overlayMobile)}
+                  {...stylex.props(styles.overlay, mobile && styles.overlayMobile, closing && styles.overlayClosing)}
                   aria-labelledby={titleId}
                   aria-modal
+                  onAnimationEnd={(event) => {
+                    if (closing && event.target === event.currentTarget) {
+                      setPresent(false);
+                    }
+                  }}
                   onClick={handleBackdropClick}
                   role="dialog"
                 >
                   <FocusTrap
-                    {...stylex.props(styles.content, mobile && styles.contentMobile)}
+                    {...stylex.props(
+                      styles.content,
+                      mobile && styles.contentMobile,
+                      closing && styles.contentClosing,
+                      closing && mobile && styles.contentMobileClosing,
+                    )}
                     onClick={stopPropagation}
                     role="document"
                   >
-                    {children}
+                    {shownChildren.current}
                   </FocusTrap>
                 </div>
               </div>

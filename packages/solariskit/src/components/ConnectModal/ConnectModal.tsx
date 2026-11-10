@@ -37,39 +37,28 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
     onClose();
   }, [onClose, disconnect, isConnecting]);
 
-  if (connectionStatus === "disconnected") {
-    return (
-      <Dialog
-        onClose={onConnectModalCancel}
-        open={open}
-        titleId={titleId}
-      >
-        <DialogContent wide>
-          <ConnectOptions
-            onClose={onConnectModalCancel}
-            titleId={titleId}
-          />
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  // One Dialog for every status, so it can animate out after the wallet connects.
+  const authenticating = connectionStatus === "unauthenticated";
 
-  if (connectionStatus === "unauthenticated") {
-    return (
-      <Dialog
-        onClose={onAuthCancel}
-        open={open}
-        titleId={titleId}
-      >
-        <DialogContent>
+  return (
+    <Dialog
+      onClose={authenticating ? onAuthCancel : onConnectModalCancel}
+      open={open && (connectionStatus === "disconnected" || authenticating)}
+      titleId={titleId}
+    >
+      <DialogContent wide={!authenticating}>
+        {authenticating ? (
           <SignIn
             onClose={onAuthCancel}
             onCloseModal={onClose}
           />
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  return null;
+        ) : (
+          <ConnectOptions
+            onClose={onConnectModalCancel}
+            titleId={titleId}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }

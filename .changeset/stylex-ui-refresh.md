@@ -19,4 +19,7 @@ The modals and buttons keep the same elements and layout, with a cleaner design:
 - The account modal has clearer actions, a green "Copied" state, a "Clear all" link, and a pending-transaction dot on the avatar.
 - The sign-in view and the empty state use line icons instead of images.
 - The mobile sheet has a drag handle and a 4-column wallet grid with full names. Screens narrower than 375px use 2 columns.
-- Buttons no longer grow on hover or shrink on press; hover changes only the background color. Keyboard focus shows a visible outline. Dialog animations are shorter and turn off when the user prefers reduced motion.
+- The account button shows a loader while the balance loads, and hides the balance and its divider if loading fails. `ConnectButton.Custom` gets `account.isBalanceLoading`.
+- Trigger labels are trimmed to cap height, so names and balances center on their icons in every font.
+- Buttons no longer grow on hover or shrink on press. Hover adds an 8% tint of the text color, which also shows on dark and black backgrounds. Keyboard focus shows a visible outline.
+- Dialogs animate out as well as in, including when a wallet connects or disconnects. With reduced motion, dialogs only fade.

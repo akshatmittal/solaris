@@ -32,6 +32,7 @@ export interface ConnectButtonRendererProps {
       ensAvatar?: string;
       ensName?: string;
       hasPendingTransactions: boolean;
+      isBalanceLoading: boolean;
     };
     chain?: {
       hasIcon: boolean;
@@ -75,7 +76,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
 
   const shouldShowBalance = resolveShowBalance(showBalance);
 
-  const { balance, ensAvatar, ensName } = useProfile({
+  const { balance, ensAvatar, ensName, isBalanceLoading } = useProfile({
     address,
     includeBalance: shouldShowBalance,
   });
@@ -103,6 +104,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
               ensAvatar: ensAvatar ?? undefined,
               ensName: ensName ?? undefined,
               hasPendingTransactions,
+              isBalanceLoading,
             }
           : undefined,
         accountModalOpen,

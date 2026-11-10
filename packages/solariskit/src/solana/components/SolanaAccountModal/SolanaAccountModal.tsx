@@ -20,30 +20,28 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
   // DOM id for their aria-labelledby headings.
   const titleId = `rk_account_modal_title_${React.useId()}`;
 
-  if (!wallet.account) {
-    return null;
-  }
-
   return (
     <Dialog
       onClose={onClose}
-      open={open}
+      open={open && Boolean(wallet.account)}
       titleId={titleId}
     >
-      <DialogContent>
-        <ProfileDetailsView
-          accountName={formatAddress(wallet.account)}
-          address={wallet.account}
-          balanceLabel={lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined}
-          onClose={onClose}
-          onDisconnect={() => {
-            disconnect().catch(() => {
-              // A rejected wallet disconnect keeps the session; state stays consistent.
-            });
-          }}
-          titleId={titleId}
-        />
-      </DialogContent>
+      {wallet.account && (
+        <DialogContent>
+          <ProfileDetailsView
+            accountName={formatAddress(wallet.account)}
+            address={wallet.account}
+            balanceLabel={lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined}
+            onClose={onClose}
+            onDisconnect={() => {
+              disconnect().catch(() => {
+                // A rejected wallet disconnect keeps the session; state stays consistent.
+              });
+            }}
+            titleId={titleId}
+          />
+        </DialogContent>
+      )}
     </Dialog>
   );
 }

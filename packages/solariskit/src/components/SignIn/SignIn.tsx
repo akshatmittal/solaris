@@ -31,6 +31,8 @@ const styles = stylex.create({
     marginInline: "auto",
     marginTop: -32,
     maxWidth: 296,
+    // Overlaps the header row; let clicks reach the close button.
+    pointerEvents: "none",
     textAlign: "center",
   },
   text: {

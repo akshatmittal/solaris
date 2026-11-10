@@ -13,17 +13,20 @@ import { resolveShowBalance } from "./resolveShowBalance";
 export const triggerStyles = stylex.create({
   button: {
     alignItems: "center",
+    // An 8% wash of the text color, visible on light, dark and black surfaces.
+    backgroundImage: {
+      default: null,
+      ":hover":
+        "linear-gradient(color-mix(in srgb, currentColor 8%, transparent), color-mix(in srgb, currentColor 8%, transparent))",
+    },
     borderRadius: radii.connectButton,
     boxShadow: shadows.connectButton,
     display: "flex",
-    filter: { default: null, ":hover": "brightness(0.96)" },
     fontFamily: fonts.body,
     fontSize: 15,
     fontWeight: 600,
     height: 40,
     lineHeight: "20px",
-    transitionDuration: "150ms",
-    transitionProperty: "filter",
     whiteSpace: "nowrap",
     WebkitFontSmoothing: "antialiased",
   },
@@ -32,6 +35,14 @@ export const triggerStyles = stylex.create({
     pointerEvents: "none",
     userSelect: "none",
   },
+  // Centers the letters, not the font's line box, so every font lines up with the 24px icons.
+  label: {
+    textBox: "trim-both cap alphabetic",
+  },
+});
+
+const pulse = stylex.keyframes({
+  "50%": { opacity: 0.5 },
 });
 
 const styles = stylex.create({
@@ -51,6 +62,16 @@ const styles = stylex.create({
   balance: {
     fontWeight: 500,
     paddingInline: 8,
+  },
+  balanceLoader: {
+    animationDuration: "1.2s",
+    animationIterationCount: "infinite",
+    animationName: { default: pulse, "@media (prefers-reduced-motion: reduce)": "none" },
+    backgroundColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,
+    borderRadius: 6,
+    display: "block",
+    height: 12,
+    width: 56,
   },
   pill: {
     alignItems: "center",
@@ -83,6 +104,7 @@ export interface ConnectButtonAccount {
   displayName: string;
   ensAvatar?: string;
   hasPendingTransactions: boolean;
+  isBalanceLoading: boolean;
 }
 
 export interface ConnectButtonViewProps {
@@ -112,6 +134,7 @@ export function ConnectButtonView({
   testIdPrefix = "",
 }: ConnectButtonViewProps) {
   const shouldShowBalance = resolveShowBalance(showBalance);
+  const hasBalance = Boolean(account?.displayBalance) || Boolean(account?.isBalanceLoading);
 
   return (
     <div
@@ -126,12 +149,14 @@ export function ConnectButtonView({
           title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
           type="button"
         >
-          {account.displayBalance && (
-            <span {...stylex.props(styles.balance, responsiveDisplay(showBalance, Boolean, "block"))}>
-              {account.displayBalance}
+          {hasBalance && (
+            <span
+              {...stylex.props(styles.balance, triggerStyles.label, responsiveDisplay(showBalance, Boolean, "block"))}
+            >
+              {account.displayBalance ?? <span {...stylex.props(styles.balanceLoader)} />}
             </span>
           )}
-          <span {...stylex.props(styles.pill, shouldShowBalance && styles.pillWithBalance)}>
+          <span {...stylex.props(styles.pill, shouldShowBalance && hasBalance && styles.pillWithBalance)}>
             <span
               {...stylex.props(
                 responsiveDisplay(accountStatus, (value) => value === "full" || value === "avatar", "block"),
@@ -146,6 +171,7 @@ export function ConnectButtonView({
             </span>
             <span
               {...stylex.props(
+                triggerStyles.label,
                 responsiveDisplay(accountStatus, (value) => value === "full" || value === "address", "block"),
               )}
             >

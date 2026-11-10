@@ -12,6 +12,11 @@ const styles = stylex.create({
   button: {
     alignItems: "center",
     backgroundColor: colors.connectButtonBackground,
+    backgroundImage: {
+      default: null,
+      ":hover":
+        "linear-gradient(color-mix(in srgb, currentColor 8%, transparent), color-mix(in srgb, currentColor 8%, transparent))",
+    },
     borderColor: colors.generalBorder,
     borderRadius: radii.menuButton,
     borderStyle: "solid",
@@ -19,7 +24,6 @@ const styles = stylex.create({
     boxShadow: shadows.connectButton,
     color: colors.connectButtonText,
     display: "flex",
-    filter: { default: null, ":hover": "brightness(0.96)" },
     fontFamily: fonts.body,
     fontSize: 15,
     fontWeight: 600,
@@ -29,8 +33,6 @@ const styles = stylex.create({
     paddingBlock: 6,
     paddingLeft: 6,
     paddingRight: 14,
-    transitionDuration: "150ms",
-    transitionProperty: "filter",
     WebkitFontSmoothing: "antialiased",
   },
   disabled: {

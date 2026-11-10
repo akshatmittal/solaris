@@ -30,6 +30,8 @@ const styles = stylex.create({
     flexDirection: "column",
     gap: 12,
     marginTop: -44,
+    // The identity block overlaps the header row; let clicks reach the close button.
+    pointerEvents: "none",
     textAlign: "center",
   },
   names: {
