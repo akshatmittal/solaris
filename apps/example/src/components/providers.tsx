@@ -3,9 +3,18 @@
 import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RainbowKitProvider, getDefaultConfig } from "solariskit";
+import {
+  RainbowKitAuthenticationProvider,
+  RainbowKitProvider,
+  createAuthenticationAdapter,
+  getDefaultConfig,
+  type AuthenticationStatus,
+} from "solariskit";
 import { SolanaKitProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
+import { isHex } from "viem";
+import { createSiweMessage, generateSiweNonce } from "viem/siwe";
 import { http, WagmiProvider } from "wagmi";
+import { getPublicClient } from "wagmi/actions";
 import { base, bsc, mainnet, polygon } from "wagmi/chains";
 import "solariskit/styles.css";
 
@@ -54,16 +63,60 @@ const solanaConfig = getDefaultSolanaConfig({
 
 export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
+  const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("unauthenticated");
+  // Sign-In with Ethereum, verified in the browser so the example needs no backend.
+  const [authAdapter] = useState(() => {
+    let issuedNonce = "";
+
+    return createAuthenticationAdapter({
+      createMessage: ({ address, chainId, nonce }) =>
+        createSiweMessage({
+          address,
+          chainId,
+          domain: window.location.host,
+          nonce,
+          statement: "Sign in to the Solaris example.",
+          uri: window.location.origin,
+          version: "1",
+        }),
+      getNonce: async () => {
+        issuedNonce = generateSiweNonce();
+        return issuedNonce;
+      },
+      signOut: async () => {
+        setAuthStatus("unauthenticated");
+      },
+      verify: async ({ message, signature }) => {
+        if (!isHex(signature)) {
+          return false;
+        }
+        const valid = await getPublicClient(ethereumConfig).verifySiweMessage({
+          message,
+          nonce: issuedNonce,
+          signature,
+        });
+        if (valid) {
+          setAuthStatus("authenticated");
+        }
+        return valid;
+      },
+    });
+  });
 
   return (
     <WagmiProvider config={ethereumConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          id="ethereum"
-          modalSize="compact"
+        <RainbowKitAuthenticationProvider
+          adapter={authAdapter}
+          status={authStatus}
         >
-          {children}
-        </RainbowKitProvider>
+          <RainbowKitProvider
+            id="ethereum"
+            modalSize="compact"
+          >
+            {children}
+          </RainbowKitProvider>
+        </RainbowKitAuthenticationProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
