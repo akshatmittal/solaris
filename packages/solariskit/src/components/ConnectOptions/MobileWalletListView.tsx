@@ -92,7 +92,10 @@ const styles = stylex.create({
     columnGap: 8,
     gridAutoColumns: "calc((100% - 24px) / 4)",
     gridAutoFlow: { default: "column", "@media (max-width: 374.98px)": "row" },
-    gridTemplateColumns: { default: null, "@media (max-width: 374.98px)": "repeat(2, 1fr)" },
+    gridTemplateColumns: {
+      default: "repeat(4, calc((100% - 24px) / 4))",
+      "@media (max-width: 374.98px)": "repeat(2, 1fr)",
+    },
     overflowX: "auto",
     rowGap: 20,
     paddingBottom: 24,

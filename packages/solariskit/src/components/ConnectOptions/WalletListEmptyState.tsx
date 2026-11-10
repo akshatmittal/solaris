@@ -16,6 +16,8 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     gap: 4,
+    // Spans the whole mobile wallet grid.
+    gridColumn: "1 / -1",
     paddingBottom: 4,
     paddingInline: 12,
     paddingTop: 12,
