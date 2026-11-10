@@ -2,7 +2,6 @@ import React, { useReducer } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { colors } from "../../css/vars.stylex";
 import { type AsyncImageSrc, useAsyncImage } from "./useAsyncImage";
 
 const styles = stylex.create({
@@ -25,23 +24,11 @@ const styles = stylex.create({
     width: "100%",
   },
   hidden: { opacity: 0 },
-  // Hairline ring that gives every icon the same edge, whatever its own background.
-  bordered: {
-    "::after": {
-      borderRadius: "inherit",
-      boxShadow: `inset 0 0 0 1px ${colors.hairline}`,
-      content: "''",
-      inset: 0,
-      pointerEvents: "none",
-      position: "absolute",
-    },
-  },
 });
 
 interface AsyncImageProps {
   alt?: string;
   background?: string;
-  bordered?: boolean;
   radius?: number | "full";
   size: number;
   src: string | AsyncImageSrc | undefined;
@@ -49,23 +36,14 @@ interface AsyncImageProps {
   useAsImage?: boolean;
 }
 
-export function AsyncImage({
-  alt,
-  background,
-  bordered = false,
-  radius = 0,
-  size,
-  src: srcProp,
-  testId,
-  useAsImage,
-}: AsyncImageProps) {
+export function AsyncImage({ alt, background, radius = 0, size, src: srcProp, testId, useAsImage }: AsyncImageProps) {
   const src = useAsyncImage(srcProp);
   const isRemoteImage = src?.startsWith("http") ?? false;
   const [isRemoteImageLoaded, setRemoteImageLoaded] = useReducer(() => true, false);
 
   return (
     <div
-      {...stylex.props(styles.container, bordered && styles.bordered)}
+      {...stylex.props(styles.container)}
       aria-label={alt}
       data-testid={testId ? `rk-${testId}` : undefined}
       role="img"

@@ -49,7 +49,6 @@ export const ModalSelection = ({
   >
     <AsyncImage
       background={iconBackground}
-      bordered
       radius={8}
       size={32}
       src={iconUrl}

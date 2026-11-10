@@ -81,7 +81,6 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
         ) : (
           <AsyncImage
             background={connector.iconBackground}
-            bordered
             radius={8}
             size={30}
             src={connector.iconUrl}

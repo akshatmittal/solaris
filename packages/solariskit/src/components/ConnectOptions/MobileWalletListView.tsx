@@ -205,7 +205,6 @@ export function MobileWalletItemView({
           {connecting ? <LoadingSpinner accent={iconAccent} /> : null}
           <AsyncImage
             background={iconBackground}
-            bordered
             radius={16}
             size={56}
             src={iconUrl}

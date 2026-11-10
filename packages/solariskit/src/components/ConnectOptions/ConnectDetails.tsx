@@ -153,7 +153,6 @@ export function ConnectDetail({
           <div {...stylex.props(styles.iconWrap)}>
             <AsyncImage
               background={iconBackground}
-              bordered
               radius={16}
               size={64}
               src={iconUrl}

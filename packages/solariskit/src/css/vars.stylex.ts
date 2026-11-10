@@ -23,7 +23,6 @@ export const colors = stylex.defineConsts({
   error: "var(--rk-colors-error)",
   generalBorder: "var(--rk-colors-generalBorder)",
   generalBorderDim: "var(--rk-colors-generalBorderDim)",
-  hairline: "color-mix(in srgb, var(--rk-colors-modalText) 8%, transparent)",
   menuItemBackground: "var(--rk-colors-menuItemBackground)",
   modalBackdrop: "var(--rk-colors-modalBackdrop)",
   modalBackground: "var(--rk-colors-modalBackground)",

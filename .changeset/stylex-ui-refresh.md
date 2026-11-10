@@ -12,7 +12,7 @@ The modals and buttons keep the same elements and layout, with a cleaner design:
 
 - Typography uses the system UI font stack with a 400/500/600 weight scale. Labels use sentence case ("Connect wallet", "Get a wallet", "Learn more").
 - The light theme accent is `#0A66E0` for 4.5:1 text contrast. The dark blue preset uses dark text on its accent fill.
-- Wallet and network rows are transparent with a hover fill. The selected network has a 10% accent tint and a "Connected" label. Wallet icons share one tile style with an inset hairline.
+- Wallet and network rows are transparent with a hover fill. The selected network has a 10% accent tint and a "Connected" label. Wallet and network icons have no border. MetaMask Mobile uses the same fox icon as the MetaMask extension.
 - All compact modals are 360px wide with a 24px content inset. The wide modal left-aligns both pane titles.
 - Connecting shows a progress ring around the wallet icon. A declined connection shows an error ring, "Connection declined", and a primary Retry button, and the layout does not move between the two states.
 - The QR code has no border card in light mode, and its modules align with the content edge. Its button reads "Get <wallet>".

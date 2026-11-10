@@ -202,7 +202,6 @@ export function NetworkModalView({
                     <AsyncImage
                       alt={name}
                       background={iconBackground}
-                      bordered
                       radius="full"
                       size={chainIconSize}
                       src={iconUrl}
