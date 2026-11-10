@@ -39,17 +39,21 @@ export function DialogHeader({
   return (
     <div {...stylex.props(styles.header, align === "start" && styles.start)}>
       {align === "center" && <div>{left}</div>}
-      <Text
-        align={align === "start" ? "left" : "center"}
-        as="h1"
-        color="modalText"
-        id={titleId}
-        size={size}
-        testId={testId}
-        weight="semibold"
-      >
-        {title}
-      </Text>
+      {title ? (
+        <Text
+          align={align === "start" ? "left" : "center"}
+          as="h1"
+          color="modalText"
+          id={titleId}
+          size={size}
+          testId={testId}
+          weight="semibold"
+        >
+          {title}
+        </Text>
+      ) : (
+        <div />
+      )}
       {onClose ? (
         <IconButton
           aria-label="Close"
