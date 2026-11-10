@@ -36,6 +36,13 @@ const styles = stylex.create({
     gap: 12,
     textAlign: "center",
   },
+  // Matches the Retry button with its gap and bottom margin, so the icon and text stay centered.
+  statusBalanced: {
+    paddingTop: 64,
+  },
+  retry: {
+    marginBottom: 8,
+  },
   iconWrap: {
     padding: 10,
     position: "relative",
@@ -149,7 +156,7 @@ export function ConnectDetail({
           />
         </div>
       ) : (
-        <div {...stylex.props(styles.center, styles.status)}>
+        <div {...stylex.props(styles.center, styles.status, ready && styles.statusBalanced)}>
           <div {...stylex.props(styles.iconWrap)}>
             <AsyncImage
               background={iconBackground}
@@ -209,7 +216,7 @@ export function ConnectDetail({
             )}
           </div>
           {ready && (
-            <div {...stylex.props(!connectionError && styles.reserved)}>
+            <div {...stylex.props(styles.retry, !connectionError && styles.reserved)}>
               <ActionButton
                 label={t("connect.secondary_action.retry.label")}
                 onClick={async () => {
@@ -221,26 +228,24 @@ export function ConnectDetail({
           )}
         </div>
       )}
-      <div {...stylex.props(styles.secondaryAction)}>
-        {ready && secondaryAction && (
-          <>
-            <Text
-              color="modalTextSecondary"
-              size="14"
-              weight="regular"
-            >
-              {secondaryAction.description}
-            </Text>
-            <ActionButton
-              href={secondaryAction.href}
-              label={secondaryAction.label}
-              onClick={secondaryAction.onClick}
-              size="small"
-              type="secondary"
-            />
-          </>
-        )}
-      </div>
+      {ready && secondaryAction && (
+        <div {...stylex.props(styles.secondaryAction)}>
+          <Text
+            color="modalTextSecondary"
+            size="14"
+            weight="regular"
+          >
+            {secondaryAction.description}
+          </Text>
+          <ActionButton
+            href={secondaryAction.href}
+            label={secondaryAction.label}
+            onClick={secondaryAction.onClick}
+            size="small"
+            type="secondary"
+          />
+        </div>
+      )}
     </div>
   );
 }
