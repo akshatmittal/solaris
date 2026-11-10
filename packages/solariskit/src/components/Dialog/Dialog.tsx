@@ -1,4 +1,4 @@
-import React, { type MouseEventHandler, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { type MouseEventHandler, type ReactNode, useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
 
@@ -157,9 +157,9 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
     return () => window.clearTimeout(timeout);
   }, [closing]);
   // While closing, keep the last open content so it does not change during the exit animation.
-  const shownChildren = useRef(children);
-  if (open) {
-    shownChildren.current = children;
+  const [shownChildren, setShownChildren] = useState(children);
+  if (open && shownChildren !== children) {
+    setShownChildren(children);
   }
 
   const handleBackdropClick = useCallback(() => onClose(), [onClose]);
@@ -190,7 +190,7 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
                     onClick={stopPropagation}
                     role="document"
                   >
-                    {shownChildren.current}
+                    {shownChildren}
                   </FocusTrap>
                 </div>
               </div>
