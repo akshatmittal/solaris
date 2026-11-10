@@ -36,9 +36,9 @@ const styles = stylex.create({
     gap: 12,
     textAlign: "center",
   },
-  // Matches the Retry button with its gap and bottom margin, so the icon and text stay centered.
+  // Centers the icon and text in the card; the hidden Retry button sits in the space below them.
   statusBalanced: {
-    paddingTop: 64,
+    paddingTop: 12,
   },
   retry: {
     marginBottom: 8,
