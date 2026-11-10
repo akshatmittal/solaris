@@ -1,6 +1,6 @@
 {
   "chains": {
-    "confirm": "Confirm in Wallet",
+    "confirm": "Confirm in wallet",
     "connected": "Connected",
     "disconnect": "Disconnect",
     "search": {
@@ -8,28 +8,28 @@
       "no_results": "No networks match your search.",
       "placeholder": "Search"
     },
-    "title": "Switch Networks",
+    "title": "Switch network",
     "wrong_network": "Wrong network detected, switch or disconnect to continue."
   },
   "connect": {
     "empty": {
       "description": "Install a wallet to connect to this app.",
-      "title": "We could not detect a supported wallet in your browser."
+      "title": "No supported wallet detected"
     },
     "new_to_ethereum": {
       "description": "New to wallets?",
       "learn_more": {
-        "label": "Learn More"
+        "label": "Learn more"
       }
     },
     "recent": "Recent",
     "secondary_action": {
       "get": {
-        "description": "Don't have %{wallet}?",
-        "label": "GET"
+        "description": "Don’t have %{wallet}?",
+        "label": "Get %{wallet}"
       },
       "retry": {
-        "label": "RETRY"
+        "label": "Retry"
       }
     },
     "status": {
@@ -37,16 +37,18 @@
       "confirm_mobile": "Accept connection request in the wallet",
       "connect_mobile": "Continue in %{wallet}",
       "connecting": "Connecting",
-      "opening": "Opening %{wallet}..."
+      "declined": "Connection declined",
+      "declined_description": "Try again, or choose another wallet.",
+      "opening": "Opening %{wallet}…"
     },
-    "title": "Connect a Wallet",
+    "title": "Connect a wallet",
     "walletconnect": {
       "description": {
         "compact": "Need the WalletConnect modal?",
         "full": "Need the official WalletConnect modal?"
       },
       "open": {
-        "label": "OPEN"
+        "label": "Open"
       }
     }
   },
@@ -55,7 +57,8 @@
     "title": "Scan with %{wallet}"
   },
   "connect_wallet": {
-    "label": "Connect Wallet",
+    "label": "Connect wallet",
+    "pending": "Transaction pending",
     "wrong_network": {
       "label": "Wrong network"
     }
@@ -69,51 +72,51 @@
     "recommended": "Recommended"
   },
   "intro": {
-    "description": "A wallet is used to send, receive, store, and display digital assets. It's also a new way to log in, without needing to create new accounts and passwords on every website.",
+    "description": "A wallet holds your digital assets and lets you log in to apps without new accounts or passwords.",
     "digital_asset": {
       "description": "Wallets are used to send, receive, store, and display digital assets like tokens and NFTs.",
-      "title": "A Home for your Digital Assets"
+      "title": "A home for your digital assets"
     },
     "get": {
-      "label": "Get a Wallet"
+      "label": "Get a wallet"
     },
     "learn_more": {
-      "label": "Learn More"
+      "label": "Learn more"
     },
     "login": {
       "description": "Instead of creating new accounts and passwords on every website, just connect your wallet.",
-      "title": "A New Way to Log In"
+      "title": "A new way to log in"
     },
-    "title": "What is a Wallet?"
+    "title": "What is a wallet?"
   },
   "profile": {
     "copy_address": {
-      "copied": "Copied!",
-      "label": "Copy Address"
+      "copied": "Copied",
+      "label": "Copy address"
     },
     "disconnect": {
       "label": "Disconnect"
     },
     "explorer": {
-      "label": "View more on explorer"
+      "label": "View on explorer"
     },
     "transactions": {
       "clear": {
-        "label": "Clear All"
+        "label": "Clear all"
       },
-      "description": "%{appName} transactions will appear here...",
-      "description_fallback": "Your transactions will appear here...",
+      "description": "%{appName} transactions will appear here.",
+      "description_fallback": "Your transactions will appear here.",
       "recent": {
-        "title": "Recent Transactions"
+        "title": "Recent transactions"
       }
     }
   },
   "sign_in": {
-    "description": "To finish connecting, you must sign a message in your wallet to verify that you are the owner of this account.",
+    "description": "Sign a message in your wallet to confirm you own this account. It does not send a transaction or cost gas.",
     "label": "Verify your account",
     "message": {
       "cancel": "Cancel",
-      "preparing": "Preparing message...",
+      "preparing": "Preparing message…",
       "preparing_error": "Error preparing message, please retry!",
       "retry": "Retry",
       "send": "Sign message"
@@ -121,9 +124,9 @@
     "signature": {
       "oops_error": "Oops, something went wrong!",
       "signing_error": "Error signing message, please retry!",
-      "verifying": "Verifying signature...",
+      "verifying": "Verifying signature…",
       "verifying_error": "Error verifying signature, please retry!",
-      "waiting": "Waiting for signature..."
+      "waiting": "Waiting for signature…"
     }
   }
 }

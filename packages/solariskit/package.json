@@ -21,9 +21,7 @@
     "dist"
   ],
   "type": "module",
-  "sideEffects": [
-    "src/css/reset.css.ts"
-  ],
+  "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -49,10 +47,7 @@
   },
   "dependencies": {
     "@akshatmittal/polycons": "workspace:*",
-    "@vanilla-extract/css": "1.21.1",
-    "@vanilla-extract/dynamic": "2.1.5",
-    "@vanilla-extract/sprinkles": "1.7.0",
-    "clsx": "2.1.1",
+    "@stylexjs/stylex": "0.19.1",
     "qr": "0.7.2",
     "react-remove-scroll": "2.7.2"
   },
@@ -63,15 +58,12 @@
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@solana/connector": "0.3.0",
     "@solana/kit": "^8.6.0",
+    "@stylexjs/rollup-plugin": "0.19.1",
     "@tanstack/react-query": "catalog:",
     "@types/node": "catalog:",
     "@types/postcss-prefix-selector": "^1.16.3",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vanilla-extract/css-utils": "0.1.6",
-    "@vanilla-extract/private": "1.0.9",
-    "@vanilla-extract/rollup-plugin": "^1.5.4",
-    "@vanilla-extract/vite-plugin": "catalog:",
     "@walletconnect/ethereum-provider": "^2.23.10",
     "@workspace/typescript-config": "workspace:*",
     "autoprefixer": "catalog:",
@@ -82,7 +74,6 @@
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "viem": "catalog:",
-    "vite": "catalog:",
     "wagmi": "catalog:"
   },
   "peerDependencies": {

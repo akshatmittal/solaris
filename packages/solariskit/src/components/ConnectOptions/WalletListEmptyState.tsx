@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import * as stylex from "@stylexjs/stylex";
 
 import { t } from "../../translations";
-import { Box } from "../Box/Box";
 import { ActionButton } from "../Button/ActionButton";
+import { WalletIcon } from "../Icons/FeatureIcons";
+import { IconTile } from "../Icons/IconTile";
+import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
+import { TextLink } from "../TextLink/TextLink";
+
+const styles = stylex.create({
+  container: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    paddingBottom: 4,
+    paddingInline: 12,
+    paddingTop: 12,
+    textAlign: "center",
+    width: "100%",
+  },
+  icon: {
+    marginBottom: 12,
+  },
+  actions: {
+    alignItems: "center",
+    alignSelf: "stretch",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    marginTop: 20,
+  },
+});
 
 export function WalletListEmptyState({
   getWalletUrl,
@@ -12,43 +42,49 @@ export function WalletListEmptyState({
   getWalletUrl: string;
   showAction?: boolean;
 }) {
+  const { learnMoreUrl } = useContext(AppContext);
+
   return (
-    <Box
-      alignItems="center"
-      display="flex"
-      flexDirection="column"
-      paddingX="16"
-      paddingY="24"
+    <div
+      {...stylex.props(styles.container)}
       role="status"
-      textAlign="center"
-      width="full"
     >
+      <div {...stylex.props(styles.icon)}>
+        <IconTile large>
+          <WalletIcon size={28} />
+        </IconTile>
+      </div>
       <Text
         as="h2"
         color="modalText"
-        size="16"
-        weight="bold"
+        size="18"
+        weight="semibold"
       >
         {t("connect.empty.title")}
       </Text>
-      <Box marginTop="4">
-        <Text
-          as="p"
-          color="modalTextSecondary"
-          size="14"
-        >
-          {t("connect.empty.description")}
-        </Text>
-      </Box>
+      <Text
+        as="p"
+        color="modalTextSecondary"
+        size="14"
+        weight="regular"
+      >
+        {t("connect.empty.description")}
+      </Text>
       {showAction ? (
-        <Box marginTop="16">
+        <div {...stylex.props(styles.actions)}>
           <ActionButton
+            fullWidth
             href={getWalletUrl}
             label={t("intro.get.label")}
-            type="secondary"
           />
-        </Box>
+          <TextLink
+            href={learnMoreUrl}
+            tall
+          >
+            {t("intro.learn_more.label")}
+          </TextLink>
+        </div>
       ) : null}
-    </Box>
+    </div>
   );
 }

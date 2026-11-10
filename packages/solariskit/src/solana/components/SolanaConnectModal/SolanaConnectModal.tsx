@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { Box } from "../../../components/Box/Box";
+import * as stylex from "@stylexjs/stylex";
+
 import { ConnectModalIntro } from "../../../components/ConnectModal/ConnectModalIntro";
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
 import { MobileWalletItemView, MobileWalletListView } from "../../../components/ConnectOptions/MobileWalletListView";
@@ -22,6 +23,13 @@ enum SolanaWalletStep {
 }
 
 const SOLANA_GET_WALLET_URL = "https://solana.com/solana-wallets";
+
+const styles = stylex.create({
+  error: {
+    marginTop: 12,
+    paddingInline: 4,
+  },
+});
 
 export interface SolanaConnectModalProps {
   open: boolean;
@@ -117,18 +125,14 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
         />
       )}
       {error ? (
-        <Box
-          marginTop="12"
-          marginX="6"
+        <Text
+          color="error"
+          size="14"
+          weight="medium"
+          xstyle={styles.error}
         >
-          <Text
-            color="error"
-            size="14"
-            weight="medium"
-          >
-            {error.message}
-          </Text>
-        </Box>
+          {error.message}
+        </Text>
       ) : null}
     </>
   );
@@ -139,11 +143,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       open={open}
       titleId={titleId}
     >
-      <DialogContent
-        bottomSheetOnMobile
-        padding="0"
-        wide
-      >
+      <DialogContent wide>
         {mobile ? (
           <MobileWalletListView
             error={error?.message}
@@ -153,28 +153,22 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             walletItems={
               readyWallets.length > 0 ? (
                 readyWallets.map((wallet) => (
-                  <Box
+                  <MobileWalletItemView
+                    connecting={isConnecting && selectedWalletId === wallet.id}
+                    iconUrl={wallet.iconUrl}
+                    id={wallet.id}
                     key={wallet.id}
-                    width="60"
-                  >
-                    <MobileWalletItemView
-                      connecting={isConnecting && selectedWalletId === wallet.id}
-                      iconUrl={wallet.iconUrl}
-                      id={wallet.id}
-                      name={wallet.name}
-                      onClick={() => selectWallet(wallet)}
-                      ready={wallet.ready}
-                      recent={wallet.recent}
-                    />
-                  </Box>
+                    name={wallet.name}
+                    onClick={() => selectWallet(wallet)}
+                    ready={wallet.ready}
+                    recent={wallet.recent}
+                  />
                 ))
               ) : (
-                <Box width="full">
-                  <WalletListEmptyState
-                    getWalletUrl={SOLANA_GET_WALLET_URL}
-                    showAction={false}
-                  />
-                </Box>
+                <WalletListEmptyState
+                  getWalletUrl={SOLANA_GET_WALLET_URL}
+                  showAction={false}
+                />
               )
             }
           />
@@ -186,11 +180,12 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             onRightPaneBack={compactModeEnabled ? () => setWalletStep(SolanaWalletStep.List) : undefined}
             rightPaneContent={
               <ConnectModalIntro
-                compactModeEnabled={compactModeEnabled}
+                compact={compactModeEnabled}
                 getWallet={() => window.open(SOLANA_GET_WALLET_URL, "_blank", "noopener,noreferrer")}
               />
             }
-            rightPaneHeaderLabel={compactModeEnabled ? t("intro.title") : null}
+            hideFooter={wallets.length === 0}
+            rightPaneHeaderLabel={t("intro.title")}
             showRightPane={compactModeEnabled ? walletStep !== SolanaWalletStep.List : true}
             showSidebar={compactModeEnabled ? walletStep === SolanaWalletStep.List : true}
             titleId={titleId}

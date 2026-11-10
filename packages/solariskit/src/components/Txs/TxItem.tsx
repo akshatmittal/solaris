@@ -1,114 +1,112 @@
 import React from "react";
 
+import * as stylex from "@stylexjs/stylex";
 import { useConnection } from "wagmi";
 
 import type { Transaction } from "../../transactions/transactionStore";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import { colors, radii } from "../../css/vars.stylex";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
-import { isMobile } from "../../utils/isMobile";
-import { Box } from "../Box/Box";
 import { CancelIcon } from "../Icons/Cancel";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { SpinnerIcon } from "../Icons/Spinner";
 import { SuccessIcon } from "../Icons/Success";
 import { Text } from "../Text/Text";
 
-const getTxStatusIcon = (status: Transaction["status"]) => {
-  switch (status) {
-    case "pending":
-      return SpinnerIcon;
-    case "confirmed":
-      return SuccessIcon;
-    case "failed":
-      return CancelIcon;
-    default:
-      return SpinnerIcon;
-  }
-};
+const styles = stylex.create({
+  row: {
+    alignItems: "center",
+    borderRadius: radii.menuButton,
+    color: colors.modalText,
+    display: "flex",
+    gap: 12,
+    paddingBlock: 8,
+    paddingInline: 12,
+    textDecoration: "none",
+  },
+  link: {
+    backgroundColor: { default: "transparent", ":hover": colors.menuItemBackground },
+    transitionDuration: "120ms",
+    transitionProperty: "background-color",
+  },
+  icon: {
+    alignItems: "center",
+    display: "flex",
+    flexShrink: 0,
+    height: 20,
+    justifyContent: "center",
+    width: 20,
+  },
+  pending: { color: colors.accentColor },
+  confirmed: { color: colors.success },
+  failed: { color: colors.error },
+  text: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    minWidth: 0,
+  },
+  trailingIcon: {
+    color: colors.modalTextSecondary,
+    display: "flex",
+    marginRight: -3,
+  },
+});
 
-interface TxProps {
-  tx: Transaction;
-}
+const statusIcons = {
+  confirmed: SuccessIcon,
+  failed: CancelIcon,
+  pending: SpinnerIcon,
+} as const;
 
-export function TxItem({ tx }: TxProps) {
-  const mobile = isMobile();
-  const Icon = getTxStatusIcon(tx.status);
-  const color = tx.status === "failed" ? "error" : "accentColor";
+const statusLabels = {
+  confirmed: "Confirmed",
+  failed: "Failed",
+  pending: "Pending",
+} as const;
+
+export function TxItem({ tx }: { tx: Transaction }) {
+  const Icon = statusIcons[tx.status];
   const { chain: activeChain } = useConnection();
-
-  const confirmationStatus = tx.status === "confirmed" ? "Confirmed" : tx.status === "failed" ? "Failed" : "Pending";
-
   const explorerLink = chainToExplorerUrl(activeChain);
 
-  return (
+  const content = (
     <>
-      <Box
-        {...(explorerLink
-          ? {
-              as: "a",
-              background: { hover: "profileForeground" },
-              borderRadius: "menuButton",
-              className: touchableStyles({ active: "shrink" }),
-              href: `${explorerLink}/tx/${tx.hash}`,
-              rel: "noreferrer noopener",
-              target: "_blank",
-              transition: "default",
-            }
-          : {})}
-        color="modalText"
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-        padding="8"
-        width="full"
-      >
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="row"
-          gap={mobile ? "16" : "14"}
+      <span {...stylex.props(styles.icon, styles[tx.status])}>
+        <Icon />
+      </span>
+      <span {...stylex.props(styles.text)}>
+        <Text
+          color="modalText"
+          size="14"
+          weight="medium"
         >
-          <Box color={color}>
-            <Icon />
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap={mobile ? "3" : "1"}
-          >
-            <Box>
-              <Text
-                color="modalText"
-                font="body"
-                size={mobile ? "16" : "14"}
-                weight="bold"
-              >
-                {tx?.description}
-              </Text>
-            </Box>
-            <Box>
-              <Text
-                color={tx.status === "pending" ? "modalTextSecondary" : color}
-                font="body"
-                size="14"
-                weight={mobile ? "medium" : "regular"}
-              >
-                {confirmationStatus}
-              </Text>
-            </Box>
-          </Box>
-        </Box>
-        {explorerLink && (
-          <Box
-            alignItems="center"
-            color="modalTextDim"
-            display="flex"
-          >
-            <ExternalLinkIcon />
-          </Box>
-        )}
-      </Box>
+          {tx.description}
+        </Text>
+        <Text
+          color={tx.status === "failed" ? "error" : "modalTextSecondary"}
+          size="13"
+          weight="regular"
+        >
+          {statusLabels[tx.status]}
+        </Text>
+      </span>
     </>
+  );
+
+  return explorerLink ? (
+    <a
+      {...stylex.props(styles.row, styles.link)}
+      href={`${explorerLink}/tx/${tx.hash}`}
+      rel="noreferrer noopener"
+      target="_blank"
+    >
+      {content}
+      <span {...stylex.props(styles.trailingIcon)}>
+        <ExternalLinkIcon />
+      </span>
+    </a>
+  ) : (
+    <div {...stylex.props(styles.row)}>{content}</div>
   );
 }

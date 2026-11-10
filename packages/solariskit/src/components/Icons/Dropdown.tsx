@@ -2,19 +2,18 @@ import React from "react";
 
 export const DropdownIcon = () => (
   <svg
+    aria-hidden
     fill="none"
-    height="7"
-    width="14"
-    xmlns="http://www.w3.org/2000/svg"
+    height="16"
+    viewBox="0 0 16 16"
+    width="16"
   >
-    <title>Dropdown</title>
     <path
-      d="M12.75 1.54001L8.51647 5.0038C7.77974 5.60658 6.72026 5.60658 5.98352 5.0038L1.75 1.54001"
+      d="M4.5 6.5L8 10L11.5 6.5"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="2.5"
-      xmlns="http://www.w3.org/2000/svg"
+      strokeWidth="2"
     />
   </svg>
 );

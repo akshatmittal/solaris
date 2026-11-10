@@ -1,9 +1,9 @@
-import type { ThemeVars } from "../css/sprinkles.css";
+import type { ThemeVars } from "../css/themeVars";
 
 // Source: https://css-tricks.com/snippets/css/system-font-stack
 // Note that quotes have been removed to avoid escaping and server/client mismatch issues
 const systemFontStack =
-  '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
+  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 const fontStacks = {
   rounded: `SFRounded, ui-rounded, "SF Pro Rounded", ${systemFontStack}`,
   system: systemFontStack,
@@ -21,16 +21,16 @@ const radiusScales: Record<
   }
 > = {
   large: {
-    actionButton: "9999px",
+    actionButton: "12px",
     connectButton: "12px",
     modal: "24px",
-    modalMobile: "28px",
+    modalMobile: "24px",
   },
   medium: {
     actionButton: "10px",
-    connectButton: "8px",
-    modal: "16px",
-    modalMobile: "18px",
+    connectButton: "10px",
+    modal: "18px",
+    modalMobile: "20px",
   },
   none: {
     actionButton: "0px",
@@ -72,7 +72,7 @@ interface BaseThemeOptions {
 
 export const baseTheme = ({
   borderRadius = "large",
-  fontStack = "rounded",
+  fontStack = "system",
   overlayBlur = "none",
 }: BaseThemeOptions): Pick<ThemeVars, "radii" | "fonts" | "blurs"> => ({
   blurs: {

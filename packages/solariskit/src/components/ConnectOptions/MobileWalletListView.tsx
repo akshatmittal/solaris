@@ -1,15 +1,137 @@
 import React, { type ReactNode, useContext } from "react";
 
+import * as stylex from "@stylexjs/stylex";
+
+import { reset } from "../../css/reset";
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box } from "../Box/Box";
 import { ActionButton } from "../Button/ActionButton";
-import { CloseButton } from "../CloseButton/CloseButton";
+import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
-import * as styles from "./MobileOptions.css";
+import { TextLink } from "../TextLink/TextLink";
+
+const snakeBorder = stylex.keyframes({
+  from: { strokeDashoffset: 0 },
+  to: { strokeDashoffset: -283 },
+});
+
+const styles = stylex.create({
+  spinner: {
+    position: "absolute",
+  },
+  rotatingBorder: {
+    animationDuration: "1s",
+    animationIterationCount: "infinite",
+    animationName: snakeBorder,
+    animationTimingFunction: "linear",
+    fill: "none",
+    strokeDasharray: "98 196",
+    strokeLinecap: "round",
+    strokeWidth: 4,
+  },
+  item: {
+    alignSelf: "start",
+    minWidth: 0,
+    overflow: "visible",
+    textAlign: "center",
+  },
+  itemContent: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  itemIcon: {
+    alignItems: "center",
+    display: "flex",
+    height: 64,
+    justifyContent: "center",
+    position: "relative",
+    width: 64,
+  },
+  // Labels may use half of each 8px grid gap, so names like "WalletConnect" stay on one line.
+  itemLabel: {
+    display: "flex",
+    flexDirection: "column",
+    marginInline: -4,
+    width: "calc(100% + 8px)",
+  },
+  itemName: {
+    display: "-webkit-box",
+    letterSpacing: "-0.02em",
+    overflow: "hidden",
+    textWrap: "balance",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 2,
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
+  },
+  handle: {
+    alignSelf: "center",
+    backgroundColor: `color-mix(in srgb, ${colors.modalText} 20%, transparent)`,
+    borderRadius: 9999,
+    height: 4,
+    marginTop: 8,
+    width: 36,
+  },
+  header: {
+    padding: 16,
+    paddingBottom: 16,
+    paddingTop: 16,
+  },
+  wallets: {
+    display: "grid",
+    // Four columns from 375px; narrower screens use a 2-column grid so no wallet hides behind a scroll.
+    columnGap: 8,
+    gridAutoColumns: "calc((100% - 24px) / 4)",
+    gridAutoFlow: { default: "column", "@media (max-width: 374.98px)": "row" },
+    gridTemplateColumns: { default: null, "@media (max-width: 374.98px)": "repeat(2, 1fr)" },
+    overflowX: "auto",
+    rowGap: 20,
+    paddingBottom: 24,
+    paddingInline: 16,
+    scrollbarWidth: "none",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  error: {
+    paddingBottom: 16,
+    paddingInline: 20,
+  },
+  divider: {
+    backgroundColor: colors.generalBorder,
+    height: 1,
+    marginBottom: 24,
+  },
+  intro: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+    paddingInline: 24,
+    textAlign: "center",
+  },
+  actions: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    paddingInline: 16,
+    paddingTop: 20,
+  },
+  disclaimer: {
+    marginInline: 24,
+    marginTop: 20,
+    textAlign: "center",
+  },
+});
 
 const LoadingSpinner = ({ accent }: { accent?: string }) => {
   const width = 80;
@@ -20,28 +142,23 @@ const LoadingSpinner = ({ accent }: { accent?: string }) => {
 
   return (
     <svg
-      className={styles.spinner}
+      {...stylex.props(styles.spinner)}
+      height="70"
       viewBox="0 0 86 86"
-      width="86"
-      height="86"
+      width="70"
     >
       <title>Loading</title>
       <rect
-        x="3"
-        y="3"
-        width={width}
+        {...stylex.props(styles.rotatingBorder)}
         height={height}
         rx={radiusFactor}
         ry={radiusFactor}
         strokeDasharray={`${perimeter / 3} ${(2 * perimeter) / 3}`}
-        strokeDashoffset={perimeter} // Adjust this value as per your design needs
-        className={styles.rotatingBorder}
-        style={{
-          // Prop style passing works only in `@vanilla-extract/recipes`.
-          // Instead downloading packages we can do this
-          // manually without passing props
-          stroke: accent || "#0D3887",
-        }}
+        strokeDashoffset={perimeter}
+        style={{ stroke: accent || "#0D3887" }}
+        width={width}
+        x="3"
+        y="3"
       />
     </svg>
   );
@@ -73,66 +190,39 @@ export function MobileWalletItemView({
   shortName,
 }: MobileWalletItemViewProps) {
   return (
-    <Box
-      as="button"
-      color={ready ? "modalText" : "modalTextSecondary"}
+    <button
+      {...stylex.props(reset.button, styles.item)}
+      data-testid={`rk-wallet-option-${id}`}
       disabled={!ready}
-      fontFamily="body"
-      key={id}
       onClick={onClick}
-      style={{ overflow: "visible", textAlign: "center" }}
-      testId={`wallet-option-${id}`}
       type="button"
-      width="full"
     >
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          paddingBottom="8"
-          paddingTop="10"
-          position="relative"
-        >
+      <span {...stylex.props(styles.itemContent)}>
+        <span {...stylex.props(styles.itemIcon)}>
           {connecting ? <LoadingSpinner accent={iconAccent} /> : null}
           <AsyncImage
             background={iconBackground}
-            borderRadius="13"
-            boxShadow="walletLogo"
-            height="60"
+            bordered
+            radius={16}
+            size={56}
             src={iconUrl}
-            width="60"
           />
-        </Box>
+        </span>
         {!connecting ? (
-          <Box
-            display="flex"
-            flexDirection="column"
-            textAlign="center"
-          >
+          <span {...stylex.props(styles.itemLabel)}>
             <Text
-              as="h2"
+              as="span"
               color={ready ? "modalText" : "modalTextSecondary"}
               size="13"
               weight="medium"
+              xstyle={styles.itemName}
             >
-              {/* Fix button text clipping in Safari: https://stackoverflow.com/questions/41100273/overflowing-button-text-is-being-clipped-in-safari */}
-              <Box
-                as="span"
-                position="relative"
-              >
-                {shortName ?? name}
-                {!ready && " (unsupported)"}
-              </Box>
+              {shortName ?? name}
+              {!ready && " (unsupported)"}
             </Text>
-
             {recent && (
               <Text
+                as="span"
                 color="accentColor"
                 size="12"
                 weight="medium"
@@ -140,10 +230,10 @@ export function MobileWalletItemView({
                 {t("connect.recent")}
               </Text>
             )}
-          </Box>
+          </span>
         ) : null}
-      </Box>
-    </Box>
+      </span>
+    </button>
   );
 }
 
@@ -171,168 +261,69 @@ export function MobileWalletListView({
   const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      paddingBottom="36"
-    >
-      {/* header section */}
-      <Box
-        background="profileForeground"
-        display="flex"
-        flexDirection="column"
-        paddingBottom="4"
-        paddingTop="14"
-      >
-        <Box
-          display="flex"
-          justifyContent="center"
-          paddingBottom="6"
-          paddingX="20"
-          position="relative"
+    <div {...stylex.props(styles.container)}>
+      <div {...stylex.props(styles.handle)} />
+      <div {...stylex.props(styles.header)}>
+        <DialogHeader
+          onClose={onClose}
+          title={t("connect.title")}
+          titleId={titleId}
+        />
+      </div>
+      <div {...stylex.props(styles.wallets)}>{walletItems}</div>
+      {error && (
+        <div
+          {...stylex.props(styles.error)}
+          role="alert"
         >
-          <Box
-            marginTop="4"
-            textAlign="center"
-            width="full"
+          <Text
+            color="error"
+            size="14"
+            weight="medium"
           >
-            <Text
-              as="h1"
-              color="modalText"
-              id={titleId}
-              size="20"
-              weight="bold"
-            >
-              {t("connect.title")}
-            </Text>
-          </Box>
-
-          <Box
-            alignItems="center"
-            display="flex"
-            height="32"
-            paddingRight="14"
-            position="absolute"
-            right="0"
-          >
-            <Box
-              style={{ marginBottom: -20, marginTop: -20 }} // Vertical bleed
-            >
-              <CloseButton onClose={onClose} />
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-      >
-        <Box>
-          <Box
-            background="profileForeground"
-            className={styles.scroll}
-            display="flex"
-            paddingBottom="20"
-            paddingTop="6"
-            paddingX="20"
-            style={{
-              gap: "calc((100% - 40px - 240px + 47px) / 4)",
-            }}
-          >
-            {walletItems}
-          </Box>
-
-          {error && (
-            <Box
-              background="profileForeground"
-              paddingBottom="16"
-              paddingX="20"
-              role="alert"
-            >
-              <Text
-                color="error"
-                size="14"
-                weight="medium"
-              >
-                {error}
-              </Text>
-            </Box>
-          )}
-
-          <Box
-            background="generalBorder"
-            height="1"
-            marginBottom="32"
-            marginTop="-1"
+            {error}
+          </Text>
+        </div>
+      )}
+      <div {...stylex.props(styles.divider)} />
+      <div {...stylex.props(styles.intro)}>
+        <Text
+          color="modalText"
+          size="16"
+          weight="semibold"
+        >
+          {t("intro.title")}
+        </Text>
+        <Text
+          color="modalTextSecondary"
+          size="14"
+          weight="regular"
+        >
+          {t("intro.description")}
+        </Text>
+      </div>
+      <div {...stylex.props(styles.actions)}>
+        <ActionButton
+          fullWidth
+          href={getWalletUrl}
+          label={t("intro.get.label")}
+          size="large"
+        />
+        <TextLink
+          href={learnMoreUrl}
+          tall
+        >
+          {t("intro.learn_more.label")}
+        </TextLink>
+      </div>
+      {Disclaimer && (
+        <div {...stylex.props(styles.disclaimer)}>
+          <Disclaimer
+            Link={DisclaimerLink}
+            Text={DisclaimerText}
           />
-
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap="32"
-            paddingX="32"
-            style={{ textAlign: "center" }}
-          >
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="8"
-              textAlign="center"
-            >
-              <Text
-                color="modalText"
-                size="16"
-                weight="bold"
-              >
-                {t("intro.title")}
-              </Text>
-              <Text
-                color="modalTextSecondary"
-                size="16"
-              >
-                {t("intro.description")}
-              </Text>
-            </Box>
-          </Box>
-
-          <Box
-            paddingTop="32"
-            paddingX="20"
-          >
-            <Box
-              display="flex"
-              gap="14"
-              justifyContent="center"
-            >
-              <ActionButton
-                href={getWalletUrl}
-                label={t("intro.get.label")}
-                size="large"
-                type="secondary"
-              />
-              <ActionButton
-                href={learnMoreUrl}
-                label={t("intro.learn_more.label")}
-                size="large"
-                type="secondary"
-              />
-            </Box>
-          </Box>
-          {Disclaimer && (
-            <Box
-              marginTop="28"
-              marginX="32"
-              textAlign="center"
-            >
-              <Disclaimer
-                Link={DisclaimerLink}
-                Text={DisclaimerText}
-              />
-            </Box>
-          )}
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { Box } from "../Box/Box";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { GET_WALLET_URL } from "./constants";
 import { MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
@@ -101,15 +100,11 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
       walletItems={wallets
         .filter((wallet) => wallet.ready)
         .map((wallet) => (
-          <Box
+          <WalletButton
             key={wallet.id}
-            width="60"
-          >
-            <WalletButton
-              onClose={onClose}
-              wallet={wallet}
-            />
-          </Box>
+            onClose={onClose}
+            wallet={wallet}
+          />
         ))}
     />
   );

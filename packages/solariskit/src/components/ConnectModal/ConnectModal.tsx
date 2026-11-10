@@ -44,11 +44,7 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
         open={open}
         titleId={titleId}
       >
-        <DialogContent
-          bottomSheetOnMobile
-          padding="0"
-          wide
-        >
+        <DialogContent wide>
           <ConnectOptions
             onClose={onConnectModalCancel}
             titleId={titleId}
@@ -65,10 +61,7 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
         open={open}
         titleId={titleId}
       >
-        <DialogContent
-          bottomSheetOnMobile
-          padding="0"
-        >
+        <DialogContent>
           <SignIn
             onClose={onAuthCancel}
             onCloseModal={onClose}

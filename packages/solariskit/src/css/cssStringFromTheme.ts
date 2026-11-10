@@ -1,4 +1,4 @@
-import type { ThemeVars } from "./sprinkles.css";
+import type { ThemeVars } from "./themeVars";
 
 import { cssObjectFromTheme } from "./cssObjectFromTheme";
 

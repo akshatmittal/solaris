@@ -2,11 +2,74 @@ import React, { type MouseEventHandler, type ReactNode, useCallback, useEffect, 
 import { createPortal } from "react-dom";
 import { RemoveScroll } from "react-remove-scroll";
 
+import * as stylex from "@stylexjs/stylex";
+
+import { blurs, colors, fonts } from "../../css/vars.stylex";
 import { isMobile } from "../../utils/isMobile";
-import { Box } from "../Box/Box";
 import { useThemeRootProps } from "../RainbowKitProvider/ThemeRootContext";
-import * as styles from "./Dialog.css";
 import { FocusTrap } from "./FocusTrap";
+
+const fadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+const riseIn = stylex.keyframes({
+  from: { opacity: 0, transform: "translateY(8px) scale(0.98)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+const slideUp = stylex.keyframes({
+  from: { transform: "translateY(100%)" },
+  to: { transform: "none" },
+});
+
+const reducedMotion = "@media (prefers-reduced-motion: reduce)";
+
+const bleed = 200;
+
+const styles = stylex.create({
+  overlay: {
+    alignItems: "center",
+    animationDuration: "150ms",
+    animationName: { default: fadeIn, [reducedMotion]: "none" },
+    animationTimingFunction: "ease-out",
+    backdropFilter: blurs.modalOverlay,
+    backgroundColor: colors.modalBackdrop,
+    bottom: -bleed,
+    display: "flex",
+    fontFamily: fonts.body,
+    justifyContent: "center",
+    left: -bleed,
+    lineHeight: "normal",
+    padding: bleed,
+    position: "fixed",
+    right: -bleed,
+    textAlign: "left",
+    top: -bleed,
+    // Required for content to render under the URL bar on iOS.
+    transform: "translateZ(0)",
+    WebkitFontSmoothing: "antialiased",
+    // Just below nested wallet SDK modals (Coinbase uses 2147483647).
+    zIndex: 2147483646,
+  },
+  overlayMobile: {
+    alignItems: "flex-end",
+  },
+  content: {
+    animationDuration: "200ms",
+    animationName: { default: riseIn, [reducedMotion]: "none" },
+    animationTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: "100vw",
+    position: "relative",
+  },
+  contentMobile: {
+    animationDuration: "300ms",
+    animationName: { default: slideUp, [reducedMotion]: "none" },
+  },
+});
 
 const stopPropagation: MouseEventHandler<unknown> = (event) => event.stopPropagation();
 
@@ -14,7 +77,6 @@ interface DialogProps {
   open: boolean;
   onClose: () => void;
   titleId: string;
-  onMountAutoFocus?: (event: Event) => void;
   children: ReactNode;
 }
 
@@ -58,26 +120,24 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
       {open
         ? createPortal(
             <RemoveScroll enabled={bodyScrollable}>
-              <Box {...themeRootProps}>
-                <Box
+              <div {...themeRootProps}>
+                <div
                   {...themeRootProps}
-                  alignItems={mobile ? "flex-end" : "center"}
+                  {...stylex.props(styles.overlay, mobile && styles.overlayMobile)}
                   aria-labelledby={titleId}
                   aria-modal
-                  className={styles.overlay}
                   onClick={handleBackdropClick}
-                  position="fixed"
                   role="dialog"
                 >
                   <FocusTrap
-                    className={styles.content}
+                    {...stylex.props(styles.content, mobile && styles.contentMobile)}
                     onClick={stopPropagation}
                     role="document"
                   >
                     {children}
                   </FocusTrap>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </RemoveScroll>,
             document.body,
           )

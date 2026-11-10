@@ -1,11 +1,29 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { polyconDataUri } from "@akshatmittal/polycons";
+import * as stylex from "@stylexjs/stylex";
 
 import type { AvatarComponent } from "../RainbowKitProvider/AvatarContext";
 
-import { Box } from "../Box/Box";
+import { colors } from "../../css/vars.stylex";
 import { SpinnerIcon } from "../Icons/Spinner";
+
+const styles = stylex.create({
+  image: {
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    inset: 0,
+    position: "absolute",
+  },
+  loading: {
+    alignItems: "center",
+    color: colors.modalText,
+    display: "flex",
+    inset: 0,
+    justifyContent: "center",
+    position: "absolute",
+  },
+});
 
 export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
   const [loaded, setLoaded] = useState(false);
@@ -19,45 +37,18 @@ export const EmojiAvatar: AvatarComponent = ({ address, ensImage, size }) => {
 
   const polyconImage = useMemo(() => polyconDataUri(address, size), [address, size]);
 
-  return ensImage ? (
-    loaded ? (
-      <Box
-        backgroundSize="cover"
-        position="absolute"
-        style={{
-          backgroundImage: `url(${ensImage})`,
-          backgroundPosition: "center",
-          height: size,
-          width: size,
-        }}
-      />
-    ) : (
-      <Box
-        alignItems="center"
-        backgroundSize="cover"
-        color="modalText"
-        display="flex"
-        justifyContent="center"
-        position="absolute"
-        style={{
-          height: size,
-          width: size,
-        }}
-      >
+  if (ensImage && !loaded) {
+    return (
+      <div {...stylex.props(styles.loading)}>
         <SpinnerIcon />
-      </Box>
-    )
-  ) : (
-    <Box
-      backgroundSize="cover"
-      overflow="hidden"
-      position="absolute"
-      style={{
-        backgroundImage: `url(${polyconImage})`,
-        backgroundPosition: "center",
-        height: size,
-        width: size,
-      }}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      {...stylex.props(styles.image)}
+      style={{ backgroundImage: `url(${ensImage ?? polyconImage})` }}
     />
   );
 };

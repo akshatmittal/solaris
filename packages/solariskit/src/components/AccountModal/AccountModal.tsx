@@ -35,10 +35,7 @@ export function AccountModal({ onClose, open }: AccountModalProps) {
           open={open}
           titleId={titleId}
         >
-          <DialogContent
-            bottomSheetOnMobile
-            padding="0"
-          >
+          <DialogContent>
             <ProfileDetails
               address={address}
               ensAvatar={ensAvatar}

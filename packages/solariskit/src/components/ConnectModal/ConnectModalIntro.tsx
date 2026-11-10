@@ -1,171 +1,119 @@
-import React, { useContext } from "react";
+import React, { type ReactNode, useContext } from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import * as stylex from "@stylexjs/stylex";
+
 import { t } from "../../translations";
-import { Box } from "../Box/Box";
 import { ActionButton } from "../Button/ActionButton";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
-import { AssetsIcon } from "../Icons/Assets";
-import { LoginIcon } from "../Icons/Login";
+import { KeyIcon, WalletIcon } from "../Icons/FeatureIcons";
+import { IconTile } from "../Icons/IconTile";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
+import { TextLink } from "../TextLink/TextLink";
 
-export function ConnectModalIntro({
-  compactModeEnabled = false,
-  getWallet,
-}: {
-  compactModeEnabled?: boolean;
-  getWallet: () => void;
-}) {
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 28,
+    width: "100%",
+  },
+  containerCompact: {
+    maxWidth: 320,
+  },
+  features: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+  },
+  feature: {
+    alignItems: "flex-start",
+    display: "flex",
+    gap: 16,
+  },
+  featureText: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+  },
+  actions: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+  },
+  actionsWide: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  disclaimer: {
+    textAlign: "center",
+  },
+});
+
+function Feature({ description, icon, title }: { description: string; icon: ReactNode; title: string }) {
+  return (
+    <div {...stylex.props(styles.feature)}>
+      <IconTile>{icon}</IconTile>
+      <div {...stylex.props(styles.featureText)}>
+        <Text
+          color="modalText"
+          size="15"
+          weight="semibold"
+        >
+          {title}
+        </Text>
+        <Text
+          color="modalTextSecondary"
+          size="14"
+          weight="regular"
+        >
+          {description}
+        </Text>
+      </div>
+    </div>
+  );
+}
+
+export function ConnectModalIntro({ compact, getWallet }: { compact: boolean; getWallet: () => void }) {
   const { disclaimer: Disclaimer, learnMoreUrl } = useContext(AppContext);
 
   return (
-    <>
-      <Box
-        alignItems="center"
-        color="accentColor"
-        display="flex"
-        flexDirection="column"
-        height="full"
-        justifyContent="space-around"
-      >
-        <Box marginBottom="10">
-          {!compactModeEnabled && (
-            <Text
-              color="modalText"
-              size="18"
-              weight="heavy"
-            >
-              {t("intro.title")}
-            </Text>
-          )}
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="32"
-          justifyContent="center"
-          marginY="20"
-          style={{ maxWidth: 312 }}
+    <div {...stylex.props(styles.container, compact && styles.containerCompact)}>
+      <div {...stylex.props(styles.features)}>
+        <Feature
+          description={t("intro.digital_asset.description")}
+          icon={<WalletIcon />}
+          title={t("intro.digital_asset.title")}
+        />
+        <Feature
+          description={t("intro.login.description")}
+          icon={<KeyIcon />}
+          title={t("intro.login.title")}
+        />
+      </div>
+      <div {...stylex.props(styles.actions, !compact && styles.actionsWide)}>
+        <ActionButton
+          fullWidth={compact}
+          label={t("intro.get.label")}
+          onClick={getWallet}
+        />
+        <TextLink
+          href={learnMoreUrl}
+          tall
         >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="row"
-            gap="16"
-          >
-            <Box
-              borderRadius="6"
-              height="48"
-              minWidth="48"
-              width="48"
-            >
-              <AssetsIcon />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="4"
-            >
-              <Text
-                color="modalText"
-                size="14"
-                weight="bold"
-              >
-                {t("intro.digital_asset.title")}
-              </Text>
-              <Text
-                color="modalTextSecondary"
-                size="14"
-                weight="medium"
-              >
-                {t("intro.digital_asset.description")}
-              </Text>
-            </Box>
-          </Box>
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="row"
-            gap="16"
-          >
-            <Box
-              borderRadius="6"
-              height="48"
-              minWidth="48"
-              width="48"
-            >
-              <LoginIcon />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              gap="4"
-            >
-              <Text
-                color="modalText"
-                size="14"
-                weight="bold"
-              >
-                {t("intro.login.title")}
-              </Text>
-              <Text
-                color="modalTextSecondary"
-                size="14"
-                weight="medium"
-              >
-                {t("intro.login.description")}
-              </Text>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="column"
-          gap="12"
-          justifyContent="center"
-          margin="10"
-        >
-          <ActionButton
-            label={t("intro.get.label")}
-            onClick={getWallet}
+          {t("intro.learn_more.label")}
+        </TextLink>
+      </div>
+      {Disclaimer && (
+        <div {...stylex.props(styles.disclaimer)}>
+          <Disclaimer
+            Link={DisclaimerLink}
+            Text={DisclaimerText}
           />
-          <Box
-            as="a"
-            className={touchableStyles({ active: "shrink", hover: "grow" })}
-            display="block"
-            href={learnMoreUrl}
-            paddingX="12"
-            paddingY="4"
-            rel="noreferrer"
-            style={{ willChange: "transform" }}
-            target="_blank"
-            transition="default"
-          >
-            <Text
-              color="accentColor"
-              size="14"
-              weight="bold"
-            >
-              {t("intro.learn_more.label")}
-            </Text>
-          </Box>
-        </Box>
-        {Disclaimer && !compactModeEnabled && (
-          <Box
-            marginBottom="8"
-            marginTop="12"
-            textAlign="center"
-          >
-            <Disclaimer
-              Link={DisclaimerLink}
-              Text={DisclaimerText}
-            />
-          </Box>
-        )}
-      </Box>
-    </>
+        </div>
+      )}
+    </div>
   );
 }

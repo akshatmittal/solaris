@@ -4,7 +4,7 @@ import type { Chain } from "wagmi/chains";
 
 import { useConnectionEffect } from "wagmi";
 
-import type { ThemeVars } from "../../css/sprinkles.css";
+import type { ThemeVars } from "../../css/themeVars";
 
 import { lightTheme } from "../../themes/lightTheme";
 import { TransactionStoreProvider } from "../../transactions/TransactionStoreContext";

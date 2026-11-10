@@ -1,5 +1,5 @@
 import replace from "@rollup/plugin-replace";
-import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin";
+import stylex from "@stylexjs/rollup-plugin";
 import autoprefixer from "autoprefixer";
 import { readFileSync } from "node:fs";
 import postcss from "postcss";
@@ -25,10 +25,6 @@ function postProcessExtractedCss() {
         });
 
         asset.source = result.css;
-
-        if (asset.fileName?.endsWith(".css")) {
-          asset.fileName = "index.css";
-        }
       }
     },
   };
@@ -64,12 +60,7 @@ export default defineConfig({
         '"__buildVersion"': JSON.stringify(version),
       },
     }),
-    vanillaExtractPlugin({
-      extract: {
-        name: "index.css",
-      },
-      identifiers: "short",
-    }),
+    stylex({ dev: false, fileName: "index.css" }),
     postProcessExtractedCss(),
   ],
 });

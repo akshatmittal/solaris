@@ -30,10 +30,7 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
       open={open}
       titleId={titleId}
     >
-      <DialogContent
-        bottomSheetOnMobile
-        padding="0"
-      >
+      <DialogContent>
         <ProfileDetailsView
           accountName={formatAddress(wallet.account)}
           address={wallet.account}

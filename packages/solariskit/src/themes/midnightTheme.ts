@@ -1,7 +1,7 @@
 import { type AccentColor, type AccentColorPreset, type ThemeOptions, baseTheme } from "./baseTheme";
 
 const accentColors: Record<AccentColorPreset, AccentColor> = {
-  blue: { accentColor: "#3898FF", accentColorForeground: "#FFF" },
+  blue: { accentColor: "#3898FF", accentColorForeground: "#000" },
   green: { accentColor: "#4BD166", accentColorForeground: "#000" },
   orange: { accentColor: "#FF983D", accentColorForeground: "#000" },
   pink: { accentColor: "#FF7AB8", accentColorForeground: "#000" },
@@ -43,8 +43,8 @@ export const midnightTheme = ({
     modalBackground: "#000",
     modalBorder: "rgba(255, 255, 255, 0.08)",
     modalText: "#FFF",
-    modalTextDim: "rgba(255, 255, 255, 0.2)",
-    modalTextSecondary: "rgba(255, 255, 255, 0.6)",
+    modalTextDim: "rgba(255, 255, 255, 0.4)",
+    modalTextSecondary: "rgba(255, 255, 255, 0.64)",
     profileAction: "rgba(255, 255, 255, 0.1)",
     profileActionHover: "rgba(255, 255, 255, 0.2)",
     profileForeground: "rgba(255, 255, 255, 0.06)",
@@ -52,7 +52,7 @@ export const midnightTheme = ({
     standby: "#FFD641",
   },
   shadows: {
-    connectButton: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+    connectButton: "inset 0 0 0 1px rgba(255, 255, 255, 0.08)",
     dialog: "0px 8px 32px rgba(0, 0, 0, 0.32)",
     profileDetailsAction: "0px 2px 6px rgba(37, 41, 46, 0.04)",
     selectedOption: "0px 2px 6px rgba(0, 0, 0, 0.24)",

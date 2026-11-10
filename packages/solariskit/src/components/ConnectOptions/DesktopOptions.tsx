@@ -145,13 +145,17 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   switch (walletStep) {
     case WalletStep.None:
       walletContent = (
-        <ConnectModalIntro getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")} />
+        <ConnectModalIntro
+          compact={compactModeEnabled}
+          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
+        />
       );
+      headerLabel = t("intro.title");
       break;
     case WalletStep.LearnCompact:
       walletContent = (
         <ConnectModalIntro
-          compactModeEnabled={compactModeEnabled}
+          compact={compactModeEnabled}
           getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
         />
       );
@@ -174,7 +178,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
-              wallet: selectedWallet.name,
+              wallet: selectedWallet.shortName ?? selectedWallet.name,
             }));
       headerBackButtonLink = compactModeEnabled ? (connector ? null : WalletStep.None) : null;
       headerBackButtonCallback = compactModeEnabled ? (!connector ? clearSelectedWallet : () => {}) : () => {};

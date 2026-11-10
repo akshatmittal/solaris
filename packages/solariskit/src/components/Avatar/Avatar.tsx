@@ -1,8 +1,38 @@
 import React, { useContext } from "react";
 
-import { Box } from "../Box/Box";
-import { SpinnerIcon } from "../Icons/Spinner";
+import * as stylex from "@stylexjs/stylex";
+
+import { colors } from "../../css/vars.stylex";
 import { AvatarContext } from "../RainbowKitProvider/AvatarContext";
+
+const styles = stylex.create({
+  container: {
+    flexShrink: 0,
+    position: "relative",
+    userSelect: "none",
+  },
+  avatar: {
+    alignItems: "center",
+    borderRadius: 9999,
+    display: "flex",
+    height: "100%",
+    justifyContent: "center",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%",
+  },
+  // Pending-transaction badge, ringed in the trigger surface color.
+  pending: {
+    backgroundColor: colors.accentColor,
+    borderRadius: 9999,
+    boxShadow: `0 0 0 2px ${colors.connectButtonBackground}`,
+    height: 8,
+    position: "absolute",
+    right: -3,
+    top: -3,
+    width: 8,
+  },
+});
 
 export interface AvatarProps {
   address: string;
@@ -15,55 +45,22 @@ export function Avatar({ address, imageUrl, loading, size }: AvatarProps) {
   const AvatarComponent = useContext(AvatarContext);
 
   return (
-    <Box
+    <div
+      {...stylex.props(styles.container)}
       aria-hidden
-      borderRadius="full"
-      overflow="hidden"
-      position="relative"
-      style={{
-        height: `${size}px`,
-        width: `${size}px`,
-      }}
-      userSelect="none"
+      style={{ height: size, width: size }}
     >
-      <Box
-        alignItems="center"
-        borderRadius="full"
-        display="flex"
-        justifyContent="center"
-        overflow="hidden"
-        position="absolute"
-        style={{
-          fontSize: `${Math.round(size * 0.55)}px`,
-          height: `${size}px`,
-          transform: loading ? "scale(0.72)" : undefined,
-          transition: ".25s ease",
-          transitionDelay: loading ? undefined : ".1s",
-          width: `${size}px`,
-          willChange: "transform",
-        }}
-        userSelect="none"
+      <div
+        {...stylex.props(styles.avatar)}
+        style={{ fontSize: Math.round(size * 0.55) }}
       >
         <AvatarComponent
           address={address}
           ensImage={imageUrl}
           size={size}
         />
-      </Box>
-      {loading && (
-        <Box
-          color="accentColor"
-          display="flex"
-          height="full"
-          position="absolute"
-          width="full"
-        >
-          <SpinnerIcon
-            height="100%"
-            width="100%"
-          />
-        </Box>
-      )}
-    </Box>
+      </div>
+      {loading && <div {...stylex.props(styles.pending)} />}
+    </div>
   );
 }

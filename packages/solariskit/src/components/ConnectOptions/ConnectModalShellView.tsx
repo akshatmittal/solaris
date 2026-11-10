@@ -1,19 +1,86 @@
 import React, { type ReactNode, useContext } from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import * as stylex from "@stylexjs/stylex";
+
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { Box } from "../Box/Box";
-import { CloseButton } from "../CloseButton/CloseButton";
+import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
+import { IconButton } from "../IconButton/IconButton";
 import { BackIcon } from "../Icons/Back";
-import { InfoButton } from "../InfoButton/InfoButton";
+import { InfoIcon } from "../Icons/Info";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
-import { ScrollClassName, sidebar, sidebarCompactMode } from "./DesktopOptions.css";
+import { TextLink } from "../TextLink/TextLink";
+
+const styles = stylex.create({
+  shell: {
+    display: "flex",
+  },
+  sidebar: {
+    display: "flex",
+    flexDirection: "column",
+    flexShrink: 0,
+    width: 280,
+  },
+  sidebarCompact: {
+    width: "100%",
+  },
+  header: {
+    padding: 16,
+    paddingBottom: 8,
+  },
+  headerStart: {
+    paddingLeft: 24,
+  },
+  list: {
+    flexGrow: 1,
+    overflowY: "auto",
+    paddingBottom: 12,
+    paddingInline: 12,
+  },
+  footer: {
+    alignItems: "center",
+    minHeight: 52,
+    borderTopColor: colors.generalBorder,
+    borderTopStyle: "solid",
+    borderTopWidth: 1,
+    display: "flex",
+    justifyContent: "space-between",
+    paddingBlock: 4,
+    paddingInline: 24,
+  },
+  footerDisclaimer: {
+    justifyContent: "center",
+    textAlign: "center",
+  },
+  pane: {
+    borderLeftColor: colors.generalBorder,
+    borderLeftStyle: "solid",
+    borderLeftWidth: 1,
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    minWidth: 0,
+  },
+  paneCompact: {
+    borderLeftWidth: 0,
+  },
+  paneContent: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    paddingBottom: 16,
+    paddingInline: 24,
+    paddingTop: 12,
+  },
+});
 
 export interface ConnectModalShellViewProps {
   compactModeEnabled: boolean;
+  hideFooter?: boolean;
   onClose: () => void;
   onCompactInfoClick: () => void;
   onRightPaneBack?: () => void;
@@ -27,12 +94,13 @@ export interface ConnectModalShellViewProps {
 
 /**
  * Chain-agnostic desktop connect-modal chrome: the wallet-list sidebar
- * (with compact-mode header and disclaimer/learn-more footer) plus the
- * right-hand pane with its back/label/close header. The EVM DesktopOptions
- * and the Solana connect modal both parameterize this shell.
+ * (with compact-mode footer) plus the right-hand pane with its back/label/close
+ * header. The EVM DesktopOptions and the Solana connect modal both
+ * parameterize this shell.
  */
 export function ConnectModalShellView({
   compactModeEnabled,
+  hideFooter = false,
   onClose,
   onCompactInfoClick,
   onRightPaneBack,
@@ -46,216 +114,80 @@ export function ConnectModalShellView({
   const { disclaimer: Disclaimer } = useContext(AppContext);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      style={{ maxHeight: compactModeEnabled ? 468 : 504 }}
+    <div
+      {...stylex.props(styles.shell)}
+      style={{ maxHeight: compactModeEnabled ? 520 : 480 }}
     >
       {showSidebar && (
-        <Box
-          className={compactModeEnabled ? sidebarCompactMode : sidebar}
-          display="flex"
-          flexDirection="column"
-          marginTop="16"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-          >
-            {compactModeEnabled && Disclaimer && (
-              <Box
-                marginLeft="16"
-                width="28"
-              >
-                <InfoButton onClick={onCompactInfoClick} />
-              </Box>
-            )}
-            {compactModeEnabled && !Disclaimer && (
-              <Box
-                marginLeft="16"
-                width="28"
-              />
-            )}
-            <Box
-              marginLeft={compactModeEnabled ? "0" : "6"}
-              paddingBottom="8"
-              paddingTop="2"
-              paddingX="18"
-            >
-              <Text
-                as="h1"
-                color="modalText"
-                id={titleId}
-                size="18"
-                weight="heavy"
-                testId={"connect-header-label"}
-              >
-                {t("connect.title")}
-              </Text>
-            </Box>
-            {compactModeEnabled && (
-              <Box marginRight="16">
-                <CloseButton onClose={onClose} />
-              </Box>
-            )}
-          </Box>
-          <Box
-            className={ScrollClassName}
-            paddingBottom="18"
-          >
-            {walletList}
-          </Box>
-          {compactModeEnabled && (
-            <>
-              <Box
-                background="generalBorder"
-                height="1"
-                marginTop="-1"
-              />
-              {Disclaimer ? (
-                <Box
-                  paddingX="24"
-                  paddingY="16"
-                  textAlign="center"
-                >
-                  <Disclaimer
-                    Link={DisclaimerLink}
-                    Text={DisclaimerText}
-                  />
-                </Box>
-              ) : (
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  justifyContent="space-between"
-                  paddingX="24"
-                  paddingY="16"
-                >
-                  <Box paddingY="4">
-                    <Text
-                      color="modalTextSecondary"
-                      size="14"
-                      weight="medium"
-                    >
-                      {t("connect.new_to_ethereum.description")}
-                    </Text>
-                  </Box>
-                  <Box
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="row"
-                    gap="4"
-                    justifyContent="center"
+        <div {...stylex.props(styles.sidebar, compactModeEnabled && styles.sidebarCompact)}>
+          <div {...stylex.props(styles.header, !compactModeEnabled && styles.headerStart)}>
+            <DialogHeader
+              align={compactModeEnabled ? "center" : "start"}
+              size={compactModeEnabled ? "18" : "17"}
+              left={
+                compactModeEnabled &&
+                Disclaimer && (
+                  <IconButton
+                    aria-label="Info"
+                    onClick={onCompactInfoClick}
                   >
-                    <Box
-                      className={touchableStyles({
-                        active: "shrink",
-                        hover: "grow",
-                      })}
-                      cursor="pointer"
-                      onClick={onCompactInfoClick}
-                      paddingY="4"
-                      style={{ willChange: "transform" }}
-                      transition="default"
-                    >
-                      <Text
-                        color="accentColor"
-                        size="14"
-                        weight="bold"
-                      >
-                        {t("connect.new_to_ethereum.learn_more.label")}
-                      </Text>
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-            </>
-          )}
-        </Box>
+                    <InfoIcon />
+                  </IconButton>
+                )
+              }
+              onClose={compactModeEnabled ? onClose : undefined}
+              testId="connect-header-label"
+              title={t("connect.title")}
+              titleId={titleId}
+            />
+          </div>
+          <div {...stylex.props(styles.list)}>{walletList}</div>
+          {compactModeEnabled &&
+            !hideFooter &&
+            (Disclaimer ? (
+              <div {...stylex.props(styles.footer, styles.footerDisclaimer)}>
+                <Disclaimer
+                  Link={DisclaimerLink}
+                  Text={DisclaimerText}
+                />
+              </div>
+            ) : (
+              <div {...stylex.props(styles.footer)}>
+                <Text
+                  color="modalTextSecondary"
+                  size="14"
+                  weight="regular"
+                >
+                  {t("connect.new_to_ethereum.description")}
+                </Text>
+                <TextLink onClick={onCompactInfoClick}>{t("connect.new_to_ethereum.learn_more.label")}</TextLink>
+              </div>
+            ))}
+        </div>
       )}
       {showRightPane && (
-        <>
-          {!compactModeEnabled && (
-            <Box
-              background="generalBorder"
-              minWidth="1"
-              width="1"
-            />
-          )}
-          <Box
-            display="flex"
-            flexDirection="column"
-            margin="16"
-            style={{ flexGrow: 1 }}
-          >
-            <Box
-              alignItems="center"
-              display="flex"
-              justifyContent="space-between"
-              marginBottom="12"
-            >
-              <Box width="28">
-                {onRightPaneBack && (
-                  <Box
-                    as="button"
-                    className={touchableStyles({
-                      active: "shrinkSm",
-                      hover: "growLg",
-                    })}
-                    color="accentColor"
+        <div {...stylex.props(styles.pane, compactModeEnabled && styles.paneCompact)}>
+          <div {...stylex.props(styles.header, !compactModeEnabled && styles.headerStart)}>
+            <DialogHeader
+              align={compactModeEnabled ? "center" : "start"}
+              left={
+                onRightPaneBack && (
+                  <IconButton
+                    aria-label="Back"
                     onClick={onRightPaneBack}
-                    paddingX="8"
-                    paddingY="4"
-                    style={{
-                      boxSizing: "content-box",
-                      height: 17,
-                      willChange: "transform",
-                    }}
-                    transition="default"
-                    type="button"
                   >
                     <BackIcon />
-                  </Box>
-                )}
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                style={{ flexGrow: 1 }}
-              >
-                {rightPaneHeaderLabel && (
-                  <Text
-                    color="modalText"
-                    size="18"
-                    textAlign="center"
-                    weight="heavy"
-                  >
-                    {rightPaneHeaderLabel}
-                  </Text>
-                )}
-              </Box>
-              <CloseButton onClose={onClose} />
-            </Box>
-            <Box
-              display="flex"
-              flexDirection="column"
-              style={{ minHeight: compactModeEnabled ? 396 : 432 }}
-            >
-              <Box
-                alignItems="center"
-                display="flex"
-                flexDirection="column"
-                gap="6"
-                height="full"
-                justifyContent="center"
-                marginX="8"
-              >
-                {rightPaneContent}
-              </Box>
-            </Box>
-          </Box>
-        </>
+                  </IconButton>
+                )
+              }
+              onClose={onClose}
+              size={compactModeEnabled ? "18" : "17"}
+              title={rightPaneHeaderLabel}
+            />
+          </div>
+          <div {...stylex.props(styles.paneContent)}>{rightPaneContent}</div>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }

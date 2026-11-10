@@ -1,6 +1,6 @@
 import React, { type ReactNode, createContext, useContext } from "react";
 
-import { largeScreenMinWidth } from "../../css/sprinkles.css";
+import { largeScreenMinWidth } from "../../css/responsive";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { WalletButtonContext } from "./WalletButtonContext";
 

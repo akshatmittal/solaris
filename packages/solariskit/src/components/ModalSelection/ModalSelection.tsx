@@ -1,17 +1,29 @@
 import React from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import * as stylex from "@stylexjs/stylex";
+
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box } from "../Box/Box";
+import { MenuButton } from "../MenuButton/MenuButton";
 import { Text } from "../Text/Text";
-import * as styles from "./ModalSelection.css";
+
+const styles = stylex.create({
+  label: {
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
+    textAlign: "left",
+  },
+  name: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+});
 
 type Props = {
-  onClick?: React.MouseEventHandler<HTMLElement> | undefined;
-  as?: React.ElementType;
+  onClick?: () => void;
   currentlySelected?: boolean;
-  ready?: boolean;
   recent?: boolean;
   name: string;
   iconUrl: string | (() => Promise<string>);
@@ -21,109 +33,41 @@ type Props = {
 };
 
 export const ModalSelection = ({
-  as = "button",
   currentlySelected = false,
   iconBackground,
   iconUrl,
+  isRainbowKitConnector,
   name,
   onClick,
-  ready,
   recent,
   testId,
-  isRainbowKitConnector,
-  ...urlProps
-}: Props) => {
-  const [isMouseOver, setIsMouseOver] = React.useState<boolean>(false);
-
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      onMouseEnter={() => setIsMouseOver(true)}
-      onMouseLeave={() => setIsMouseOver(false)}
-    >
-      <Box
-        as={as}
-        borderRadius="menuButton"
-        borderStyle="solid"
-        borderWidth="1"
-        className={
-          !currentlySelected
-            ? [
-                styles.transparentBorder,
-                touchableStyles({
-                  active: "shrink",
-                }),
-              ]
-            : undefined
-        }
-        disabled={currentlySelected}
-        onClick={onClick}
-        padding="5"
-        style={{ willChange: "transform" }}
-        testId={testId}
-        transition="default"
-        width="full"
-        {...(currentlySelected
-          ? {
-              background: "accentColor",
-              borderColor: "selectedOptionBorder",
-              boxShadow: "selectedWallet",
-            }
-          : {
-              background: { hover: "menuItemBackground" },
-            })}
-        {...urlProps}
-      >
-        <Box
-          color={currentlySelected ? "accentColorForeground" : "modalText"}
-          disabled={!ready}
-          fontFamily="body"
-          fontSize="16"
-          fontWeight="bold"
-          transition="default"
+}: Props) => (
+  <MenuButton
+    currentlySelected={currentlySelected}
+    onClick={onClick}
+    testId={testId}
+  >
+    <AsyncImage
+      background={iconBackground}
+      bordered
+      radius={8}
+      size={32}
+      src={iconUrl}
+      // EIP-6963 icons render more reliably as a plain <img />.
+      useAsImage={!isRainbowKitConnector}
+    />
+    <span {...stylex.props(styles.label)}>
+      <span {...stylex.props(styles.name)}>{name}</span>
+      {recent && (
+        <Text
+          as="span"
+          color="modalTextSecondary"
+          size="12"
+          weight="medium"
         >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="row"
-            gap="12"
-          >
-            <AsyncImage
-              background={iconBackground}
-              {...(!isMouseOver && isRainbowKitConnector ? { borderColor: "actionButtonBorder" } : {})}
-              // We want to use pure <img /> element
-              // to avoid bugs with eip6963 icons as sometimes
-              // background: url(...) does not work
-              useAsImage={!isRainbowKitConnector}
-              borderRadius="6"
-              height="28"
-              src={iconUrl}
-              width="28"
-            />
-            <Box>
-              <Box
-                style={{ marginTop: recent ? -2 : undefined }}
-                maxWidth="200"
-              >
-                {name}
-              </Box>
-              {recent && (
-                <Text
-                  color={currentlySelected ? "accentColorForeground" : "accentColor"}
-                  size="12"
-                  style={{ lineHeight: 1, marginTop: -1 }}
-                  weight="medium"
-                >
-                  {t("connect.recent")}
-                </Text>
-              )}
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
-ModalSelection.displayName = "ModalSelection";
+          {t("connect.recent")}
+        </Text>
+      )}
+    </span>
+  </MenuButton>
+);

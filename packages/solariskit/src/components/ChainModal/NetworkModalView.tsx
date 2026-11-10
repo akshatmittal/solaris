@@ -1,18 +1,98 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import * as stylex from "@stylexjs/stylex";
 
 import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 
+import { colors, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box, type BoxProps } from "../Box/Box";
-import { CloseButton } from "../CloseButton/CloseButton";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent } from "../Dialog/DialogContent";
+import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisconnectSqIcon } from "../Icons/DisconnectSq";
 import { MenuButton } from "../MenuButton/MenuButton";
 import { Text } from "../Text/Text";
-import { DesktopScrollClassName, MobileScrollClassName, SearchInputClassName } from "./ChainModal.css";
+
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    padding: 16,
+    paddingBottom: 12,
+  },
+  search: {
+    appearance: "none",
+    backgroundColor: colors.profileForeground,
+    borderColor: { default: colors.generalBorder, ":focus": colors.accentColor },
+    borderRadius: radii.menuButton,
+    borderStyle: "solid",
+    borderWidth: 1,
+    boxSizing: "border-box",
+    color: colors.modalText,
+    fontFamily: "inherit",
+    fontSize: 16,
+    height: 44,
+    margin: 0,
+    outlineStyle: "none",
+    paddingInline: 14,
+    transitionDuration: "150ms",
+    transitionProperty: "border-color",
+    width: "100%",
+    "::placeholder": {
+      color: colors.modalTextSecondary,
+      opacity: 1,
+    },
+  },
+  list: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    marginInline: -4,
+    maxHeight: 456,
+    overflowX: "hidden",
+    overflowY: "auto",
+  },
+  listMobile: {
+    scrollbarWidth: "none",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  name: {
+    flexGrow: 1,
+    overflow: "hidden",
+    textAlign: "left",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  status: {
+    alignItems: "center",
+    display: "flex",
+    flexShrink: 0,
+    fontSize: 14,
+    fontWeight: 500,
+    gap: 6,
+  },
+  connected: {
+    color: colors.accentColor,
+  },
+  pending: {
+    color: colors.modalTextSecondary,
+  },
+  pendingDot: {
+    backgroundColor: colors.standby,
+    borderRadius: 9999,
+    height: 8,
+    width: 8,
+  },
+  disconnectIcon: {
+    display: "flex",
+    flexShrink: 0,
+  },
+});
 
 export type NetworkModalId = number | string;
 
@@ -21,138 +101,6 @@ export interface NetworkModalItem {
   iconUrl?: string | AsyncImageSrc | null;
   id: NetworkModalId;
   name?: string;
-}
-
-interface NetworkMenuItemProps {
-  chainIconSize: BoxProps["height"];
-  currentNetworkId?: NetworkModalId;
-  iconBackground?: string;
-  isLoading: boolean;
-  name?: string;
-  networkId: NetworkModalId;
-  onSelectNetwork: (networkId: NetworkModalId) => void;
-  showDivider: boolean;
-  src?: string | AsyncImageSrc | null;
-}
-
-function NetworkMenuItem({
-  chainIconSize,
-  currentNetworkId,
-  iconBackground,
-  isLoading,
-  name,
-  networkId,
-  onSelectNetwork,
-  showDivider,
-  src,
-}: NetworkMenuItemProps) {
-  const mobile = isMobile();
-  const isCurrentNetwork = currentNetworkId === networkId;
-
-  return (
-    <Fragment>
-      <MenuButton
-        currentlySelected={isCurrentNetwork}
-        onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(networkId)}
-        testId={`chain-option-${String(networkId)}`}
-      >
-        <Box
-          fontFamily="body"
-          fontSize="16"
-          fontWeight="bold"
-        >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-          >
-            <Box
-              alignItems="center"
-              display="flex"
-              flexDirection="row"
-              gap="4"
-              height={chainIconSize}
-            >
-              {src && (
-                <Box
-                  height="full"
-                  marginRight="8"
-                >
-                  <AsyncImage
-                    alt={name}
-                    background={iconBackground}
-                    borderRadius="full"
-                    height={chainIconSize}
-                    src={src}
-                    width={chainIconSize}
-                    testId={`chain-option-${String(networkId)}-icon`}
-                  />
-                </Box>
-              )}
-              <div>{name ?? networkId}</div>
-            </Box>
-            {isCurrentNetwork && (
-              <Box
-                alignItems="center"
-                display="flex"
-                flexDirection="row"
-                marginRight="6"
-              >
-                <Text
-                  color="accentColorForeground"
-                  size="14"
-                  weight="medium"
-                >
-                  {t("chains.connected")}
-                </Text>
-                <Box
-                  background="connectionIndicator"
-                  borderColor="selectedOptionBorder"
-                  borderRadius="full"
-                  borderStyle="solid"
-                  borderWidth="1"
-                  height="8"
-                  marginLeft="8"
-                  width="8"
-                />
-              </Box>
-            )}
-            {isLoading && (
-              <Box
-                alignItems="center"
-                display="flex"
-                flexDirection="row"
-                marginRight="6"
-              >
-                <Text
-                  color="modalText"
-                  size="14"
-                  weight="medium"
-                >
-                  {t("chains.confirm")}
-                </Text>
-                <Box
-                  background="standby"
-                  borderRadius="full"
-                  height="8"
-                  marginLeft="8"
-                  width="8"
-                />
-              </Box>
-            )}
-          </Box>
-        </Box>
-      </MenuButton>
-      {mobile && showDivider && (
-        <Box
-          background="generalBorderDim"
-          height="1"
-          marginX="8"
-        />
-      )}
-    </Fragment>
-  );
 }
 
 export interface NetworkModalViewProps {
@@ -183,7 +131,7 @@ export function NetworkModalView({
   // mount their network modals on the same page.
   const titleId = `rk_chain_modal_title_${React.useId()}`;
   const mobile = isMobile();
-  const chainIconSize = mobile ? "36" : "28";
+  const chainIconSize = mobile ? 32 : 28;
   const shouldShowSearch = networks.length > searchThreshold;
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const filteredNetworks = networks.filter(({ id, name }) => {
@@ -209,153 +157,95 @@ export function NetworkModalView({
       open={open}
       titleId={titleId}
     >
-      <DialogContent
-        bottomSheetOnMobile
-        paddingBottom="0"
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="14"
-        >
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
-          >
-            {mobile && <Box width="30" />}
-            <Box
-              paddingBottom="0"
-              paddingLeft="8"
-              paddingTop="4"
-            >
-              <Text
-                as="h1"
-                color="modalText"
-                id={titleId}
-                size={mobile ? "20" : "18"}
-                weight="heavy"
-              >
-                {t("chains.title")}
-              </Text>
-            </Box>
-            <CloseButton onClose={onClose} />
-          </Box>
+      <DialogContent>
+        <div {...stylex.props(styles.container)}>
+          <DialogHeader
+            onClose={onClose}
+            title={t("chains.title")}
+            titleId={titleId}
+          />
           {isConnectedToUnsupportedNetwork && (
-            <Box
-              marginX="8"
-              textAlign={mobile ? "center" : "left"}
+            <Text
+              align="center"
+              color="modalTextSecondary"
+              size="14"
+              weight="medium"
             >
+              {t("chains.wrong_network")}
+            </Text>
+          )}
+          {shouldShowSearch && (
+            <input
+              {...stylex.props(styles.search)}
+              aria-label={t("chains.search.label")}
+              autoComplete="off"
+              inputMode="search"
+              name="network-search"
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={t("chains.search.placeholder")}
+              type="search"
+              value={searchQuery}
+            />
+          )}
+          <div {...stylex.props(styles.list, mobile && styles.listMobile)}>
+            {filteredNetworks.map(({ iconBackground, iconUrl, id, name }) => {
+              const isCurrentNetwork = currentNetworkId === id;
+
+              return (
+                <MenuButton
+                  currentlySelected={isCurrentNetwork}
+                  key={String(id)}
+                  onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(id)}
+                  testId={`chain-option-${String(id)}`}
+                >
+                  {iconUrl && (
+                    <AsyncImage
+                      alt={name}
+                      background={iconBackground}
+                      bordered
+                      radius="full"
+                      size={chainIconSize}
+                      src={iconUrl}
+                      testId={`chain-option-${String(id)}-icon`}
+                    />
+                  )}
+                  <span {...stylex.props(styles.name)}>{name ?? id}</span>
+                  {isCurrentNetwork && (
+                    <span {...stylex.props(styles.status, styles.connected)}>{t("chains.connected")}</span>
+                  )}
+                  {pendingNetworkId === id && (
+                    <span {...stylex.props(styles.status, styles.pending)}>
+                      {t("chains.confirm")}
+                      <span {...stylex.props(styles.pendingDot)} />
+                    </span>
+                  )}
+                </MenuButton>
+              );
+            })}
+            {filteredNetworks.length === 0 && (
               <Text
+                align="center"
                 color="modalTextSecondary"
                 size="14"
                 weight="medium"
               >
-                {t("chains.wrong_network")}
+                {t("chains.search.no_results")}
               </Text>
-            </Box>
-          )}
-          {shouldShowSearch && (
-            <Box>
-              <Box
-                as="input"
-                aria-label={t("chains.search.label")}
-                autoComplete="off"
-                className={SearchInputClassName}
-                inputMode="search"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
-                placeholder={t("chains.search.placeholder")}
-                type="search"
-                name="network-search"
-                value={searchQuery}
-              />
-            </Box>
-          )}
-          <Box
-            className={mobile ? MobileScrollClassName : DesktopScrollClassName}
-            display="flex"
-            flexDirection="column"
-            gap="4"
-            padding="2"
-            paddingBottom="16"
-          >
-            {filteredNetworks.map(({ iconBackground, iconUrl, id, name }, idx) => (
-              <NetworkMenuItem
-                key={String(id)}
-                chainIconSize={chainIconSize}
-                currentNetworkId={currentNetworkId}
-                iconBackground={iconBackground}
-                isLoading={pendingNetworkId === id}
-                name={name}
-                networkId={id}
-                onSelectNetwork={onSelectNetwork}
-                showDivider={idx < filteredNetworks.length - 1}
-                src={iconUrl}
-              />
-            ))}
-            {filteredNetworks.length === 0 && (
-              <Box
-                marginX="8"
-                paddingY="12"
-                textAlign={mobile ? "center" : "left"}
-              >
-                <Text
-                  color="modalTextSecondary"
-                  size="14"
-                  weight="medium"
-                >
-                  {t("chains.search.no_results")}
-                </Text>
-              </Box>
             )}
             {isConnectedToUnsupportedNetwork && onDisconnectUnsupported && (
-              <>
-                <Box
-                  background="generalBorderDim"
-                  height="1"
-                  marginX="8"
-                />
-                <MenuButton
-                  onClick={onDisconnectUnsupported}
-                  testId="chain-option-disconnect"
-                >
-                  <Box
-                    color="error"
-                    fontFamily="body"
-                    fontSize="16"
-                    fontWeight="bold"
-                  >
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                      flexDirection="row"
-                      justifyContent="space-between"
-                    >
-                      <Box
-                        alignItems="center"
-                        display="flex"
-                        flexDirection="row"
-                        gap="4"
-                        height={chainIconSize}
-                      >
-                        <Box
-                          alignItems="center"
-                          color="error"
-                          height={chainIconSize}
-                          justifyContent="center"
-                          marginRight="8"
-                        >
-                          <DisconnectSqIcon size={Number(chainIconSize)} />
-                        </Box>
-                        <div>{t("chains.disconnect")}</div>
-                      </Box>
-                    </Box>
-                  </Box>
-                </MenuButton>
-              </>
+              <MenuButton
+                danger
+                onClick={onDisconnectUnsupported}
+                testId="chain-option-disconnect"
+              >
+                <span {...stylex.props(styles.disconnectIcon)}>
+                  <DisconnectSqIcon size={chainIconSize} />
+                </span>
+                {t("chains.disconnect")}
+              </MenuButton>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

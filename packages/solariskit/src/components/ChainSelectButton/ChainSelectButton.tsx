@@ -2,7 +2,7 @@ import React from "react";
 
 import { useConfig, useConnection } from "wagmi";
 
-import type { ResponsiveValue } from "../../css/sprinkles.css";
+import type { ResponsiveValue } from "../../css/responsive";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { useHydrated } from "../../hooks/useHydrated";

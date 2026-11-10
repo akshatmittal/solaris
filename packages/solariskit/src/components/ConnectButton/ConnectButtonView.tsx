@@ -1,12 +1,73 @@
 import React from "react";
 
-import { type ResponsiveValue, mapResponsiveValue } from "../../css/sprinkles.css";
-import { touchableStyles } from "../../css/touchableStyles";
+import * as stylex from "@stylexjs/stylex";
+
+import { reset } from "../../css/reset";
+import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
+import { colors, fonts, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
-import { Box } from "../Box/Box";
 import { DropdownIcon } from "../Icons/Dropdown";
 import { resolveShowBalance } from "./resolveShowBalance";
+
+export const triggerStyles = stylex.create({
+  button: {
+    alignItems: "center",
+    borderRadius: radii.connectButton,
+    boxShadow: shadows.connectButton,
+    display: "flex",
+    filter: { default: null, ":hover": "brightness(0.96)" },
+    fontFamily: fonts.body,
+    fontSize: 15,
+    fontWeight: 600,
+    height: 40,
+    lineHeight: "20px",
+    transitionDuration: "150ms",
+    transitionProperty: "filter",
+    whiteSpace: "nowrap",
+    WebkitFontSmoothing: "antialiased",
+  },
+  hidden: {
+    opacity: 0,
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+});
+
+const styles = stylex.create({
+  wrapper: { display: "flex" },
+  connect: {
+    backgroundColor: colors.accentColor,
+    boxShadow: "none",
+    color: colors.accentColorForeground,
+    paddingInline: 16,
+  },
+  account: {
+    backgroundColor: colors.connectButtonBackground,
+    color: colors.connectButtonText,
+    gap: 4,
+    padding: 4,
+  },
+  balance: {
+    fontWeight: 500,
+    paddingInline: 8,
+  },
+  pill: {
+    alignItems: "center",
+    borderRadius: `max(0px, calc(${radii.connectButton} - 4px))`,
+    display: "flex",
+    gap: 8,
+    height: 32,
+    paddingInline: 6,
+  },
+  pillWithBalance: {
+    borderLeftColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,
+    borderLeftStyle: "solid",
+    borderLeftWidth: 1,
+    borderRadius: 0,
+    paddingLeft: 12,
+  },
+});
 
 export type AccountStatus = "full" | "avatar" | "address";
 
@@ -53,119 +114,57 @@ export function ConnectButtonView({
   const shouldShowBalance = resolveShowBalance(showBalance);
 
   return (
-    <Box
-      display="flex"
-      {...(!buttonReady && {
-        "aria-hidden": true,
-        style: {
-          opacity: 0,
-          pointerEvents: "none",
-          userSelect: "none",
-        },
-      })}
+    <div
+      {...stylex.props(styles.wrapper, !buttonReady && triggerStyles.hidden)}
+      aria-hidden={!buttonReady || undefined}
     >
       {buttonReady && account && isConnected ? (
-        <Box
-          alignItems="center"
-          as="button"
-          background="connectButtonBackground"
-          borderRadius="connectButton"
-          boxShadow="connectButton"
-          className={touchableStyles({
-            active: "shrink",
-            hover: "grow",
-          })}
-          color="connectButtonText"
-          display="flex"
-          fontFamily="body"
-          fontWeight="bold"
+        <button
+          {...stylex.props(reset.button, triggerStyles.button, styles.account)}
+          data-testid={`rk-${testIdPrefix}account-button`}
           onClick={onOpenAccountModal}
-          testId={`${testIdPrefix}account-button`}
-          transition="default"
+          title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
           type="button"
         >
           {account.displayBalance && (
-            <Box
-              display={mapResponsiveValue(showBalance, (value) => (value ? "block" : "none"))}
-              padding="8"
-              paddingLeft="12"
-            >
+            <span {...stylex.props(styles.balance, responsiveDisplay(showBalance, Boolean, "block"))}>
               {account.displayBalance}
-            </Box>
+            </span>
           )}
-          <Box
-            background={shouldShowBalance ? "connectButtonInnerBackground" : "connectButtonBackground"}
-            borderColor="connectButtonBackground"
-            borderRadius="connectButton"
-            borderStyle="solid"
-            borderWidth="2"
-            color="connectButtonText"
-            fontFamily="body"
-            fontWeight="bold"
-            paddingX="8"
-            paddingY="6"
-            transition="default"
-          >
-            <Box
-              alignItems="center"
-              display="flex"
-              gap="6"
-              height="24"
+          <span {...stylex.props(styles.pill, shouldShowBalance && styles.pillWithBalance)}>
+            <span
+              {...stylex.props(
+                responsiveDisplay(accountStatus, (value) => value === "full" || value === "avatar", "block"),
+              )}
             >
-              <Box
-                display={mapResponsiveValue(accountStatus, (value) =>
-                  value === "full" || value === "avatar" ? "block" : "none",
-                )}
-              >
-                <Avatar
-                  address={account.address}
-                  imageUrl={account.ensAvatar}
-                  loading={account.hasPendingTransactions}
-                  size={24}
-                />
-              </Box>
-
-              <Box
-                alignItems="center"
-                display="flex"
-                gap="6"
-              >
-                <Box
-                  display={mapResponsiveValue(accountStatus, (value) =>
-                    value === "full" || value === "address" ? "block" : "none",
-                  )}
-                >
-                  {account.displayName}
-                </Box>
-                <DropdownIcon />
-              </Box>
-            </Box>
-          </Box>
-        </Box>
+              <Avatar
+                address={account.address}
+                imageUrl={account.ensAvatar}
+                loading={account.hasPendingTransactions}
+                size={24}
+              />
+            </span>
+            <span
+              {...stylex.props(
+                responsiveDisplay(accountStatus, (value) => value === "full" || value === "address", "block"),
+              )}
+            >
+              {account.displayName}
+            </span>
+            <DropdownIcon />
+          </span>
+        </button>
       ) : (
-        <Box
-          as="button"
-          background="accentColor"
-          borderRadius="connectButton"
-          boxShadow="connectButton"
-          className={touchableStyles({
-            active: "shrink",
-            hover: "grow",
-          })}
-          color="accentColorForeground"
-          fontFamily="body"
-          fontWeight="bold"
-          height="40"
+        <button
+          {...stylex.props(reset.button, triggerStyles.button, styles.connect)}
+          data-testid={`rk-${testIdPrefix}connect-button`}
           key="connect"
           onClick={onOpenConnectModal}
-          paddingX="14"
-          testId={`${testIdPrefix}connect-button`}
-          transition="default"
           type="button"
         >
           {mounted && label === "Connect Wallet" ? t("connect_wallet.label") : label}
-        </Box>
+        </button>
       )}
-    </Box>
+    </div>
   );
 }

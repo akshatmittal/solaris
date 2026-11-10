@@ -1,10 +1,10 @@
 import { DesktopOptions } from "../components/ConnectOptions/DesktopOptions";
 import { MobileOptions } from "../components/ConnectOptions/MobileOptions";
-import { dialogContent, dialogContentMobile } from "../components/Dialog/DialogContent.css";
+import { dialogContentClassName, dialogContentMobileClassName } from "../components/Dialog/DialogContent";
 
 export const __private__ = {
   DesktopOptions,
-  dialogContent,
-  dialogContentMobile,
+  dialogContent: dialogContentClassName,
+  dialogContentMobile: dialogContentMobileClassName,
   MobileOptions,
 };

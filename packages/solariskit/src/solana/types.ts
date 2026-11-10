@@ -9,7 +9,7 @@ import type { DisclaimerComponent } from "../components/RainbowKitProvider/AppCo
 import type { AvatarComponent } from "../components/RainbowKitProvider/AvatarContext";
 import type { ModalSizes } from "../components/RainbowKitProvider/ModalSizeContext";
 import type { Theme } from "../components/RainbowKitProvider/RainbowKitProvider";
-import type { ResponsiveValue } from "../css/sprinkles.css";
+import type { ResponsiveValue } from "../css/responsive";
 
 // The Solana-prefixed public names are aliases of the @solana/connector
 // types, so the compiler verifies them against the library and they can

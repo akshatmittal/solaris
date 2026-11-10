@@ -1,11 +1,51 @@
 import React from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import * as stylex from "@stylexjs/stylex";
+
+import { reset } from "../../css/reset";
+import { colors, fonts, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box } from "../Box/Box";
 import { SpinnerIcon } from "../Icons/Spinner";
-import * as styles from "./WalletButton.css";
+
+const styles = stylex.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: colors.connectButtonBackground,
+    borderColor: colors.generalBorder,
+    borderRadius: radii.menuButton,
+    borderStyle: "solid",
+    borderWidth: 1,
+    boxShadow: shadows.connectButton,
+    color: colors.connectButtonText,
+    display: "flex",
+    filter: { default: null, ":hover": "brightness(0.96)" },
+    fontFamily: fonts.body,
+    fontSize: 15,
+    fontWeight: 600,
+    gap: 10,
+    maxWidth: "fit-content",
+    minHeight: 44,
+    paddingBlock: 6,
+    paddingLeft: 6,
+    paddingRight: 14,
+    transitionDuration: "150ms",
+    transitionProperty: "filter",
+    WebkitFontSmoothing: "antialiased",
+  },
+  disabled: {
+    pointerEvents: "none",
+  },
+  icon: {
+    display: "flex",
+  },
+  connected: {
+    backgroundColor: colors.connectionIndicator,
+    borderRadius: 9999,
+    height: 8,
+    width: 8,
+  },
+});
 
 export interface WalletButtonViewConnector {
   iconBackground?: string;
@@ -29,94 +69,34 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
   if (!mounted) return null;
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
+    <button
+      {...stylex.props(reset.button, styles.button, isDisabled && styles.disabled)}
+      data-testid={`rk-wallet-button-${connector.id}`}
       disabled={isDisabled}
-      pointerEvents={isDisabled ? "none" : "all"}
+      onClick={onConnect}
+      type="button"
     >
-      <Box
-        as="button"
-        borderRadius="menuButton"
-        borderStyle="solid"
-        borderWidth="1"
-        className={[
-          styles.maxWidth,
-          styles.border,
-          touchableStyles({
-            active: "shrink",
-            hover: "grow",
-          }),
-        ]}
-        minHeight="44"
-        onClick={onConnect}
-        disabled={!ready || loading}
-        padding="6"
-        style={{ willChange: "transform" }}
-        testId={`wallet-button-${connector.id}`}
-        transition="default"
-        width="full"
-        background="connectButtonBackground"
-      >
-        <Box
-          color="modalText"
-          fontFamily="body"
-          fontSize="16"
-          fontWeight="bold"
-          transition="default"
-          display="flex"
-          alignItems="center"
-        >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="row"
-            gap="12"
-            paddingRight="6"
-          >
-            <Box>
-              {loading ? (
-                <SpinnerIcon />
-              ) : (
-                <AsyncImage
-                  background={connector.iconBackground}
-                  borderRadius="6"
-                  height="28"
-                  src={connector.iconUrl}
-                  width="28"
-                />
-              )}
-            </Box>
-            <Box
-              alignItems="center"
-              display="flex"
-              flexDirection="column"
-              color="modalText"
-            >
-              <Box testId={`wallet-button-label-${connector.id}`}>
-                {loading
-                  ? t("connect.status.connecting", {
-                      wallet: connector.name,
-                    })
-                  : connector.name}
-              </Box>
-            </Box>
-
-            {connected ? (
-              <Box
-                background="connectionIndicator"
-                borderColor="selectedOptionBorder"
-                borderRadius="full"
-                borderStyle="solid"
-                borderWidth="1"
-                height="8"
-                width="8"
-              />
-            ) : null}
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+      <span {...stylex.props(styles.icon)}>
+        {loading ? (
+          <SpinnerIcon />
+        ) : (
+          <AsyncImage
+            background={connector.iconBackground}
+            bordered
+            radius={8}
+            size={30}
+            src={connector.iconUrl}
+          />
+        )}
+      </span>
+      <span data-testid={`rk-wallet-button-label-${connector.id}`}>
+        {loading
+          ? t("connect.status.connecting", {
+              wallet: connector.name,
+            })
+          : connector.name}
+      </span>
+      {connected ? <span {...stylex.props(styles.connected)} /> : null}
+    </button>
   );
 }

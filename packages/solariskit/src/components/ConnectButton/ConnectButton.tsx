@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import type { ResponsiveValue } from "../../css/sprinkles.css";
+import type { ResponsiveValue } from "../../css/responsive";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { useHydrated } from "../../hooks/useHydrated";

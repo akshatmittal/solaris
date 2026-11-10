@@ -1,35 +1,43 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-import { SpinnerIconClassName, SpinnerIconPathClassName } from "./Icons.css";
+import * as stylex from "@stylexjs/stylex";
 
-const useRandomId = (prefix: string) =>
-  useMemo(() => `${prefix}_${Math.round(Math.random() * 1_000_000_000)}`, [prefix]);
+const spin = stylex.keyframes({
+  from: { transform: "rotate(0deg)" },
+  to: { transform: "rotate(360deg)" },
+});
 
-export const SpinnerIcon = ({ height = 21, width = 21 }: { width?: string | number; height?: string | number }) => {
-  const id = useRandomId("spinner");
+const styles = stylex.create({
+  icon: {
+    animationDuration: "0.8s",
+    animationIterationCount: "infinite",
+    animationName: spin,
+    animationTimingFunction: "linear",
+  },
+});
 
-  return (
-    <svg
-      className={SpinnerIconClassName}
-      fill="none"
-      height={height}
-      viewBox="0 0 21 21"
-      width={width}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <title>Loading</title>
-      <clipPath id={id}>
-        <path d="M10.5 3C6.35786 3 3 6.35786 3 10.5C3 14.6421 6.35786 18 10.5 18C11.3284 18 12 18.6716 12 19.5C12 20.3284 11.3284 21 10.5 21C4.70101 21 0 16.299 0 10.5C0 4.70101 4.70101 0 10.5 0C16.299 0 21 4.70101 21 10.5C21 11.3284 20.3284 12 19.5 12C18.6716 12 18 11.3284 18 10.5C18 6.35786 14.6421 3 10.5 3Z" />
-      </clipPath>
-      <foreignObject
-        clipPath={`url(#${id})`}
-        height="21"
-        width="21"
-        x="0"
-        y="0"
-      >
-        <div className={SpinnerIconPathClassName} />
-      </foreignObject>
-    </svg>
-  );
-};
+export const SpinnerIcon = ({ height = 20, width = 20 }: { width?: string | number; height?: string | number }) => (
+  <svg
+    {...stylex.props(styles.icon)}
+    fill="none"
+    height={height}
+    viewBox="0 0 20 20"
+    width={width}
+  >
+    <title>Loading</title>
+    <circle
+      cx="10"
+      cy="10"
+      r="8"
+      stroke="currentColor"
+      strokeOpacity="0.25"
+      strokeWidth="2"
+    />
+    <path
+      d="M10 2a8 8 0 0 1 8 8"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth="2"
+    />
+  </svg>
+);

@@ -1,6 +1,6 @@
 import React, { type ReactNode, createContext, useContext, useState } from "react";
 
-import type { ResponsiveValue } from "../../css/sprinkles.css";
+import type { ResponsiveValue } from "../../css/responsive";
 
 interface ShowBalanceContextValue {
   showBalance: ResponsiveValue<boolean> | undefined;

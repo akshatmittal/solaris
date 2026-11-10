@@ -1,18 +1,90 @@
 import React from "react";
 
-import { useWindowSize } from "../../hooks/useWindowSize";
+import * as stylex from "@stylexjs/stylex";
+
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box, type BoxProps } from "../Box/Box";
 import { ActionButton } from "../Button/ActionButton";
-import { SpinnerIcon } from "../Icons/Spinner";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
 import { GET_WALLET_URL } from "./constants";
 
-const LOGO_SIZE: BoxProps["height"] = "44";
+const orbit = stylex.keyframes({
+  from: { strokeDashoffset: 0 },
+  to: { strokeDashoffset: -100 },
+});
+
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
+    gap: 16,
+    width: "100%",
+  },
+  center: {
+    alignItems: "center",
+    display: "flex",
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  status: {
+    flexDirection: "column",
+    gap: 12,
+    textAlign: "center",
+  },
+  iconWrap: {
+    padding: 10,
+    position: "relative",
+  },
+  ring: {
+    fill: "none",
+    height: "100%",
+    inset: 0,
+    position: "absolute",
+    strokeWidth: 3,
+    width: "100%",
+  },
+  ringTrack: {
+    stroke: colors.accentColor,
+    strokeOpacity: 0.2,
+  },
+  ringError: {
+    stroke: colors.error,
+  },
+  ringArc: {
+    animationDuration: "1.2s",
+    animationIterationCount: "infinite",
+    animationName: orbit,
+    animationTimingFunction: "linear",
+    stroke: colors.accentColor,
+    strokeDasharray: "30 70",
+    strokeLinecap: "round",
+  },
+  // The white quiet zone bleeds past the content edge, so the QR modules align with the 24px inset.
+  qr: {
+    marginInline: -16,
+    marginTop: -16,
+  },
+  reserved: {
+    visibility: "hidden",
+  },
+  statusText: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
+  secondaryAction: {
+    alignItems: "center",
+    display: "flex",
+    gap: 12,
+    justifyContent: "space-between",
+    minHeight: 32,
+  },
+});
 
 export function ConnectDetail({
   compactModeEnabled,
@@ -29,7 +101,7 @@ export function ConnectDetail({
   reconnect: (wallet: WalletConnector) => void;
   wallet: WalletConnector;
 }) {
-  const { iconBackground, iconUrl, name, qrCode, ready, showWalletConnectModal, getDesktopUri } = wallet;
+  const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
   const hasQrCode = qrCode && qrCodeUri;
@@ -58,141 +130,105 @@ export function ConnectDetail({
     : hasQrCode
       ? {
           description: t("connect.secondary_action.get.description", {
-            wallet: name,
+            wallet: shortName ?? name,
           }),
           href: GET_WALLET_URL,
-          label: t("connect.secondary_action.get.label"),
+          label: t("connect.secondary_action.get.label", { wallet: shortName ?? name }),
         }
       : null;
 
-  const { width: windowWidth } = useWindowSize();
-  const smallWindow = windowWidth && windowWidth < 768;
-
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      height="full"
-      width="full"
-    >
+    <div {...stylex.props(styles.container)}>
       {hasQrCode ? (
-        <Box
-          alignItems="center"
-          display="flex"
-          height="full"
-          justifyContent="center"
-        >
+        <div {...stylex.props(styles.center, styles.qr)}>
           <QRCode
             logoBackground={iconBackground}
-            logoSize={compactModeEnabled ? 60 : 72}
             logoUrl={iconUrl}
-            size={compactModeEnabled ? 318 : smallWindow ? Math.max(280, Math.min(windowWidth - 308, 382)) : 382}
+            size={344}
             uri={qrCodeUri}
           />
-        </Box>
+        </div>
       ) : (
-        <Box
-          alignItems="center"
-          display="flex"
-          justifyContent="center"
-          style={{ flexGrow: 1 }}
-        >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap="8"
-          >
-            <Box
-              borderRadius="10"
-              height={LOGO_SIZE}
-              overflow="hidden"
-            >
-              <AsyncImage
-                useAsImage={!wallet.isRainbowKitConnector}
-                height={LOGO_SIZE}
-                src={iconUrl}
-                width={LOGO_SIZE}
-              />
-            </Box>
-            <Box
-              alignItems="center"
-              display="flex"
-              flexDirection="column"
-              gap="4"
-              paddingX="32"
-              style={{ textAlign: "center" }}
-            >
-              <Text
-                color="modalText"
-                size="18"
-                weight="bold"
+        <div {...stylex.props(styles.center, styles.status)}>
+          <div {...stylex.props(styles.iconWrap)}>
+            <AsyncImage
+              background={iconBackground}
+              bordered
+              radius={16}
+              size={64}
+              src={iconUrl}
+              useAsImage={!wallet.isRainbowKitConnector}
+            />
+            {ready && (
+              <svg
+                {...stylex.props(styles.ring)}
+                aria-hidden
+                viewBox="0 0 84 84"
               >
-                {t("connect.status.opening", {
-                  wallet: name,
-                })}
+                <rect
+                  {...stylex.props(connectionError ? styles.ringError : styles.ringTrack)}
+                  height="81"
+                  rx="24.5"
+                  width="81"
+                  x="1.5"
+                  y="1.5"
+                />
+                {!connectionError && (
+                  <rect
+                    {...stylex.props(styles.ringArc)}
+                    height="81"
+                    pathLength="100"
+                    rx="24.5"
+                    width="81"
+                    x="1.5"
+                    y="1.5"
+                  />
+                )}
+              </svg>
+            )}
+          </div>
+          <div {...stylex.props(styles.statusText)}>
+            <Text
+              color="modalText"
+              size="18"
+              weight="semibold"
+            >
+              {connectionError
+                ? t("connect.status.declined")
+                : t("connect.status.opening", {
+                    wallet: name,
+                  })}
+            </Text>
+            {ready && (
+              <Text
+                color="modalTextSecondary"
+                size="14"
+                weight="regular"
+              >
+                {connectionError ? t("connect.status.declined_description") : t("connect.status.confirm")}
               </Text>
-              {ready && !hasQrCode && (
-                <>
-                  <Box
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                  >
-                    <Text
-                      color="modalTextSecondary"
-                      size="14"
-                      textAlign="center"
-                      weight="medium"
-                    >
-                      {t("connect.status.confirm")}
-                    </Text>
-                  </Box>
-                  <Box
-                    alignItems="center"
-                    color="modalText"
-                    display="flex"
-                    flexDirection="row"
-                    height="32"
-                    marginTop="8"
-                  >
-                    {connectionError ? (
-                      <ActionButton
-                        label={t("connect.secondary_action.retry.label")}
-                        onClick={async () => {
-                          if (isDesktopDeepLinkAvailable) onDesktopUri();
-                          reconnect(wallet);
-                        }}
-                      />
-                    ) : (
-                      <Box color="modalTextSecondary">
-                        <SpinnerIcon />
-                      </Box>
-                    )}
-                  </Box>
-                </>
-              )}
-            </Box>
-          </Box>
-        </Box>
+            )}
+          </div>
+          {ready && (
+            <div {...stylex.props(!connectionError && styles.reserved)}>
+              <ActionButton
+                label={t("connect.secondary_action.retry.label")}
+                onClick={async () => {
+                  if (isDesktopDeepLinkAvailable) onDesktopUri();
+                  reconnect(wallet);
+                }}
+              />
+            </div>
+          )}
+        </div>
       )}
-      <Box
-        alignItems="center"
-        borderRadius="10"
-        display="flex"
-        flexDirection="row"
-        gap="8"
-        height="28"
-        justifyContent="space-between"
-        marginTop="12"
-      >
+      <div {...stylex.props(styles.secondaryAction)}>
         {ready && secondaryAction && (
           <>
             <Text
               color="modalTextSecondary"
               size="14"
-              weight="medium"
+              weight="regular"
             >
               {secondaryAction.description}
             </Text>
@@ -200,11 +236,12 @@ export function ConnectDetail({
               href={secondaryAction.href}
               label={secondaryAction.label}
               onClick={secondaryAction.onClick}
+              size="small"
               type="secondary"
             />
           </>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
