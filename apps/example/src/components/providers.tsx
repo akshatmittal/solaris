@@ -12,7 +12,7 @@ import {
 } from "solariskit";
 import { SolanaKitProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
 import { isHex } from "viem";
-import { createSiweMessage, generateSiweNonce } from "viem/siwe";
+import { createSiweMessage, generateSiweNonce, parseSiweMessage } from "viem/siwe";
 import { http, WagmiProvider } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { base, bsc, mainnet, polygon } from "wagmi/chains";
@@ -66,7 +66,7 @@ export function EthereumProviders({ children }: PropsWithChildren) {
   const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("unauthenticated");
   // Sign-In with Ethereum, verified in the browser so the example needs no backend.
   const [authAdapter] = useState(() => {
-    let issuedNonce = "";
+    const issuedNonces = new Set<string>();
 
     return createAuthenticationAdapter({
       createMessage: ({ address, chainId, nonce }) =>
@@ -80,19 +80,21 @@ export function EthereumProviders({ children }: PropsWithChildren) {
           version: "1",
         }),
       getNonce: async () => {
-        issuedNonce = generateSiweNonce();
-        return issuedNonce;
+        const nonce = generateSiweNonce();
+        issuedNonces.add(nonce);
+        return nonce;
       },
       signOut: async () => {
         setAuthStatus("unauthenticated");
       },
       verify: async ({ message, signature }) => {
-        if (!isHex(signature)) {
+        const { nonce } = parseSiweMessage(message);
+        if (!isHex(signature) || !nonce || !issuedNonces.delete(nonce)) {
           return false;
         }
         const valid = await getPublicClient(ethereumConfig).verifySiweMessage({
           message,
-          nonce: issuedNonce,
+          nonce,
           signature,
         });
         if (valid) {
