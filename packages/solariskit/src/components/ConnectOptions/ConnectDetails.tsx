@@ -130,7 +130,10 @@ export function ConnectDetail({
             src={iconUrl}
             useAsImage={!wallet.isRainbowKitConnector}
           />
-          <div {...stylex.props(styles.statusText)}>
+          <div
+            {...stylex.props(styles.statusText)}
+            role="status"
+          >
             <Text
               color="modalText"
               size="18"
