@@ -18,7 +18,7 @@ import { isHex } from "viem";
 import { createSiweMessage, generateSiweNonce, parseSiweMessage } from "viem/siwe";
 import { http, WagmiProvider } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
-import { arbitrum, avalanche, base, bsc, ink, linea, mainnet, optimism, polygon, unichain } from "wagmi/chains";
+import { arbitrum, avalanche, base, bsc, mainnet, optimism, polygon, unichain } from "wagmi/chains";
 import "solariskit/styles.css";
 
 import { kitSettings } from "./settings";
@@ -45,7 +45,7 @@ const ethereumConfig = getDefaultConfig({
   appDescription: "",
   appName,
   appUrl,
-  chains: [mainnet, base, bsc, polygon, arbitrum, optimism, avalanche, linea, unichain, ink],
+  chains: [mainnet, base, bsc, polygon, arbitrum, optimism, avalanche, unichain],
   projectId: walletConnectProjectId,
   ssr: true,
   transports: {
@@ -56,9 +56,7 @@ const ethereumConfig = getDefaultConfig({
     [arbitrum.id]: http(),
     [optimism.id]: http(),
     [avalanche.id]: http(),
-    [linea.id]: http(),
     [unichain.id]: http(),
-    [ink.id]: http(),
   },
 });
 
