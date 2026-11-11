@@ -116,6 +116,32 @@ code {
   line-height: 1;
 }
 
+.hero-copy {
+  margin: 16px 0 0;
+  color: #475569;
+  font-size: 1.05rem;
+}
+
+.hero-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.hero-links a,
+.credits a {
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.credits {
+  color: #64748b;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
 .network-card h2 {
   margin: 0;
   font-size: 1.5rem;

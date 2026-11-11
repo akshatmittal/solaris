@@ -58,7 +58,8 @@ function EthereumCard() {
       <p className="eyebrow">Ethereum</p>
       <h2 id="ethereum-heading">EVM wallets</h2>
       <p className="card-copy">
-        Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test WalletConnect flows.
+        Uses <code>solariskit</code> with Wagmi. Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test
+        WalletConnect flows.
       </p>
       <div className="actions">
         <div className="wallet-actions">
@@ -147,7 +148,9 @@ function SolanaCard() {
     >
       <p className="eyebrow">Solana</p>
       <h2 id="solana-heading">Solana wallets</h2>
-      <p className="card-copy">ConnectorKit vNext runs in its own provider with Solana Kit-compatible hooks.</p>
+      <p className="card-copy">
+        Uses <code>solariskit/solana</code>, built on ConnectorKit, with Solana Kit-compatible hooks.
+      </p>
       <div className="actions">
         <div className="wallet-actions">
           <SolanaChainSelectButton />
@@ -189,8 +192,14 @@ export default function HomePage() {
     <main className="page-shell">
       <div className="page-stack">
         <section className="hero">
-          <p className="eyebrow">Solaris Example</p>
-          <h1>Next.js with SolarisKit</h1>
+          <p className="eyebrow">SolarisKit</p>
+          <h1>Wallet connection for EVM and Solana</h1>
+          <p className="hero-copy">One React UI kit for both ecosystems. Try each flow below.</p>
+          <nav className="hero-links">
+            <a href="https://github.com/akshatmittal/solaris">GitHub</a>
+            <a href="https://www.npmjs.com/package/solariskit">npm</a>
+            <a href="https://github.com/akshatmittal/solaris/tree/main/packages/solariskit#readme">Docs</a>
+          </nav>
         </section>
 
         {/* The settings live in the URL, which a static export only knows in the browser. */}
@@ -205,6 +214,10 @@ export default function HomePage() {
             </SolanaProviders>
           </div>
         </Suspense>
+
+        <footer className="credits">
+          SolarisKit started as a fork of <a href="https://github.com/rainbow-me/rainbowkit">RainbowKit</a>.
+        </footer>
       </div>
     </main>
   );

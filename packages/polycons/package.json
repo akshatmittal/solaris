@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "Deterministic polycon avatar image generation",
   "license": "MIT",
-  "author": "Rainbow",
+  "author": "Akshat Mittal",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/akshatmittal/solaris.git",

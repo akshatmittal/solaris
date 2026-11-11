@@ -1,11 +1,10 @@
 # SolarisKit
 
-React wallet connection UI for Ethereum-compatible chains and Solana. SolarisKit is a pared-down
-[RainbowKit](https://github.com/rainbow-me/rainbowkit) fork with connect, account, and network-selection modals,
-customizable themes, and TypeScript types.
+React wallet connection UI for Ethereum-compatible chains and Solana. SolarisKit gives both ecosystems the same connect, account, and network-selection modals, with customizable themes and TypeScript types.
 
+[Live example](https://gh.akshatmittal.com/solaris/) ·
 [Source](https://github.com/akshatmittal/solaris) ·
-[Example app](https://github.com/akshatmittal/solaris/tree/main/apps/example) ·
+[Example source](https://github.com/akshatmittal/solaris/tree/main/apps/example) ·
 [Changelog](https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/CHANGELOG.md) ·
 [Issues](https://github.com/akshatmittal/solaris/issues)
 
@@ -295,7 +294,7 @@ Retain names such as `RainbowKitProvider` and `RainbowKitAuthenticationProvider`
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.
 Only US English translations are currently included. Check your imports and provider props against the shipped
-TypeScript declarations rather than assuming all upstream RainbowKit APIs are available.
+TypeScript declarations rather than assuming all RainbowKit APIs are available.
 
 ## Troubleshooting
 
@@ -304,11 +303,11 @@ TypeScript declarations rather than assuming all upstream RainbowKit APIs are av
 - **Missing wallet SDK module:** install the optional peers for every wallet in your configured list, or remove that wallet.
 - **WalletConnect cannot connect:** use a real project ID, check allowed origins, and install its Ethereum provider peer.
 - **Balances or network requests fail:** check RPC reachability, rate limits, and the selected chain/cluster.
-- **An upstream wallet import is missing:** only the wallet factories documented here are shipped; use injected discovery
+- **A wallet import is missing:** only the wallet factories documented here are shipped; use injected discovery
   or implement a custom `Wallet` for other integrations.
 
 ## License and credits
 
-[MIT](https://github.com/akshatmittal/solaris/blob/main/LICENSE). SolarisKit is derived from
-[RainbowKit](https://github.com/rainbow-me/rainbowkit) by Rainbow. See the
-[repository](https://github.com/akshatmittal/solaris) for development and contribution details.
+[MIT](https://github.com/akshatmittal/solaris/blob/main/LICENSE). See the [repository](https://github.com/akshatmittal/solaris) for development and contribution details.
+
+SolarisKit started as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit) by Rainbow.
