@@ -43,9 +43,7 @@
     "clean": "rm -rf .turbo dist node_modules",
     "dev": "pnpm run build:watch",
     "prepack": "pnpm run build",
-    "typecheck": "pnpm tsc --noEmit",
-    "typegen": "tsc --emitDeclarationOnly",
-    "typegen:watch": "tsc --emitDeclarationOnly --watch"
+    "typecheck": "pnpm tsc --noEmit"
   },
   "dependencies": {
     "@akshatmittal/polycons": "workspace:*",
@@ -55,7 +53,6 @@
   },
   "devDependencies": {
     "@base-org/account": "^2.5.7",
-    "@rollup/plugin-replace": "^6.0.3",
     "@safe-global/safe-apps-provider": "^0.18.6",
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@solana/connector": "0.3.0",
@@ -63,14 +60,10 @@
     "@stylexjs/rollup-plugin": "0.19.1",
     "@tanstack/react-query": "catalog:",
     "@types/node": "catalog:",
-    "@types/postcss-prefix-selector": "^1.16.3",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@walletconnect/ethereum-provider": "^2.23.10",
     "@workspace/typescript-config": "workspace:*",
-    "autoprefixer": "catalog:",
-    "postcss": "catalog:",
-    "postcss-prefix-selector": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tsdown": "catalog:",

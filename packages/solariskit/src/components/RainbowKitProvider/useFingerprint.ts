@@ -6,6 +6,6 @@ const storageKey = "rk-version";
 
 export function useFingerprint() {
   useEffect(() => {
-    setStorageItem(storageKey, "__buildVersion");
+    setStorageItem(storageKey, __SOLARISKIT_VERSION__);
   }, []);
 }
