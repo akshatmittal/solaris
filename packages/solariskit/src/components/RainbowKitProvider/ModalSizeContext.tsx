@@ -1,7 +1,6 @@
-import React, { type ReactNode, createContext, useContext } from "react";
+import React, { type ReactNode, createContext, useContext, useSyncExternalStore } from "react";
 
 import { largeScreenMinWidth } from "../../css/responsive";
-import { useWindowSize } from "../../hooks/useWindowSize";
 import { WalletButtonContext } from "./WalletButtonContext";
 
 export const ModalSizeOptions = {
@@ -11,6 +10,14 @@ export const ModalSizeOptions = {
 
 export type ModalSizes = (typeof ModalSizeOptions)[keyof typeof ModalSizeOptions];
 
+const largeScreenQuery = `(min-width: ${largeScreenMinWidth}px)`;
+
+const subscribeToScreenSize = (onChange: () => void) => {
+  const query = window.matchMedia(largeScreenQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+
 export const ModalSizeContext = createContext<ModalSizes>(ModalSizeOptions.WIDE);
 
 interface ModalSizeProviderProps {
@@ -19,8 +26,11 @@ interface ModalSizeProviderProps {
 }
 
 export function ModalSizeProvider({ children, modalSize }: ModalSizeProviderProps) {
-  const { width } = useWindowSize();
-  const isSmallScreen = width && width < largeScreenMinWidth;
+  const isSmallScreen = useSyncExternalStore(
+    subscribeToScreenSize,
+    () => !window.matchMedia(largeScreenQuery).matches,
+    () => false,
+  );
   const { connector } = useContext(WalletButtonContext);
 
   return (

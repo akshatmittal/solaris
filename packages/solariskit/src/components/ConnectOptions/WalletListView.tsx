@@ -31,7 +31,7 @@ export interface WalletListViewItem {
 }
 
 export interface WalletListViewProps {
-  groupedWallets: Record<string, WalletListViewItem[]>;
+  groupedWallets: Partial<Record<string, WalletListViewItem[]>>;
   onSelectWallet: (wallet: WalletListViewItem) => void;
   selectedWalletId?: string;
 }
@@ -43,6 +43,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
     <>
       {Object.entries(groupedWallets).map(
         ([groupName, wallets]) =>
+          wallets &&
           wallets.length > 0 && (
             <Fragment key={groupName}>
               {groupName ? (

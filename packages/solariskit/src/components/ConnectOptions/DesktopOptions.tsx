@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
-import { groupBy } from "../../utils/groupBy";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { ConnectModalIntro } from "../ConnectModal/ConnectModalIntro";
@@ -45,7 +44,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
-  const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
+  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
 
   const connectToWallet = (wallet: WalletConnector) => {
     setConnectionError(false);
