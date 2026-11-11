@@ -1,17 +1,22 @@
 {
   "name": "solariskit",
   "version": "1.7.0",
-  "description": "The best way to connect a wallet",
+  "description": "React wallet connection UI for EVM chains and Solana",
   "keywords": [
-    "blockchain",
-    "ens",
     "ethereum",
-    "hooks",
+    "evm",
     "react",
-    "react-hook"
+    "solana",
+    "viem",
+    "wagmi",
+    "wallet",
+    "wallet-connect",
+    "web3"
   ],
+  "homepage": "https://gh.akshatmittal.com/solaris/",
+  "bugs": "https://github.com/akshatmittal/solaris/issues",
   "license": "MIT",
-  "author": "Rainbow",
+  "author": "Akshat Mittal",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/akshatmittal/solaris.git",

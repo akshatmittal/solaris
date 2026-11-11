@@ -1,11 +1,16 @@
 # Solaris
 
-Solaris is a pared-down RainbowKit fork focused on the core
-`solariskit` package.
+Solaris is a React wallet connection kit for EVM chains and Solana. It gives you connect, account, and network modals, wallet buttons, and themes that work the same way for both ecosystems.
 
-This repo intentionally keeps a lean monorepo around the core
-`solariskit` package, with shared workspace tooling for builds,
-linting, formatting, and releases.
+[Live example](https://gh.akshatmittal.com/solaris/) · [npm](https://www.npmjs.com/package/solariskit) · [Documentation](./packages/solariskit/README.md) · [Changelog](./packages/solariskit/CHANGELOG.md)
+
+## Packages
+
+| Path                  | Package                                         | Description                                      |
+| --------------------- | ----------------------------------------------- | ------------------------------------------------ |
+| `packages/solariskit` | [`solariskit`](./packages/solariskit/README.md) | The wallet connection UI and hooks               |
+| `packages/polycons`   | `@akshatmittal/polycons`                        | Deterministic avatar generation for addresses    |
+| `apps/example`        | —                                               | Next.js example with EVM and Solana side by side |
 
 ## Development
 
@@ -17,10 +22,10 @@ pnpm typecheck
 pnpm lint
 ```
 
-## Package
-
-The library source lives in `packages/solariskit`.
+Add a changeset for each change with `pnpm changeset`.
 
 ## License
 
 MIT. See [LICENSE](./LICENSE).
+
+Solaris started as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit) by Rainbow.

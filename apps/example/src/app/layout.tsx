@@ -10,8 +10,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Solaris Example",
-  description: "Next.js example app wired to the Ethereum and Solana SolarisKit entrypoints.",
+  title: "SolarisKit",
+  description: "SolarisKit example: wallet connection UI for EVM chains and Solana.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
