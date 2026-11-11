@@ -170,9 +170,11 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
 
         throw new Error();
       } catch {
+        // Backends usually consume the nonce on verify, so the retry fetches a new one.
         return setState((x) => ({
           ...x,
           errorMessage: t("sign_in.signature.verifying_error"),
+          nonce: undefined,
           status: "idle",
         }));
       }

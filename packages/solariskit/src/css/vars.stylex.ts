@@ -65,6 +65,7 @@ export const motion = stylex.defineConsts({
   exit: "100ms",
   fast: "100ms",
   sheetEnter: "200ms",
+  // The longest exit. The unmount timer in Dialog.tsx uses the same value.
   sheetExit: "150ms",
   spin: "1s",
 });
