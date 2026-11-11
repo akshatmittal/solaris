@@ -27,6 +27,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const initialized = useRef(false);
   const selectWalletRef = useRef<((wallet: WalletConnector) => Promise<void>) | null>(null);
   const qrRequestIdRef = useRef(0);
+  const connectAttemptRef = useRef(0);
 
   const { connector } = useContext(WalletButtonContext);
 
@@ -43,10 +44,14 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
 
   const connectToWallet = (wallet: WalletConnector) => {
+    // Only the latest attempt reports a decline, so a late rejection from a previous wallet does not show on the current one.
+    const attempt = ++connectAttemptRef.current;
     setConnectionError(false);
     if (wallet.ready) {
       wallet?.connect?.()?.catch(() => {
-        setConnectionError(true);
+        if (attempt === connectAttemptRef.current) {
+          setConnectionError(true);
+        }
       });
     }
   };
@@ -131,10 +136,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   let headerLabel = null;
   let headerBackButtonLink: WalletStep | null = null;
   let headerBackButtonCallback: (() => void) | undefined;
-
-  useEffect(() => {
-    setConnectionError(false);
-  }, [walletStep, selectedWallet]);
 
   switch (walletStep) {
     case WalletStep.None:
