@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
@@ -48,24 +48,31 @@ export function useMobileConnect(wallet: WalletConnector, onClose: () => void) {
       return;
     }
 
-    try {
-      await connect?.();
-    } catch {
-      // Ignore connection errors so they don't surface as uncaught
-    }
+    await connect?.();
   }, [connect, getMobileUri, showWalletConnectModal, onClose, name, id]);
 }
 
-function WalletButton({ onClose, wallet }: { wallet: WalletConnector; onClose: () => void }) {
-  const onConnect = useMobileConnect(wallet, onClose);
+function WalletButton({
+  connecting,
+  onClose,
+  onConnect,
+  wallet,
+}: {
+  connecting: boolean;
+  onClose: () => void;
+  onConnect: (connect: () => Promise<void>) => void;
+  wallet: WalletConnector;
+}) {
+  const connect = useMobileConnect(wallet, onClose);
 
   return (
     <MobileWalletItemView
+      connecting={connecting}
       iconBackground={wallet.iconBackground}
       iconUrl={wallet.iconUrl}
       id={wallet.id}
       name={wallet.name}
-      onClick={onConnect}
+      onClick={() => onConnect(connect)}
       ready={wallet.ready}
       recent={wallet.recent}
       shortName={wallet.shortName}
@@ -78,9 +85,12 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
+  // The last tapped wallet; a late result from an earlier wallet does not change it.
+  const [attempt, setAttempt] = useState<{ declined: boolean; id: string }>();
 
   return (
     <MobileWalletListView
+      declined={attempt?.declined ?? false}
       getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
       titleId={titleId}
@@ -91,8 +101,18 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
         >
           {group?.map((wallet) => (
             <WalletButton
+              connecting={attempt?.id === wallet.id && !attempt.declined}
               key={wallet.id}
               onClose={onClose}
+              onConnect={async (connect) => {
+                setAttempt({ declined: false, id: wallet.id });
+                try {
+                  await connect();
+                  setAttempt((current) => (current?.id === wallet.id ? undefined : current));
+                } catch {
+                  setAttempt((current) => (current?.id === wallet.id ? { declined: true, id: wallet.id } : current));
+                }
+              }}
               wallet={wallet}
             />
           ))}

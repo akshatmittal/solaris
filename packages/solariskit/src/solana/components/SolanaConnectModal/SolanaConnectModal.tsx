@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import * as stylex from "@stylexjs/stylex";
-
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
+import { ConnectStatus } from "../../../components/ConnectOptions/ConnectStatus";
 import {
   MobileWalletGroup,
   MobileWalletItemView,
@@ -12,20 +11,12 @@ import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletL
 import { WalletListView, type WalletListViewItem, groupLabel } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
-import { Text } from "../../../components/Text/Text";
 import { isMobile } from "../../../utils/isMobile";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
 import { addRecentSolanaWalletId, getRecentSolanaWalletIds } from "../../wallets/recentSolanaWalletIds";
 
 const SOLANA_GET_WALLET_URL = "https://solana.com/solana-wallets";
-
-const styles = stylex.create({
-  error: {
-    marginTop: 12,
-    paddingInline: 4,
-  },
-});
 
 export interface SolanaConnectModalProps {
   open: boolean;
@@ -39,17 +30,17 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   const connectors = useSolanaWalletConnectors();
   const walletState = useSolanaWallet();
   const { connect, error, isConnecting, resetError } = useSolanaConnectWallet();
-  const [selectedWalletId, setSelectedWalletId] = useState<string | undefined>();
+  const [selectedWallet, setSelectedWallet] = useState<WalletListViewItem>();
+  // The connecting status and the decline only show for a wallet picked since the modal opened.
+  const declined = Boolean(selectedWallet && error);
 
-  // The modal stays mounted while closed (unlike the EVM ConnectOptions,
-  // which unmount with the Dialog), so reset transient state on close: no
-  // stale selection highlight or error text on the next open.
+  // The modal stays mounted while closed (unlike the EVM ConnectOptions, which unmount with the Dialog), so drop the
+  // selection on close.
   useEffect(() => {
     if (!open) {
-      setSelectedWalletId(undefined);
-      resetError();
+      setSelectedWallet(undefined);
     }
-  }, [open, resetError]);
+  }, [open]);
 
   const wallets = useMemo(() => {
     const recentIds = new Set(getRecentSolanaWalletIds());
@@ -89,7 +80,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
     }
 
     resetError();
-    setSelectedWalletId(wallet.id);
+    setSelectedWallet(wallet);
 
     try {
       await connect(wallet.id);
@@ -101,32 +92,6 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
 
   const mobile = isMobile();
   const readyWallets = wallets.filter((wallet) => wallet.ready);
-  const walletList = (
-    <>
-      {wallets.length > 0 ? (
-        <WalletListView
-          groupedWallets={groupedWallets}
-          onSelectWallet={selectWallet}
-          selectedWalletId={selectedWalletId}
-        />
-      ) : (
-        <WalletListEmptyState
-          getWalletUrl={SOLANA_GET_WALLET_URL}
-          showAction
-        />
-      )}
-      {error ? (
-        <Text
-          color="error"
-          size="14"
-          weight="medium"
-          xstyle={styles.error}
-        >
-          {error.message}
-        </Text>
-      ) : null}
-    </>
-  );
 
   return (
     <Dialog
@@ -137,7 +102,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       <DialogContent wide>
         {mobile ? (
           <MobileWalletListView
-            error={error?.message}
+            declined={declined}
             getWalletUrl={SOLANA_GET_WALLET_URL}
             onClose={onClose}
             titleId={titleId}
@@ -146,7 +111,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
                 <MobileWalletGroup label={groupLabel("Installed")}>
                   {readyWallets.map((wallet) => (
                     <MobileWalletItemView
-                      connecting={isConnecting && selectedWalletId === wallet.id}
+                      connecting={isConnecting && selectedWallet?.id === wallet.id}
                       iconUrl={wallet.iconUrl}
                       id={wallet.id}
                       key={wallet.id}
@@ -170,11 +135,33 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             getWalletUrl={SOLANA_GET_WALLET_URL}
             hideFooter={wallets.length === 0}
             onClose={onClose}
-            rightPaneContent={null}
-            showRightPane={false}
-            showSidebar
+            onRightPaneBack={() => setSelectedWallet(undefined)}
+            rightPaneContent={
+              selectedWallet && (
+                <ConnectStatus
+                  connectionError={declined}
+                  onRetry={() => selectWallet(selectedWallet)}
+                  wallet={selectedWallet}
+                />
+              )
+            }
+            showRightPane={Boolean(selectedWallet)}
+            showSidebar={!selectedWallet}
             titleId={titleId}
-            walletList={walletList}
+            walletList={
+              wallets.length > 0 ? (
+                <WalletListView
+                  groupedWallets={groupedWallets}
+                  onSelectWallet={selectWallet}
+                  selectedWalletId={selectedWallet?.id}
+                />
+              ) : (
+                <WalletListEmptyState
+                  getWalletUrl={SOLANA_GET_WALLET_URL}
+                  showAction
+                />
+              )
+            }
           />
         )}
       </DialogContent>
