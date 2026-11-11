@@ -1,14 +1,9 @@
 import stylex from "@stylexjs/rollup-plugin";
 import { defineConfig } from "tsdown";
 
-import pkg from "./package.json" with { type: "json" };
-
 export default defineConfig({
   banner: {
     js: '"use client";',
-  },
-  define: {
-    __SOLARISKIT_VERSION__: JSON.stringify(pkg.version),
   },
   entry: {
     index: "./src/index.ts",

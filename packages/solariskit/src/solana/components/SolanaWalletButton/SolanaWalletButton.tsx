@@ -3,7 +3,7 @@ import React, { type JSX, type ReactNode, useMemo, useState } from "react";
 import type { SolanaWalletButtonProps } from "../../types";
 
 import { WalletButtonView } from "../../../components/WalletButton/WalletButtonView";
-import { useIsMounted } from "../../../hooks/useIsMounted";
+import { useHydrated } from "../../../hooks/useHydrated";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
 import { addRecentSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
@@ -33,7 +33,7 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
   const wallet = useSolanaWallet();
   const { connect } = useSolanaConnectWallet();
   const { openConnectModal } = useSolanaConnectModal();
-  const isMounted = useIsMounted();
+  const hydrated = useHydrated();
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const connector = useMemo(
@@ -60,7 +60,7 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
           connect: async () => openConnectModal?.(),
           error: isError,
           loading: false,
-          mounted: isMounted(),
+          mounted: hydrated,
           ready: !wallet.isConnecting && !!openConnectModal,
         })}
       </>
@@ -98,7 +98,7 @@ function SolanaWalletButtonRenderer({ children, connectorId }: SolanaWalletButto
         connect: connectWallet,
         error: isError,
         loading,
-        mounted: isMounted(),
+        mounted: hydrated,
         ready: !wallet.isConnecting && !!openConnectModal,
       })}
     </>

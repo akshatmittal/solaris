@@ -42,9 +42,6 @@ const styles = stylex.create({
   },
 });
 
-export const dialogContentClassName = stylex.props(styles.content).className;
-export const dialogContentMobileClassName = stylex.props(styles.mobile).className;
-
 export function DialogContent({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const mobile = isMobile();
   const compactModeEnabled = useContext(ModalSizeContext) === ModalSizeOptions.COMPACT;

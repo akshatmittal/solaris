@@ -16,7 +16,6 @@ import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
 import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "./ThemeRootContext";
-import { useFingerprint } from "./useFingerprint";
 import { usePreloadImages } from "./usePreloadImages";
 import { WalletButtonProvider } from "./WalletButtonContext";
 import { clearWalletConnectDeepLink } from "./walletConnectDeepLink";
@@ -58,7 +57,6 @@ export function RainbowKitProvider({
   theme = defaultTheme,
 }: RainbowKitProviderProps) {
   usePreloadImages();
-  useFingerprint();
 
   useConnectionEffect({ onDisconnect: clearWalletConnectDeepLink });
 

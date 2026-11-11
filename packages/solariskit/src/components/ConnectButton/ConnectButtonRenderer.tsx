@@ -2,7 +2,7 @@ import React, { type ReactNode, useContext } from "react";
 
 import { useConnection, useConfig } from "wagmi";
 
-import { useIsMounted } from "../../hooks/useIsMounted";
+import { useHydrated } from "../../hooks/useHydrated";
 import { useProfile } from "../../hooks/useProfile";
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
@@ -54,7 +54,7 @@ export interface ConnectButtonRendererProps {
 }
 
 export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) {
-  const isMounted = useIsMounted();
+  const hydrated = useHydrated();
   const { address, chainId: connectedChainId } = useConnection();
   const chainId = useSelectedChainId(connectedChainId);
   const { chains: wagmiChains } = useConfig();
@@ -121,7 +121,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
           : undefined,
         chainModalOpen,
         connectModalOpen,
-        mounted: isMounted(),
+        mounted: hydrated,
         openAccountModal: openAccountModal ?? noop,
         openChainModal: openChainModal ?? noop,
         openConnectModal: openConnectModal ?? noop,

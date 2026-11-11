@@ -15,7 +15,6 @@ import {
 import { ModalSizeOptions, ModalSizeProvider } from "../../../components/RainbowKitProvider/ModalSizeContext";
 import { ShowBalanceProvider } from "../../../components/RainbowKitProvider/ShowBalanceContext";
 import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "../../../components/RainbowKitProvider/ThemeRootContext";
-import { useFingerprint } from "../../../components/RainbowKitProvider/useFingerprint";
 import { WalletButtonProvider } from "../../../components/RainbowKitProvider/WalletButtonContext";
 import { lightTheme } from "../../../themes/lightTheme";
 import { SolanaModalProvider } from "./SolanaModalContext";
@@ -46,8 +45,6 @@ export function SolanaKitProvider({
   modalSize = ModalSizeOptions.WIDE,
   theme = defaultTheme,
 }: SolanaKitProviderProps) {
-  useFingerprint();
-
   const { themeCss, themeId } = useThemeRoot(id, theme);
 
   const appContext = useMemo(

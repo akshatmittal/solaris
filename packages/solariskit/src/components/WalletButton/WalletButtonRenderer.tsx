@@ -3,7 +3,7 @@ import React, { type ReactNode, useContext, useEffect, useMemo, useState } from 
 import { useConnection, useConnectionEffect } from "wagmi";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
-import { useIsMounted } from "../../hooks/useIsMounted";
+import { useHydrated } from "../../hooks/useHydrated";
 import { isMobile } from "../../utils/isMobile";
 import { addLatestWalletId, clearLatestWalletId, getLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
@@ -29,7 +29,7 @@ export function WalletButtonRenderer({
   wallet = "injected",
   children,
 }: WalletButtonRendererProps) {
-  const isMounted = useIsMounted();
+  const hydrated = useHydrated();
   const { openConnectModal } = useConnectModal();
   const { connectModalOpen } = useModalState();
   const { connector, setConnector } = useContext(WalletButtonContext);
@@ -113,7 +113,7 @@ export function WalletButtonRenderer({
         loading,
         connected: isLastWalletIdConnected,
         ready,
-        mounted: isMounted(),
+        mounted: hydrated,
         connector: firstConnector,
         connect: async () => {
           // Used to track which last wallet user has clicked
