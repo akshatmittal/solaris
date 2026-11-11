@@ -70,7 +70,7 @@ const solanaConfig = getDefaultSolanaConfig({
 
 export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
-  const [{ modal, theme }] = useQueryStates(kitSettings);
+  const [{ theme }] = useQueryStates(kitSettings);
   const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("unauthenticated");
   // Sign-In with Ethereum, verified in the browser so the example needs no backend.
   const [authAdapter] = useState(() => {
@@ -122,7 +122,6 @@ export function EthereumProviders({ children }: PropsWithChildren) {
         >
           <RainbowKitProvider
             id="ethereum"
-            modalSize={modal}
             theme={kitThemes[theme]}
           >
             {children}
@@ -134,13 +133,12 @@ export function EthereumProviders({ children }: PropsWithChildren) {
 }
 
 export function SolanaProviders({ children }: PropsWithChildren) {
-  const [{ modal, theme }] = useQueryStates(kitSettings);
+  const [{ theme }] = useQueryStates(kitSettings);
 
   return (
     <SolanaKitProvider
       config={solanaConfig}
       id="solana"
-      modalSize={modal}
       theme={kitThemes[theme]}
     >
       {children}

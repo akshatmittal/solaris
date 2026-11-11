@@ -40,10 +40,7 @@
     },
     "title": "Connect Wallet",
     "walletconnect": {
-      "description": {
-        "compact": "Need the WalletConnect modal?",
-        "full": "Need the official WalletConnect modal?"
-      },
+      "description": "Need the WalletConnect modal?",
       "open": {
         "label": "Open"
       }
@@ -69,14 +66,12 @@
     "recommended": "Recommended"
   },
   "intro": {
-    "description": "Select a wallet from the list to connect to this app.",
     "get": {
       "label": "Get a Wallet"
     },
     "learn_more": {
       "label": "Learn More"
-    },
-    "title": "Choose a wallet"
+    }
   },
   "profile": {
     "copy_address": {

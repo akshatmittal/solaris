@@ -2,56 +2,29 @@
 
 import { useQueryStates } from "nuqs";
 
-import { kitSettings, modalSizes, themeNames } from "./settings";
-
-function Segmented<Option extends string>({
-  label,
-  onChange,
-  options,
-  value,
-}: {
-  label: string;
-  onChange: (option: Option) => void;
-  options: readonly Option[];
-  value: Option;
-}) {
-  return (
-    <div
-      aria-label={label}
-      className="segmented"
-      role="group"
-    >
-      {options.map((option) => (
-        <button
-          aria-pressed={option === value}
-          key={option}
-          onClick={() => onChange(option)}
-          type="button"
-        >
-          {option}
-        </button>
-      ))}
-    </div>
-  );
-}
+import { kitSettings, themeNames } from "./settings";
 
 export function SettingsControls() {
-  const [{ modal, theme }, setSettings] = useQueryStates(kitSettings);
+  const [{ theme }, setSettings] = useQueryStates(kitSettings);
 
   return (
     <div className="settings">
-      <Segmented
-        label="Modal size"
-        onChange={(option) => setSettings({ modal: option })}
-        options={modalSizes}
-        value={modal}
-      />
-      <Segmented
-        label="Theme"
-        onChange={(option) => setSettings({ theme: option })}
-        options={themeNames}
-        value={theme}
-      />
+      <div
+        aria-label="Theme"
+        className="segmented"
+        role="group"
+      >
+        {themeNames.map((option) => (
+          <button
+            aria-pressed={option === theme}
+            key={option}
+            onClick={() => setSettings({ theme: option })}
+            type="button"
+          >
+            {option}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

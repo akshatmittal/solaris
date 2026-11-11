@@ -11,7 +11,6 @@ import { TransactionStoreProvider } from "../../transactions/TransactionStoreCon
 import { AppContext, type DisclaimerComponent, defaultAppInfo } from "./AppContext";
 import { type AvatarComponent, AvatarContext, defaultAvatar } from "./AvatarContext";
 import { ModalProvider } from "./ModalContext";
-import { ModalSizeOptions, ModalSizeProvider, type ModalSizes } from "./ModalSizeContext";
 import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
@@ -40,7 +39,6 @@ export interface RainbowKitProviderProps {
     disclaimer?: DisclaimerComponent;
   };
   avatar?: AvatarComponent;
-  modalSize?: ModalSizes;
 }
 
 const defaultTheme = lightTheme();
@@ -52,7 +50,6 @@ export function RainbowKitProvider({
   children,
   id,
   initialChain,
-  modalSize = ModalSizeOptions.WIDE,
   showRecentTransactions = false,
   theme = defaultTheme,
 }: RainbowKitProviderProps) {
@@ -78,28 +75,26 @@ export function RainbowKitProvider({
       initialChain={initialChain}
     >
       <WalletButtonProvider>
-        <ModalSizeProvider modalSize={modalSize}>
-          <ShowRecentTransactionsContext.Provider value={showRecentTransactions}>
-            <TransactionStoreProvider>
-              <AvatarContext.Provider value={avatarContext}>
-                <AppContext.Provider value={appContext}>
-                  <ThemeIdProvider id={themeId}>
-                    <ShowBalanceProvider>
-                      <ModalProvider>
-                        <ThemeRootStyle
-                          themeCss={themeCss}
-                          themeId={themeId}
-                        >
-                          {children}
-                        </ThemeRootStyle>
-                      </ModalProvider>
-                    </ShowBalanceProvider>
-                  </ThemeIdProvider>
-                </AppContext.Provider>
-              </AvatarContext.Provider>
-            </TransactionStoreProvider>
-          </ShowRecentTransactionsContext.Provider>
-        </ModalSizeProvider>
+        <ShowRecentTransactionsContext.Provider value={showRecentTransactions}>
+          <TransactionStoreProvider>
+            <AvatarContext.Provider value={avatarContext}>
+              <AppContext.Provider value={appContext}>
+                <ThemeIdProvider id={themeId}>
+                  <ShowBalanceProvider>
+                    <ModalProvider>
+                      <ThemeRootStyle
+                        themeCss={themeCss}
+                        themeId={themeId}
+                      >
+                        {children}
+                      </ThemeRootStyle>
+                    </ModalProvider>
+                  </ShowBalanceProvider>
+                </ThemeIdProvider>
+              </AppContext.Provider>
+            </AvatarContext.Provider>
+          </TransactionStoreProvider>
+        </ShowRecentTransactionsContext.Provider>
       </WalletButtonProvider>
     </RainbowKitChainProvider>
   );

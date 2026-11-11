@@ -94,14 +94,12 @@ const styles = stylex.create({
 });
 
 export function ConnectDetail({
-  compactModeEnabled,
   connectionError,
   onClose,
   qrCodeUri,
   reconnect,
   wallet,
 }: {
-  compactModeEnabled: boolean;
   connectionError: boolean;
   onClose: () => void;
   qrCodeUri?: string;
@@ -125,9 +123,7 @@ export function ConnectDetail({
     onClick?: () => void;
   } | null = showWalletConnectModal
     ? {
-        description: !compactModeEnabled
-          ? t("connect.walletconnect.description.full")
-          : t("connect.walletconnect.description.compact"),
+        description: t("connect.walletconnect.description"),
         label: t("connect.walletconnect.open.label"),
         onClick: () => {
           onClose();

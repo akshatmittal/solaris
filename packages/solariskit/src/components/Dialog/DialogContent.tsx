@@ -1,10 +1,9 @@
-import React, { type ReactNode, useContext } from "react";
+import React, { type ReactNode } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
 import { colors, media, radii, shadows } from "../../css/vars.stylex";
 import { isMobile } from "../../utils/isMobile";
-import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 
 const bleed = 200;
 
@@ -25,8 +24,6 @@ const styles = stylex.create({
     position: "relative",
     width: 360,
   },
-  wideDesktop: { minWidth: 720, width: 720 },
-  wideCompact: { minWidth: 360, width: 360 },
   wideMobile: { width: { default: "100vw", [media.largeScreen]: 480 } },
   mobile: {
     borderRadius: radii.modalMobile,
@@ -44,7 +41,6 @@ const styles = stylex.create({
 
 export function DialogContent({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const mobile = isMobile();
-  const compactModeEnabled = useContext(ModalSizeContext) === ModalSizeOptions.COMPACT;
 
   return (
     <div
@@ -52,7 +48,7 @@ export function DialogContent({ children, wide = false }: { children: ReactNode;
         styles.content,
         mobile && styles.mobile,
         mobile && styles.bottomSheet,
-        wide && (mobile ? styles.wideMobile : compactModeEnabled ? styles.wideCompact : styles.wideDesktop),
+        wide && mobile && styles.wideMobile,
       )}
     >
       {children}

@@ -2,14 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { ConnectModalIntro } from "../../../components/ConnectModal/ConnectModalIntro";
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
 import { MobileWalletItemView, MobileWalletListView } from "../../../components/ConnectOptions/MobileWalletListView";
 import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletListEmptyState";
 import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
-import { ModalSizeContext, ModalSizeOptions } from "../../../components/RainbowKitProvider/ModalSizeContext";
 import { Text } from "../../../components/Text/Text";
 import { isMobile } from "../../../utils/isMobile";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
@@ -38,8 +36,6 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   const walletState = useSolanaWallet();
   const { connect, error, isConnecting, resetError } = useSolanaConnectWallet();
   const [selectedWalletId, setSelectedWalletId] = useState<string | undefined>();
-  const modalSize = React.useContext(ModalSizeContext);
-  const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
 
   // The modal stays mounted while closed (unlike the EVM ConnectOptions,
   // which unmount with the Dialog), so reset transient state on close: no
@@ -112,7 +108,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       ) : (
         <WalletListEmptyState
           getWalletUrl={SOLANA_GET_WALLET_URL}
-          showAction={compactModeEnabled}
+          showAction
         />
       )}
       {error ? (
@@ -165,12 +161,11 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
           />
         ) : (
           <ConnectModalShellView
-            compactModeEnabled={compactModeEnabled}
             getWalletUrl={SOLANA_GET_WALLET_URL}
             hideFooter={wallets.length === 0}
             onClose={onClose}
-            rightPaneContent={<ConnectModalIntro getWalletUrl={SOLANA_GET_WALLET_URL} />}
-            showRightPane={!compactModeEnabled}
+            rightPaneContent={null}
+            showRightPane={false}
             showSidebar
             titleId={titleId}
             walletList={walletList}

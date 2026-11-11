@@ -14,38 +14,31 @@ const styles = stylex.create({
     gridTemplateColumns: "32px 1fr 32px",
     minHeight: 32,
   },
-  start: {
-    gridTemplateColumns: "1fr 32px",
-  },
 });
 
 export function DialogHeader({
-  align = "center",
   left,
   onClose,
-  size = "18",
   testId,
   title,
   titleId,
 }: {
-  align?: "center" | "start";
   left?: ReactNode;
   onClose?: () => void;
-  size?: "17" | "18";
   testId?: string;
   title?: ReactNode;
   titleId?: string;
 }) {
   return (
-    <div {...stylex.props(styles.header, align === "start" && styles.start)}>
-      {align === "center" && <div>{left}</div>}
+    <div {...stylex.props(styles.header)}>
+      <div>{left}</div>
       {title ? (
         <Text
-          align={align === "start" ? "left" : "center"}
+          align="center"
           as="h1"
           color="modalText"
           id={titleId}
-          size={size}
+          size="18"
           testId={testId}
           weight="semibold"
         >

@@ -12,10 +12,8 @@ import {
   AvatarContext,
   defaultAvatar,
 } from "../../../components/RainbowKitProvider/AvatarContext";
-import { ModalSizeOptions, ModalSizeProvider } from "../../../components/RainbowKitProvider/ModalSizeContext";
 import { ShowBalanceProvider } from "../../../components/RainbowKitProvider/ShowBalanceContext";
 import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "../../../components/RainbowKitProvider/ThemeRootContext";
-import { WalletButtonProvider } from "../../../components/RainbowKitProvider/WalletButtonContext";
 import { lightTheme } from "../../../themes/lightTheme";
 import { SolanaModalProvider } from "./SolanaModalContext";
 
@@ -42,7 +40,6 @@ export function SolanaKitProvider({
   children,
   config,
   id,
-  modalSize = ModalSizeOptions.WIDE,
   theme = defaultTheme,
 }: SolanaKitProviderProps) {
   const { themeCss, themeId } = useThemeRoot(id, theme);
@@ -63,29 +60,22 @@ export function SolanaKitProvider({
       connectorConfig={connectorConfig}
       mobile={mobile}
     >
-      {/* WalletButtonProvider isolates ModalSizeProvider (which reads
-          WalletButtonContext) from an outer EVM RainbowKitProvider when the
-          providers are nested rather than siblings. */}
-      <WalletButtonProvider>
-        <ModalSizeProvider modalSize={modalSize}>
-          <AvatarContext.Provider value={avatarContext}>
-            <AppContext.Provider value={appContext}>
-              <ThemeIdProvider id={themeId}>
-                <ShowBalanceProvider>
-                  <SolanaModalProvider>
-                    <ThemeRootStyle
-                      themeCss={themeCss}
-                      themeId={themeId}
-                    >
-                      {children}
-                    </ThemeRootStyle>
-                  </SolanaModalProvider>
-                </ShowBalanceProvider>
-              </ThemeIdProvider>
-            </AppContext.Provider>
-          </AvatarContext.Provider>
-        </ModalSizeProvider>
-      </WalletButtonProvider>
+      <AvatarContext.Provider value={avatarContext}>
+        <AppContext.Provider value={appContext}>
+          <ThemeIdProvider id={themeId}>
+            <ShowBalanceProvider>
+              <SolanaModalProvider>
+                <ThemeRootStyle
+                  themeCss={themeCss}
+                  themeId={themeId}
+                >
+                  {children}
+                </ThemeRootStyle>
+              </SolanaModalProvider>
+            </ShowBalanceProvider>
+          </ThemeIdProvider>
+        </AppContext.Provider>
+      </AvatarContext.Provider>
     </AppProvider>
   );
 }

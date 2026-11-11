@@ -7,7 +7,6 @@ import type { ChainStatus } from "../components/ChainSelectButton/ChainSelectBut
 import type { AccountStatus } from "../components/ConnectButton/ConnectButtonView";
 import type { DisclaimerComponent } from "../components/RainbowKitProvider/AppContext";
 import type { AvatarComponent } from "../components/RainbowKitProvider/AvatarContext";
-import type { ModalSizes } from "../components/RainbowKitProvider/ModalSizeContext";
 import type { Theme } from "../components/RainbowKitProvider/RainbowKitProvider";
 import type { ResponsiveValue } from "../css/responsive";
 
@@ -72,7 +71,6 @@ export interface SolanaKitProviderProps {
   children: React.ReactNode;
   config?: SolanaKitConfig;
   id?: string;
-  modalSize?: ModalSizes;
   theme?: Theme | null;
 }
 

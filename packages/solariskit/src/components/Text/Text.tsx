@@ -22,7 +22,6 @@ const sizeStyles = stylex.create({
   "14": { fontSize: 14, lineHeight: "20px" },
   "15": { fontSize: 15, lineHeight: "22px" },
   "16": { fontSize: 16, lineHeight: "22px" },
-  "17": { fontSize: 17, letterSpacing: "-0.01em", lineHeight: "24px" },
   "18": { fontSize: 18, letterSpacing: "-0.01em", lineHeight: "24px" },
   "20": { fontSize: 20, letterSpacing: "-0.015em", lineHeight: "26px" },
 });

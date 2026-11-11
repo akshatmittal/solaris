@@ -2,8 +2,6 @@ import * as stylex from "@stylexjs/stylex";
 
 import { media } from "./vars.stylex";
 
-export const largeScreenMinWidth = 768;
-
 export type ResponsiveValue<Value extends string | number | boolean> =
   | Value
   | { smallScreen: Value; largeScreen?: Value };

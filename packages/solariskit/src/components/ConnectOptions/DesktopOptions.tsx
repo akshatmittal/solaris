@@ -4,8 +4,6 @@ import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { ConnectModalIntro } from "../ConnectModal/ConnectModalIntro";
-import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
 import { ConnectModalShellView } from "./ConnectModalShellView";
@@ -24,8 +22,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const hasQrCode = !!selectedWallet?.qrCode && qrCodeUri;
   const [connectionError, setConnectionError] = useState(false);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
-  const modalSize = useContext(ModalSizeContext);
-  const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
   const safari = isSafari();
 
   const initialized = useRef(false);
@@ -142,12 +138,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   switch (walletStep) {
     case WalletStep.None:
-      walletContent = <ConnectModalIntro getWalletUrl={GET_WALLET_URL} />;
       break;
     case WalletStep.Connect:
       walletContent = selectedWallet && (
         <ConnectDetail
-          compactModeEnabled={compactModeEnabled}
           connectionError={connectionError}
           onClose={onClose}
           qrCodeUri={qrCodeUri}
@@ -162,8 +156,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
           : t("connect_scan.title", {
               wallet: selectedWallet.shortName ?? selectedWallet.name,
             }));
-      headerBackButtonLink = compactModeEnabled ? (connector ? null : WalletStep.None) : null;
-      headerBackButtonCallback = compactModeEnabled ? (!connector ? clearSelectedWallet : () => {}) : () => {};
+      headerBackButtonLink = connector ? null : WalletStep.None;
+      headerBackButtonCallback = connector ? undefined : clearSelectedWallet;
       break;
     default:
       break;
@@ -172,7 +166,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   return (
     <ConnectModalShellView
-      compactModeEnabled={compactModeEnabled}
       getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
       onRightPaneBack={
@@ -185,8 +178,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       }
       rightPaneContent={walletContent}
       rightPaneHeaderLabel={headerLabel}
-      showRightPane={compactModeEnabled ? walletStep !== WalletStep.None : true}
-      showSidebar={compactModeEnabled ? walletStep === WalletStep.None : true}
+      showRightPane={walletStep !== WalletStep.None}
+      showSidebar={walletStep === WalletStep.None}
       titleId={titleId}
       walletList={
         <WalletListView

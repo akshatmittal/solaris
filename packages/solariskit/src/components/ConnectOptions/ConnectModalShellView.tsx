@@ -20,18 +20,11 @@ const styles = stylex.create({
   sidebar: {
     display: "flex",
     flexDirection: "column",
-    flexShrink: 0,
-    width: 280,
-  },
-  sidebarCompact: {
     width: "100%",
   },
   header: {
     padding: 16,
     paddingBottom: 8,
-  },
-  headerStart: {
-    paddingLeft: 24,
   },
   list: {
     flexGrow: 1,
@@ -55,16 +48,10 @@ const styles = stylex.create({
     textAlign: "center",
   },
   pane: {
-    borderLeftColor: colors.generalBorder,
-    borderLeftStyle: "solid",
-    borderLeftWidth: 1,
     display: "flex",
     flexDirection: "column",
     flexGrow: 1,
     minWidth: 0,
-  },
-  paneCompact: {
-    borderLeftWidth: 0,
   },
   paneContent: {
     alignItems: "center",
@@ -78,7 +65,6 @@ const styles = stylex.create({
 });
 
 export interface ConnectModalShellViewProps {
-  compactModeEnabled: boolean;
   hideFooter?: boolean;
   getWalletUrl: string;
   onClose: () => void;
@@ -98,7 +84,6 @@ export interface ConnectModalShellViewProps {
  * parameterize this shell.
  */
 export function ConnectModalShellView({
-  compactModeEnabled,
   getWalletUrl,
   hideFooter = false,
   onClose,
@@ -115,23 +100,20 @@ export function ConnectModalShellView({
   return (
     <div
       {...stylex.props(styles.shell)}
-      style={{ maxHeight: compactModeEnabled ? 520 : 480 }}
+      style={{ maxHeight: 520 }}
     >
       {showSidebar && (
-        <div {...stylex.props(styles.sidebar, compactModeEnabled && styles.sidebarCompact)}>
-          <div {...stylex.props(styles.header, !compactModeEnabled && styles.headerStart)}>
+        <div {...stylex.props(styles.sidebar)}>
+          <div {...stylex.props(styles.header)}>
             <DialogHeader
-              align={compactModeEnabled ? "center" : "start"}
-              size={compactModeEnabled ? "18" : "17"}
-              onClose={compactModeEnabled ? onClose : undefined}
+              onClose={onClose}
               testId="connect-header-label"
               title={t("connect.title")}
               titleId={titleId}
             />
           </div>
           <div {...stylex.props(styles.list)}>{walletList}</div>
-          {compactModeEnabled &&
-            !hideFooter &&
+          {!hideFooter &&
             (Disclaimer ? (
               <div {...stylex.props(styles.footer, styles.footerDisclaimer)}>
                 <Disclaimer
@@ -154,10 +136,9 @@ export function ConnectModalShellView({
         </div>
       )}
       {showRightPane && (
-        <div {...stylex.props(styles.pane, compactModeEnabled && styles.paneCompact)}>
-          <div {...stylex.props(styles.header, !compactModeEnabled && styles.headerStart)}>
+        <div {...stylex.props(styles.pane)}>
+          <div {...stylex.props(styles.header)}>
             <DialogHeader
-              align={compactModeEnabled ? "center" : "start"}
               left={
                 onRightPaneBack && (
                   <IconButton
@@ -169,7 +150,6 @@ export function ConnectModalShellView({
                 )
               }
               onClose={onClose}
-              size={compactModeEnabled ? "18" : "17"}
               title={rightPaneHeaderLabel}
             />
           </div>
