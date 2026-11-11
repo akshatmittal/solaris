@@ -1,8 +1,8 @@
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { colors, media, radii, shadows } from "../../css/vars.stylex";
+import { colors, media, motion, radii, shadows } from "../../css/vars.stylex";
 import { isMobile } from "../../utils/isMobile";
 
 const bleed = 200;
@@ -30,6 +30,17 @@ const styles = stylex.create({
     borderWidth: 0,
     width: "100vw",
   },
+  // Animates between the measured heights of the content; the first height applies without a transition.
+  sizer: {
+    overflow: "hidden",
+    transitionDuration: { default: motion.enter, "@media (prefers-reduced-motion: reduce)": "0s" },
+    transitionProperty: "height",
+    transitionTimingFunction: "ease-out",
+  },
+  measure: {
+    display: "flex",
+    flexDirection: "column",
+  },
   bottomSheet: {
     borderBottomLeftRadius: { default: 0, [media.largeScreen]: null },
     borderBottomRightRadius: { default: 0, [media.largeScreen]: null },
@@ -41,6 +52,22 @@ const styles = stylex.create({
 
 export function DialogContent({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const mobile = isMobile();
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>();
+
+  useEffect(() => {
+    const measure = measureRef.current;
+    if (!measure) {
+      return;
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) {
+        setHeight(entry.borderBoxSize[0]?.blockSize);
+      }
+    });
+    observer.observe(measure);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
@@ -51,7 +78,17 @@ export function DialogContent({ children, wide = false }: { children: ReactNode;
         wide && mobile && styles.wideMobile,
       )}
     >
-      {children}
+      <div
+        {...stylex.props(styles.sizer)}
+        style={{ height }}
+      >
+        <div
+          ref={measureRef}
+          {...stylex.props(styles.measure)}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
