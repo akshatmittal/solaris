@@ -4,7 +4,6 @@ import type { RainbowKitWalletConnectParameters, Wallet, WalletDetailsParams, Wa
 
 import { isHexString } from "../utils/colors";
 import { omitUndefinedValues } from "../utils/omitUndefinedValues";
-import { uniqueBy } from "../utils/uniqueBy";
 import { computeWalletConnectMetaData } from "./computeWalletConnectMetaData";
 
 interface WalletListItem extends Wallet {
@@ -93,7 +92,10 @@ export const connectorsForWallets = (
   // Filtering out duplicated wallets in case there is any.
   // We process the known visible wallets first so that the potentially
   // hidden wallets have access to the complete list of resolved wallets
-  const walletListItems: WalletListItem[] = uniqueBy([...visibleWallets, ...potentiallyHiddenWallets], "id");
+  const allWallets = [...visibleWallets, ...potentiallyHiddenWallets];
+  const walletListItems: WalletListItem[] = allWallets.filter(
+    (wallet, index) => allWallets.findIndex(({ id }) => id === wallet.id) === index,
+  );
 
   for (const { createConnector, groupIndex, groupName, hidden, ...walletMeta } of walletListItems) {
     if (typeof hidden === "function") {

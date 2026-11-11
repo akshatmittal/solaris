@@ -11,7 +11,7 @@ export const metaMaskWallet = ({ projectId, walletConnectParameters }: MetaMaskW
   rdns: "io.metamask.mobile",
   iconUrl: async () => (await import("./metaMaskWallet.svg")).default,
   iconAccent: "#f6851a",
-  iconBackground: "#fff",
+  iconBackground: "transparent",
   mobile: {
     getUri: (uri: string) => `https://metamask.app.link/wc?uri=${encodeURIComponent(uri)}`,
   },

@@ -1,17 +1,23 @@
 import React, { type ReactNode } from "react";
 
-import { Box } from "../Box/Box";
+import * as stylex from "@stylexjs/stylex";
 
-export const DisclaimerLink = ({ children, href }: { children: ReactNode; href: string }) => {
-  return (
-    <Box
-      as="a"
-      color="accentColor"
-      href={href}
-      rel="noreferrer"
-      target="_blank"
-    >
-      {children}
-    </Box>
-  );
-};
+import { colors } from "../../css/vars.stylex";
+
+const styles = stylex.create({
+  link: {
+    color: colors.accentColor,
+    textDecoration: "none",
+  },
+});
+
+export const DisclaimerLink = ({ children, href }: { children: ReactNode; href: string }) => (
+  <a
+    {...stylex.props(styles.link)}
+    href={href}
+    rel="noreferrer"
+    target="_blank"
+  >
+    {children}
+  </a>
+);

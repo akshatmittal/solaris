@@ -1,102 +1,90 @@
 import React from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
-import { isMobile } from "../../utils/isMobile";
-import { Box, type BoxProps } from "../Box/Box";
-import { Text, type TextProps } from "../Text/Text";
+import * as stylex from "@stylexjs/stylex";
 
-type Size = "small" | "medium" | "large";
+import { reset } from "../../css/reset";
+import { colors, motion, radii } from "../../css/vars.stylex";
 
-const sizeVariants: Record<
-  Size,
-  {
-    paddingX: BoxProps["paddingX"];
-    paddingY: BoxProps["paddingY"];
-    fontSize: TextProps["size"];
-    height?: BoxProps["height"];
-  }
-> = {
-  large: {
-    fontSize: "16",
-    paddingX: "24",
-    paddingY: "10",
+const styles = stylex.create({
+  base: {
+    alignItems: "center",
+    borderRadius: radii.actionButton,
+    display: "flex",
+    fontWeight: 600,
+    justifyContent: "center",
+    transitionDuration: motion.fast,
+    transitionProperty: "background-color, opacity",
+    transitionTimingFunction: "ease-out",
+    whiteSpace: "nowrap",
   },
-  medium: {
-    fontSize: "14",
-    height: "28",
-    paddingX: "12",
-    paddingY: "4",
+  small: { fontSize: 14, height: 36, paddingInline: 14 },
+  medium: { fontSize: 15, height: 44, paddingInline: 20 },
+  large: { fontSize: 16, height: 48, paddingInline: 20 },
+  primary: {
+    backgroundColor: colors.accentColor,
+    color: colors.accentColorForeground,
+    opacity: { default: 1, ":hover": 0.9 },
   },
-  small: {
-    fontSize: "14",
-    paddingX: "10",
-    paddingY: "5",
+  secondary: {
+    backgroundColor: { default: colors.actionButtonSecondaryBackground, ":hover": colors.profileActionHover },
+    color: colors.modalText,
   },
-};
+  disabled: {
+    backgroundColor: colors.actionButtonSecondaryBackground,
+    color: colors.modalTextSecondary,
+    pointerEvents: "none",
+  },
+  fullWidth: { width: "100%" },
+});
 
 export function ActionButton({
   disabled = false,
+  fullWidth = false,
   href,
   label,
   onClick,
-  rel = "noreferrer noopener",
   size = "medium",
-  target = "_blank",
   testId,
   type = "primary",
 }: {
+  disabled?: boolean;
+  fullWidth?: boolean;
   href?: string;
   label: string;
   onClick?: () => void;
-  rel?: string;
-  size?: Size;
-  target?: string;
-  type?: "primary" | "secondary";
-  disabled?: boolean;
+  size?: "small" | "medium" | "large";
   testId?: string;
+  type?: "primary" | "secondary";
 }) {
-  const isPrimary = type === "primary";
-  const isNotLarge = size !== "large";
-  const mobile = isMobile();
-  const background = !disabled
-    ? isPrimary
-      ? "accentColor"
-      : isNotLarge
-        ? "actionButtonSecondaryBackground"
-        : null
-    : "actionButtonSecondaryBackground";
-  const { fontSize, height, paddingX, paddingY } = sizeVariants[size];
-  const hasBorder = !mobile || !isNotLarge;
-  return (
-    <Box
-      {...(href ? (!disabled ? { as: "a", href, rel, target } : {}) : { as: "button", type: "button" })}
-      onClick={!disabled ? onClick : undefined}
-      {...(hasBorder
-        ? {
-            borderColor: mobile && !isNotLarge && !isPrimary ? "actionButtonBorderMobile" : "actionButtonBorder",
-            borderStyle: "solid",
-            borderWidth: "1",
-          }
-        : {})}
-      borderRadius="actionButton"
-      className={!disabled && touchableStyles({ active: "shrinkSm", hover: "grow" })}
-      display="block"
-      paddingX={paddingX}
-      paddingY={paddingY}
-      style={{ willChange: "transform" }}
-      testId={testId}
-      textAlign="center"
-      transition="transform"
-      {...(background ? { background } : {})}
-      {...(height ? { height } : {})}
+  const props = {
+    ...stylex.props(
+      reset.button,
+      styles.base,
+      styles[size],
+      disabled ? styles.disabled : styles[type],
+      fullWidth && styles.fullWidth,
+    ),
+    "data-testid": testId ? `rk-${testId}` : undefined,
+  };
+
+  return href && !disabled ? (
+    <a
+      {...props}
+      href={href}
+      onClick={onClick}
+      rel="noreferrer noopener"
+      target="_blank"
     >
-      <Text
-        color={!disabled ? (isPrimary ? "accentColorForeground" : "accentColor") : "modalTextSecondary"}
-        size={fontSize}
-        weight="bold"
-      >
-        {label}
-      </Text>
-    </Box>
+      {label}
+    </a>
+  ) : (
+    <button
+      {...props}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      {label}
+    </button>
   );
 }

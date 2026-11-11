@@ -4,19 +4,17 @@ import type { Chain } from "wagmi/chains";
 
 import { useConnectionEffect } from "wagmi";
 
-import type { ThemeVars } from "../../css/sprinkles.css";
+import type { ThemeVars } from "../../css/themeVars";
 
 import { lightTheme } from "../../themes/lightTheme";
 import { TransactionStoreProvider } from "../../transactions/TransactionStoreContext";
 import { AppContext, type DisclaimerComponent, defaultAppInfo } from "./AppContext";
 import { type AvatarComponent, AvatarContext, defaultAvatar } from "./AvatarContext";
 import { ModalProvider } from "./ModalContext";
-import { ModalSizeOptions, ModalSizeProvider, type ModalSizes } from "./ModalSizeContext";
 import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
 import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "./ThemeRootContext";
-import { useFingerprint } from "./useFingerprint";
 import { usePreloadImages } from "./usePreloadImages";
 import { WalletButtonProvider } from "./WalletButtonContext";
 import { clearWalletConnectDeepLink } from "./walletConnectDeepLink";
@@ -41,7 +39,6 @@ export interface RainbowKitProviderProps {
     disclaimer?: DisclaimerComponent;
   };
   avatar?: AvatarComponent;
-  modalSize?: ModalSizes;
 }
 
 const defaultTheme = lightTheme();
@@ -53,12 +50,10 @@ export function RainbowKitProvider({
   children,
   id,
   initialChain,
-  modalSize = ModalSizeOptions.WIDE,
   showRecentTransactions = false,
   theme = defaultTheme,
 }: RainbowKitProviderProps) {
   usePreloadImages();
-  useFingerprint();
 
   useConnectionEffect({ onDisconnect: clearWalletConnectDeepLink });
 
@@ -80,28 +75,26 @@ export function RainbowKitProvider({
       initialChain={initialChain}
     >
       <WalletButtonProvider>
-        <ModalSizeProvider modalSize={modalSize}>
-          <ShowRecentTransactionsContext.Provider value={showRecentTransactions}>
-            <TransactionStoreProvider>
-              <AvatarContext.Provider value={avatarContext}>
-                <AppContext.Provider value={appContext}>
-                  <ThemeIdProvider id={themeId}>
-                    <ShowBalanceProvider>
-                      <ModalProvider>
-                        <ThemeRootStyle
-                          themeCss={themeCss}
-                          themeId={themeId}
-                        >
-                          {children}
-                        </ThemeRootStyle>
-                      </ModalProvider>
-                    </ShowBalanceProvider>
-                  </ThemeIdProvider>
-                </AppContext.Provider>
-              </AvatarContext.Provider>
-            </TransactionStoreProvider>
-          </ShowRecentTransactionsContext.Provider>
-        </ModalSizeProvider>
+        <ShowRecentTransactionsContext.Provider value={showRecentTransactions}>
+          <TransactionStoreProvider>
+            <AvatarContext.Provider value={avatarContext}>
+              <AppContext.Provider value={appContext}>
+                <ThemeIdProvider id={themeId}>
+                  <ShowBalanceProvider>
+                    <ModalProvider>
+                      <ThemeRootStyle
+                        themeCss={themeCss}
+                        themeId={themeId}
+                      >
+                        {children}
+                      </ThemeRootStyle>
+                    </ModalProvider>
+                  </ShowBalanceProvider>
+                </ThemeIdProvider>
+              </AppContext.Provider>
+            </AvatarContext.Provider>
+          </TransactionStoreProvider>
+        </ShowRecentTransactionsContext.Provider>
       </WalletButtonProvider>
     </RainbowKitChainProvider>
   );

@@ -30,7 +30,7 @@ export function SolanaConnectButton({
 
   const shouldShowBalance = resolveShowBalance(showBalance);
 
-  const { lastUpdated, solBalance } = useSolanaBalance({
+  const { isLoading, lastUpdated, solBalance } = useSolanaBalance({
     enabled: wallet.isConnected && shouldShowBalance,
   });
 
@@ -46,6 +46,7 @@ export function SolanaConnectButton({
         displayBalance: shouldShowBalance && lastUpdated ? `${abbreviateETHBalance(solBalance)} SOL` : undefined,
         displayName: formatAddress(wallet.account),
         hasPendingTransactions: false,
+        isBalanceLoading: shouldShowBalance && isLoading,
       }
     : undefined;
 

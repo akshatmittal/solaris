@@ -1,20 +1,63 @@
 import React, { useContext } from "react";
 
+import * as stylex from "@stylexjs/stylex";
 import { useConnection } from "wagmi";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import { reset } from "../../css/reset";
+import { colors, motion } from "../../css/vars.stylex";
 import { useClearRecentTransactions } from "../../transactions/useClearRecentTransactions";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { t } from "../../translations";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
-import { isMobile } from "../../utils/isMobile";
-import { Box } from "../Box/Box";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
+import { TextLink } from "../TextLink/TextLink";
 import { TxItem } from "./TxItem";
 
 const NUMBER_OF_VISIBLE_TXS = 3;
+
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    paddingBottom: 8,
+    paddingInline: 12,
+    paddingTop: 12,
+  },
+  header: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "space-between",
+    paddingBottom: 4,
+    paddingInline: 12,
+  },
+  clear: {
+    color: colors.accentColor,
+    opacity: { default: 1, ":hover": 0.75 },
+    fontSize: 13,
+    fontWeight: 500,
+    lineHeight: "18px",
+    marginBlock: -8,
+    paddingBlock: 8,
+    transitionDuration: motion.fast,
+    transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
+  },
+  empty: {
+    paddingBlock: 8,
+    paddingInline: 12,
+  },
+  footer: {
+    borderTopColor: colors.generalBorder,
+    borderTopStyle: "solid",
+    borderTopWidth: 1,
+    display: "flex",
+    justifyContent: "center",
+    paddingBlock: 4,
+  },
+});
 
 interface TxListProps {
   address: ReturnType<typeof useConnection>["address"];
@@ -26,145 +69,62 @@ export function TxList({ address }: TxListProps) {
   const { chain: activeChain } = useConnection();
   const explorerLink = chainToExplorerUrl(activeChain);
   const visibleTxs = recentTransactions.slice(0, NUMBER_OF_VISIBLE_TXS);
-  const hasTransactions = visibleTxs.length > 0;
-  const mobile = isMobile();
   const { appName } = useContext(AppContext);
 
   return (
     <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap="10"
-        paddingBottom="2"
-        paddingTop="16"
-        paddingX={mobile ? "8" : "18"}
-      >
-        {hasTransactions && (
-          <Box
-            paddingBottom={mobile ? "4" : "0"}
-            paddingTop="8"
-            paddingX={mobile ? "12" : "6"}
+      <div {...stylex.props(styles.container)}>
+        <div {...stylex.props(styles.header)}>
+          <Text
+            color="modalTextSecondary"
+            size="13"
+            weight="medium"
           >
-            <Box
-              display="flex"
-              justifyContent="space-between"
+            {t("profile.transactions.recent.title")}
+          </Text>
+          {visibleTxs.length > 0 && (
+            <button
+              {...stylex.props(reset.button, styles.clear)}
+              onClick={clearRecentTransactions}
+              type="button"
             >
-              <Text
-                color="modalTextSecondary"
-                size={mobile ? "16" : "14"}
-                weight="semibold"
-              >
-                {t("profile.transactions.recent.title")}
-              </Text>
-              <Box
-                style={{
-                  marginBottom: -6,
-                  marginLeft: -10,
-                  marginRight: -10,
-                  marginTop: -6,
-                }}
-              >
-                <Box
-                  as="button"
-                  background={{
-                    hover: "profileForeground",
-                  }}
-                  borderRadius="actionButton"
-                  className={touchableStyles({ active: "shrink" })}
-                  onClick={clearRecentTransactions}
-                  paddingX={mobile ? "8" : "12"}
-                  paddingY={mobile ? "4" : "5"}
-                  transition="default"
-                  type="button"
-                >
-                  <Text
-                    color="modalTextSecondary"
-                    size={mobile ? "16" : "14"}
-                    weight="semibold"
-                  >
-                    {t("profile.transactions.clear.label")}
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        )}
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap="4"
-        >
-          {hasTransactions ? (
-            visibleTxs.map((tx) => (
-              <TxItem
-                key={tx.hash}
-                tx={tx}
-              />
-            ))
-          ) : (
-            <>
-              <Box padding={mobile ? "12" : "8"}>
-                <Text
-                  color="modalTextDim"
-                  size={mobile ? "16" : "14"}
-                  weight={mobile ? "medium" : "bold"}
-                >
-                  {appName
-                    ? t("profile.transactions.description", {
-                        appName,
-                      })
-                    : t("profile.transactions.description_fallback")}
-                </Text>
-              </Box>
-              {mobile && (
-                <Box
-                  background="generalBorderDim"
-                  height="1"
-                  marginX="12"
-                  marginY="8"
-                />
-              )}
-            </>
+              {t("profile.transactions.clear.label")}
+            </button>
           )}
-        </Box>
-      </Box>
-      {explorerLink && (
-        <Box
-          paddingBottom="18"
-          paddingX={mobile ? "8" : "18"}
-        >
-          <Box
-            alignItems="center"
-            as="a"
-            background={{ hover: "profileForeground" }}
-            borderRadius="menuButton"
-            className={touchableStyles({ active: "shrink" })}
-            color="modalTextDim"
-            display="flex"
-            flexDirection="row"
-            href={`${explorerLink}/address/${address}`}
-            justifyContent="space-between"
-            paddingX="8"
-            paddingY="12"
-            rel="noreferrer noopener"
-            style={{ willChange: "transform" }}
-            target="_blank"
-            transition="default"
-            width="full"
-            {...(mobile ? { paddingLeft: "12" } : {})}
-          >
+        </div>
+        {visibleTxs.length > 0 ? (
+          visibleTxs.map((tx) => (
+            <TxItem
+              key={tx.hash}
+              tx={tx}
+            />
+          ))
+        ) : (
+          <div {...stylex.props(styles.empty)}>
             <Text
-              color="modalText"
-              font="body"
-              size={mobile ? "16" : "14"}
-              weight={mobile ? "semibold" : "bold"}
+              color="modalTextSecondary"
+              size="14"
+              weight="regular"
             >
-              {t("profile.explorer.label")}
+              {appName
+                ? t("profile.transactions.description", {
+                    appName,
+                  })
+                : t("profile.transactions.description_fallback")}
             </Text>
+          </div>
+        )}
+      </div>
+      {explorerLink && (
+        <div {...stylex.props(styles.footer)}>
+          <TextLink
+            href={`${explorerLink}/address/${address}`}
+            tall
+          >
+            {t("profile.explorer.label")}
             <ExternalLinkIcon />
-          </Box>
-        </Box>
+          </TextLink>
+        </div>
       )}
     </>
   );

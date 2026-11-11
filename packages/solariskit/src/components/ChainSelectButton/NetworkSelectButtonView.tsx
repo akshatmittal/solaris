@@ -1,13 +1,29 @@
 import React from "react";
 
+import * as stylex from "@stylexjs/stylex";
+
 import type { ChainStatus } from "./ChainSelectButton";
 
-import { type ResponsiveValue, mapResponsiveValue } from "../../css/sprinkles.css";
-import { touchableStyles } from "../../css/touchableStyles";
+import { reset } from "../../css/reset";
+import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box } from "../Box/Box";
+import { triggerStyles } from "../ConnectButton/ConnectButtonView";
 import { DropdownIcon } from "../Icons/Dropdown";
+
+const styles = stylex.create({
+  button: {
+    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
+    color: colors.connectButtonText,
+    gap: 8,
+    paddingInline: 12,
+  },
+  unsupported: {
+    backgroundColor: { default: colors.connectButtonBackgroundError, ":hover": colors.connectButtonErrorHover },
+    color: colors.connectButtonTextError,
+  },
+});
 
 export interface NetworkSelectButtonNetwork {
   hasIcon: boolean;
@@ -45,87 +61,57 @@ export function NetworkSelectButtonView({
   }
 
   return (
-    <Box
-      alignItems="center"
+    <button
+      {...stylex.props(
+        reset.button,
+        triggerStyles.button,
+        styles.button,
+        unsupportedNetwork && styles.unsupported,
+        responsiveDisplay(chainStatus, (value) => value !== "none", "flex"),
+        !buttonReady && triggerStyles.hidden,
+      )}
+      aria-hidden={!buttonReady || undefined}
       aria-label="Chain Selector"
-      as="button"
-      background={unsupportedNetwork ? "connectButtonBackgroundError" : "connectButtonBackground"}
-      borderRadius="connectButton"
-      boxShadow="connectButton"
-      className={touchableStyles({
-        active: "shrink",
-        hover: "grow",
-      })}
-      color={unsupportedNetwork ? "connectButtonTextError" : "connectButtonText"}
+      data-testid={`rk-${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
       disabled={!buttonReady || !onOpenNetworkModal}
-      display={mapResponsiveValue(chainStatus, (value) => (value === "none" ? "none" : "flex"))}
-      fontFamily="body"
-      fontWeight="bold"
-      gap="6"
-      justifyContent="center"
       key={unsupportedNetwork ? "unsupported" : "supported"}
       onClick={buttonReady ? onOpenNetworkModal : undefined}
-      paddingX="10"
-      paddingY="8"
-      testId={`${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
-      transition="default"
       type="button"
-      {...(!buttonReady && {
-        "aria-hidden": true,
-        style: {
-          opacity: 0,
-          pointerEvents: "none",
-          userSelect: "none",
-        },
-      })}
     >
       {unsupportedNetwork ? (
-        <Box
-          alignItems="center"
-          display="flex"
-          height="24"
-          paddingX="4"
-        >
-          {t("connect_wallet.wrong_network.label")}
-        </Box>
+        t("connect_wallet.wrong_network.label")
       ) : (
-        <Box
-          alignItems="center"
-          display="flex"
-          gap="6"
-        >
+        <>
           {network.hasIcon ? (
-            <Box
-              display={mapResponsiveValue(chainStatus, (value) =>
-                value === "full" || value === "icon" ? "block" : "none",
+            <span
+              {...stylex.props(
+                responsiveDisplay(chainStatus, (value) => value === "full" || value === "icon", "block"),
               )}
-              height="24"
-              width="24"
             >
               <AsyncImage
                 alt={network.name ?? "Chain icon"}
                 background={network.iconBackground}
-                borderRadius="full"
-                height="24"
+                radius="full"
+                size={24}
                 src={network.iconUrl}
-                width="24"
               />
-            </Box>
+            </span>
           ) : null}
-          <Box
-            display={mapResponsiveValue(chainStatus, (value) => {
-              if (value === "icon" && !network.iconUrl) {
-                return "block";
-              }
-
-              return value === "full" || value === "name" ? "block" : "none";
-            })}
+          <span
+            {...stylex.props(
+              triggerStyles.label,
+              responsiveDisplay(
+                chainStatus,
+                (value) => value === "full" || value === "name" || (value === "icon" && !network.iconUrl),
+                "block",
+              ),
+            )}
           >
             {network.name ?? network.id}
-          </Box>
-        </Box>
+          </span>
+        </>
       )}
       <DropdownIcon />
-    </Box>
+    </button>
   );
 }

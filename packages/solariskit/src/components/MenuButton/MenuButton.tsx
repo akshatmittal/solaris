@@ -1,61 +1,61 @@
 import React from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
-import { isMobile } from "../../utils/isMobile";
-import { Box } from "../Box/Box";
-import * as styles from "./MenuButton.css";
+import * as stylex from "@stylexjs/stylex";
 
-type Props = {
-  children?: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLElement> | undefined;
-  currentlySelected?: boolean;
-  testId?: string;
-};
+import { reset } from "../../css/reset";
+import { colors, motion, radii } from "../../css/vars.stylex";
 
-export const MenuButton = React.forwardRef(
-  ({ children, currentlySelected = false, onClick, testId, ...urlProps }: Props, ref: React.Ref<HTMLElement>) => {
-    const mobile = isMobile();
-    return (
-      <Box
-        as="button"
-        borderRadius="menuButton"
-        disabled={currentlySelected}
-        display="flex"
-        onClick={onClick}
-        ref={ref}
-        testId={testId}
-        type="button"
-      >
-        <Box
-          borderRadius="menuButton"
-          className={[
-            mobile ? styles.unsetBackgroundOnHover : undefined,
-            !currentlySelected && touchableStyles({ active: "shrink" }),
-          ]}
-          padding={mobile ? "8" : "6"}
-          transition="default"
-          width="full"
-          {...(currentlySelected
-            ? {
-                background: "accentColor",
-                borderColor: "selectedOptionBorder",
-                borderStyle: "solid",
-                borderWidth: "1",
-                boxShadow: "selectedOption",
-                color: "accentColorForeground",
-              }
-            : {
-                background: { hover: "menuItemBackground" },
-                color: "modalText",
-                transition: "default",
-              })}
-          {...urlProps}
-        >
-          {children}
-        </Box>
-      </Box>
-    );
+const styles = stylex.create({
+  row: {
+    alignItems: "center",
+    backgroundColor: { default: "transparent", ":hover": colors.menuItemBackground },
+    borderRadius: radii.menuButton,
+    color: colors.modalText,
+    display: "flex",
+    fontSize: 16,
+    fontWeight: 500,
+    gap: 12,
+    lineHeight: "22px",
+    minHeight: 48,
+    outlineOffset: -2,
+    paddingBlock: 8,
+    paddingInline: 12,
+    transitionDuration: motion.fast,
+    transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
+    width: "100%",
   },
-);
+  selected: {
+    backgroundColor: colors.accentSoft,
+  },
+  danger: {
+    color: colors.error,
+  },
+});
 
-MenuButton.displayName = "MenuButton";
+export function MenuButton({
+  children,
+  currentlySelected = false,
+  danger = false,
+  onClick,
+  testId,
+}: {
+  children: React.ReactNode;
+  currentlySelected?: boolean;
+  danger?: boolean;
+  onClick?: () => void;
+  testId?: string;
+}) {
+  return (
+    <button
+      {...stylex.props(reset.button, styles.row, currentlySelected && styles.selected, danger && styles.danger)}
+      aria-current={currentlySelected || undefined}
+      data-testid={testId ? `rk-${testId}` : undefined}
+      disabled={currentlySelected}
+      onClick={onClick}
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}

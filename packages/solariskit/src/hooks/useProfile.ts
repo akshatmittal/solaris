@@ -12,7 +12,7 @@ interface UseProfileParameters {
 export function useProfile({ address, includeBalance }: UseProfileParameters) {
   const ensName = useMainnetEnsName(address);
   const ensAvatar = useMainnetEnsAvatar(ensName);
-  const { data: rawBalance } = useBalance({
+  const { data: rawBalance, isLoading: isBalanceLoading } = useBalance({
     address: includeBalance ? address : undefined,
   });
 
@@ -23,5 +23,5 @@ export function useProfile({ address, includeBalance }: UseProfileParameters) {
       }
     : undefined;
 
-  return { ensName, ensAvatar, balance };
+  return { ensName, ensAvatar, balance, isBalanceLoading };
 }

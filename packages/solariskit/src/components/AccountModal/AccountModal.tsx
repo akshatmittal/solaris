@@ -23,34 +23,25 @@ export function AccountModal({ onClose, open }: AccountModalProps) {
   // modal's heading even when several ecosystems mount account modals.
   const titleId = `rk_account_modal_title_${React.useId()}`;
 
-  if (!address) {
-    return null;
-  }
-
   return (
-    <>
+    <Dialog
+      onClose={onClose}
+      open={open && Boolean(address)}
+      titleId={titleId}
+    >
       {address && (
-        <Dialog
-          onClose={onClose}
-          open={open}
-          titleId={titleId}
-        >
-          <DialogContent
-            bottomSheetOnMobile
-            padding="0"
-          >
-            <ProfileDetails
-              address={address}
-              ensAvatar={ensAvatar}
-              ensName={ensName}
-              balance={balance}
-              onClose={onClose}
-              onDisconnect={disconnect}
-              titleId={titleId}
-            />
-          </DialogContent>
-        </Dialog>
+        <DialogContent>
+          <ProfileDetails
+            address={address}
+            ensAvatar={ensAvatar}
+            ensName={ensName}
+            balance={balance}
+            onClose={onClose}
+            onDisconnect={disconnect}
+            titleId={titleId}
+          />
+        </DialogContent>
       )}
-    </>
+    </Dialog>
   );
 }

@@ -1,9 +1,23 @@
 import React, { Fragment } from "react";
 
+import * as stylex from "@stylexjs/stylex";
+
 import { t } from "../../translations";
-import { Box } from "../Box/Box";
 import { ModalSelection } from "../ModalSelection/ModalSelection";
 import { Text } from "../Text/Text";
+
+const styles = stylex.create({
+  groupLabel: {
+    marginBottom: 6,
+    marginTop: { default: 12, ":first-child": 2 },
+    paddingInline: 12,
+  },
+  group: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+  },
+});
 
 export interface WalletListViewItem {
   groupName: string;
@@ -17,42 +31,35 @@ export interface WalletListViewItem {
 }
 
 export interface WalletListViewProps {
-  groupedWallets: Record<string, WalletListViewItem[]>;
+  groupedWallets: Partial<Record<string, WalletListViewItem[]>>;
   onSelectWallet: (wallet: WalletListViewItem) => void;
   selectedWalletId?: string;
 }
 
 const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
 
+export const groupLabel = (groupName: string) =>
+  supportedGroupNames.includes(groupName) ? t(`connector_group.${groupName.toLowerCase()}`) : groupName;
+
 export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletId }: WalletListViewProps) {
   return (
     <>
       {Object.entries(groupedWallets).map(
         ([groupName, wallets]) =>
+          wallets &&
           wallets.length > 0 && (
             <Fragment key={groupName}>
               {groupName ? (
-                <Box
-                  marginBottom="8"
-                  marginTop="16"
-                  marginX="6"
+                <Text
+                  color="modalTextSecondary"
+                  size="13"
+                  weight="medium"
+                  xstyle={styles.groupLabel}
                 >
-                  <Text
-                    color={groupName === "Installed" ? "accentColor" : "modalTextSecondary"}
-                    size="14"
-                    weight="bold"
-                  >
-                    {supportedGroupNames.includes(groupName)
-                      ? t(`connector_group.${groupName.toLowerCase()}`)
-                      : groupName}
-                  </Text>
-                </Box>
+                  {groupLabel(groupName)}
+                </Text>
               ) : null}
-              <Box
-                display="flex"
-                flexDirection="column"
-                gap="4"
-              >
+              <div {...stylex.props(styles.group)}>
                 {wallets.map((wallet) => (
                   <ModalSelection
                     currentlySelected={wallet.id === selectedWalletId}
@@ -61,13 +68,12 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
                     key={wallet.id}
                     name={wallet.name}
                     onClick={() => onSelectWallet(wallet)}
-                    ready={wallet.ready}
                     recent={wallet.recent}
                     testId={`wallet-option-${wallet.id}`}
                     isRainbowKitConnector={wallet.isRainbowKitConnector}
                   />
                 ))}
-              </Box>
+              </div>
             </Fragment>
           ),
       )}

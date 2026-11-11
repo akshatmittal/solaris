@@ -2,11 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
-import { groupBy } from "../../utils/groupBy";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { ConnectModalIntro } from "../ConnectModal/ConnectModalIntro";
-import { ModalSizeContext, ModalSizeOptions } from "../RainbowKitProvider/ModalSizeContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
 import { ConnectModalShellView } from "./ConnectModalShellView";
@@ -15,7 +12,6 @@ import { WalletListView } from "./WalletListView";
 
 export enum WalletStep {
   None = "NONE",
-  LearnCompact = "LEARN_COMPACT",
   Connect = "CONNECT",
 }
 
@@ -26,8 +22,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const hasQrCode = !!selectedWallet?.qrCode && qrCodeUri;
   const [connectionError, setConnectionError] = useState(false);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
-  const modalSize = useContext(ModalSizeContext);
-  const compactModeEnabled = modalSize === ModalSizeOptions.COMPACT;
   const safari = isSafari();
 
   const initialized = useRef(false);
@@ -46,7 +40,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
-  const groupedWallets = groupBy(wallets, (wallet) => wallet.groupName);
+  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
 
   const connectToWallet = (wallet: WalletConnector) => {
     setConnectionError(false);
@@ -144,24 +138,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   switch (walletStep) {
     case WalletStep.None:
-      walletContent = (
-        <ConnectModalIntro getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")} />
-      );
-      break;
-    case WalletStep.LearnCompact:
-      walletContent = (
-        <ConnectModalIntro
-          compactModeEnabled={compactModeEnabled}
-          getWallet={() => window.open(GET_WALLET_URL, "_blank", "noopener,noreferrer")}
-        />
-      );
-      headerLabel = t("intro.title");
-      headerBackButtonLink = WalletStep.None;
       break;
     case WalletStep.Connect:
       walletContent = selectedWallet && (
         <ConnectDetail
-          compactModeEnabled={compactModeEnabled}
           connectionError={connectionError}
           onClose={onClose}
           qrCodeUri={qrCodeUri}
@@ -174,10 +154,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
-              wallet: selectedWallet.name,
+              wallet: selectedWallet.shortName ?? selectedWallet.name,
             }));
-      headerBackButtonLink = compactModeEnabled ? (connector ? null : WalletStep.None) : null;
-      headerBackButtonCallback = compactModeEnabled ? (!connector ? clearSelectedWallet : () => {}) : () => {};
+      headerBackButtonLink = connector ? null : WalletStep.None;
+      headerBackButtonCallback = connector ? undefined : clearSelectedWallet;
       break;
     default:
       break;
@@ -186,9 +166,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   return (
     <ConnectModalShellView
-      compactModeEnabled={compactModeEnabled}
+      getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
-      onCompactInfoClick={() => changeWalletStep(WalletStep.LearnCompact)}
       onRightPaneBack={
         backButtonLink
           ? () => {
@@ -199,8 +178,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       }
       rightPaneContent={walletContent}
       rightPaneHeaderLabel={headerLabel}
-      showRightPane={compactModeEnabled ? walletStep !== WalletStep.None : true}
-      showSidebar={compactModeEnabled ? walletStep === WalletStep.None : true}
+      showRightPane={walletStep !== WalletStep.None}
+      showSidebar={walletStep === WalletStep.None}
       titleId={titleId}
       walletList={
         <WalletListView

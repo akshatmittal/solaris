@@ -3,7 +3,6 @@ import { type Connector, useChainId as useWagmiChainId, useConnect, useConnector
 import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
 import { useWalletConnectOpenState } from "../components/RainbowKitProvider/ModalContext";
-import { indexBy } from "../utils/indexBy";
 import { isChainIdSupported } from "../utils/isChainIdSupported";
 import { isNotNullish } from "../utils/isNotNullish";
 import { useInitialChainId, useRainbowKitChains } from "./../components/RainbowKitProvider/RainbowKitChainContext";
@@ -153,12 +152,12 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
 
   const combinedConnectors = [...eip6963Connectors, ...rainbowKitConnectors];
 
-  const walletInstanceById = indexBy(combinedConnectors, (walletInstance) => walletInstance.id);
+  const walletInstanceById = new Map(combinedConnectors.map((walletInstance) => [walletInstance.id, walletInstance]));
 
   const MAX_RECENT_WALLETS = 3;
 
   const recentWallets: WalletInstance[] = getRecentWalletIds()
-    .map((walletId) => walletInstanceById[walletId])
+    .map((walletId) => walletInstanceById.get(walletId))
     .filter(isNotNullish)
     .slice(0, MAX_RECENT_WALLETS);
 

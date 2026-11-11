@@ -7,24 +7,6 @@ interface TranslationOptions {
 type TranslationObject = Record<string, unknown>;
 type Replacements = Record<string, string | number>;
 
-const normalizeTranslations = (translationModule: unknown): TranslationObject => {
-  if (typeof translationModule === "string") {
-    return JSON.parse(translationModule) as TranslationObject;
-  }
-
-  if (typeof translationModule !== "object" || translationModule === null) {
-    return {};
-  }
-
-  const defaultExport = (translationModule as TranslationObject).default;
-
-  if (defaultExport !== undefined) {
-    return normalizeTranslations(defaultExport);
-  }
-
-  return translationModule as TranslationObject;
-};
-
 const flattenTranslations = (translationObject: TranslationObject, parentKey?: string): Record<string, string> => {
   const result: Record<string, string> = {};
 
@@ -44,7 +26,7 @@ const flattenTranslations = (translationObject: TranslationObject, parentKey?: s
   return result;
 };
 
-const translations = flattenTranslations(normalizeTranslations(en_US as TranslationObject));
+const translations = flattenTranslations(en_US);
 
 const applyReplacements = (translation: string, replacements: Replacements = {}) => {
   let translated = translation;

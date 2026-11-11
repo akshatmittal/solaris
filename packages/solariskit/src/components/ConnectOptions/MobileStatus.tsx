@@ -1,71 +1,92 @@
-import React, { useContext } from "react";
+import React, { useEffect, useRef } from "react";
 
+import * as stylex from "@stylexjs/stylex";
+
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { Box } from "../Box/Box";
-import { CloseButton } from "../CloseButton/CloseButton";
-import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { type WalletConnector } from "../../wallets/useWalletConnectors";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { DialogHeader } from "../Dialog/DialogHeader";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { Text } from "../Text/Text";
-import { WalletButton } from "./MobileOptions";
+import { useMobileConnect } from "./MobileOptions";
 
-export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
-  const { connector } = useContext(WalletButtonContext);
-  const connectorName = connector?.name || "";
+const styles = stylex.create({
+  container: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    paddingBottom: 32,
+  },
+  header: {
+    alignSelf: "stretch",
+    padding: 16,
+  },
+  text: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    marginTop: 20,
+    paddingInline: 24,
+  },
+  spinner: {
+    color: colors.accentColor,
+    display: "flex",
+    marginTop: 24,
+  },
+});
+
+export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet: WalletConnector }) {
+  const onConnect = useMobileConnect(wallet, onClose);
+  const started = useRef(false);
+
+  useEffect(() => {
+    // StrictMode runs effects twice in development; connect only once.
+    if (!started.current) {
+      started.current = true;
+      onConnect();
+    }
+  }, [onConnect]);
 
   return (
-    <Box>
-      <Box
-        display="flex"
-        paddingBottom="32"
-        justifyContent="center"
-        alignItems="center"
-        background="profileForeground"
-        flexDirection="column"
-      >
-        <Box
-          width="full"
-          display="flex"
-          justifyContent="flex-end"
-          marginTop="18"
-          marginRight="24"
+    <div {...stylex.props(styles.container)}>
+      <div {...stylex.props(styles.header)}>
+        <DialogHeader onClose={onClose} />
+      </div>
+      <AsyncImage
+        background={wallet.iconBackground}
+        radius={16}
+        size={64}
+        src={wallet.iconUrl}
+      />
+      <div {...stylex.props(styles.text)}>
+        <Text
+          align="center"
+          color="modalText"
+          size="18"
+          weight="semibold"
         >
-          <CloseButton onClose={onClose} />
-        </Box>
-        <Box width="60">
-          <WalletButton
-            onClose={onClose}
-            wallet={connector!}
-            connecting
-          />
-        </Box>
-        <Box marginTop="20">
-          <Text
-            textAlign="center"
-            color="modalText"
-            size="18"
-            weight="semibold"
-          >
-            {t("connect.status.connect_mobile", {
-              wallet: connectorName,
-            })}
-          </Text>
-        </Box>
-
-        <Box
-          maxWidth="full"
-          marginTop="8"
+          {t("connect.status.connect_mobile", {
+            wallet: wallet.name,
+          })}
+        </Text>
+        <Text
+          align="center"
+          color="modalTextSecondary"
+          size="15"
+          weight="regular"
         >
-          <Text
-            textAlign="center"
-            color="modalText"
-            size="16"
-            weight="medium"
-          >
-            {t("connect.status.confirm_mobile", {
-              wallet: connectorName,
-            })}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          {t("connect.status.confirm_mobile", {
+            wallet: wallet.name,
+          })}
+        </Text>
+      </div>
+      <span {...stylex.props(styles.spinner)}>
+        <SpinnerIcon
+          height={24}
+          width={24}
+        />
+      </span>
+    </div>
   );
-};
+}

@@ -1,75 +1,36 @@
-import replace from "@rollup/plugin-replace";
-import { vanillaExtractPlugin } from "@vanilla-extract/rollup-plugin";
-import autoprefixer from "autoprefixer";
-import { readFileSync } from "node:fs";
-import postcss from "postcss";
-import prefixSelector from "postcss-prefix-selector";
+import stylex from "@stylexjs/rollup-plugin";
 import { defineConfig } from "tsdown";
 
-const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as { version: string };
-
-function postProcessExtractedCss() {
-  return {
-    name: "post-process-extracted-css",
-    async generateBundle(
-      _options: unknown,
-      bundle: Record<string, { fileName?: string; type: string; source?: string | Uint8Array }>,
-    ) {
-      for (const asset of Object.values(bundle)) {
-        if (asset.type !== "asset" || typeof asset.source !== "string") {
-          continue;
-        }
-
-        const result = await postcss([autoprefixer, prefixSelector({ prefix: "[data-rk]" })]).process(asset.source, {
-          from: undefined,
-        });
-
-        asset.source = result.css;
-
-        if (asset.fileName?.endsWith(".css")) {
-          asset.fileName = "index.css";
-        }
-      }
-    },
-  };
-}
-
 export default defineConfig({
-  target: "es2024",
   banner: {
     js: '"use client";',
   },
-  clean: true,
-  dts: true,
   entry: {
     index: "./src/index.ts",
     "components/index": "./src/components/index.ts",
     "solana/index": "./src/solana/index.ts",
     "wallets/walletConnectors/index": "./src/wallets/walletConnectors/index.ts",
   },
-  format: "esm",
   loader: {
-    ".json": "text",
     ".png": "dataurl",
     ".svg": "dataurl",
   },
-  minify: false,
-  outDir: "dist",
   platform: "browser",
   plugins: [
-    replace({
-      include: ["src/components/RainbowKitProvider/useFingerprint.ts"],
-      preventAssignment: true,
-      values: {
-        '"__buildVersion"': JSON.stringify(version),
+    stylex({
+      dev: false,
+      fileName: "index.css",
+      lightningcssOptions: {
+        visitor: {
+          // Scope every rule under the provider's `data-rk` root.
+          Selector: (selector) => [
+            { type: "attribute", name: "data-rk" },
+            { type: "combinator", value: "descendant" },
+            ...selector,
+          ],
+        },
       },
     }),
-    vanillaExtractPlugin({
-      extract: {
-        name: "index.css",
-      },
-      identifiers: "short",
-    }),
-    postProcessExtractedCss(),
   ],
+  target: "es2024",
 });

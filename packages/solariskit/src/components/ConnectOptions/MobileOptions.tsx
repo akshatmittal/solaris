@@ -1,25 +1,15 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback } from "react";
 
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { Box } from "../Box/Box";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { GET_WALLET_URL } from "./constants";
-import { MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
+import { MobileWalletGroup, MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
+import { groupLabel } from "./WalletListView";
 
-export function WalletButton({
-  onClose,
-  wallet,
-  connecting,
-}: {
-  wallet: WalletConnector;
-  onClose: () => void;
-  connecting?: boolean;
-}) {
-  const { connect, iconBackground, iconUrl, id, name, getMobileUri, ready, shortName, showWalletConnectModal } = wallet;
+export function useMobileConnect(wallet: WalletConnector, onClose: () => void) {
+  const { connect, getMobileUri, id, name, showWalletConnectModal } = wallet;
 
-  const initialized = useRef(false);
-
-  const onConnect = useCallback(async () => {
+  return useCallback(async () => {
     const onMobileUri = async () => {
       const mobileUri = await getMobileUri?.();
 
@@ -64,53 +54,50 @@ export function WalletButton({
       // Ignore connection errors so they don't surface as uncaught
     }
   }, [connect, getMobileUri, showWalletConnectModal, onClose, name, id]);
+}
 
-  useEffect(() => {
-    // When using `reactStrictMode: true` in development mode the useEffect hook
-    // will fire twice. We avoid this by using `useRef` logic here. Works for now.
-    if (connecting && !initialized.current) {
-      onConnect();
-      initialized.current = true;
-    }
-  }, [connecting, onConnect]);
+function WalletButton({ onClose, wallet }: { wallet: WalletConnector; onClose: () => void }) {
+  const onConnect = useMobileConnect(wallet, onClose);
 
   return (
     <MobileWalletItemView
-      connecting={connecting}
-      iconAccent={wallet.iconAccent}
-      iconBackground={iconBackground}
-      iconUrl={iconUrl}
-      id={id}
-      name={name}
+      iconBackground={wallet.iconBackground}
+      iconUrl={wallet.iconUrl}
+      id={wallet.id}
+      name={wallet.name}
       onClick={onConnect}
-      ready={ready}
+      ready={wallet.ready}
       recent={wallet.recent}
-      shortName={shortName}
+      shortName={wallet.shortName}
     />
   );
 }
 
 export function MobileOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
-  const wallets = useWalletConnectors().filter((wallet) => wallet.isRainbowKitConnector);
+  const wallets = useWalletConnectors()
+    .filter((wallet) => wallet.ready)
+    .sort((a, b) => a.groupIndex - b.groupIndex);
+  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
 
   return (
     <MobileWalletListView
       getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
       titleId={titleId}
-      walletItems={wallets
-        .filter((wallet) => wallet.ready)
-        .map((wallet) => (
-          <Box
-            key={wallet.id}
-            width="60"
-          >
+      walletItems={Object.entries(groupedWallets).map(([groupName, group]) => (
+        <MobileWalletGroup
+          key={groupName}
+          label={groupLabel(groupName)}
+        >
+          {group?.map((wallet) => (
             <WalletButton
+              key={wallet.id}
               onClose={onClose}
               wallet={wallet}
             />
-          </Box>
-        ))}
+          ))}
+        </MobileWalletGroup>
+      ))}
     />
   );
 }

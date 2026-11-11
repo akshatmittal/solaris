@@ -3,7 +3,7 @@ import { type AccentColor, type AccentColorPreset, type ThemeOptions, baseTheme 
 const darkGrey = "#1A1B1F";
 
 const accentColors: Record<AccentColorPreset, AccentColor> = {
-  blue: { accentColor: "#3898FF", accentColorForeground: "#FFF" },
+  blue: { accentColor: "#0A84FF", accentColorForeground: "#FFF" },
   green: { accentColor: "#4BD166", accentColorForeground: darkGrey },
   orange: { accentColor: "#FF983D", accentColorForeground: darkGrey },
   pink: { accentColor: "#FF7AB8", accentColorForeground: darkGrey },
@@ -45,8 +45,8 @@ export const darkTheme = ({
     modalBackground: "#1A1B1F",
     modalBorder: "rgba(255, 255, 255, 0.08)",
     modalText: "#FFF",
-    modalTextDim: "rgba(224, 232, 255, 0.3)",
-    modalTextSecondary: "rgba(255, 255, 255, 0.6)",
+    modalTextDim: "rgba(255, 255, 255, 0.4)",
+    modalTextSecondary: "rgba(255, 255, 255, 0.64)",
     profileAction: "rgba(224, 232, 255, 0.1)",
     profileActionHover: "rgba(224, 232, 255, 0.2)",
     profileForeground: "rgba(224, 232, 255, 0.05)",
@@ -54,7 +54,7 @@ export const darkTheme = ({
     standby: "#FFD641",
   },
   shadows: {
-    connectButton: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+    connectButton: "inset 0 0 0 1px rgba(255, 255, 255, 0.08)",
     dialog: "0px 8px 32px rgba(0, 0, 0, 0.32)",
     profileDetailsAction: "0px 2px 6px rgba(37, 41, 46, 0.04)",
     selectedOption: "0px 2px 6px rgba(0, 0, 0, 0.24)",

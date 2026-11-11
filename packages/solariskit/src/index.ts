@@ -24,4 +24,3 @@ export { darkTheme } from "./themes/darkTheme";
 export { midnightTheme } from "./themes/midnightTheme";
 export { cssStringFromTheme } from "./css/cssStringFromTheme";
 export { cssObjectFromTheme } from "./css/cssObjectFromTheme";
-export { __private__ } from "./__private__";

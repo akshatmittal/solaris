@@ -147,12 +147,11 @@ parameters also returns its connectors. The `Wallet` and `WalletList` types supp
 import { darkTheme, RainbowKitProvider } from "solariskit";
 
 <RainbowKitProvider
-  modalSize="compact"
   theme={darkTheme({
     accentColor: "#6366f1",
     accentColorForeground: "white",
     borderRadius: "medium",
-    fontStack: "system",
+    fontStack: "inherit",
     overlayBlur: "small",
   })}
 >
@@ -160,9 +159,9 @@ import { darkTheme, RainbowKitProvider } from "solariskit";
 </RainbowKitProvider>;
 ```
 
+- Fonts: `fontStack` is `"inherit"` by default, so the modals and buttons use the page font. Use `"system"` or `"rounded"` for a fixed font stack.
 - Themes: `lightTheme`, `darkTheme`, and `midnightTheme`. For system color-scheme switching, pass
   `theme={{ lightMode: lightTheme(), darkMode: darkTheme() }}`. `cssStringFromTheme` and `cssObjectFromTheme` are also exported.
-- Modal sizes: `"wide"` (default) or `"compact"`.
 - Provider options: `initialChain`, `chainSearchThreshold`, `appInfo`, `avatar`, `showRecentTransactions`, and `id`.
   Use distinct `id` values for multiple independently themed providers on one page.
 - `ConnectButton`: `label`, `accountStatus` (`"full"`, `"avatar"`, or `"address"`), and `showBalance`.
@@ -240,10 +239,7 @@ const config = getDefaultSolanaConfig({
 
 export default function SolanaApp() {
   return (
-    <SolanaKitProvider
-      config={config}
-      modalSize="compact"
-    >
+    <SolanaKitProvider config={config}>
       <SolanaChainSelectButton />
       <SolanaConnectButton />
     </SolanaKitProvider>
@@ -280,7 +276,7 @@ The Solana entry point also exports:
 - `useSolanaBalance`, `useSolanaCluster`, `useSolanaClient`, and `useSolanaKitTransactionSigner`.
 - Public configuration, cluster, wallet, and hook return types.
 
-Use these under `SolanaKitProvider`. It accepts `theme`, `modalSize`, `appInfo`, `avatar`, and `id` for customization.
+Use these under `SolanaKitProvider`. It accepts `theme`, `appInfo`, `avatar`, and `id` for customization.
 EVM and Solana providers can coexist in one app; give them distinct IDs. Both CSS entry points resolve to the same
 stylesheet, so import it only once.
 

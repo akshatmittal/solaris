@@ -1,15 +1,55 @@
 import React, { type ReactNode, useCallback, useEffect, useState } from "react";
 
+import * as stylex from "@stylexjs/stylex";
+
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { Avatar } from "../Avatar/Avatar";
-import { Box } from "../Box/Box";
-import { CloseButton } from "../CloseButton/CloseButton";
+import { DialogHeader } from "../Dialog/DialogHeader";
 import { CopiedIcon } from "../Icons/Copied";
 import { CopyIcon } from "../Icons/Copy";
 import { DisconnectIcon } from "../Icons/Disconnect";
 import { Text } from "../Text/Text";
 import { ProfileDetailsAction } from "./ProfileDetailsAction";
+
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  profile: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+    padding: 16,
+    paddingBottom: 20,
+  },
+  identity: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    marginTop: -44,
+    // The identity block overlaps the header row; let clicks reach the close button.
+    pointerEvents: "none",
+    textAlign: "center",
+  },
+  names: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
+  actions: {
+    display: "flex",
+    gap: 8,
+    marginInline: 8,
+  },
+  transactions: {
+    borderTopColor: colors.generalBorder,
+    borderTopStyle: "solid",
+    borderTopWidth: 1,
+  },
+});
 
 export interface ProfileDetailsViewProps {
   accountName: string;
@@ -54,84 +94,42 @@ export function ProfileDetailsView({
     }
   }, [copiedAddress]);
 
-  const mobile = isMobile();
-
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-    >
-      <Box
-        background="profileForeground"
-        padding="16"
-      >
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="column"
-          gap={mobile ? "16" : "12"}
-          justifyContent="center"
-          margin="8"
-          style={{ textAlign: "center" }}
-        >
-          <Box
-            style={{
-              position: "absolute",
-              right: 16,
-              top: 16,
-              willChange: "transform",
-            }}
-          >
-            <CloseButton onClose={onClose} />
-          </Box>{" "}
-          <Box marginTop={mobile ? "24" : "0"}>
-            <Avatar
-              address={address}
-              imageUrl={avatarImageUrl}
-              size={mobile ? 82 : 74}
-            />
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap={mobile ? "4" : "0"}
-            textAlign="center"
-          >
-            <Box textAlign="center">
-              <Text
-                as="h1"
-                color="modalText"
-                id={titleId}
-                size={mobile ? "20" : "18"}
-                weight="heavy"
-              >
-                {accountName}
-              </Text>
-            </Box>
+    <div {...stylex.props(styles.container)}>
+      <div {...stylex.props(styles.profile)}>
+        <DialogHeader onClose={onClose} />
+        <div {...stylex.props(styles.identity)}>
+          <Avatar
+            address={address}
+            imageUrl={avatarImageUrl}
+            size={64}
+          />
+          <div {...stylex.props(styles.names)}>
+            <Text
+              as="h1"
+              color="modalText"
+              id={titleId}
+              size="20"
+              weight="semibold"
+            >
+              {accountName}
+            </Text>
             {balanceLabel && (
-              <Box textAlign="center">
-                <Text
-                  as="h1"
-                  color="modalTextSecondary"
-                  size={mobile ? "16" : "14"}
-                  weight="semibold"
-                >
-                  {balanceLabel}
-                </Text>
-              </Box>
+              <Text
+                color="modalTextSecondary"
+                size="14"
+                weight="regular"
+              >
+                {balanceLabel}
+              </Text>
             )}
-          </Box>
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="row"
-          gap="8"
-          margin="2"
-          marginTop="16"
-        >
+          </div>
+        </div>
+        <div {...stylex.props(styles.actions)}>
           <ProfileDetailsAction
             action={copyAddressAction}
             icon={copiedAddress ? <CopiedIcon /> : <CopyIcon />}
+            success={copiedAddress}
             label={copiedAddress ? t("profile.copy_address.copied") : t("profile.copy_address.label")}
           />
           <ProfileDetailsAction
@@ -140,18 +138,9 @@ export function ProfileDetailsView({
             label={t("profile.disconnect.label")}
             testId="disconnect-button"
           />
-        </Box>
-      </Box>
-      {transactions ? (
-        <>
-          <Box
-            background="generalBorder"
-            height="1"
-            marginTop="-1"
-          />
-          <Box>{transactions}</Box>
-        </>
-      ) : null}
-    </Box>
+        </div>
+      </div>
+      {transactions ? <div {...stylex.props(styles.transactions)}>{transactions}</div> : null}
+    </div>
   );
 }

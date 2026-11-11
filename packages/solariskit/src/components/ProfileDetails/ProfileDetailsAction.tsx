@@ -1,68 +1,58 @@
 import React, { type JSX } from "react";
 
-import { touchableStyles } from "../../css/touchableStyles";
-import { isMobile } from "../../utils/isMobile";
-import { Box } from "../Box/Box";
-import { Text } from "../Text/Text";
+import * as stylex from "@stylexjs/stylex";
+
+import { reset } from "../../css/reset";
+import { colors, motion, radii } from "../../css/vars.stylex";
+
+const styles = stylex.create({
+  action: {
+    alignItems: "center",
+    backgroundColor: { default: colors.profileAction, ":hover": colors.profileActionHover },
+    borderRadius: radii.actionButton,
+    color: colors.modalText,
+    display: "flex",
+    flexBasis: 0,
+    flexGrow: 1,
+    fontSize: 14,
+    fontWeight: 500,
+    gap: 8,
+    height: 44,
+    justifyContent: "center",
+    transitionDuration: motion.fast,
+    transitionProperty: "background-color",
+    transitionTimingFunction: "ease-out",
+  },
+  icon: {
+    color: colors.modalTextSecondary,
+    display: "flex",
+  },
+  success: {
+    color: colors.success,
+  },
+  successAction: {
+    backgroundColor: `color-mix(in srgb, ${colors.success} 10%, transparent)`,
+  },
+});
 
 interface ProfileDetailsActionProps {
   label: string;
   action?: () => void;
   icon: JSX.Element;
-  url?: string;
+  success?: boolean;
   testId?: string;
 }
 
-export function ProfileDetailsAction({ action, icon, label, testId, url }: ProfileDetailsActionProps) {
-  const mobile = isMobile();
+export function ProfileDetailsAction({ action, icon, label, success = false, testId }: ProfileDetailsActionProps) {
   return (
-    <Box
-      {...(url
-        ? { as: "a", href: url, rel: "noreferrer noopener", target: "_blank" }
-        : { as: "button", type: "button" })}
-      background={{
-        base: "profileAction",
-        ...(!mobile ? { hover: "profileActionHover" } : {}),
-      }}
-      borderRadius="menuButton"
-      boxShadow="profileDetailsAction"
-      className={touchableStyles({
-        active: "shrinkSm",
-        hover: !mobile ? "grow" : undefined,
-      })}
-      display="flex"
+    <button
+      {...stylex.props(reset.button, styles.action, success && styles.successAction)}
+      data-testid={testId ? `rk-${testId}` : undefined}
       onClick={action}
-      padding={mobile ? "6" : "8"}
-      style={{ willChange: "transform" }}
-      testId={testId}
-      transition="default"
-      width="full"
+      type="button"
     >
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        gap="1"
-        justifyContent="center"
-        paddingTop="2"
-        width="full"
-      >
-        <Box
-          color="modalText"
-          height="max"
-        >
-          {icon}
-        </Box>
-        <Box>
-          <Text
-            color="modalText"
-            size={mobile ? "12" : "13"}
-            weight="semibold"
-          >
-            {label}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+      <span {...stylex.props(styles.icon, success && styles.success)}>{icon}</span>
+      {label}
+    </button>
   );
 }

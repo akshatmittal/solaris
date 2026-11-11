@@ -1,19 +1,66 @@
 import React, { useCallback, useRef } from "react";
 
+import * as stylex from "@stylexjs/stylex";
 import { UserRejectedRequestError } from "viem";
 import { useConnection, useSignMessage } from "wagmi";
 
-import { touchableStyles } from "../../css/touchableStyles";
+import { reset } from "../../css/reset";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
-import { AsyncImage } from "../AsyncImage/AsyncImage";
-import { Box } from "../Box/Box";
 import { ActionButton } from "../Button/ActionButton";
-import { CloseButton } from "../CloseButton/CloseButton";
+import { DialogHeader } from "../Dialog/DialogHeader";
+import { SignatureIcon } from "../Icons/FeatureIcons";
+import { IconTile } from "../Icons/IconTile";
 import { useAuthenticationAdapter } from "../RainbowKitProvider/AuthenticationContext";
 import { Text } from "../Text/Text";
 
-export const signInIcon = async () => (await import("./sign.png")).default;
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    padding: 16,
+    paddingBottom: 16,
+  },
+  content: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+    marginInline: "auto",
+    marginTop: -32,
+    maxWidth: 296,
+    // Overlaps the header row; let clicks reach the close button.
+    pointerEvents: "none",
+    textAlign: "center",
+  },
+  text: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+  },
+  actions: {
+    alignItems: "stretch",
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    paddingInline: 8,
+  },
+  cancel: {
+    alignSelf: "center",
+    borderRadius: 9999,
+    color: colors.modalText,
+    fontSize: 15,
+    fontWeight: 500,
+    minHeight: 44,
+    opacity: { default: 1, ":hover": 0.7 },
+    paddingInline: 12,
+    transitionDuration: motion.fast,
+    transitionProperty: "opacity",
+    transitionTimingFunction: "ease-out",
+  },
+});
 
 export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onCloseModal: () => void }) {
   const [{ status, ...state }, setState] = React.useState<{
@@ -123,9 +170,11 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
 
         throw new Error();
       } catch {
+        // Backends usually consume the nonce on verify, so the retry fetches a new one.
         return setState((x) => ({
           ...x,
           errorMessage: t("sign_in.signature.verifying_error"),
+          nonce: undefined,
           status: "idle",
         }));
       }
@@ -139,134 +188,78 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
   };
 
   return (
-    <Box position="relative">
-      <Box
-        display="flex"
-        paddingRight="16"
-        paddingTop="16"
-        position="absolute"
-        right="0"
-      >
-        <CloseButton onClose={onClose} />
-      </Box>
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        gap={mobile ? "32" : "24"}
-        padding="24"
-        paddingX="18"
-        style={{ paddingTop: mobile ? "60px" : "36px" }}
-      >
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="column"
-          gap={mobile ? "6" : "4"}
-          style={{ maxWidth: mobile ? 320 : 280 }}
-        >
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap={mobile ? "32" : "16"}
+    <div {...stylex.props(styles.container)}>
+      <DialogHeader onClose={onClose} />
+      <div {...stylex.props(styles.content)}>
+        <IconTile>
+          <SignatureIcon />
+        </IconTile>
+        <div {...stylex.props(styles.text)}>
+          <Text
+            align="center"
+            color="modalText"
+            size="18"
+            weight="semibold"
           >
-            <AsyncImage
-              height={40}
-              src={signInIcon}
-              width={40}
-            />
-            <Text
-              color="modalText"
-              size={mobile ? "20" : "18"}
-              textAlign="center"
-              weight="heavy"
-            >
-              {t("sign_in.label")}
-            </Text>
-          </Box>
-          <Box
-            alignItems="center"
-            display="flex"
-            flexDirection="column"
-            gap={mobile ? "16" : "12"}
+            {t("sign_in.label")}
+          </Text>
+          <Text
+            align="center"
+            color="modalTextSecondary"
+            size="14"
+            weight="regular"
           >
+            {t("sign_in.description")}
+          </Text>
+          {status === "idle" && state.errorMessage ? (
             <Text
-              color="modalTextSecondary"
-              size={mobile ? "16" : "14"}
-              textAlign="center"
+              align="center"
+              color="error"
+              size="14"
+              weight="semibold"
             >
-              {t("sign_in.description")}
+              {state.errorMessage}
             </Text>
-            {status === "idle" && state.errorMessage ? (
-              <Text
-                color="error"
-                size={mobile ? "16" : "14"}
-                textAlign="center"
-                weight="bold"
-              >
-                {state.errorMessage}
-              </Text>
-            ) : null}
-          </Box>
-        </Box>
-
-        <Box
-          alignItems={!mobile ? "center" : undefined}
-          display="flex"
-          flexDirection="column"
-          gap="8"
-          width="full"
-        >
+          ) : null}
+        </div>
+      </div>
+      <div {...stylex.props(styles.actions)}>
+        <ActionButton
+          disabled={status !== "idle" || (!state.nonce && !canRetryNonce)}
+          fullWidth
+          label={
+            canRetryNonce
+              ? t("sign_in.message.retry")
+              : !state.nonce || status === "creatingMessage"
+                ? t("sign_in.message.preparing")
+                : status === "signing"
+                  ? t("sign_in.signature.waiting")
+                  : status === "verifying"
+                    ? t("sign_in.signature.verifying")
+                    : t("sign_in.message.send")
+          }
+          onClick={canRetryNonce ? getNonce : signIn}
+          size={mobile ? "large" : "medium"}
+          testId="auth-message-button"
+        />
+        {mobile ? (
           <ActionButton
-            disabled={status !== "idle" || (!state.nonce && !canRetryNonce)}
-            label={
-              canRetryNonce
-                ? t("sign_in.message.retry")
-                : !state.nonce || status === "creatingMessage"
-                  ? t("sign_in.message.preparing")
-                  : status === "signing"
-                    ? t("sign_in.signature.waiting")
-                    : status === "verifying"
-                      ? t("sign_in.signature.verifying")
-                      : t("sign_in.message.send")
-            }
-            onClick={canRetryNonce ? getNonce : signIn}
-            size={mobile ? "large" : "medium"}
-            testId="auth-message-button"
+            fullWidth
+            label={t("sign_in.message.cancel")}
+            onClick={onClose}
+            size="large"
+            type="secondary"
           />
-          {mobile ? (
-            <ActionButton
-              label="Cancel"
-              onClick={onClose}
-              size="large"
-              type="secondary"
-            />
-          ) : (
-            <Box
-              as="button"
-              borderRadius="full"
-              className={touchableStyles({ active: "shrink", hover: "grow" })}
-              display="block"
-              onClick={onClose}
-              paddingX="10"
-              paddingY="5"
-              rel="noreferrer"
-              style={{ willChange: "transform" }}
-              target="_blank"
-              transition="default"
-            >
-              <Text
-                color="closeButton"
-                size={mobile ? "16" : "14"}
-                weight="bold"
-              >
-                {t("sign_in.message.cancel")}
-              </Text>
-            </Box>
-          )}
-        </Box>
-      </Box>
-    </Box>
+        ) : (
+          <button
+            {...stylex.props(reset.button, styles.cancel)}
+            onClick={onClose}
+            type="button"
+          >
+            {t("sign_in.message.cancel")}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

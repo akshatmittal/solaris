@@ -1,4 +1,4 @@
-import { type ResponsiveValue, normalizeResponsiveValue } from "../../css/sprinkles.css";
+import { type ResponsiveValue, normalizeResponsiveValue } from "../../css/responsive";
 import { isMobile } from "../../utils/isMobile";
 
 /**
@@ -11,7 +11,7 @@ export function resolveShowBalance(showBalance: ResponsiveValue<boolean> | undef
   }
 
   if (showBalance) {
-    return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"] ?? false;
+    return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
   }
 
   return true;
