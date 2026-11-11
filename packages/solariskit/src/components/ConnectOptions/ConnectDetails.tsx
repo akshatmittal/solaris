@@ -2,20 +2,16 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { colors, motion } from "../../css/vars.stylex";
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { ActionButton } from "../Button/ActionButton";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
 import { GET_WALLET_URL } from "./constants";
-
-const orbit = stylex.keyframes({
-  from: { strokeDashoffset: 0 },
-  to: { strokeDashoffset: -100 },
-});
 
 const styles = stylex.create({
   container: {
@@ -36,48 +32,23 @@ const styles = stylex.create({
     gap: 12,
     textAlign: "center",
   },
-  // Centers the icon and text in the card; the hidden Retry button sits in the space below them.
+  // Centers the icon and text in the card; the spinner or Retry sits in the space below them.
   statusBalanced: {
     paddingTop: 12,
   },
-  retry: {
+  // Holds the spinner while connecting and Retry after a decline, so the layout does not move.
+  action: {
+    alignItems: "center",
+    color: colors.accentColor,
+    display: "flex",
+    justifyContent: "center",
     marginBottom: 8,
-  },
-  iconWrap: {
-    padding: 10,
-    position: "relative",
-  },
-  ring: {
-    fill: "none",
-    height: "100%",
-    inset: 0,
-    position: "absolute",
-    strokeWidth: 3,
-    width: "100%",
-  },
-  ringTrack: {
-    stroke: colors.accentColor,
-    strokeOpacity: 0.2,
-  },
-  ringError: {
-    stroke: colors.error,
-  },
-  ringArc: {
-    animationDuration: motion.spin,
-    animationIterationCount: "infinite",
-    animationName: orbit,
-    animationTimingFunction: "linear",
-    stroke: colors.accentColor,
-    strokeDasharray: "30 70",
-    strokeLinecap: "round",
+    minHeight: 44,
   },
   // The white quiet zone bleeds past the content edge, so the QR modules align with the 24px inset.
   qr: {
     marginInline: -16,
     marginTop: -16,
-  },
-  reserved: {
-    visibility: "hidden",
   },
   statusText: {
     display: "flex",
@@ -153,42 +124,13 @@ export function ConnectDetail({
         </div>
       ) : (
         <div {...stylex.props(styles.center, styles.status, ready && styles.statusBalanced)}>
-          <div {...stylex.props(styles.iconWrap)}>
-            <AsyncImage
-              background={iconBackground}
-              radius={16}
-              size={64}
-              src={iconUrl}
-              useAsImage={!wallet.isRainbowKitConnector}
-            />
-            {ready && (
-              <svg
-                {...stylex.props(styles.ring)}
-                aria-hidden
-                viewBox="0 0 84 84"
-              >
-                <rect
-                  {...stylex.props(connectionError ? styles.ringError : styles.ringTrack)}
-                  height="81"
-                  rx="24.5"
-                  width="81"
-                  x="1.5"
-                  y="1.5"
-                />
-                {!connectionError && (
-                  <rect
-                    {...stylex.props(styles.ringArc)}
-                    height="81"
-                    pathLength="100"
-                    rx="24.5"
-                    width="81"
-                    x="1.5"
-                    y="1.5"
-                  />
-                )}
-              </svg>
-            )}
-          </div>
+          <AsyncImage
+            background={iconBackground}
+            radius={16}
+            size={64}
+            src={iconUrl}
+            useAsImage={!wallet.isRainbowKitConnector}
+          />
           <div {...stylex.props(styles.statusText)}>
             <Text
               color="modalText"
@@ -212,14 +154,21 @@ export function ConnectDetail({
             )}
           </div>
           {ready && (
-            <div {...stylex.props(styles.retry, !connectionError && styles.reserved)}>
-              <ActionButton
-                label={t("connect.secondary_action.retry.label")}
-                onClick={async () => {
-                  if (isDesktopDeepLinkAvailable) onDesktopUri();
-                  reconnect(wallet);
-                }}
-              />
+            <div {...stylex.props(styles.action)}>
+              {connectionError ? (
+                <ActionButton
+                  label={t("connect.secondary_action.retry.label")}
+                  onClick={async () => {
+                    if (isDesktopDeepLinkAvailable) onDesktopUri();
+                    reconnect(wallet);
+                  }}
+                />
+              ) : (
+                <SpinnerIcon
+                  height={24}
+                  width={24}
+                />
+              )}
             </div>
           )}
         </div>

@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
+import React, { useEffect, useRef } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
+import { type WalletConnector } from "../../wallets/useWalletConnectors";
+import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
-import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { Text } from "../Text/Text";
-import { WalletButton } from "./MobileOptions";
+import { useMobileConnect } from "./MobileOptions";
 
 const styles = stylex.create({
   container: {
@@ -26,21 +29,35 @@ const styles = stylex.create({
     marginTop: 20,
     paddingInline: 24,
   },
+  spinner: {
+    color: colors.accentColor,
+    display: "flex",
+    marginTop: 24,
+  },
 });
 
-export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
-  const { connector } = useContext(WalletButtonContext);
-  const connectorName = connector?.name || "";
+export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet: WalletConnector }) {
+  const onConnect = useMobileConnect(wallet, onClose);
+  const started = useRef(false);
+
+  useEffect(() => {
+    // StrictMode runs effects twice in development; connect only once.
+    if (!started.current) {
+      started.current = true;
+      onConnect();
+    }
+  }, [onConnect]);
 
   return (
     <div {...stylex.props(styles.container)}>
       <div {...stylex.props(styles.header)}>
         <DialogHeader onClose={onClose} />
       </div>
-      <WalletButton
-        connecting
-        onClose={onClose}
-        wallet={connector!}
+      <AsyncImage
+        background={wallet.iconBackground}
+        radius={16}
+        size={64}
+        src={wallet.iconUrl}
       />
       <div {...stylex.props(styles.text)}>
         <Text
@@ -50,7 +67,7 @@ export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
           weight="semibold"
         >
           {t("connect.status.connect_mobile", {
-            wallet: connectorName,
+            wallet: wallet.name,
           })}
         </Text>
         <Text
@@ -60,10 +77,16 @@ export const MobileStatus = ({ onClose }: { onClose: () => void }) => {
           weight="regular"
         >
           {t("connect.status.confirm_mobile", {
-            wallet: connectorName,
+            wallet: wallet.name,
           })}
         </Text>
       </div>
+      <span {...stylex.props(styles.spinner)}>
+        <SpinnerIcon
+          height={24}
+          width={24}
+        />
+      </span>
     </div>
   );
-};
+}

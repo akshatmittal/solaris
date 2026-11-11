@@ -3,35 +3,18 @@ import React, { type ReactNode, useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, motion } from "../../css/vars.stylex";
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 
-const snakeBorder = stylex.keyframes({
-  from: { strokeDashoffset: 0 },
-  to: { strokeDashoffset: -283 },
-});
-
 const styles = stylex.create({
-  spinner: {
-    position: "absolute",
-  },
-  rotatingBorder: {
-    animationDuration: motion.spin,
-    animationIterationCount: "infinite",
-    animationName: snakeBorder,
-    animationTimingFunction: "linear",
-    fill: "none",
-    strokeDasharray: "98 196",
-    strokeLinecap: "round",
-    strokeWidth: 4,
-  },
   item: {
     alignSelf: "start",
     minWidth: 0,
@@ -44,13 +27,10 @@ const styles = stylex.create({
     flexDirection: "column",
     gap: 8,
   },
-  itemIcon: {
-    alignItems: "center",
+  itemSpinner: {
+    color: colors.accentColor,
     display: "flex",
-    height: 64,
-    justifyContent: "center",
-    position: "relative",
-    width: 64,
+    height: 20,
   },
   // Labels may use half of each 8px grid gap, so names like "WalletConnect" stay on one line.
   itemLabel: {
@@ -126,40 +106,8 @@ const styles = stylex.create({
   },
 });
 
-const LoadingSpinner = ({ accent }: { accent?: string }) => {
-  const width = 80;
-  const height = 80;
-  const radiusFactor = 20;
-
-  const perimeter = 2 * (width + height - 4 * radiusFactor);
-
-  return (
-    <svg
-      {...stylex.props(styles.spinner)}
-      height="70"
-      viewBox="0 0 86 86"
-      width="70"
-    >
-      <title>Loading</title>
-      <rect
-        {...stylex.props(styles.rotatingBorder)}
-        height={height}
-        rx={radiusFactor}
-        ry={radiusFactor}
-        strokeDasharray={`${perimeter / 3} ${(2 * perimeter) / 3}`}
-        strokeDashoffset={perimeter}
-        style={{ stroke: accent || "#0D3887" }}
-        width={width}
-        x="3"
-        y="3"
-      />
-    </svg>
-  );
-};
-
 export interface MobileWalletItemViewProps {
   connecting?: boolean;
-  iconAccent?: string;
   iconBackground?: string;
   iconUrl: string | (() => Promise<string>);
   id: string;
@@ -172,7 +120,6 @@ export interface MobileWalletItemViewProps {
 
 export function MobileWalletItemView({
   connecting,
-  iconAccent,
   iconBackground,
   iconUrl,
   id,
@@ -191,16 +138,17 @@ export function MobileWalletItemView({
       type="button"
     >
       <span {...stylex.props(styles.itemContent)}>
-        <span {...stylex.props(styles.itemIcon)}>
-          {connecting ? <LoadingSpinner accent={iconAccent} /> : null}
-          <AsyncImage
-            background={iconBackground}
-            radius={16}
-            size={56}
-            src={iconUrl}
-          />
-        </span>
-        {!connecting ? (
+        <AsyncImage
+          background={iconBackground}
+          radius={16}
+          size={56}
+          src={iconUrl}
+        />
+        {connecting ? (
+          <span {...stylex.props(styles.itemSpinner)}>
+            <SpinnerIcon />
+          </span>
+        ) : (
           <span {...stylex.props(styles.itemLabel)}>
             <Text
               as="span"
@@ -223,7 +171,7 @@ export function MobileWalletItemView({
               </Text>
             )}
           </span>
-        ) : null}
+        )}
       </span>
     </button>
   );
