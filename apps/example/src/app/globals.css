@@ -1,6 +1,8 @@
 :root {
   color-scheme: light;
-  font-family: "Geist", "Segoe UI", sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: #f8fafc;
   color: #09090b;
 }
