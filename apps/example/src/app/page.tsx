@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { getTransferSolInstruction } from "@solana-program/system";
 import {
@@ -27,6 +27,7 @@ import {
 import { useChainId, useConnection, useSendTransaction } from "wagmi";
 
 import { EthereumProviders, SolanaProviders } from "../components/providers";
+import { SettingsControls } from "../components/settings-controls";
 
 function EthereumCard() {
   const { address, isConnected } = useConnection();
@@ -192,14 +193,18 @@ export default function HomePage() {
           <h1>Next.js with SolarisKit</h1>
         </section>
 
-        <div className="network-grid">
-          <EthereumProviders>
-            <EthereumCard />
-          </EthereumProviders>
-          <SolanaProviders>
-            <SolanaCard />
-          </SolanaProviders>
-        </div>
+        {/* The settings live in the URL, which a static export only knows in the browser. */}
+        <Suspense>
+          <SettingsControls />
+          <div className="network-grid">
+            <EthereumProviders>
+              <EthereumCard />
+            </EthereumProviders>
+            <SolanaProviders>
+              <SolanaCard />
+            </SolanaProviders>
+          </div>
+        </Suspense>
       </div>
     </main>
   );

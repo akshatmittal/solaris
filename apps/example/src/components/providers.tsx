@@ -3,11 +3,14 @@
 import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useQueryStates } from "nuqs";
 import {
   RainbowKitAuthenticationProvider,
   RainbowKitProvider,
   createAuthenticationAdapter,
+  darkTheme,
   getDefaultConfig,
+  lightTheme,
   type AuthenticationStatus,
 } from "solariskit";
 import { SolanaKitProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
@@ -17,6 +20,8 @@ import { http, WagmiProvider } from "wagmi";
 import { getPublicClient } from "wagmi/actions";
 import { base, bsc, mainnet, polygon } from "wagmi/chains";
 import "solariskit/styles.css";
+
+import { kitSettings } from "./settings";
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "demo";
 const appName = "Solaris Example";
@@ -33,6 +38,8 @@ const solanaClusters = [
     url: process.env.NEXT_PUBLIC_SOLANA_DEVNET_RPC_URL ?? "https://api.devnet.solana.com",
   },
 ] satisfies SolanaCluster[];
+
+const kitThemes = { dark: darkTheme(), light: lightTheme() };
 
 const ethereumConfig = getDefaultConfig({
   appDescription: "",
@@ -63,6 +70,7 @@ const solanaConfig = getDefaultSolanaConfig({
 
 export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
+  const [{ modal, theme }] = useQueryStates(kitSettings);
   const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("unauthenticated");
   // Sign-In with Ethereum, verified in the browser so the example needs no backend.
   const [authAdapter] = useState(() => {
@@ -114,7 +122,8 @@ export function EthereumProviders({ children }: PropsWithChildren) {
         >
           <RainbowKitProvider
             id="ethereum"
-            modalSize="compact"
+            modalSize={modal}
+            theme={kitThemes[theme]}
           >
             {children}
           </RainbowKitProvider>
@@ -125,11 +134,14 @@ export function EthereumProviders({ children }: PropsWithChildren) {
 }
 
 export function SolanaProviders({ children }: PropsWithChildren) {
+  const [{ modal, theme }] = useQueryStates(kitSettings);
+
   return (
     <SolanaKitProvider
       config={solanaConfig}
       id="solana"
-      modalSize="compact"
+      modalSize={modal}
+      theme={kitThemes[theme]}
     >
       {children}
     </SolanaKitProvider>

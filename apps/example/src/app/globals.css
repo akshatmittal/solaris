@@ -41,6 +41,40 @@ code {
   text-align: center;
 }
 
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.segmented button {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.segmented button[aria-pressed="true"] {
+  background: #09090b;
+  color: #fff;
+}
+
 .network-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
