@@ -8,7 +8,6 @@ import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
 import { DropdownIcon } from "../Icons/Dropdown";
-import { resolveShowBalance } from "./resolveShowBalance";
 
 export const triggerStyles = stylex.create({
   button: {
@@ -56,9 +55,22 @@ const styles = stylex.create({
     gap: 4,
     padding: 4,
   },
+  // The divider belongs to the balance, so it hides with it at every screen size.
   balance: {
     fontWeight: 500,
-    paddingInline: 8,
+    paddingLeft: 8,
+    paddingRight: 10,
+    position: "relative",
+    "::after": {
+      backgroundColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,
+      content: '""',
+      height: 32,
+      position: "absolute",
+      right: 0,
+      top: "50%",
+      transform: "translateY(-50%)",
+      width: 1,
+    },
   },
   balanceLoader: {
     animationDuration: motion.spin,
@@ -77,13 +89,6 @@ const styles = stylex.create({
     gap: 8,
     height: 32,
     paddingInline: 6,
-  },
-  pillWithBalance: {
-    borderLeftColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,
-    borderLeftStyle: "solid",
-    borderLeftWidth: 1,
-    borderRadius: 0,
-    paddingLeft: 12,
   },
 });
 
@@ -130,7 +135,6 @@ export function ConnectButtonView({
   showBalance,
   testIdPrefix = "",
 }: ConnectButtonViewProps) {
-  const shouldShowBalance = resolveShowBalance(showBalance);
   const hasBalance = Boolean(account?.displayBalance) || Boolean(account?.isBalanceLoading);
 
   return (
@@ -153,7 +157,7 @@ export function ConnectButtonView({
               {account.displayBalance ?? <span {...stylex.props(styles.balanceLoader)} />}
             </span>
           )}
-          <span {...stylex.props(styles.pill, shouldShowBalance && hasBalance && styles.pillWithBalance)}>
+          <span {...stylex.props(styles.pill)}>
             <span
               {...stylex.props(
                 responsiveDisplay(accountStatus, (value) => value === "full" || value === "avatar", "block"),
