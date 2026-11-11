@@ -152,6 +152,7 @@ export function ConnectModalShellView({
               }
               onClose={onClose}
               title={rightPaneHeaderLabel}
+              titleId={showSidebar ? undefined : titleId}
             />
           </div>
           <div {...stylex.props(styles.paneContent)}>{rightPaneContent}</div>

@@ -42,10 +42,13 @@ const styles = stylex.create({
 export function ConnectStatus({
   connectionError,
   onRetry,
+  titleId,
   wallet,
 }: {
   connectionError: boolean;
   onRetry: () => void;
+  // Names the dialog while the wallet list and its heading are hidden.
+  titleId: string;
   wallet: WalletListViewItem;
 }) {
   return (
@@ -62,7 +65,9 @@ export function ConnectStatus({
         role="status"
       >
         <Text
+          as="h1"
           color="modalText"
+          id={titleId}
           size="18"
           weight="semibold"
         >

@@ -141,6 +141,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
                 <ConnectStatus
                   connectionError={declined}
                   onRetry={() => selectWallet(selectedWallet)}
+                  titleId={titleId}
                   wallet={selectedWallet}
                 />
               )

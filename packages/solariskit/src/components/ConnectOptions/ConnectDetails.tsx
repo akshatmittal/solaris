@@ -42,12 +42,14 @@ export function ConnectDetail({
   onClose,
   qrCodeUri,
   reconnect,
+  titleId,
   wallet,
 }: {
   connectionError: boolean;
   onClose: () => void;
   qrCodeUri?: string;
   reconnect: (wallet: WalletConnector) => void;
+  titleId: string;
   wallet: WalletConnector;
 }) {
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
@@ -104,6 +106,7 @@ export function ConnectDetail({
             }
             reconnect(wallet);
           }}
+          titleId={titleId}
           wallet={wallet}
         />
       )}

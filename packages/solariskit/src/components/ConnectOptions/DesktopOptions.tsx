@@ -147,6 +147,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
           onClose={onClose}
           qrCodeUri={qrCodeUri}
           reconnect={connectToWallet}
+          titleId={titleId}
           wallet={selectedWallet}
         />
       );
