@@ -16,13 +16,15 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     gap: 4,
-    // Spans the whole mobile wallet grid.
-    gridColumn: "1 / -1",
     paddingBottom: 4,
     paddingInline: 12,
     paddingTop: 12,
     textAlign: "center",
     width: "100%",
+  },
+  // Without the actions, the sheet footer follows directly.
+  noActions: {
+    paddingBottom: 24,
   },
   icon: {
     marginBottom: 12,
@@ -48,7 +50,7 @@ export function WalletListEmptyState({
 
   return (
     <div
-      {...stylex.props(styles.container)}
+      {...stylex.props(styles.container, !showAction && styles.noActions)}
       role="status"
     >
       <div {...stylex.props(styles.icon)}>

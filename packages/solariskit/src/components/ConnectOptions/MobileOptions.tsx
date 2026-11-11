@@ -3,7 +3,8 @@ import React, { useCallback } from "react";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { GET_WALLET_URL } from "./constants";
-import { MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
+import { MobileWalletGroup, MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
+import { groupLabel } from "./WalletListView";
 
 export function useMobileConnect(wallet: WalletConnector, onClose: () => void) {
   const { connect, getMobileUri, id, name, showWalletConnectModal } = wallet;
@@ -73,22 +74,30 @@ function WalletButton({ onClose, wallet }: { wallet: WalletConnector; onClose: (
 }
 
 export function MobileOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
-  const wallets = useWalletConnectors().filter((wallet) => wallet.isRainbowKitConnector);
+  const wallets = useWalletConnectors()
+    .filter((wallet) => wallet.ready)
+    .sort((a, b) => a.groupIndex - b.groupIndex);
+  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
 
   return (
     <MobileWalletListView
       getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
       titleId={titleId}
-      walletItems={wallets
-        .filter((wallet) => wallet.ready)
-        .map((wallet) => (
-          <WalletButton
-            key={wallet.id}
-            onClose={onClose}
-            wallet={wallet}
-          />
-        ))}
+      walletItems={Object.entries(groupedWallets).map(([groupName, group]) => (
+        <MobileWalletGroup
+          key={groupName}
+          label={groupLabel(groupName)}
+        >
+          {group?.map((wallet) => (
+            <WalletButton
+              key={wallet.id}
+              onClose={onClose}
+              wallet={wallet}
+            />
+          ))}
+        </MobileWalletGroup>
+      ))}
     />
   );
 }

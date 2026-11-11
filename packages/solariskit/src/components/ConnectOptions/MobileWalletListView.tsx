@@ -65,6 +65,10 @@ const styles = stylex.create({
     paddingBottom: 16,
     paddingTop: 16,
   },
+  groupLabel: {
+    marginBottom: 12,
+    paddingInline: 20,
+  },
   wallets: {
     display: "grid",
     // Four columns from 375px; narrower screens use a 2-column grid so no wallet hides behind a scroll.
@@ -177,6 +181,22 @@ export function MobileWalletItemView({
   );
 }
 
+export function MobileWalletGroup({ children, label }: { children: ReactNode; label: string }) {
+  return (
+    <>
+      <Text
+        color="modalTextSecondary"
+        size="13"
+        weight="medium"
+        xstyle={styles.groupLabel}
+      >
+        {label}
+      </Text>
+      <div {...stylex.props(styles.wallets)}>{children}</div>
+    </>
+  );
+}
+
 export interface MobileWalletListViewProps {
   error?: string;
   getWalletUrl: string;
@@ -186,8 +206,8 @@ export interface MobileWalletListViewProps {
 }
 
 /**
- * Chain-agnostic mobile connect sheet: title header, horizontally scrolling
- * wallet row, a get-wallet link, and the optional disclaimer. The EVM MobileOptions and the Solana connect modal both
+ * Chain-agnostic mobile connect sheet: title header, labelled wallet groups
+ * (see MobileWalletGroup), a get-wallet link, and the optional disclaimer. The EVM MobileOptions and the Solana connect modal both
  * parameterize this view.
  */
 export function MobileWalletListView({
@@ -209,7 +229,7 @@ export function MobileWalletListView({
           titleId={titleId}
         />
       </div>
-      <div {...stylex.props(styles.wallets)}>{walletItems}</div>
+      {walletItems}
       {error && (
         <div
           {...stylex.props(styles.error)}

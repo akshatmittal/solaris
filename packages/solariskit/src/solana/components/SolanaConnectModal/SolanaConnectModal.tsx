@@ -3,9 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
-import { MobileWalletItemView, MobileWalletListView } from "../../../components/ConnectOptions/MobileWalletListView";
+import {
+  MobileWalletGroup,
+  MobileWalletItemView,
+  MobileWalletListView,
+} from "../../../components/ConnectOptions/MobileWalletListView";
 import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletListEmptyState";
-import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
+import { WalletListView, type WalletListViewItem, groupLabel } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
 import { Text } from "../../../components/Text/Text";
@@ -139,18 +143,20 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             titleId={titleId}
             walletItems={
               readyWallets.length > 0 ? (
-                readyWallets.map((wallet) => (
-                  <MobileWalletItemView
-                    connecting={isConnecting && selectedWalletId === wallet.id}
-                    iconUrl={wallet.iconUrl}
-                    id={wallet.id}
-                    key={wallet.id}
-                    name={wallet.name}
-                    onClick={() => selectWallet(wallet)}
-                    ready={wallet.ready}
-                    recent={wallet.recent}
-                  />
-                ))
+                <MobileWalletGroup label={groupLabel("Installed")}>
+                  {readyWallets.map((wallet) => (
+                    <MobileWalletItemView
+                      connecting={isConnecting && selectedWalletId === wallet.id}
+                      iconUrl={wallet.iconUrl}
+                      id={wallet.id}
+                      key={wallet.id}
+                      name={wallet.name}
+                      onClick={() => selectWallet(wallet)}
+                      ready={wallet.ready}
+                      recent={wallet.recent}
+                    />
+                  ))}
+                </MobileWalletGroup>
               ) : (
                 <WalletListEmptyState
                   getWalletUrl={SOLANA_GET_WALLET_URL}

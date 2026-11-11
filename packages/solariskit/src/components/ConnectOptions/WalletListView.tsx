@@ -38,6 +38,9 @@ export interface WalletListViewProps {
 
 const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
 
+export const groupLabel = (groupName: string) =>
+  supportedGroupNames.includes(groupName) ? t(`connector_group.${groupName.toLowerCase()}`) : groupName;
+
 export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletId }: WalletListViewProps) {
   return (
     <>
@@ -53,9 +56,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
                   weight="medium"
                   xstyle={styles.groupLabel}
                 >
-                  {supportedGroupNames.includes(groupName)
-                    ? t(`connector_group.${groupName.toLowerCase()}`)
-                    : groupName}
+                  {groupLabel(groupName)}
                 </Text>
               ) : null}
               <div {...stylex.props(styles.group)}>

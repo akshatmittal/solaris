@@ -19,7 +19,7 @@ The modals and buttons keep the same elements and layout, with a cleaner design:
 - The QR code has no border card in light mode, and its modules align with the content edge. Its button reads "Get <wallet>".
 - The account modal has clearer actions, a green "Copied" state, a "Clear All" link, and a pending-transaction dot on the avatar.
 - The sign-in view and the empty state use line icons instead of images. When verification fails, the sign-in view drops the used nonce and shows Retry, which fetches a new one.
-- The mobile sheet has a drag handle and a 4-column wallet grid with full names. Screens narrower than 375px use 2 columns.
+- The mobile sheet has a drag handle and a 4-column wallet grid with full names. It shows the same labelled groups as desktop, so installed wallets (EIP-6963) appear in an "Installed" group above "Popular". Screens narrower than 375px use 2 columns.
 - The account button shows a loader while the balance loads, and hides the balance and its divider if loading fails or when `showBalance` hides it on small screens. `ConnectButton.Custom` gets `account.isBalanceLoading`.
 - Trigger labels are trimmed to cap height, so names and balances center on their icons in every font.
 - Buttons no longer grow on hover or shrink on press. On hover, the background fades over 100ms to an 8% tint of the text color, which also shows on dark and black backgrounds. Keyboard focus shows a visible outline.
