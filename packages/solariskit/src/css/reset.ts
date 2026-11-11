@@ -30,4 +30,22 @@ export const reset = stylex.create({
     margin: 0,
     padding: 0,
   },
+  scrollbar: {
+    scrollbarColor: {
+      default: null,
+      "@supports not selector(::-webkit-scrollbar)": `${colors.modalTextDim} transparent`,
+    },
+    scrollbarWidth: { default: null, "@supports not selector(::-webkit-scrollbar)": "thin" },
+    "::-webkit-scrollbar": {
+      width: 10,
+    },
+    "::-webkit-scrollbar-thumb": {
+      backgroundClip: "padding-box",
+      backgroundColor: colors.modalTextDim,
+      borderColor: "transparent",
+      borderRadius: 999,
+      borderStyle: "solid",
+      borderWidth: 3,
+    },
+  },
 });

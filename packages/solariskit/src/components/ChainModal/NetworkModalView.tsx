@@ -4,6 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 
 import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 
+import { reset } from "../../css/reset";
 import { colors, motion, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
@@ -188,7 +189,7 @@ export function NetworkModalView({
               value={searchQuery}
             />
           )}
-          <div {...stylex.props(styles.list, mobile && styles.listMobile)}>
+          <div {...stylex.props(styles.list, mobile ? styles.listMobile : reset.scrollbar)}>
             {filteredNetworks.map(({ iconBackground, iconUrl, id, name }) => {
               const isCurrentNetwork = currentNetworkId === id;
 

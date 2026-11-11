@@ -2,6 +2,7 @@ import React, { type ReactNode, useContext } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { reset } from "../../css/reset";
 import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { DialogHeader } from "../Dialog/DialogHeader";
@@ -112,7 +113,7 @@ export function ConnectModalShellView({
               titleId={titleId}
             />
           </div>
-          <div {...stylex.props(styles.list)}>{walletList}</div>
+          <div {...stylex.props(styles.list, reset.scrollbar)}>{walletList}</div>
           {!hideFooter &&
             (Disclaimer ? (
               <div {...stylex.props(styles.footer, styles.footerDisclaimer)}>
