@@ -42,23 +42,11 @@ export function SolanaModalProvider({ children }: { children: ReactNode }) {
     closeChainModal();
   }, [closeAccountModal, closeChainModal, closeConnectModal]);
 
+  // Mirror the EVM ModalContext: connecting (including the silent auto-reconnect) and disconnecting close every
+  // open modal. A failed connect does not change isConnected, so the connect modal stays open to show the decline.
   useEffect(() => {
-    if (wallet.isConnected) {
-      // Mirror the EVM ModalContext: a completed connection (including the
-      // silent auto-reconnect) closes every open modal, not just the connect
-      // modal — e.g. a chain modal opened while disconnected.
-      closeModals();
-      return;
-    }
-
-    closeAccountModal();
-  }, [closeAccountModal, closeModals, wallet.isConnected]);
-
-  useEffect(() => {
-    if (wallet.status === "disconnected") {
-      closeModals();
-    }
-  }, [closeModals, wallet.status]);
+    closeModals();
+  }, [closeModals, wallet.isConnected]);
 
   return (
     <SolanaModalContext.Provider

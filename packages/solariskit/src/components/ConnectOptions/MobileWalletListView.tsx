@@ -190,7 +190,7 @@ export function MobileWalletGroup({ children, label }: { children: ReactNode; la
 }
 
 export interface MobileWalletListViewProps {
-  error?: string;
+  declined: boolean;
   getWalletUrl: string;
   onClose: () => void;
   titleId: string;
@@ -203,7 +203,7 @@ export interface MobileWalletListViewProps {
  * parameterize this view.
  */
 export function MobileWalletListView({
-  error,
+  declined,
   getWalletUrl,
   onClose,
   titleId,
@@ -221,7 +221,7 @@ export function MobileWalletListView({
         />
       </div>
       {walletItems}
-      {error && (
+      {declined && (
         <div
           {...stylex.props(styles.error)}
           role="alert"
@@ -231,7 +231,7 @@ export function MobileWalletListView({
             size="14"
             weight="medium"
           >
-            {error}
+            {t("connect.status.declined")}
           </Text>
         </div>
       )}

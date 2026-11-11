@@ -44,7 +44,9 @@ export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet:
     // StrictMode runs effects twice in development; connect only once.
     if (!started.current) {
       started.current = true;
-      onConnect();
+      onConnect().catch(() => {
+        // This view has no Retry; the user closes it and picks a wallet again.
+      });
     }
   }, [onConnect]);
 
