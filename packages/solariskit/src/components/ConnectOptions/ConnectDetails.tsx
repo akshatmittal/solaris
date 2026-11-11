@@ -32,9 +32,9 @@ const styles = stylex.create({
     gap: 12,
     textAlign: "center",
   },
-  // Centers the icon and text in the card; the spinner or Retry sits in the space below them.
+  // Matches the header above, so the icon, text, and spinner or Retry are centered in the card.
   statusBalanced: {
-    paddingTop: 12,
+    paddingBottom: 52,
   },
   // Holds the spinner while connecting and Retry after a decline, so the layout does not move.
   action: {
@@ -42,7 +42,6 @@ const styles = stylex.create({
     color: colors.accentColor,
     display: "flex",
     justifyContent: "center",
-    marginBottom: 8,
     minHeight: 44,
   },
   // The white quiet zone bleeds past the content edge, so the QR modules align with the 24px inset.
