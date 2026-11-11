@@ -151,7 +151,7 @@ import { darkTheme, RainbowKitProvider } from "solariskit";
     accentColor: "#6366f1",
     accentColorForeground: "white",
     borderRadius: "medium",
-    fontStack: "system",
+    fontStack: "inherit",
     overlayBlur: "small",
   })}
 >
@@ -159,6 +159,7 @@ import { darkTheme, RainbowKitProvider } from "solariskit";
 </RainbowKitProvider>;
 ```
 
+- Fonts: `fontStack` is `"inherit"` by default, so the modals and buttons use the page font. Use `"system"` or `"rounded"` for a fixed font stack.
 - Themes: `lightTheme`, `darkTheme`, and `midnightTheme`. For system color-scheme switching, pass
   `theme={{ lightMode: lightTheme(), darkMode: darkTheme() }}`. `cssStringFromTheme` and `cssObjectFromTheme` are also exported.
 - Provider options: `initialChain`, `chainSearchThreshold`, `appInfo`, `avatar`, `showRecentTransactions`, and `id`.

@@ -5,6 +5,7 @@ import type { ThemeVars } from "../css/themeVars";
 const systemFontStack =
   'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 const fontStacks = {
+  inherit: "inherit",
   rounded: `SFRounded, ui-rounded, "SF Pro Rounded", ${systemFontStack}`,
   system: systemFontStack,
 } as const;
@@ -72,7 +73,7 @@ interface BaseThemeOptions {
 
 export const baseTheme = ({
   borderRadius = "large",
-  fontStack = "system",
+  fontStack = "inherit",
   overlayBlur = "none",
 }: BaseThemeOptions): Pick<ThemeVars, "radii" | "fonts" | "blurs"> => ({
   blurs: {

@@ -39,8 +39,7 @@ const solanaClusters = [
   },
 ] satisfies SolanaCluster[];
 
-const fonts = { body: "var(--font-inter), ui-sans-serif, system-ui, sans-serif" };
-const kitThemes = { dark: { ...darkTheme(), fonts }, light: { ...lightTheme(), fonts } };
+const kitThemes = { dark: darkTheme(), light: lightTheme() };
 
 const ethereumConfig = getDefaultConfig({
   appDescription: "",

@@ -10,7 +10,7 @@ The theme API does not change. `lightTheme`, `darkTheme`, `midnightTheme`, `cssS
 
 The modals and buttons keep the same elements and layout, with a cleaner design:
 
-- Typography uses the system UI font stack with a 400/500/600 weight scale. Dialog titles, section titles, and buttons use Title Case ("Connect Wallet", "Switch Network", "Verify Account", "Copy Address"). Descriptions and status text use sentence case.
+- The modals and buttons use the page font by default (new `fontStack: "inherit"`, now the default). `fontStack: "system"` and `"rounded"` still give a fixed font stack. Typography uses a 400/500/600 weight scale. Dialog titles, section titles, and buttons use Title Case ("Connect Wallet", "Switch Network", "Verify Account", "Copy Address"). Descriptions and status text use sentence case.
 - The default blue accent uses the Apple system blues with white text: `#007AFF` in the light theme, and `#0A84FF` in the dark and midnight themes.
 - Wallet and network rows are transparent with a hover fill. The selected network has a 10% accent tint and a "Connected" label. Wallet and network icons have no border. MetaMask Mobile uses the same fox icon as the MetaMask extension.
 - All modals are 360px wide with a 24px content inset.
