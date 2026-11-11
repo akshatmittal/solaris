@@ -52,14 +52,6 @@ const styles = stylex.create({
     flexDirection: "column",
     paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
   },
-  handle: {
-    alignSelf: "center",
-    backgroundColor: `color-mix(in srgb, ${colors.modalText} 20%, transparent)`,
-    borderRadius: 9999,
-    height: 4,
-    marginTop: 8,
-    width: 36,
-  },
   header: {
     padding: 16,
     paddingBottom: 16,
@@ -221,7 +213,6 @@ export function MobileWalletListView({
 
   return (
     <div {...stylex.props(styles.container)}>
-      <div {...stylex.props(styles.handle)} />
       <div {...stylex.props(styles.header)}>
         <DialogHeader
           onClose={onClose}
