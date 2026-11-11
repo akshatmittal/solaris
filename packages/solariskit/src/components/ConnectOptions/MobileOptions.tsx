@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
@@ -85,8 +85,9 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
-  // The last tapped wallet; a late result from an earlier wallet does not change it.
-  const [attempt, setAttempt] = useState<{ declined: boolean; id: string }>();
+  // The latest attempt; a late result from an earlier attempt does not change it.
+  const [attempt, setAttempt] = useState<{ declined: boolean; id: string; key: number }>();
+  const attemptKey = useRef(0);
 
   return (
     <MobileWalletListView
@@ -105,12 +106,13 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
               key={wallet.id}
               onClose={onClose}
               onConnect={async (connect) => {
-                setAttempt({ declined: false, id: wallet.id });
+                const key = ++attemptKey.current;
+                setAttempt({ declined: false, id: wallet.id, key });
                 try {
                   await connect();
-                  setAttempt((current) => (current?.id === wallet.id ? undefined : current));
+                  setAttempt((current) => (current?.key === key ? undefined : current));
                 } catch {
-                  setAttempt((current) => (current?.id === wallet.id ? { declined: true, id: wallet.id } : current));
+                  setAttempt((current) => (current?.key === key ? { declined: true, id: wallet.id, key } : current));
                 }
               }}
               wallet={wallet}

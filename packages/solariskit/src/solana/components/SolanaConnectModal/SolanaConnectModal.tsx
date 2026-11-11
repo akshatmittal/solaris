@@ -31,6 +31,8 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   const walletState = useSolanaWallet();
   const { connect, error, isConnecting, resetError } = useSolanaConnectWallet();
   const [selectedWallet, setSelectedWallet] = useState<WalletListViewItem>();
+  // Back hides the status but keeps the selection, so picking the pending wallet again reopens its status.
+  const [showStatus, setShowStatus] = useState(false);
   // The connecting status and the decline only show for a wallet picked since the modal opened.
   const declined = Boolean(selectedWallet && error);
 
@@ -39,6 +41,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   useEffect(() => {
     if (!open) {
       setSelectedWallet(undefined);
+      setShowStatus(false);
     }
   }, [open]);
 
@@ -72,7 +75,12 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
     // walletState.isConnecting covers attempts started elsewhere (a
     // SolanaWalletButton or the silent auto-reconnect); starting another
     // connect would cancel the in-flight one.
-    if (isConnecting || walletState.isConnecting) return;
+    if (isConnecting || walletState.isConnecting) {
+      if (wallet.id === selectedWallet?.id) {
+        setShowStatus(true);
+      }
+      return;
+    }
 
     if (!wallet.ready) {
       window.open(SOLANA_GET_WALLET_URL, "_blank", "noopener,noreferrer");
@@ -81,6 +89,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
 
     resetError();
     setSelectedWallet(wallet);
+    setShowStatus(true);
 
     try {
       await connect(wallet.id);
@@ -135,8 +144,9 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             getWalletUrl={SOLANA_GET_WALLET_URL}
             hideFooter={wallets.length === 0}
             onClose={onClose}
-            onRightPaneBack={() => setSelectedWallet(undefined)}
+            onRightPaneBack={() => setShowStatus(false)}
             rightPaneContent={
+              showStatus &&
               selectedWallet && (
                 <ConnectStatus
                   connectionError={declined}
@@ -146,15 +156,14 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
                 />
               )
             }
-            showRightPane={Boolean(selectedWallet)}
-            showSidebar={!selectedWallet}
+            showRightPane={showStatus}
+            showSidebar={!showStatus}
             titleId={titleId}
             walletList={
               wallets.length > 0 ? (
                 <WalletListView
                   groupedWallets={groupedWallets}
                   onSelectWallet={selectWallet}
-                  selectedWalletId={selectedWallet?.id}
                 />
               ) : (
                 <WalletListEmptyState
