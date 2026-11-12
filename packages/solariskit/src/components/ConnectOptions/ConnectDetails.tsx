@@ -55,6 +55,8 @@ export function ConnectDetail({
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
+  // A wallet that fails before it returns a URI shows the decline and Retry, not a spinner that never stops.
+  const showQrCode = qrCode && (qrCodeUri || !connectionError);
 
   const onDesktopUri = async () => {
     const uri = await getDesktopUri?.();
@@ -75,7 +77,7 @@ export function ConnectDetail({
           showWalletConnectModal();
         },
       }
-    : qrCode
+    : showQrCode
       ? {
           description: t("connect.secondary_action.get.description", {
             wallet: shortName ?? name,
@@ -87,7 +89,7 @@ export function ConnectDetail({
 
   return (
     <div {...stylex.props(styles.container)}>
-      {qrCode ? (
+      {showQrCode ? (
         <div {...stylex.props(styles.qr)}>
           <QRCode
             logoBackground={iconBackground}

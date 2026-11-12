@@ -116,14 +116,28 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       return provider.qrUrl;
     }
 
+    // WalletConnect wallets (WalletConnect, MetaMask Mobile) share one provider, and it reports each new URI only to the
+    // connector that connected first. Listen on all of them, so a second wallet still gets its QR code.
+    const emitters =
+      connector.type === "walletConnect"
+        ? defaultConnectors
+            .filter((walletConnector) => walletConnector.type === "walletConnect")
+            .filter((walletConnector) => !walletConnector.isWalletConnectModalConnector)
+            .map((walletConnector) => walletConnector.emitter)
+        : [connector.emitter];
+
     return new Promise<string>((resolve) => {
       const onMessage = ({ data, type }: { data?: unknown; type: string }) => {
         if (type !== "display_uri" || typeof data !== "string") return;
-        connector.emitter.off("message", onMessage);
+        for (const emitter of emitters) {
+          emitter.off("message", onMessage);
+        }
         resolve(uriConverter(data));
       };
 
-      connector.emitter.on("message", onMessage);
+      for (const emitter of emitters) {
+        emitter.on("message", onMessage);
+      }
     });
   };
 

@@ -165,6 +165,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       );
       headerLabel =
         selectedWallet?.qrCode &&
+        (qrCodeUri || !connectionError) &&
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
