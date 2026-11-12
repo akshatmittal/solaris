@@ -8,7 +8,7 @@ import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { ActionButton } from "../Button/ActionButton";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
-import { ConnectStatus } from "./ConnectStatus";
+import { type ConnectionError, ConnectStatus } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
 
 const styles = stylex.create({
@@ -45,7 +45,7 @@ export function ConnectDetail({
   titleId,
   wallet,
 }: {
-  connectionError: boolean;
+  connectionError: ConnectionError | null;
   onClose: () => void;
   qrCodeUri?: string;
   reconnect: (wallet: WalletConnector) => void;
@@ -55,7 +55,7 @@ export function ConnectDetail({
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
-  // A wallet that fails before it returns a URI shows the decline and Retry, not a spinner that never stops.
+  // A wallet that fails or times out before it returns a URI shows the error and Retry, not a spinner that never stops.
   const showQrCode = qrCode && (qrCodeUri || !connectionError);
 
   const onDesktopUri = async () => {

@@ -6,4 +6,4 @@ Wallet SDKs (WalletConnect, MetaMask Mobile, and Base) no longer load when the p
 
 Wallets with a QR code, such as WalletConnect, now open the QR step as soon as you select them. The QR area shows a spinner until the wallet returns its connection URI, which can take about a second.
 
-Fixed: after you open WalletConnect and go back, MetaMask Mobile now shows its QR code. The two wallets share one WalletConnect provider, which reported the new URI only to the wallet that connected first. A QR wallet that fails before it returns a URI now shows "Connection declined" with Retry.
+Fixed: after you open WalletConnect and go back, MetaMask Mobile now shows its QR code. The two wallets share one WalletConnect provider, which reported the new URI only to the wallet that connected first. A QR wallet that fails before it returns a URI now shows "Connection declined" with Retry. If no URI arrives in 30 seconds, for example when the WalletConnect relay is unreachable, the QR step shows "Couldn’t load QR code" with Retry. Retry requests a new QR code. Going back before the QR code loads no longer reopens the QR step.

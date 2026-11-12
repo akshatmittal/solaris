@@ -8,6 +8,7 @@ import { type WalletConnector, useWalletConnectors } from "../../wallets/useWall
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
 import { ConnectModalShellView } from "./ConnectModalShellView";
+import { type ConnectionError } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
 import { WalletListView } from "./WalletListView";
 
@@ -20,7 +21,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
-  const [connectionError, setConnectionError] = useState(false);
+  const [connectionError, setConnectionError] = useState<ConnectionError | null>(null);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
   const safari = isSafari();
 
@@ -50,11 +51,11 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const connectToWallet = (wallet: WalletConnector) => {
     // Only the latest attempt reports a decline, so a late rejection from a previous wallet does not show on the current one.
     const attempt = ++connectAttemptRef.current;
-    setConnectionError(false);
+    setConnectionError(null);
     if (wallet.ready) {
       wallet?.connect?.()?.catch(() => {
         if (attempt === connectAttemptRef.current) {
-          setConnectionError(true);
+          setConnectionError("declined");
         }
       });
     }
@@ -86,7 +87,17 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       changeWalletStep(WalletStep.Connect);
     }
 
+    // WalletConnect does not reject when its relay is unreachable, so the QR step shows Retry after 30s without a URI.
+    const qrTimeout = sWallet?.qrCode
+      ? setTimeout(() => {
+          if (requestId === qrRequestIdRef.current) {
+            setConnectionError((error) => error ?? "qr_timeout");
+          }
+        }, 30_000)
+      : undefined;
+
     const uri = await sWallet?.getQrCodeUri?.();
+    clearTimeout(qrTimeout);
 
     if (requestId !== qrRequestIdRef.current) return;
 
@@ -137,6 +148,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   }, [connector]);
 
   const clearSelectedWallet = () => {
+    qrRequestIdRef.current++;
     setSelectedOptionId(undefined);
     setSelectedWallet(undefined);
     setQrCodeUri(undefined);
@@ -158,7 +170,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
           connectionError={connectionError}
           onClose={onClose}
           qrCodeUri={qrCodeUri}
-          reconnect={connectToWallet}
+          reconnect={(wallet) => {
+            onQrCode(wallet);
+            connectToWallet(wallet);
+          }}
           titleId={titleId}
           wallet={selectedWallet}
         />
