@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
+import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
@@ -41,7 +42,11 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
-  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
+  const loadingSdks = useWalletSdks(wallets);
+  const groupedWallets = Object.groupBy(
+    wallets.map((wallet) => ({ ...wallet, loading: loadingSdks.has(wallet.id) })),
+    (wallet) => wallet.groupName,
+  );
 
   const connectToWallet = (wallet: WalletConnector) => {
     // Only the latest attempt reports a decline, so a late rejection from a previous wallet does not show on the current one.

@@ -37,21 +37,24 @@ export function MenuButton({
   children,
   currentlySelected = false,
   danger = false,
+  loading = false,
   onClick,
   testId,
 }: {
   children: React.ReactNode;
   currentlySelected?: boolean;
   danger?: boolean;
+  loading?: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
   return (
     <button
       {...stylex.props(reset.button, styles.row, currentlySelected && styles.selected, danger && styles.danger)}
+      aria-busy={loading || undefined}
       aria-current={currentlySelected || undefined}
       data-testid={testId ? `rk-${testId}` : undefined}
-      disabled={currentlySelected}
+      disabled={currentlySelected || loading}
       onClick={onClick}
       type="button"
     >

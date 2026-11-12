@@ -2,8 +2,10 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { MenuButton } from "../MenuButton/MenuButton";
 import { Text } from "../Text/Text";
 
@@ -19,6 +21,11 @@ const styles = stylex.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
+  spinner: {
+    color: colors.accentColor,
+    display: "flex",
+    marginInlineStart: "auto",
+  },
 });
 
 type Props = {
@@ -30,6 +37,7 @@ type Props = {
   iconBackground?: string;
   testId?: string;
   isRainbowKitConnector?: boolean;
+  loading?: boolean;
 };
 
 export const ModalSelection = ({
@@ -37,6 +45,7 @@ export const ModalSelection = ({
   iconBackground,
   iconUrl,
   isRainbowKitConnector,
+  loading,
   name,
   onClick,
   recent,
@@ -44,6 +53,7 @@ export const ModalSelection = ({
 }: Props) => (
   <MenuButton
     currentlySelected={currentlySelected}
+    loading={loading}
     onClick={onClick}
     testId={testId}
   >
@@ -68,5 +78,10 @@ export const ModalSelection = ({
         </Text>
       )}
     </span>
+    {loading && (
+      <span {...stylex.props(styles.spinner)}>
+        <SpinnerIcon />
+      </span>
+    )}
   </MenuButton>
 );

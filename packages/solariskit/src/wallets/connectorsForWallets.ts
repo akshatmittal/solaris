@@ -5,6 +5,7 @@ import type { RainbowKitWalletConnectParameters, Wallet, WalletDetailsParams, Wa
 import { isHexString } from "../utils/colors";
 import { omitUndefinedValues } from "../utils/omitUndefinedValues";
 import { computeWalletConnectMetaData } from "./computeWalletConnectMetaData";
+import { lazyConnector } from "./lazyConnector";
 
 interface WalletListItem extends Wallet {
   index: number;
@@ -131,18 +132,18 @@ export const connectorsForWallets = (
 
     if (isWalletConnectConnector) {
       connectors.push(
-        createConnector(
-          walletMetaData({
-            isWalletConnectModalConnector: true,
-            showQrModal: true,
-          }),
+        lazyConnector(
+          createConnector(
+            walletMetaData({
+              isWalletConnectModalConnector: true,
+              showQrModal: true,
+            }),
+          ),
         ),
       );
     }
 
-    const connector = createConnector(walletMetaData());
-
-    connectors.push(connector);
+    connectors.push(lazyConnector(createConnector(walletMetaData())));
   }
 
   return connectors;

@@ -25,6 +25,8 @@ export interface WalletListViewItem {
   iconUrl: string | (() => Promise<string>);
   id: string;
   isRainbowKitConnector?: boolean;
+  // The wallet SDK is still loading; the row shows a spinner and cannot be selected yet.
+  loading?: boolean;
   name: string;
   ready?: boolean;
   recent?: boolean;
@@ -66,6 +68,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
                     iconBackground={wallet.iconBackground}
                     iconUrl={wallet.iconUrl}
                     key={wallet.id}
+                    loading={wallet.loading}
                     name={wallet.name}
                     onClick={() => onSelectWallet(wallet)}
                     recent={wallet.recent}

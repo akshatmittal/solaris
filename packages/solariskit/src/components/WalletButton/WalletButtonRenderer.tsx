@@ -6,6 +6,7 @@ import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { useHydrated } from "../../hooks/useHydrated";
 import { isMobile } from "../../utils/isMobile";
 import { addLatestWalletId, clearLatestWalletId, getLatestWalletId } from "../../wallets/latestWalletId";
+import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
@@ -48,6 +49,7 @@ export function WalletButtonRenderer({
   }
 
   const connectionStatus = useConnectionStatus();
+  const sdkLoading = useWalletSdks([firstConnector]).size > 0;
 
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -102,7 +104,7 @@ export function WalletButtonRenderer({
   // If anyone uses SIWE then we don't want them to be able to connect
   // if they are in a process of authentication
   const isStatusLoading = connectionStatus === "loading";
-  const ready = !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading;
+  const ready = !isConnecting && !!openConnectModal && firstConnector && !isStatusLoading && !sdkLoading;
 
   const isNotSupported = !firstConnector?.installed || !firstConnector?.ready;
 
@@ -110,7 +112,7 @@ export function WalletButtonRenderer({
     <>
       {children({
         error: isError,
-        loading,
+        loading: loading || sdkLoading,
         connected: isLastWalletIdConnected,
         ready,
         mounted: hydrated,

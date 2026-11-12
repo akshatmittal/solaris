@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 
+import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { GET_WALLET_URL } from "./constants";
@@ -54,11 +55,13 @@ export function useMobileConnect(wallet: WalletConnector, onClose: () => void) {
 
 function WalletButton({
   connecting,
+  loading,
   onClose,
   onConnect,
   wallet,
 }: {
   connecting: boolean;
+  loading: boolean;
   onClose: () => void;
   onConnect: (connect: () => Promise<void>) => void;
   wallet: WalletConnector;
@@ -67,13 +70,13 @@ function WalletButton({
 
   return (
     <MobileWalletItemView
-      connecting={connecting}
+      connecting={connecting || loading}
       iconBackground={wallet.iconBackground}
       iconUrl={wallet.iconUrl}
       id={wallet.id}
       name={wallet.name}
       onClick={() => onConnect(connect)}
-      ready={wallet.ready}
+      ready={wallet.ready && !loading}
       recent={wallet.recent}
       shortName={wallet.shortName}
     />
@@ -85,6 +88,7 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
+  const loadingSdks = useWalletSdks(wallets);
   // The latest attempt; a late result from an earlier attempt does not change it.
   const [attempt, setAttempt] = useState<{ declined: boolean; id: string; key: number }>();
   const attemptKey = useRef(0);
@@ -104,6 +108,7 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
             <WalletButton
               connecting={attempt?.id === wallet.id && !attempt.declined}
               key={wallet.id}
+              loading={loadingSdks.has(wallet.id)}
               onClose={onClose}
               onConnect={async (connect) => {
                 const key = ++attemptKey.current;
