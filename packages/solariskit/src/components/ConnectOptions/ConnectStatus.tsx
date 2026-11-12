@@ -10,6 +10,8 @@ import { SpinnerIcon } from "../Icons/Spinner";
 import { Text } from "../Text/Text";
 import { type WalletListViewItem } from "./WalletListView";
 
+export type ConnectionError = "declined" | "qr_timeout";
+
 const styles = stylex.create({
   status: {
     alignItems: "center",
@@ -45,11 +47,11 @@ export function ConnectStatus({
   titleId,
   wallet,
 }: {
-  connectionError: boolean;
+  connectionError: ConnectionError | null;
   onRetry: () => void;
   // Names the dialog while the wallet list and its heading are hidden.
   titleId: string;
-  wallet: WalletListViewItem;
+  wallet: Omit<WalletListViewItem, "loading">;
 }) {
   return (
     <div {...stylex.props(styles.status, wallet.ready && styles.balanced)}>
@@ -71,7 +73,9 @@ export function ConnectStatus({
           size="18"
           weight="semibold"
         >
-          {connectionError ? t("connect.status.declined") : t("connect.status.opening", { wallet: wallet.name })}
+          {connectionError
+            ? t(`connect.status.${connectionError}`)
+            : t("connect.status.opening", { wallet: wallet.name })}
         </Text>
         {wallet.ready && (
           <Text
@@ -79,7 +83,7 @@ export function ConnectStatus({
             size="14"
             weight="regular"
           >
-            {connectionError ? t("connect.status.declined_description") : t("connect.status.confirm")}
+            {connectionError ? t(`connect.status.${connectionError}_description`) : t("connect.status.confirm")}
           </Text>
         )}
       </div>

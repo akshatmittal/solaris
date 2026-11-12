@@ -8,7 +8,7 @@ import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { ActionButton } from "../Button/ActionButton";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
-import { ConnectStatus } from "./ConnectStatus";
+import { type ConnectionError, ConnectStatus } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
 
 const styles = stylex.create({
@@ -45,7 +45,7 @@ export function ConnectDetail({
   titleId,
   wallet,
 }: {
-  connectionError: boolean;
+  connectionError: ConnectionError | null;
   onClose: () => void;
   qrCodeUri?: string;
   reconnect: (wallet: WalletConnector) => void;
@@ -55,7 +55,7 @@ export function ConnectDetail({
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
-  const hasQrCode = qrCode && qrCodeUri;
+  const showQrCode = qrCode && !connectionError;
 
   const onDesktopUri = async () => {
     const uri = await getDesktopUri?.();
@@ -76,7 +76,7 @@ export function ConnectDetail({
           showWalletConnectModal();
         },
       }
-    : hasQrCode
+    : showQrCode
       ? {
           description: t("connect.secondary_action.get.description", {
             wallet: shortName ?? name,
@@ -88,7 +88,7 @@ export function ConnectDetail({
 
   return (
     <div {...stylex.props(styles.container)}>
-      {hasQrCode ? (
+      {showQrCode ? (
         <div {...stylex.props(styles.qr)}>
           <QRCode
             logoBackground={iconBackground}

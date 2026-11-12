@@ -25,6 +25,7 @@ export interface WalletListViewItem {
   iconUrl: string | (() => Promise<string>);
   id: string;
   isRainbowKitConnector?: boolean;
+  loading: boolean;
   name: string;
   ready?: boolean;
   recent?: boolean;
@@ -66,6 +67,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
                     iconBackground={wallet.iconBackground}
                     iconUrl={wallet.iconUrl}
                     key={wallet.id}
+                    loading={wallet.loading}
                     name={wallet.name}
                     onClick={() => onSelectWallet(wallet)}
                     recent={wallet.recent}

@@ -36,7 +36,9 @@
       "connecting": "Connecting",
       "declined": "Connection declined",
       "declined_description": "Try again, or choose another wallet.",
-      "opening": "Opening %{wallet}…"
+      "opening": "Opening %{wallet}…",
+      "qr_timeout": "Couldn’t load QR code",
+      "qr_timeout_description": "Check your connection, then try again."
     },
     "title": "Connect Wallet",
     "walletconnect": {

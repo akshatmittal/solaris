@@ -13,6 +13,7 @@ import {
   isRecentWallet,
   rainbowKitConnectorWithWalletConnect,
 } from "./groupedWallets";
+import { requestWalletSdk } from "./lazyConnector";
 import { addRecentWalletId, getRecentWalletIds } from "./recentWalletIds";
 
 export interface WalletConnector extends WalletInstance {
@@ -21,7 +22,8 @@ export interface WalletConnector extends WalletInstance {
   showWalletConnectModal?: () => void;
   recent: boolean;
   getDesktopUri?: () => Promise<string>;
-  getQrCodeUri?: () => Promise<string>;
+  // Calls onUri with each new QR code URI until the returned function is called.
+  watchQrCodeUri?: (onUri: (uri: string) => void) => () => void;
   getMobileUri?: () => Promise<string>;
 }
 
@@ -91,6 +93,8 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
   async function connectToWalletConnectModal(walletConnectModalConnector: Connector) {
     try {
       setIsWalletConnectModalOpen(true);
+      // The modal connector is not in the wallet list, so no connect UI requested its SDK.
+      requestWalletSdk(walletConnectModalConnector);
       await connectWallet(walletConnectModalConnector);
       setIsWalletConnectModalOpen(false);
     } catch (err) {
@@ -108,24 +112,44 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     }
   }
 
-  const getWalletConnectUri = async (connector: Connector, uriConverter: (uri: string) => string): Promise<string> => {
-    const provider = await connector.getProvider();
+  // WalletConnect wallets (WalletConnect, MetaMask Mobile) share one provider, and it reports each new URI only to the
+  // connector that connected first. Listen on all of them, so a second wallet still gets its URI.
+  const watchWalletConnectUri = (
+    connector: Connector,
+    uriConverter: (uri: string) => string,
+    onUri: (uri: string) => void,
+  ) => {
+    const emitters =
+      connector.type === "walletConnect"
+        ? defaultConnectors
+            .filter((walletConnector) => walletConnector.type === "walletConnect")
+            .filter((walletConnector) => !walletConnector.isWalletConnectModalConnector)
+            .map((walletConnector) => walletConnector.emitter)
+        : [connector.emitter];
 
-    if (connector.id === "coinbase") {
-      // @ts-expect-error
-      return provider.qrUrl;
+    const onMessage = ({ data, type }: { data?: unknown; type: string }) => {
+      if (type === "display_uri" && typeof data === "string") {
+        onUri(uriConverter(data));
+      }
+    };
+
+    for (const emitter of emitters) {
+      emitter.on("message", onMessage);
     }
-
-    return new Promise<string>((resolve) => {
-      const onMessage = ({ data, type }: { data?: unknown; type: string }) => {
-        if (type !== "display_uri" || typeof data !== "string") return;
-        connector.emitter.off("message", onMessage);
-        resolve(uriConverter(data));
-      };
-
-      connector.emitter.on("message", onMessage);
-    });
+    return () => {
+      for (const emitter of emitters) {
+        emitter.off("message", onMessage);
+      }
+    };
   };
+
+  const getWalletConnectUri = (connector: Connector, uriConverter: (uri: string) => string) =>
+    new Promise<string>((resolve) => {
+      const stop = watchWalletConnectUri(connector, uriConverter, (uri) => {
+        stop();
+        resolve(uri);
+      });
+    });
 
   const walletConnectModalConnector = defaultConnectors.find(
     (connector) => connector.id === "walletConnect" && connector.isWalletConnectModalConnector,
@@ -193,7 +217,9 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       ready: wallet.installed ?? true,
       connect: connectWallet.bind(null, wallet) as WalletInstance["connect"],
       groupName: wallet.groupName,
-      getQrCodeUri: wallet.qrCode?.getUri ? () => getWalletConnectUri(wallet, wallet.qrCode!.getUri) : undefined,
+      watchQrCodeUri: wallet.qrCode?.getUri
+        ? (onUri) => watchWalletConnectUri(wallet, wallet.qrCode!.getUri, onUri)
+        : undefined,
       getDesktopUri: wallet.desktop?.getUri ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!) : undefined,
       getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
       recent,

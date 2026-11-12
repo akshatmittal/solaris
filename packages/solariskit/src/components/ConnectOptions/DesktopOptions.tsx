@@ -3,10 +3,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
+import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
 import { ConnectModalShellView } from "./ConnectModalShellView";
+import { type ConnectionError } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
 import { WalletListView } from "./WalletListView";
 
@@ -19,9 +21,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
-  const hasQrCode = !!selectedWallet?.qrCode && qrCodeUri;
-  const [connectionError, setConnectionError] = useState(false);
+  const [connectionError, setConnectionError] = useState<ConnectionError | null>(null);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
+  // A new object on each request, so Retry with the same wallet starts a new watch.
+  const [qrRequest, setQrRequest] = useState<{ wallet: WalletConnector }>();
   const safari = isSafari();
 
   const initialized = useRef(false);
@@ -41,16 +44,20 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
-  const groupedWallets = Object.groupBy(wallets, (wallet) => wallet.groupName);
+  const loadingSdks = useWalletSdks(wallets);
+  const groupedWallets = Object.groupBy(
+    wallets.map((wallet) => ({ ...wallet, loading: loadingSdks.has(wallet.id) })),
+    (wallet) => wallet.groupName,
+  );
 
   const connectToWallet = (wallet: WalletConnector) => {
     // Only the latest attempt reports a decline, so a late rejection from a previous wallet does not show on the current one.
     const attempt = ++connectAttemptRef.current;
-    setConnectionError(false);
+    setConnectionError(null);
     if (wallet.ready) {
       wallet?.connect?.()?.catch(() => {
         if (attempt === connectAttemptRef.current) {
-          setConnectionError(true);
+          setConnectionError("declined");
         }
       });
     }
@@ -67,30 +74,51 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     }, 0);
   };
 
-  const onQrCode = async (wallet: WalletConnector) => {
-    // Token guards against out-of-order async completion: clicking wallet B
-    // right after wallet A must not let A's slower QR fetch/timeout apply
+  const onQrCode = (wallet: WalletConnector) => {
+    // Token guards against out-of-order completion: clicking wallet B right after wallet A must not let A's timer apply
     // A's details over B's.
     const requestId = ++qrRequestIdRef.current;
     const sWallet = wallets.find((w) => wallet.id === w.id);
+    setQrCodeUri(undefined);
 
-    const uri = await sWallet?.getQrCodeUri?.();
-
-    if (requestId !== qrRequestIdRef.current) return;
-
-    setQrCodeUri(uri);
-
-    // This timeout prevents the UI from flickering if connection is instant,
-    // otherwise users will see a flash of the "connecting" state.
-    setTimeout(
-      () => {
+    if (!sWallet?.watchQrCodeUri) {
+      setQrRequest(undefined);
+      // This timeout prevents the UI from flickering if connection is instant,
+      // otherwise users will see a flash of the "connecting" state.
+      setTimeout(() => {
         if (requestId !== qrRequestIdRef.current) return;
         setSelectedWallet(sWallet);
         changeWalletStep(WalletStep.Connect);
-      },
-      uri ? 0 : 50,
-    );
+      }, 50);
+      return;
+    }
+
+    setSelectedWallet(sWallet);
+    changeWalletStep(WalletStep.Connect);
+    setQrRequest({ wallet: sWallet });
   };
+
+  // The effect owns the watch, so a remount (React StrictMode) starts it again. The URI needs a relay round trip, so
+  // it cannot arrive before the effect runs.
+  useEffect(() => {
+    if (!qrRequest?.wallet.watchQrCodeUri) {
+      return;
+    }
+    // WalletConnect does not reject when its relay is unreachable, so the QR step shows Retry after 30s without a URI.
+    const qrTimeout = setTimeout(() => {
+      setConnectionError((error) => error ?? "qr_timeout");
+    }, 30_000);
+    // Each connect cancels the pairing of the connect before it, so the newest URI replaces the QR code.
+    const stopWatching = qrRequest.wallet.watchQrCodeUri((uri) => {
+      clearTimeout(qrTimeout);
+      setQrCodeUri(uri);
+      setConnectionError((error) => (error === "qr_timeout" ? null : error));
+    });
+    return () => {
+      clearTimeout(qrTimeout);
+      stopWatching();
+    };
+  }, [qrRequest]);
 
   const selectWallet = async (wallet: WalletConnector) => {
     // We still want to get the latest wallet id to show connected
@@ -125,6 +153,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   }, [connector]);
 
   const clearSelectedWallet = () => {
+    qrRequestIdRef.current++;
+    setQrRequest(undefined);
     setSelectedOptionId(undefined);
     setSelectedWallet(undefined);
     setQrCodeUri(undefined);
@@ -146,13 +176,17 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
           connectionError={connectionError}
           onClose={onClose}
           qrCodeUri={qrCodeUri}
-          reconnect={connectToWallet}
+          reconnect={(wallet) => {
+            onQrCode(wallet);
+            connectToWallet(wallet);
+          }}
           titleId={titleId}
           wallet={selectedWallet}
         />
       );
       headerLabel =
-        hasQrCode &&
+        selectedWallet?.qrCode &&
+        !connectionError &&
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
@@ -186,7 +220,12 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       walletList={
         <WalletListView
           groupedWallets={groupedWallets}
-          onSelectWallet={(wallet) => selectWallet(wallet as WalletConnector)}
+          onSelectWallet={(item) => {
+            const wallet = wallets.find((w) => w.id === item.id);
+            if (wallet) {
+              selectWallet(wallet);
+            }
+          }}
           selectedWalletId={selectedOptionId}
         />
       }

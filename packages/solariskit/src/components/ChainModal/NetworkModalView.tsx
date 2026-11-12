@@ -206,6 +206,7 @@ export function NetworkModalView({
 
               return (
                 <MenuButton
+                  loading={false}
                   currentlySelected={isCurrentNetwork}
                   key={String(id)}
                   onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(id)}
@@ -246,6 +247,7 @@ export function NetworkModalView({
             )}
             {isConnectedToUnsupportedNetwork && onDisconnectUnsupported && (
               <MenuButton
+                loading={false}
                 danger
                 onClick={onDisconnectUnsupported}
                 testId="chain-option-disconnect"
