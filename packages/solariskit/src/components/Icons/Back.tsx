@@ -9,7 +9,7 @@ export const BackIcon = () => (
     width="20"
   >
     <path
-      d="M12.5 4.5L7 10L12.5 15.5"
+      d="M12.5 4.5 7 10l5.5 5.5"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"

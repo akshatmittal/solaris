@@ -21,6 +21,7 @@ export default defineConfig({
       dev: false,
       fileName: "index.css",
       lightningcssOptions: {
+        minify: true,
         visitor: {
           // Scope every rule under the provider's `data-rk` root.
           Selector: (selector) => [
@@ -33,4 +34,5 @@ export default defineConfig({
     }),
   ],
   target: "es2024",
+  unbundle: true,
 });

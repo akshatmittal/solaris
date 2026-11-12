@@ -2,22 +2,16 @@ export interface ThemeVars {
   colors: {
     accentColor: string;
     accentColorForeground: string;
-    actionButtonBorder: string;
-    actionButtonBorderMobile: string;
     actionButtonSecondaryBackground: string;
     closeButton: string;
     closeButtonBackground: string;
     connectButtonBackground: string;
     connectButtonBackgroundError: string;
-    connectButtonInnerBackground: string;
     connectButtonText: string;
     connectButtonTextError: string;
     connectionIndicator: string;
-    downloadBottomCardBackground: string;
-    downloadTopCardBackground: string;
     error: string;
     generalBorder: string;
-    generalBorderDim: string;
     menuItemBackground: string;
     modalBackdrop: string;
     modalBackground: string;
@@ -28,7 +22,6 @@ export interface ThemeVars {
     profileAction: string;
     profileActionHover: string;
     profileForeground: string;
-    selectedOptionBorder: string;
     standby: string;
   };
   fonts: {
@@ -44,10 +37,6 @@ export interface ThemeVars {
   shadows: {
     connectButton: string;
     dialog: string;
-    profileDetailsAction: string;
-    selectedOption: string;
-    selectedWallet: string;
-    walletLogo: string;
   };
   blurs: {
     modalOverlay: string;
