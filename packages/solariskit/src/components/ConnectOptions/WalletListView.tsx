@@ -40,7 +40,6 @@ export interface WalletListViewItem {
 }
 
 export interface WalletListViewProps {
-  // Shows a spinner on the wallet in the grid; the list marks it with selectedWalletId.
   connectingWalletId?: string;
   groupedWallets: Partial<Record<string, WalletListViewItem[]>>;
   onSelectWallet: (wallet: WalletListViewItem) => void;
@@ -86,7 +85,7 @@ export function WalletListView({
                       iconBackground={wallet.iconBackground}
                       iconUrl={wallet.iconUrl}
                       key={wallet.id}
-                      loading={wallet.loading}
+                      loading={wallet.loading || wallet.id === connectingWalletId}
                       name={wallet.name}
                       onClick={() => onSelectWallet(wallet)}
                       recent={wallet.recent}

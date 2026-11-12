@@ -71,6 +71,9 @@ function WalletGridItem({
   return (
     <button
       {...stylex.props(reset.button, styles.item, wallet.loading && styles.itemDisabled, press.scale)}
+      aria-busy={connecting || wallet.loading || undefined}
+      // The spinner replaces the name.
+      aria-label={connecting || wallet.loading ? wallet.name : undefined}
       data-testid={`rk-wallet-option-${wallet.id}`}
       disabled={wallet.loading}
       onClick={onClick}
