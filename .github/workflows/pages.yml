@@ -39,6 +39,7 @@ jobs:
         run: pnpm build
         env:
           GITHUB_PAGES: "true"
+          NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT }}
 
       - name: Disable Jekyll
         run: touch apps/example/out/.nojekyll
