@@ -26,9 +26,14 @@ export const lazyConnector =
 
     let active = false;
     let setUp: Promise<void> | undefined;
+    // Activation only goes from false to true: connect() can set it while the storage read waits.
     const isActive = async () => {
-      active ||=
-        requestedSdks.has(config.emitter.uid) || (await config.storage?.getItem("recentConnectorId")) === connector.id;
+      if (
+        !active &&
+        (requestedSdks.has(config.emitter.uid) || (await config.storage?.getItem("recentConnectorId")) === connector.id)
+      ) {
+        active = true;
+      }
       return active;
     };
 
@@ -59,7 +64,7 @@ export const lazyConnector =
           setUp ??= connector.setup.call(this);
           await setUp;
         }
-        return connector.connect<withCapabilities>(parameters);
+        return (connector.connect<withCapabilities>).call(this, parameters);
       },
     };
   };
@@ -75,6 +80,28 @@ const subscribeLoaded = (listener: () => void) => {
 const getLoadedCount = () => loadedCount;
 
 /**
+ * Starts loading a connector's wallet SDK once.
+ */
+export function requestWalletSdk(wallet: { getProvider: () => Promise<unknown>; uid: string }) {
+  if (requestedSdks.has(wallet.uid)) {
+    return;
+  }
+  requestedSdks.add(wallet.uid);
+  wallet
+    .getProvider()
+    .catch(() => {
+      // A failed load shows on connect, the same as before.
+    })
+    .finally(() => {
+      loadedSdks.add(wallet.uid);
+      loadedCount++;
+      for (const listener of loadedListeners) {
+        listener();
+      }
+    });
+}
+
+/**
  * Starts loading the wallet SDKs of the given wallets, and returns the ids of the wallets whose SDK is still loading.
  */
 export function useWalletSdks(
@@ -85,22 +112,7 @@ export function useWalletSdks(
 
   useEffect(() => {
     for (const wallet of loading) {
-      if (requestedSdks.has(wallet.uid)) {
-        continue;
-      }
-      requestedSdks.add(wallet.uid);
-      wallet
-        .getProvider()
-        .catch(() => {
-          // A failed load shows on connect, the same as before.
-        })
-        .finally(() => {
-          loadedSdks.add(wallet.uid);
-          loadedCount++;
-          for (const listener of loadedListeners) {
-            listener();
-          }
-        });
+      requestWalletSdk(wallet);
     }
   }, [loading]);
 

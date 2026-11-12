@@ -49,7 +49,8 @@ export function WalletButtonRenderer({
   }
 
   const connectionStatus = useConnectionStatus();
-  const sdkLoading = useWalletSdks([firstConnector]).size > 0;
+  // The server renders without the SDK loading state, so the first client render must match it.
+  const sdkLoading = useWalletSdks([firstConnector]).size > 0 && hydrated;
 
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
