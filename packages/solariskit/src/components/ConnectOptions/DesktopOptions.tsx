@@ -23,12 +23,13 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const [qrCodeUri, setQrCodeUri] = useState<string>();
   const [connectionError, setConnectionError] = useState<ConnectionError | null>(null);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
+  // A new object on each request, so Retry with the same wallet starts a new watch.
+  const [qrRequest, setQrRequest] = useState<{ wallet: WalletConnector }>();
   const safari = isSafari();
 
   const initialized = useRef(false);
   const selectWalletRef = useRef<((wallet: WalletConnector) => Promise<void>) | null>(null);
   const qrRequestIdRef = useRef(0);
-  const stopQrCodeRef = useRef<(() => void) | undefined>(undefined);
   const connectAttemptRef = useRef(0);
 
   const { connector } = useContext(WalletButtonContext);
@@ -77,11 +78,11 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     // Token guards against out-of-order completion: clicking wallet B right after wallet A must not let A's timer apply
     // A's details over B's.
     const requestId = ++qrRequestIdRef.current;
-    stopQrCodeRef.current?.();
     const sWallet = wallets.find((w) => wallet.id === w.id);
     setQrCodeUri(undefined);
 
     if (!sWallet?.watchQrCodeUri) {
+      setQrRequest(undefined);
       // This timeout prevents the UI from flickering if connection is instant,
       // otherwise users will see a flash of the "connecting" state.
       setTimeout(() => {
@@ -96,25 +97,31 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     // about a second.
     setSelectedWallet(sWallet);
     changeWalletStep(WalletStep.Connect);
+    setQrRequest({ wallet: sWallet });
+  };
 
+  // The effect owns the watch, so a remount (React StrictMode) starts it again. The URI needs a relay round trip, so
+  // it cannot arrive before the effect runs.
+  useEffect(() => {
+    if (!qrRequest?.wallet.watchQrCodeUri) {
+      return;
+    }
     // WalletConnect does not reject when its relay is unreachable, so the QR step shows Retry after 30s without a URI.
     const qrTimeout = setTimeout(() => {
       setConnectionError((error) => error ?? "qr_timeout");
     }, 30_000);
     // Each connect cancels the pairing of the connect before it, so the newest URI replaces the QR code.
-    const stopWatching = sWallet.watchQrCodeUri((uri) => {
+    const stopWatching = qrRequest.wallet.watchQrCodeUri((uri) => {
       clearTimeout(qrTimeout);
       setQrCodeUri(uri);
       // A QR code that loads after the timeout still shows.
       setConnectionError((error) => (error === "qr_timeout" ? null : error));
     });
-    stopQrCodeRef.current = () => {
+    return () => {
       clearTimeout(qrTimeout);
       stopWatching();
     };
-  };
-
-  useEffect(() => () => stopQrCodeRef.current?.(), []);
+  }, [qrRequest]);
 
   const selectWallet = async (wallet: WalletConnector) => {
     // We still want to get the latest wallet id to show connected
@@ -150,7 +157,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
 
   const clearSelectedWallet = () => {
     qrRequestIdRef.current++;
-    stopQrCodeRef.current?.();
+    setQrRequest(undefined);
     setSelectedOptionId(undefined);
     setSelectedWallet(undefined);
     setQrCodeUri(undefined);
