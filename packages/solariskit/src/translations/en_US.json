@@ -8,8 +8,13 @@
       "no_results": "No networks match your search.",
       "placeholder": "Search"
     },
+    "selector": "Chain Selector",
     "title": "Switch Network",
     "wrong_network": "Wrong network detected, switch or disconnect to continue."
+  },
+  "common": {
+    "back": "Back",
+    "close": "Close"
   },
   "connect": {
     "empty": {
@@ -41,6 +46,7 @@
       "qr_timeout_description": "Check your connection, then try again."
     },
     "title": "Connect Wallet",
+    "unsupported": "(unsupported)",
     "walletconnect": {
       "description": "Need the WalletConnect modal?",
       "open": {
@@ -94,6 +100,11 @@
       "description_fallback": "Your transactions will appear here.",
       "recent": {
         "title": "Recent Transactions"
+      },
+      "status": {
+        "confirmed": "Confirmed",
+        "failed": "Failed",
+        "pending": "Pending"
       }
     }
   },

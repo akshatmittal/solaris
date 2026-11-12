@@ -3,7 +3,7 @@ import React, { type ReactNode, useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
@@ -14,9 +14,20 @@ import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 
+// The wallet list and the wallet pane replace each other; the new one fades in while the dialog height animates.
+const fadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
 const styles = stylex.create({
   shell: {
     display: "flex",
+  },
+  swap: {
+    animationDuration: motion.enter,
+    animationName: fadeIn,
+    animationTimingFunction: motion.easeOut,
   },
   sidebar: {
     display: "flex",
@@ -104,7 +115,7 @@ export function ConnectModalShellView({
       style={{ maxHeight: 520 }}
     >
       {showSidebar && (
-        <div {...stylex.props(styles.sidebar)}>
+        <div {...stylex.props(styles.sidebar, styles.swap)}>
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               onClose={onClose}
@@ -137,13 +148,13 @@ export function ConnectModalShellView({
         </div>
       )}
       {showRightPane && (
-        <div {...stylex.props(styles.pane)}>
+        <div {...stylex.props(styles.pane, styles.swap)}>
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               left={
                 onRightPaneBack && (
                   <IconButton
-                    aria-label="Back"
+                    aria-label={t("common.back")}
                     onClick={onRightPaneBack}
                   >
                     <BackIcon />

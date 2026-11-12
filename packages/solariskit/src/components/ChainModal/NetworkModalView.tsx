@@ -46,11 +46,15 @@ const styles = stylex.create({
     paddingInline: 14,
     transitionDuration: motion.fast,
     transitionProperty: "border-color",
-    transitionTimingFunction: "ease-out",
+    transitionTimingFunction: motion.easeOut,
     width: "100%",
     "::placeholder": {
       color: colors.modalTextSecondary,
       opacity: 1,
+    },
+    // The native clear button ignores the theme.
+    "::-webkit-search-cancel-button": {
+      display: "none",
     },
   },
   list: {
@@ -92,7 +96,7 @@ const styles = stylex.create({
     animationDuration: motion.fast,
     animationFillMode: "backwards",
     animationName: appear,
-    animationTimingFunction: "ease-out",
+    animationTimingFunction: motion.easeOut,
     color: colors.modalTextSecondary,
   },
   pendingDot: {
@@ -192,6 +196,8 @@ export function NetworkModalView({
               {...stylex.props(styles.search)}
               aria-label={t("chains.search.label")}
               autoComplete="off"
+              // Focus the search on open, but not on phones, where focus opens the keyboard over the list.
+              data-auto-focus={!mobile || undefined}
               inputMode="search"
               name="network-search"
               onChange={(event) => setSearchQuery(event.target.value)}

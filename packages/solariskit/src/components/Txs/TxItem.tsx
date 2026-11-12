@@ -5,7 +5,8 @@ import { useConnection } from "wagmi";
 
 import type { Transaction } from "../../transactions/transactionStore";
 
-import { colors, motion, radii } from "../../css/vars.stylex";
+import { colors, media, motion, radii } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
 import { CancelIcon } from "../Icons/Cancel";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
@@ -25,10 +26,14 @@ const styles = stylex.create({
     textDecoration: "none",
   },
   link: {
-    backgroundColor: { default: "transparent", ":hover": colors.menuItemBackground },
+    backgroundColor: {
+      default: "transparent",
+      ":hover": { default: null, [media.hover]: colors.menuItemBackground },
+      ":active": colors.menuItemBackground,
+    },
     transitionDuration: motion.fast,
     transitionProperty: "background-color",
-    transitionTimingFunction: "ease-out",
+    transitionTimingFunction: motion.easeOut,
   },
   icon: {
     alignItems: "center",
@@ -60,12 +65,6 @@ const statusIcons = {
   pending: SpinnerIcon,
 } as const;
 
-const statusLabels = {
-  confirmed: "Confirmed",
-  failed: "Failed",
-  pending: "Pending",
-} as const;
-
 export function TxItem({ tx }: { tx: Transaction }) {
   const Icon = statusIcons[tx.status];
   const { chain: activeChain } = useConnection();
@@ -89,7 +88,7 @@ export function TxItem({ tx }: { tx: Transaction }) {
           size="13"
           weight="regular"
         >
-          {statusLabels[tx.status]}
+          {t(`profile.transactions.status.${tx.status}`)}
         </Text>
       </span>
     </>

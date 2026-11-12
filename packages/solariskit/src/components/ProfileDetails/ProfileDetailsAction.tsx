@@ -2,13 +2,28 @@ import React, { type JSX } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, motion, radii } from "../../css/vars.stylex";
+import { colors, media, motion, radii } from "../../css/vars.stylex";
+
+// Copy and Copied icons crossfade instead of swapping.
+const iconIn = stylex.keyframes({
+  from: { opacity: 0, transform: "scale(0.95)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+const iconFadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
 
 const styles = stylex.create({
   action: {
     alignItems: "center",
-    backgroundColor: { default: colors.profileAction, ":hover": colors.profileActionHover },
+    backgroundColor: {
+      default: colors.profileAction,
+      ":hover": { default: null, [media.hover]: colors.profileActionHover },
+    },
     borderRadius: radii.actionButton,
     color: colors.modalText,
     display: "flex",
@@ -19,11 +34,11 @@ const styles = stylex.create({
     gap: 8,
     height: 44,
     justifyContent: "center",
-    transitionDuration: motion.fast,
-    transitionProperty: "background-color",
-    transitionTimingFunction: "ease-out",
   },
   icon: {
+    animationDuration: motion.enter,
+    animationName: { default: iconIn, [media.reducedMotion]: iconFadeIn },
+    animationTimingFunction: motion.easeOut,
     color: colors.modalTextSecondary,
     display: "flex",
   },
@@ -46,12 +61,18 @@ interface ProfileDetailsActionProps {
 export function ProfileDetailsAction({ action, icon, label, success = false, testId }: ProfileDetailsActionProps) {
   return (
     <button
-      {...stylex.props(reset.button, styles.action, success && styles.successAction)}
+      {...stylex.props(reset.button, styles.action, success && styles.successAction, press.scale)}
       data-testid={testId ? `rk-${testId}` : undefined}
       onClick={action}
       type="button"
     >
-      <span {...stylex.props(styles.icon, success && styles.success)}>{icon}</span>
+      <span
+        {...stylex.props(styles.icon, success && styles.success)}
+        // A new key replays the fade when the icon changes.
+        key={String(success)}
+      >
+        {icon}
+      </span>
       {label}
     </button>
   );

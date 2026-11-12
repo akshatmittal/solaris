@@ -2,9 +2,10 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
 import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
-import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
+import { colors, fonts, media, motion, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
 import { DropdownIcon } from "../Icons/Dropdown";
@@ -20,9 +21,6 @@ export const triggerStyles = stylex.create({
     fontWeight: 600,
     height: 40,
     lineHeight: "20px",
-    transitionDuration: motion.fast,
-    transitionProperty: "background-color",
-    transitionTimingFunction: "ease-out",
     whiteSpace: "nowrap",
     WebkitFontSmoothing: "antialiased",
   },
@@ -44,13 +42,16 @@ const pulse = stylex.keyframes({
 const styles = stylex.create({
   wrapper: { display: "flex" },
   connect: {
-    backgroundColor: { default: colors.accentColor, ":hover": colors.accentHover },
+    backgroundColor: { default: colors.accentColor, ":hover": { default: null, [media.hover]: colors.accentHover } },
     boxShadow: "none",
     color: colors.accentColorForeground,
     paddingInline: 16,
   },
   account: {
-    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
+    backgroundColor: {
+      default: colors.connectButtonBackground,
+      ":hover": { default: null, [media.hover]: colors.connectButtonHover },
+    },
     color: colors.connectButtonText,
     gap: 4,
     padding: 4,
@@ -73,7 +74,7 @@ const styles = stylex.create({
     },
   },
   balanceLoader: {
-    animationDuration: motion.spin,
+    animationDuration: motion.pulse,
     animationIterationCount: "infinite",
     animationName: { default: pulse, "@media (prefers-reduced-motion: reduce)": "none" },
     backgroundColor: `color-mix(in srgb, ${colors.connectButtonText} 12%, transparent)`,
@@ -144,7 +145,7 @@ export function ConnectButtonView({
     >
       {buttonReady && account && isConnected ? (
         <button
-          {...stylex.props(reset.button, triggerStyles.button, styles.account)}
+          {...stylex.props(reset.button, triggerStyles.button, styles.account, press.scale)}
           data-testid={`rk-${testIdPrefix}account-button`}
           onClick={onOpenAccountModal}
           title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
@@ -183,7 +184,7 @@ export function ConnectButtonView({
         </button>
       ) : (
         <button
-          {...stylex.props(reset.button, triggerStyles.button, styles.connect)}
+          {...stylex.props(reset.button, triggerStyles.button, styles.connect, press.scale)}
           data-testid={`rk-${testIdPrefix}connect-button`}
           key="connect"
           onClick={onOpenConnectModal}

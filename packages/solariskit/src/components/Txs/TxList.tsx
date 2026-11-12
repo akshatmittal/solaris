@@ -3,8 +3,9 @@ import React, { useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { useConnection } from "wagmi";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, motion } from "../../css/vars.stylex";
+import { colors, media } from "../../css/vars.stylex";
 import { useClearRecentTransactions } from "../../transactions/useClearRecentTransactions";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { t } from "../../translations";
@@ -35,15 +36,12 @@ const styles = stylex.create({
   },
   clear: {
     color: colors.accentColor,
-    opacity: { default: 1, ":hover": 0.75 },
+    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.75 } },
     fontSize: 13,
     fontWeight: 500,
     lineHeight: "18px",
     marginBlock: -8,
     paddingBlock: 8,
-    transitionDuration: motion.fast,
-    transitionProperty: "opacity",
-    transitionTimingFunction: "ease-out",
   },
   empty: {
     paddingBlock: 8,
@@ -84,7 +82,7 @@ export function TxList({ address }: TxListProps) {
           </Text>
           {visibleTxs.length > 0 && (
             <button
-              {...stylex.props(reset.button, styles.clear)}
+              {...stylex.props(reset.button, styles.clear, press.scale)}
               onClick={clearRecentTransactions}
               type="button"
             >

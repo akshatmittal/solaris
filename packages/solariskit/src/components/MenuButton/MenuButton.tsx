@@ -3,12 +3,17 @@ import React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, motion, radii } from "../../css/vars.stylex";
+import { colors, media, motion, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   row: {
     alignItems: "center",
-    backgroundColor: { default: "transparent", ":hover": colors.menuItemBackground },
+    backgroundColor: {
+      default: "transparent",
+      ":hover": { default: null, [media.hover]: colors.menuItemBackground },
+      // Full-width rows darken on press instead of scaling.
+      ":active": colors.menuItemBackground,
+    },
     borderRadius: radii.menuButton,
     color: colors.modalText,
     display: "flex",
@@ -22,7 +27,7 @@ const styles = stylex.create({
     paddingInline: 12,
     transitionDuration: motion.fast,
     transitionProperty: "background-color",
-    transitionTimingFunction: "ease-out",
+    transitionTimingFunction: motion.easeOut,
     width: "100%",
   },
   selected: {

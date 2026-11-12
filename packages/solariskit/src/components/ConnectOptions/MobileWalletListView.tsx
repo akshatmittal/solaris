@@ -2,6 +2,7 @@ import React, { type ReactNode, useContext } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
 import { colors } from "../../css/vars.stylex";
 import { t } from "../../translations";
@@ -50,7 +51,7 @@ const styles = stylex.create({
   container: {
     display: "flex",
     flexDirection: "column",
-    paddingBottom: "calc(12px + env(safe-area-inset-bottom))",
+    paddingBottom: 12,
   },
   header: {
     padding: 16,
@@ -127,7 +128,7 @@ export function MobileWalletItemView({
 }: MobileWalletItemViewProps) {
   return (
     <button
-      {...stylex.props(reset.button, styles.item)}
+      {...stylex.props(reset.button, styles.item, press.scale)}
       data-testid={`rk-wallet-option-${id}`}
       disabled={!ready}
       onClick={onClick}
@@ -154,7 +155,7 @@ export function MobileWalletItemView({
               xstyle={styles.itemName}
             >
               {shortName ?? name}
-              {!ready && " (unsupported)"}
+              {!ready && ` ${t("connect.unsupported")}`}
             </Text>
             {recent && (
               <Text

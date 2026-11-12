@@ -2,8 +2,9 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, motion, radii } from "../../css/vars.stylex";
+import { colors, media, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   base: {
@@ -12,9 +13,6 @@ const styles = stylex.create({
     display: "flex",
     fontWeight: 600,
     justifyContent: "center",
-    transitionDuration: motion.fast,
-    transitionProperty: "background-color, opacity",
-    transitionTimingFunction: "ease-out",
     whiteSpace: "nowrap",
   },
   small: { fontSize: 14, height: 36, paddingInline: 14 },
@@ -23,10 +21,13 @@ const styles = stylex.create({
   primary: {
     backgroundColor: colors.accentColor,
     color: colors.accentColorForeground,
-    opacity: { default: 1, ":hover": 0.9 },
+    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.9 } },
   },
   secondary: {
-    backgroundColor: { default: colors.actionButtonSecondaryBackground, ":hover": colors.profileActionHover },
+    backgroundColor: {
+      default: colors.actionButtonSecondaryBackground,
+      ":hover": { default: null, [media.hover]: colors.profileActionHover },
+    },
     color: colors.modalText,
   },
   disabled: {
@@ -63,6 +64,7 @@ export function ActionButton({
       styles[size],
       disabled ? styles.disabled : styles[type],
       fullWidth && styles.fullWidth,
+      press.scale,
     ),
     "data-testid": testId ? `rk-${testId}` : undefined,
   };

@@ -4,9 +4,10 @@ import * as stylex from "@stylexjs/stylex";
 
 import type { ChainStatus } from "./ChainSelectButton";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
 import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
-import { colors } from "../../css/vars.stylex";
+import { colors, media } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { triggerStyles } from "../ConnectButton/ConnectButtonView";
@@ -14,14 +15,26 @@ import { DropdownIcon } from "../Icons/Dropdown";
 
 const styles = stylex.create({
   button: {
-    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
+    backgroundColor: {
+      default: colors.connectButtonBackground,
+      ":hover": { default: null, [media.hover]: colors.connectButtonHover },
+    },
     color: colors.connectButtonText,
     gap: 8,
     paddingInline: 12,
   },
   unsupported: {
-    backgroundColor: { default: colors.connectButtonBackgroundError, ":hover": colors.connectButtonErrorHover },
+    backgroundColor: {
+      default: colors.connectButtonBackgroundError,
+      ":hover": { default: null, [media.hover]: colors.connectButtonErrorHover },
+    },
     color: colors.connectButtonTextError,
+  },
+  // Long network names truncate instead of pushing the account button. Only the x axis clips, so the trimmed text box keeps its descenders.
+  name: {
+    maxWidth: 160,
+    overflowX: "clip",
+    textOverflow: "ellipsis",
   },
 });
 
@@ -69,9 +82,10 @@ export function NetworkSelectButtonView({
         unsupportedNetwork && styles.unsupported,
         responsiveDisplay(chainStatus, (value) => value !== "none", "flex"),
         !buttonReady && triggerStyles.hidden,
+        press.scale,
       )}
       aria-hidden={!buttonReady || undefined}
-      aria-label="Chain Selector"
+      aria-label={t("chains.selector")}
       data-testid={`rk-${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
       disabled={!buttonReady || !onOpenNetworkModal}
       key={unsupportedNetwork ? "unsupported" : "supported"}
@@ -100,12 +114,14 @@ export function NetworkSelectButtonView({
           <span
             {...stylex.props(
               triggerStyles.label,
+              styles.name,
               responsiveDisplay(
                 chainStatus,
                 (value) => value === "full" || value === "name" || (value === "icon" && !network.iconUrl),
                 "block",
               ),
             )}
+            title={network.name}
           >
             {network.name ?? network.id}
           </span>

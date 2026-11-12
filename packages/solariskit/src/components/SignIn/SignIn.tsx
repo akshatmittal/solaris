@@ -4,8 +4,9 @@ import * as stylex from "@stylexjs/stylex";
 import { UserRejectedRequestError } from "viem";
 import { useConnection, useSignMessage } from "wagmi";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, motion } from "../../css/vars.stylex";
+import { colors, media } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { ActionButton } from "../Button/ActionButton";
@@ -54,15 +55,21 @@ const styles = stylex.create({
     fontSize: 15,
     fontWeight: 500,
     minHeight: 44,
-    opacity: { default: 1, ":hover": 0.7 },
+    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.7 } },
     paddingInline: 12,
-    transitionDuration: motion.fast,
-    transitionProperty: "opacity",
-    transitionTimingFunction: "ease-out",
   },
 });
 
-export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onCloseModal: () => void }) {
+export function SignIn({
+  onClose,
+  onCloseModal,
+  titleId,
+}: {
+  onClose: () => void;
+  onCloseModal: () => void;
+  // Names the dialog; this step has no other heading.
+  titleId: string;
+}) {
   const [{ status, ...state }, setState] = React.useState<{
     status: "idle" | "creatingMessage" | "signing" | "verifying";
     errorMessage?: string;
@@ -197,7 +204,9 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
         <div {...stylex.props(styles.text)}>
           <Text
             align="center"
+            as="h1"
             color="modalText"
+            id={titleId}
             size="18"
             weight="semibold"
           >
@@ -252,7 +261,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
           />
         ) : (
           <button
-            {...stylex.props(reset.button, styles.cancel)}
+            {...stylex.props(reset.button, styles.cancel, press.scale)}
             onClick={onClose}
             type="button"
           >

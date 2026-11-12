@@ -36,7 +36,16 @@ const styles = stylex.create({
   },
 });
 
-export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet: WalletConnector }) {
+export function MobileStatus({
+  onClose,
+  titleId,
+  wallet,
+}: {
+  onClose: () => void;
+  // Names the dialog; this step has no other heading.
+  titleId: string;
+  wallet: WalletConnector;
+}) {
   const onConnect = useMobileConnect(wallet, onClose);
   const started = useRef(false);
 
@@ -64,7 +73,9 @@ export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet:
       <div {...stylex.props(styles.text)}>
         <Text
           align="center"
+          as="h1"
           color="modalText"
+          id={titleId}
           size="18"
           weight="semibold"
         >

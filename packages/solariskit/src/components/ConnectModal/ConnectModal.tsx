@@ -51,6 +51,7 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
           <SignIn
             onClose={onAuthCancel}
             onCloseModal={onClose}
+            titleId={titleId}
           />
         ) : (
           <ConnectOptions

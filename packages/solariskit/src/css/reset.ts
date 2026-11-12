@@ -20,7 +20,11 @@ export const reset = stylex.create({
     padding: 0,
     textAlign: "inherit",
     textDecoration: "none",
+    // Controls fire click without the double-tap delay, and a long press does not select their label.
+    touchAction: "manipulation",
+    userSelect: "none",
     WebkitTapHighlightColor: "transparent",
+    WebkitUserSelect: "none",
     outlineColor: colors.accentColor,
     outlineOffset: 2,
     outlineStyle: { default: "none", ":focus-visible": "solid" },
