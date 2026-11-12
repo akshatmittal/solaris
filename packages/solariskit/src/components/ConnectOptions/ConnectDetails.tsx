@@ -55,7 +55,6 @@ export function ConnectDetail({
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
-  const hasQrCode = qrCode && qrCodeUri;
 
   const onDesktopUri = async () => {
     const uri = await getDesktopUri?.();
@@ -76,7 +75,7 @@ export function ConnectDetail({
           showWalletConnectModal();
         },
       }
-    : hasQrCode
+    : qrCode
       ? {
           description: t("connect.secondary_action.get.description", {
             wallet: shortName ?? name,
@@ -88,7 +87,7 @@ export function ConnectDetail({
 
   return (
     <div {...stylex.props(styles.container)}>
-      {hasQrCode ? (
+      {qrCode ? (
         <div {...stylex.props(styles.qr)}>
           <QRCode
             logoBackground={iconBackground}

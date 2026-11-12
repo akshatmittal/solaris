@@ -2,7 +2,9 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { colors } from "../../css/vars.stylex";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
+import { SpinnerIcon } from "../Icons/Spinner";
 import { QRCodeSvg } from "./QRCodeSvg";
 
 const padding = 16;
@@ -15,6 +17,12 @@ const styles = stylex.create({
     padding,
     userSelect: "none",
     width: "max-content",
+  },
+  loading: {
+    alignItems: "center",
+    color: colors.accentColor,
+    display: "flex",
+    justifyContent: "center",
   },
   logo: {
     borderRadius: "22.5%",
@@ -31,7 +39,8 @@ interface Props {
   logoBackground?: string;
   logoUrl?: string | (() => Promise<string>);
   size?: number;
-  uri: string;
+  // Undefined while the wallet prepares the URI; the QR area shows a spinner at the same size.
+  uri: string | undefined;
 }
 
 export function QRCode({ ecc = "medium", logoBackground, logoUrl, size: sizeProp = 200, uri }: Props) {
@@ -40,22 +49,32 @@ export function QRCode({ ecc = "medium", logoBackground, logoUrl, size: sizeProp
 
   return (
     <div {...stylex.props(styles.card)}>
-      <div style={{ height: size, width: size }}>
-        <QRCodeSvg
-          ecc={ecc}
-          logo={
-            resolvedLogoUrl ? (
-              <img
-                {...stylex.props(styles.logo)}
-                alt="Wallet Logo"
-                src={resolvedLogoUrl}
-                style={{ backgroundColor: logoBackground }}
-              />
-            ) : undefined
-          }
-          size={size}
-          value={uri}
-        />
+      <div
+        {...stylex.props(uri === undefined && styles.loading)}
+        style={{ height: size, width: size }}
+      >
+        {uri === undefined ? (
+          <SpinnerIcon
+            height={24}
+            width={24}
+          />
+        ) : (
+          <QRCodeSvg
+            ecc={ecc}
+            logo={
+              resolvedLogoUrl ? (
+                <img
+                  {...stylex.props(styles.logo)}
+                  alt="Wallet Logo"
+                  src={resolvedLogoUrl}
+                  style={{ backgroundColor: logoBackground }}
+                />
+              ) : undefined
+            }
+            size={size}
+            value={uri}
+          />
+        )}
       </div>
     </div>
   );

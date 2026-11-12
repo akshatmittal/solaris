@@ -20,7 +20,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
-  const hasQrCode = !!selectedWallet?.qrCode && qrCodeUri;
   const [connectionError, setConnectionError] = useState(false);
   const [walletStep, setWalletStep] = useState<WalletStep>(WalletStep.None);
   const safari = isSafari();
@@ -78,6 +77,14 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     // A's details over B's.
     const requestId = ++qrRequestIdRef.current;
     const sWallet = wallets.find((w) => wallet.id === w.id);
+
+    // QR wallets open the QR step at once. The QR shows a spinner until the wallet returns its URI, which can take
+    // about a second.
+    if (sWallet?.qrCode) {
+      setQrCodeUri(undefined);
+      setSelectedWallet(sWallet);
+      changeWalletStep(WalletStep.Connect);
+    }
 
     const uri = await sWallet?.getQrCodeUri?.();
 
@@ -157,7 +164,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
         />
       );
       headerLabel =
-        hasQrCode &&
+        selectedWallet?.qrCode &&
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
