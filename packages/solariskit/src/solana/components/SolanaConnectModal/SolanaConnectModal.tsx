@@ -8,7 +8,7 @@ import {
   MobileWalletListView,
 } from "../../../components/ConnectOptions/MobileWalletListView";
 import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletListEmptyState";
-import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
+import { WalletListView, type WalletListViewItem, groupLabel } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
 import { isMobile } from "../../../utils/isMobile";
@@ -117,7 +117,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             titleId={titleId}
             walletItems={
               readyWallets.length > 0 ? (
-                <MobileWalletGroup label="Installed">
+                <MobileWalletGroup label={groupLabel("Installed")}>
                   {readyWallets.map((wallet) => (
                     <MobileWalletItemView
                       connecting={isConnecting && selectedWallet?.id === wallet.id}

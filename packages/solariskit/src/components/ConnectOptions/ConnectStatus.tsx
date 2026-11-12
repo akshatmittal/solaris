@@ -3,6 +3,7 @@ import React from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { ActionButton } from "../Button/ActionButton";
 import { SpinnerIcon } from "../Icons/Spinner";
@@ -70,7 +71,7 @@ export function ConnectStatus({
           size="18"
           weight="semibold"
         >
-          {connectionError ? "Connection declined" : `Opening ${wallet.name}…`}
+          {connectionError ? t("connect.status.declined") : t("connect.status.opening", { wallet: wallet.name })}
         </Text>
         {wallet.ready && (
           <Text
@@ -78,7 +79,7 @@ export function ConnectStatus({
             size="14"
             weight="regular"
           >
-            {connectionError ? "Try again, or choose another wallet." : "Confirm connection in the extension"}
+            {connectionError ? t("connect.status.declined_description") : t("connect.status.confirm")}
           </Text>
         )}
       </div>
@@ -86,7 +87,7 @@ export function ConnectStatus({
         <div {...stylex.props(styles.action)}>
           {connectionError ? (
             <ActionButton
-              label="Retry"
+              label={t("connect.secondary_action.retry.label")}
               onClick={onRetry}
             />
           ) : (

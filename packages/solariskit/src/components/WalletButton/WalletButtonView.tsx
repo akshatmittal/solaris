@@ -4,6 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
 import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { SpinnerIcon } from "../Icons/Spinner";
 
@@ -87,7 +88,13 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
           />
         )}
       </span>
-      <span data-testid={`rk-wallet-button-label-${connector.id}`}>{loading ? "Connecting" : connector.name}</span>
+      <span data-testid={`rk-wallet-button-label-${connector.id}`}>
+        {loading
+          ? t("connect.status.connecting", {
+              wallet: connector.name,
+            })
+          : connector.name}
+      </span>
       {connected ? <span {...stylex.props(styles.connected)} /> : null}
     </button>
   );

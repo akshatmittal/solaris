@@ -1,0 +1,116 @@
+{
+  "chains": {
+    "confirm": "Confirm in wallet",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "search": {
+      "label": "Search networks",
+      "no_results": "No networks match your search.",
+      "placeholder": "Search"
+    },
+    "title": "Switch Network",
+    "wrong_network": "Wrong network detected, switch or disconnect to continue."
+  },
+  "connect": {
+    "empty": {
+      "description": "Install a wallet to connect to this app.",
+      "title": "No supported wallet detected"
+    },
+    "new_to_ethereum": {
+      "description": "New to wallets?"
+    },
+    "recent": "Recent",
+    "secondary_action": {
+      "get": {
+        "description": "Don’t have %{wallet}?",
+        "label": "Get %{wallet}"
+      },
+      "retry": {
+        "label": "Retry"
+      }
+    },
+    "status": {
+      "confirm": "Confirm connection in the extension",
+      "confirm_mobile": "Accept connection request in the wallet",
+      "connect_mobile": "Continue in %{wallet}",
+      "connecting": "Connecting",
+      "declined": "Connection declined",
+      "declined_description": "Try again, or choose another wallet.",
+      "opening": "Opening %{wallet}…"
+    },
+    "title": "Connect Wallet",
+    "walletconnect": {
+      "description": "Need the WalletConnect modal?",
+      "open": {
+        "label": "Open"
+      }
+    }
+  },
+  "connect_scan": {
+    "fallback_title": "Scan with Your Phone",
+    "title": "Scan with %{wallet}"
+  },
+  "connect_wallet": {
+    "label": "Connect Wallet",
+    "pending": "Transaction pending",
+    "wrong_network": {
+      "label": "Wrong Network"
+    }
+  },
+  "connector_group": {
+    "installed": "Installed",
+    "more": "More",
+    "other": "Other",
+    "others": "Others",
+    "popular": "Popular",
+    "recommended": "Recommended"
+  },
+  "intro": {
+    "get": {
+      "label": "Get a Wallet"
+    },
+    "learn_more": {
+      "label": "Learn More"
+    }
+  },
+  "profile": {
+    "copy_address": {
+      "copied": "Copied",
+      "label": "Copy Address"
+    },
+    "disconnect": {
+      "label": "Disconnect"
+    },
+    "explorer": {
+      "label": "View on Explorer"
+    },
+    "transactions": {
+      "clear": {
+        "label": "Clear All"
+      },
+      "description": "%{appName} transactions will appear here.",
+      "description_fallback": "Your transactions will appear here.",
+      "recent": {
+        "title": "Recent Transactions"
+      }
+    }
+  },
+  "sign_in": {
+    "description": "Sign a message in your wallet to confirm you own this account. It does not send a transaction or cost gas.",
+    "label": "Verify Account",
+    "message": {
+      "cancel": "Cancel",
+      "preparing": "Preparing message…",
+      "preparing_error": "Error preparing message, please retry!",
+      "retry": "Retry",
+      "send": "Sign Message"
+    },
+    "signature": {
+      "oops_error": "Oops, something went wrong!",
+      "signing_error": "Error signing message, please retry!",
+      "verifying": "Verifying signature…",
+      "verifying_error": "Error verifying signature, please retry!",
+      "waiting": "Waiting for signature…"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 
 import { reset } from "../../css/reset";
 import { colors, motion, radii } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Dialog } from "../Dialog/Dialog";
@@ -162,7 +163,7 @@ export function NetworkModalView({
         <div {...stylex.props(styles.container)}>
           <DialogHeader
             onClose={onClose}
-            title="Switch Network"
+            title={t("chains.title")}
             titleId={titleId}
           />
           {isConnectedToUnsupportedNetwork && (
@@ -172,18 +173,18 @@ export function NetworkModalView({
               size="14"
               weight="medium"
             >
-              Wrong network detected, switch or disconnect to continue.
+              {t("chains.wrong_network")}
             </Text>
           )}
           {shouldShowSearch && (
             <input
               {...stylex.props(styles.search)}
-              aria-label="Search networks"
+              aria-label={t("chains.search.label")}
               autoComplete="off"
               inputMode="search"
               name="network-search"
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search"
+              placeholder={t("chains.search.placeholder")}
               type="search"
               value={searchQuery}
             />
@@ -210,10 +211,12 @@ export function NetworkModalView({
                     />
                   )}
                   <span {...stylex.props(styles.name)}>{name ?? id}</span>
-                  {isCurrentNetwork && <span {...stylex.props(styles.status, styles.connected)}>Connected</span>}
+                  {isCurrentNetwork && (
+                    <span {...stylex.props(styles.status, styles.connected)}>{t("chains.connected")}</span>
+                  )}
                   {pendingNetworkId === id && (
                     <span {...stylex.props(styles.status, styles.pending)}>
-                      Confirm in wallet
+                      {t("chains.confirm")}
                       <span {...stylex.props(styles.pendingDot)} />
                     </span>
                   )}
@@ -227,7 +230,7 @@ export function NetworkModalView({
                 size="14"
                 weight="medium"
               >
-                No networks match your search.
+                {t("chains.search.no_results")}
               </Text>
             )}
             {isConnectedToUnsupportedNetwork && onDisconnectUnsupported && (
@@ -239,7 +242,7 @@ export function NetworkModalView({
                 <span {...stylex.props(styles.disconnectIcon)}>
                   <DisconnectSqIcon size={chainIconSize} />
                 </span>
-                Disconnect
+                {t("chains.disconnect")}
               </MenuButton>
             )}
           </div>

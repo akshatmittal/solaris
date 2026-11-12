@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 
+import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
@@ -153,8 +154,10 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       headerLabel =
         hasQrCode &&
         (selectedWallet.name === "WalletConnect"
-          ? "Scan with Your Phone"
-          : `Scan with ${selectedWallet.shortName ?? selectedWallet.name}`);
+          ? t("connect_scan.fallback_title")
+          : t("connect_scan.title", {
+              wallet: selectedWallet.shortName ?? selectedWallet.name,
+            }));
       headerBackButtonLink = connector ? null : WalletStep.None;
       headerBackButtonCallback = connector ? undefined : clearSelectedWallet;
       break;

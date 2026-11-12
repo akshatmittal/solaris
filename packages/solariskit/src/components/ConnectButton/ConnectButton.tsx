@@ -41,6 +41,7 @@ export function ConnectButton({
             buttonReady={buttonReady}
             isConnected={connectionStatus === "connected"}
             label={label}
+            mounted={mounted}
             onOpenAccountModal={openAccountModal}
             onOpenConnectModal={openConnectModal}
             showBalance={showBalance}

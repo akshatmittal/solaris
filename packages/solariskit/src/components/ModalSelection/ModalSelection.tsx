@@ -2,6 +2,7 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { MenuButton } from "../MenuButton/MenuButton";
 import { Text } from "../Text/Text";
@@ -63,7 +64,7 @@ export const ModalSelection = ({
           size="12"
           weight="medium"
         >
-          Recent
+          {t("connect.recent")}
         </Text>
       )}
     </span>

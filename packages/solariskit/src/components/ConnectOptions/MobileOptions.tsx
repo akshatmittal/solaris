@@ -4,6 +4,7 @@ import { type WalletConnector, useWalletConnectors } from "../../wallets/useWall
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { GET_WALLET_URL } from "./constants";
 import { MobileWalletGroup, MobileWalletItemView, MobileWalletListView } from "./MobileWalletListView";
+import { groupLabel } from "./WalletListView";
 
 export function useMobileConnect(wallet: WalletConnector, onClose: () => void) {
   const { connect, getMobileUri, id, name, showWalletConnectModal } = wallet;
@@ -97,7 +98,7 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
       walletItems={Object.entries(groupedWallets).map(([groupName, group]) => (
         <MobileWalletGroup
           key={groupName}
-          label={groupName}
+          label={groupLabel(groupName)}
         >
           {group?.map((wallet) => (
             <WalletButton

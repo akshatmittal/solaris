@@ -293,7 +293,7 @@ Retain names such as `RainbowKitProvider` and `RainbowKitAuthenticationProvider`
 
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.
-The UI text is US English only and there is no `locale` prop. Check your imports and provider props against the shipped
+Only US English translations are currently included. Check your imports and provider props against the shipped
 TypeScript declarations rather than assuming all RainbowKit APIs are available.
 
 ## Troubleshooting

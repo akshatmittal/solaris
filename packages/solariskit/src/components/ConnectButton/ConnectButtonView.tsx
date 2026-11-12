@@ -5,6 +5,7 @@ import * as stylex from "@stylexjs/stylex";
 import { reset } from "../../css/reset";
 import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
 import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
 import { DropdownIcon } from "../Icons/Dropdown";
 
@@ -114,6 +115,7 @@ export interface ConnectButtonViewProps {
   buttonReady: boolean;
   isConnected: boolean;
   label: string;
+  mounted: boolean;
   onOpenAccountModal: () => void;
   onOpenConnectModal: () => void;
   showBalance: ResponsiveValue<boolean>;
@@ -127,6 +129,7 @@ export function ConnectButtonView({
   buttonReady,
   isConnected,
   label,
+  mounted,
   onOpenAccountModal,
   onOpenConnectModal,
   showBalance,
@@ -144,7 +147,7 @@ export function ConnectButtonView({
           {...stylex.props(reset.button, triggerStyles.button, styles.account)}
           data-testid={`rk-${testIdPrefix}account-button`}
           onClick={onOpenAccountModal}
-          title={account.hasPendingTransactions ? "Transaction pending" : undefined}
+          title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
           type="button"
         >
           {hasBalance && (
@@ -186,7 +189,7 @@ export function ConnectButtonView({
           onClick={onOpenConnectModal}
           type="button"
         >
-          {label}
+          {mounted && label === "Connect Wallet" ? t("connect_wallet.label") : label}
         </button>
       )}
     </div>

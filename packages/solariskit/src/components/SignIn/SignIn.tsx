@@ -6,6 +6,7 @@ import { useConnection, useSignMessage } from "wagmi";
 
 import { reset } from "../../css/reset";
 import { colors, motion } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { isMobile } from "../../utils/isMobile";
 import { ActionButton } from "../Button/ActionButton";
 import { DialogHeader } from "../Dialog/DialogHeader";
@@ -78,7 +79,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
     } catch {
       setState((x) => ({
         ...x,
-        errorMessage: "Error preparing message, please retry!",
+        errorMessage: t("sign_in.message.preparing_error"),
         status: "idle",
       }));
     }
@@ -126,7 +127,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
       } catch {
         return setState((x) => ({
           ...x,
-          errorMessage: "Error preparing message, please retry!",
+          errorMessage: t("sign_in.message.preparing_error"),
           status: "idle",
         }));
       }
@@ -150,7 +151,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
 
         return setState((x) => ({
           ...x,
-          errorMessage: "Error signing message, please retry!",
+          errorMessage: t("sign_in.signature.signing_error"),
           status: "idle",
         }));
       }
@@ -172,7 +173,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
         // Backends usually consume the nonce on verify, so the retry fetches a new one.
         return setState((x) => ({
           ...x,
-          errorMessage: "Error verifying signature, please retry!",
+          errorMessage: t("sign_in.signature.verifying_error"),
           nonce: undefined,
           status: "idle",
         }));
@@ -180,7 +181,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
     } catch {
       setState((x) => ({
         ...x,
-        errorMessage: "Oops, something went wrong!",
+        errorMessage: t("sign_in.signature.oops_error"),
         status: "idle",
       }));
     }
@@ -200,7 +201,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
             size="18"
             weight="semibold"
           >
-            Verify Account
+            {t("sign_in.label")}
           </Text>
           <Text
             align="center"
@@ -208,7 +209,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
             size="14"
             weight="regular"
           >
-            Sign a message in your wallet to confirm you own this account. It does not send a transaction or cost gas.
+            {t("sign_in.description")}
           </Text>
           {status === "idle" && state.errorMessage ? (
             <Text
@@ -228,14 +229,14 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
           fullWidth
           label={
             canRetryNonce
-              ? "Retry"
+              ? t("sign_in.message.retry")
               : !state.nonce || status === "creatingMessage"
-                ? "Preparing message…"
+                ? t("sign_in.message.preparing")
                 : status === "signing"
-                  ? "Waiting for signature…"
+                  ? t("sign_in.signature.waiting")
                   : status === "verifying"
-                    ? "Verifying signature…"
-                    : "Sign Message"
+                    ? t("sign_in.signature.verifying")
+                    : t("sign_in.message.send")
           }
           onClick={canRetryNonce ? getNonce : signIn}
           size={mobile ? "large" : "medium"}
@@ -244,7 +245,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
         {mobile ? (
           <ActionButton
             fullWidth
-            label="Cancel"
+            label={t("sign_in.message.cancel")}
             onClick={onClose}
             size="large"
             type="secondary"
@@ -255,7 +256,7 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
             onClick={onClose}
             type="button"
           >
-            Cancel
+            {t("sign_in.message.cancel")}
           </button>
         )}
       </div>

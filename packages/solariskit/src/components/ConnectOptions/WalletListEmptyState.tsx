@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { t } from "../../translations";
 import { ActionButton } from "../Button/ActionButton";
 import { WalletIcon } from "../Icons/FeatureIcons";
 import { IconTile } from "../Icons/IconTile";
@@ -63,7 +64,7 @@ export function WalletListEmptyState({
         size="18"
         weight="semibold"
       >
-        No supported wallet detected
+        {t("connect.empty.title")}
       </Text>
       <Text
         as="p"
@@ -71,20 +72,20 @@ export function WalletListEmptyState({
         size="14"
         weight="regular"
       >
-        Install a wallet to connect to this app.
+        {t("connect.empty.description")}
       </Text>
       {showAction ? (
         <div {...stylex.props(styles.actions)}>
           <ActionButton
             fullWidth
             href={getWalletUrl}
-            label="Get a Wallet"
+            label={t("intro.get.label")}
           />
           <TextLink
             href={learnMoreUrl}
             tall
           >
-            Learn More
+            {t("intro.learn_more.label")}
           </TextLink>
         </div>
       ) : null}

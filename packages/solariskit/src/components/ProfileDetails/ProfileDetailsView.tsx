@@ -3,6 +3,7 @@ import React, { type ReactNode, useCallback, useEffect, useState } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
+import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { CopiedIcon } from "../Icons/Copied";
@@ -129,12 +130,12 @@ export function ProfileDetailsView({
             action={copyAddressAction}
             icon={copiedAddress ? <CopiedIcon /> : <CopyIcon />}
             success={copiedAddress}
-            label={copiedAddress ? "Copied" : "Copy Address"}
+            label={copiedAddress ? t("profile.copy_address.copied") : t("profile.copy_address.label")}
           />
           <ProfileDetailsAction
             action={onDisconnect}
             icon={<DisconnectIcon />}
-            label="Disconnect"
+            label={t("profile.disconnect.label")}
             testId="disconnect-button"
           />
         </div>
