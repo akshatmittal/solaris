@@ -4,14 +4,17 @@ import type { CreateConnectorFn } from "wagmi";
 
 import { ProviderNotFoundError } from "wagmi";
 
-// Connectors whose provider loads a wallet SDK with import().
-const sdkConnectorTypes = new Set(["baseAccount", "safe", "walletConnect"]);
+// Connectors whose provider loads a wallet SDK with import(). Safe is not here: it loads its SDK only inside a Safe App
+// iframe, where it must connect at page load.
+const sdkConnectorTypes = new Set(["baseAccount", "walletConnect"]);
+// Connector uids whose SDK a connect UI asked for, and whose SDK finished loading.
+const requestedSdks = new Set<string>();
 const loadedSdks = new Set<string>();
-let sdksRequested = false;
 
 /**
  * Defers a connector's wallet SDK until a connect UI asks for it (see useWalletSdks), the connector connects, or the
- * connector was the last one used. Without this, wagmi's reconnect loads every wallet SDK when the page loads.
+ * connector was the last one used. Requests are per connector, so another wagmi config does not load its SDKs early.
+ * Without this, wagmi's reconnect loads every wallet SDK when the page loads.
  */
 export const lazyConnector =
   (createConnectorFn: CreateConnectorFn): CreateConnectorFn =>
@@ -24,7 +27,8 @@ export const lazyConnector =
     let active = false;
     let setUp: Promise<void> | undefined;
     const isActive = async () => {
-      active ||= sdksRequested || (await config.storage?.getItem("recentConnectorId")) === connector.id;
+      active ||=
+        requestedSdks.has(config.emitter.uid) || (await config.storage?.getItem("recentConnectorId")) === connector.id;
       return active;
     };
 
@@ -44,18 +48,22 @@ export const lazyConnector =
         setUp ??= connector.setup?.call(this);
         return connector.getProvider.call(this, parameters);
       },
-      connect<withCapabilities extends boolean = false>(parameters?: {
+      async connect<withCapabilities extends boolean = false>(parameters?: {
         chainId?: number | undefined;
         isReconnecting?: boolean | undefined;
         withCapabilities?: withCapabilities | boolean | undefined;
       }) {
         active = true;
+        // An app can connect without a Solaris UI. WalletConnect needs its setup() listeners before it connects.
+        if (connector.setup) {
+          setUp ??= connector.setup.call(this);
+          await setUp;
+        }
         return connector.connect<withCapabilities>(parameters);
       },
     };
   };
 
-const requestedSdks = new Set<string>();
 const loadedListeners = new Set<() => void>();
 let loadedCount = 0;
 const subscribeLoaded = (listener: () => void) => {
@@ -76,7 +84,6 @@ export function useWalletSdks(
   const loading = wallets.filter((wallet) => sdkConnectorTypes.has(wallet.type) && !loadedSdks.has(wallet.uid));
 
   useEffect(() => {
-    sdksRequested = true;
     for (const wallet of loading) {
       if (requestedSdks.has(wallet.uid)) {
         continue;
