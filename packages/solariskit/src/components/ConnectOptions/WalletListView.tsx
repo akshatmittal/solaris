@@ -25,7 +25,6 @@ export interface WalletListViewItem {
   iconUrl: string | (() => Promise<string>);
   id: string;
   isRainbowKitConnector?: boolean;
-  // The wallet SDK is still loading; the row shows a spinner and cannot be selected yet.
   loading: boolean;
   name: string;
   ready?: boolean;

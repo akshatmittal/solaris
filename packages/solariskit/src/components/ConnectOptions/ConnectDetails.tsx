@@ -55,8 +55,6 @@ export function ConnectDetail({
   const { iconBackground, iconUrl, name, qrCode, ready, shortName, showWalletConnectModal, getDesktopUri } = wallet;
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
-  // A failed or timed-out connection shows the error and Retry, not a spinner that never stops or a QR code that no
-  // longer works.
   const showQrCode = qrCode && !connectionError;
 
   const onDesktopUri = async () => {

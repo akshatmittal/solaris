@@ -39,7 +39,6 @@ interface Props {
   logoBackground?: string;
   logoUrl?: string | (() => Promise<string>);
   size?: number;
-  // Undefined while the wallet prepares the URI; the QR area shows a spinner at the same size.
   uri: string | undefined;
 }
 

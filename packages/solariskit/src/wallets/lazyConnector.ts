@@ -7,7 +7,6 @@ import { ProviderNotFoundError } from "wagmi";
 // Connectors whose provider loads a wallet SDK with import(). Safe is not here: it loads its SDK only inside a Safe App
 // iframe, where it must connect at page load.
 const sdkConnectorTypes = new Set(["baseAccount", "walletConnect"]);
-// Connector uids whose SDK a connect UI asked for, and whose SDK finished loading.
 const requestedSdks = new Set<string>();
 const loadedSdks = new Set<string>();
 
@@ -79,9 +78,6 @@ const subscribeLoaded = (listener: () => void) => {
 };
 const getLoadedCount = () => loadedCount;
 
-/**
- * Starts loading a connector's wallet SDK once.
- */
 export function requestWalletSdk(wallet: { getProvider: () => Promise<unknown>; uid: string }) {
   if (requestedSdks.has(wallet.uid)) {
     return;

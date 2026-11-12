@@ -93,8 +93,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       return;
     }
 
-    // QR wallets open the QR step at once. The QR shows a spinner until the wallet returns its URI, which can take
-    // about a second.
     setSelectedWallet(sWallet);
     changeWalletStep(WalletStep.Connect);
     setQrRequest({ wallet: sWallet });
@@ -114,7 +112,6 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     const stopWatching = qrRequest.wallet.watchQrCodeUri((uri) => {
       clearTimeout(qrTimeout);
       setQrCodeUri(uri);
-      // A QR code that loads after the timeout still shows.
       setConnectionError((error) => (error === "qr_timeout" ? null : error));
     });
     return () => {
