@@ -39,9 +39,16 @@ const styles = stylex.create({
     transitionProperty: "height",
     transitionTimingFunction: motion.easeOut,
   },
+  // Content taller than the screen scrolls. The dialog bound matches the top offset in Dialog plus a 16px bottom gap and the border.
   measure: {
     display: "flex",
     flexDirection: "column",
+    maxHeight: {
+      default: "calc(100dvh - 40px - env(safe-area-inset-bottom, 0px))",
+      [media.largeScreen]: "calc(100dvh - max(16px, calc(50vh - 280px)) - 18px)",
+    },
+    overflowX: "hidden",
+    overflowY: "auto",
   },
 });
 

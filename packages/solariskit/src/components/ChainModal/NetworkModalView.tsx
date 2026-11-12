@@ -25,6 +25,8 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
+    // Lets the list shrink and scroll on short screens, so the title and search stay visible.
+    minHeight: 0,
     padding: 16,
     paddingBottom: 12,
   },
@@ -37,6 +39,7 @@ const styles = stylex.create({
     borderWidth: 1,
     boxSizing: "border-box",
     color: colors.modalText,
+    flexShrink: 0,
     fontFamily: "inherit",
     fontSize: 16,
     height: 44,

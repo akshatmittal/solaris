@@ -30,6 +30,9 @@ const styles = stylex.create({
     },
     color: colors.connectButtonTextError,
   },
+  disabled: {
+    pointerEvents: "none",
+  },
   // Long network names truncate instead of pushing the account button. Only the x axis clips, so the trimmed text box keeps its descenders.
   name: {
     maxWidth: 160,
@@ -82,6 +85,7 @@ export function NetworkSelectButtonView({
         unsupportedNetwork && styles.unsupported,
         responsiveDisplay(chainStatus, (value) => value !== "none", "flex"),
         !buttonReady && triggerStyles.hidden,
+        !onOpenNetworkModal && styles.disabled,
         press.scale,
       )}
       aria-hidden={!buttonReady || undefined}

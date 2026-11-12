@@ -22,6 +22,9 @@ const styles = stylex.create({
     overflow: "visible",
     textAlign: "center",
   },
+  itemDisabled: {
+    pointerEvents: "none",
+  },
   itemContent: {
     alignItems: "center",
     display: "flex",
@@ -128,7 +131,7 @@ export function MobileWalletItemView({
 }: MobileWalletItemViewProps) {
   return (
     <button
-      {...stylex.props(reset.button, styles.item, press.scale)}
+      {...stylex.props(reset.button, styles.item, !ready && styles.itemDisabled, press.scale)}
       data-testid={`rk-wallet-option-${id}`}
       disabled={!ready}
       onClick={onClick}

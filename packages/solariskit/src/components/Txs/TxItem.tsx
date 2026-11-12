@@ -29,7 +29,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: "transparent",
       ":hover": { default: null, [media.hover]: colors.menuItemBackground },
-      ":active": colors.menuItemBackground,
+      ":active": `color-mix(in srgb, ${colors.menuItemBackground} 85%, currentColor)`,
     },
     transitionDuration: motion.fast,
     transitionProperty: "background-color",
