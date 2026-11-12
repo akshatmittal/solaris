@@ -44,6 +44,10 @@ const styles = stylex.create({
     paddingBottom: 12,
     paddingInline: 12,
   },
+  error: {
+    paddingBottom: 12,
+    paddingInline: 20,
+  },
   footer: {
     alignItems: "center",
     minHeight: 52,
@@ -77,6 +81,7 @@ const styles = stylex.create({
 });
 
 export interface ConnectModalShellViewProps {
+  declined?: boolean;
   hideFooter?: boolean;
   getWalletUrl: string;
   onClose: () => void;
@@ -90,12 +95,12 @@ export interface ConnectModalShellViewProps {
 }
 
 /**
- * Chain-agnostic desktop connect-modal chrome: the wallet-list sidebar
- * (with compact-mode footer) plus the right-hand pane with its back/label/close
- * header. The EVM DesktopOptions and the Solana connect modal both
+ * Chain-agnostic connect-modal chrome for the desktop and mobile flows: the wallet list with its footer, plus the
+ * wallet pane with its back/label/close header. The EVM connect options and the Solana connect modal both
  * parameterize this shell.
  */
 export function ConnectModalShellView({
+  declined = false,
   getWalletUrl,
   hideFooter = false,
   onClose,
@@ -125,6 +130,20 @@ export function ConnectModalShellView({
             />
           </div>
           <div {...stylex.props(styles.list, reset.scrollbar)}>{walletList}</div>
+          {declined && (
+            <div
+              {...stylex.props(styles.error)}
+              role="alert"
+            >
+              <Text
+                color="error"
+                size="14"
+                weight="medium"
+              >
+                {t("connect.status.declined")}
+              </Text>
+            </div>
+          )}
           {!hideFooter &&
             (Disclaimer ? (
               <div {...stylex.props(styles.footer, styles.footerDisclaimer)}>

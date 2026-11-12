@@ -4,7 +4,6 @@ import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
 import { colors, media, motion, radii, shadows } from "../../css/vars.stylex";
-import { isMobile } from "../../utils/isMobile";
 
 const bleed = 200;
 
@@ -30,7 +29,6 @@ const styles = stylex.create({
     paddingBottom: { default: `calc(${bleed}px + env(safe-area-inset-bottom, 0px))`, [media.largeScreen]: 0 },
     top: { default: bleed, [media.largeScreen]: 0 },
   },
-  wideMobile: { width: { default: "100vw", [media.largeScreen]: 480 } },
   // Animates between the measured heights of the content; the first height applies without a transition.
   sizer: {
     overflow: "hidden",
@@ -51,15 +49,7 @@ const styles = stylex.create({
   },
 });
 
-export function DialogContent({
-  children,
-  view,
-  wide = false,
-}: {
-  children: ReactNode;
-  view?: string;
-  wide?: boolean;
-}) {
+export function DialogContent({ children, view }: { children: ReactNode; view?: string }) {
   const measureRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
 
@@ -82,7 +72,7 @@ export function DialogContent({
   }, []);
 
   return (
-    <div {...stylex.props(styles.content, wide && isMobile() && styles.wideMobile)}>
+    <div {...stylex.props(styles.content)}>
       <div
         {...stylex.props(styles.sizer)}
         style={{ height }}

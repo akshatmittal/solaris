@@ -46,7 +46,6 @@
       "qr_timeout_description": "Check your connection, then try again."
     },
     "title": "Connect Wallet",
-    "unsupported": "(unsupported)",
     "walletconnect": {
       "description": "Need the WalletConnect modal?",
       "open": {

@@ -46,10 +46,7 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
       open={open && (connectionStatus === "disconnected" || authenticating)}
       titleId={titleId}
     >
-      <DialogContent
-        view={authenticating ? "sign-in" : "connect"}
-        wide={!authenticating}
-      >
+      <DialogContent view={authenticating ? "sign-in" : "connect"}>
         {authenticating ? (
           <SignIn
             onClose={onAuthCancel}

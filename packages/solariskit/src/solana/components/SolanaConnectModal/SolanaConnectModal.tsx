@@ -2,13 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { ConnectModalShellView } from "../../../components/ConnectOptions/ConnectModalShellView";
 import { ConnectStatus } from "../../../components/ConnectOptions/ConnectStatus";
-import {
-  MobileWalletGroup,
-  MobileWalletItemView,
-  MobileWalletListView,
-} from "../../../components/ConnectOptions/MobileWalletListView";
 import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletListEmptyState";
-import { WalletListView, type WalletListViewItem, groupLabel } from "../../../components/ConnectOptions/WalletListView";
+import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
 import { isMobile } from "../../../utils/isMobile";
@@ -100,8 +95,10 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
     }
   };
 
+  // Mobile browsers have no extensions, so only the wallets in an in-app browser show, and connecting shows no status pane.
   const mobile = isMobile();
   const readyWallets = wallets.filter((wallet) => wallet.ready);
+  const shownWallets = mobile ? readyWallets : wallets;
 
   return (
     <Dialog
@@ -109,72 +106,42 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       open={open}
       titleId={titleId}
     >
-      <DialogContent wide>
-        {mobile ? (
-          <MobileWalletListView
-            declined={declined}
-            getWalletUrl={SOLANA_GET_WALLET_URL}
-            onClose={onClose}
-            titleId={titleId}
-            walletItems={
-              readyWallets.length > 0 ? (
-                <MobileWalletGroup label={groupLabel("Installed")}>
-                  {readyWallets.map((wallet) => (
-                    <MobileWalletItemView
-                      connecting={isConnecting && selectedWallet?.id === wallet.id}
-                      iconUrl={wallet.iconUrl}
-                      id={wallet.id}
-                      key={wallet.id}
-                      name={wallet.name}
-                      onClick={() => selectWallet(wallet)}
-                      ready={wallet.ready}
-                      recent={wallet.recent}
-                    />
-                  ))}
-                </MobileWalletGroup>
-              ) : (
-                <WalletListEmptyState
-                  getWalletUrl={SOLANA_GET_WALLET_URL}
-                  showAction={false}
-                />
-              )
-            }
-          />
-        ) : (
-          <ConnectModalShellView
-            getWalletUrl={SOLANA_GET_WALLET_URL}
-            hideFooter={wallets.length === 0}
-            onClose={onClose}
-            onRightPaneBack={() => setShowStatus(false)}
-            rightPaneContent={
-              showStatus &&
-              selectedWallet && (
-                <ConnectStatus
-                  connectionError={declined ? "declined" : null}
-                  onRetry={() => selectWallet(selectedWallet)}
-                  titleId={titleId}
-                  wallet={selectedWallet}
-                />
-              )
-            }
-            showRightPane={showStatus}
-            showSidebar={!showStatus}
-            titleId={titleId}
-            walletList={
-              wallets.length > 0 ? (
-                <WalletListView
-                  groupedWallets={groupedWallets}
-                  onSelectWallet={selectWallet}
-                />
-              ) : (
-                <WalletListEmptyState
-                  getWalletUrl={SOLANA_GET_WALLET_URL}
-                  showAction
-                />
-              )
-            }
-          />
-        )}
+      <DialogContent>
+        <ConnectModalShellView
+          declined={mobile && declined}
+          getWalletUrl={SOLANA_GET_WALLET_URL}
+          hideFooter={!mobile && wallets.length === 0}
+          onClose={onClose}
+          onRightPaneBack={() => setShowStatus(false)}
+          rightPaneContent={
+            showStatus &&
+            selectedWallet && (
+              <ConnectStatus
+                connectionError={declined ? "declined" : null}
+                onRetry={() => selectWallet(selectedWallet)}
+                titleId={titleId}
+                wallet={selectedWallet}
+              />
+            )
+          }
+          showRightPane={!mobile && showStatus}
+          showSidebar={mobile || !showStatus}
+          titleId={titleId}
+          walletList={
+            shownWallets.length > 0 ? (
+              <WalletListView
+                connectingWalletId={isConnecting ? selectedWallet?.id : undefined}
+                groupedWallets={mobile ? { Installed: readyWallets } : groupedWallets}
+                onSelectWallet={selectWallet}
+              />
+            ) : (
+              <WalletListEmptyState
+                getWalletUrl={SOLANA_GET_WALLET_URL}
+                showAction={!mobile}
+              />
+            )
+          }
+        />
       </DialogContent>
     </Dialog>
   );
