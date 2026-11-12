@@ -51,7 +51,7 @@ export function ConnectStatus({
   onRetry: () => void;
   // Names the dialog while the wallet list and its heading are hidden.
   titleId: string;
-  wallet: WalletListViewItem;
+  wallet: Omit<WalletListViewItem, "loading">;
 }) {
   return (
     <div {...stylex.props(styles.status, wallet.ready && styles.balanced)}>

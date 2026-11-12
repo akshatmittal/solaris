@@ -54,6 +54,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
         iconUrl: connector.icon || fallbackWalletIcon,
         id: connector.id,
         isRainbowKitConnector: false,
+        loading: false,
         name: connector.name,
         ready: connector.ready,
         recent: recentIds.has(connector.id),

@@ -214,7 +214,12 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       walletList={
         <WalletListView
           groupedWallets={groupedWallets}
-          onSelectWallet={(wallet) => selectWallet(wallet as WalletConnector)}
+          onSelectWallet={(item) => {
+            const wallet = wallets.find((w) => w.id === item.id);
+            if (wallet) {
+              selectWallet(wallet);
+            }
+          }}
           selectedWalletId={selectedOptionId}
         />
       }

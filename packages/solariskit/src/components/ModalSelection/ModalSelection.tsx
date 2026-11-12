@@ -37,7 +37,7 @@ type Props = {
   iconBackground?: string;
   testId?: string;
   isRainbowKitConnector?: boolean;
-  loading?: boolean;
+  loading: boolean;
 };
 
 export const ModalSelection = ({

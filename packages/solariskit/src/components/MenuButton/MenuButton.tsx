@@ -37,14 +37,14 @@ export function MenuButton({
   children,
   currentlySelected = false,
   danger = false,
-  loading = false,
+  loading,
   onClick,
   testId,
 }: {
   children: React.ReactNode;
   currentlySelected?: boolean;
   danger?: boolean;
-  loading?: boolean;
+  loading: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
