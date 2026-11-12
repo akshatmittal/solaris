@@ -14,14 +14,12 @@ import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 
-// The wallet list and the wallet pane replace each other; the new one fades in while the dialog height animates.
 const fadeIn = stylex.keyframes({
   from: { opacity: 0 },
   to: { opacity: 1 },
 });
 
 const styles = stylex.create({
-  // On short screens the shell shrinks to the dialog, so the wallet list scrolls and the header and footer stay visible.
   shell: {
     display: "flex",
     minHeight: 0,

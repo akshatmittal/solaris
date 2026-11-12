@@ -25,7 +25,6 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
-    // Lets the list shrink and scroll on short screens, so the title and search stay visible.
     minHeight: 0,
     padding: 16,
     paddingBottom: 12,
@@ -65,7 +64,6 @@ const styles = stylex.create({
     gap: 2,
     marginInline: -4,
     maxHeight: 456,
-    // Two rows stay visible; below that the dialog scrolls instead.
     minHeight: 96,
     overflowX: "hidden",
     overflowY: "auto",
@@ -145,7 +143,7 @@ export function NetworkModalView({
   // useId keeps the heading id unique when several ecosystems (EVM + Solana)
   // mount their network modals on the same page.
   const titleId = `rk_chain_modal_title_${React.useId()}`;
-  // Touch screens get larger icons, and the search does not take focus there because focus opens the keyboard over the list.
+  // On touch screens, focus would open the keyboard over the list.
   const coarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   const chainIconSize = coarsePointer ? 32 : 28;
   const shouldShowSearch = networks.length > searchThreshold;

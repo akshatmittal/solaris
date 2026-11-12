@@ -11,7 +11,6 @@ const styles = stylex.create({
     backgroundColor: {
       default: "transparent",
       ":hover": { default: null, [media.hover]: colors.menuItemBackground },
-      // Full-width rows darken on press instead of scaling, past the hover color.
       ":active": {
         default: `color-mix(in srgb, ${colors.menuItemBackground} 85%, currentColor)`,
         [media.hover]: `color-mix(in srgb, ${colors.menuItemBackground} 85%, currentColor)`,

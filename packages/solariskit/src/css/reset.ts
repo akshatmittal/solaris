@@ -20,7 +20,6 @@ export const reset = stylex.create({
     padding: 0,
     textAlign: "inherit",
     textDecoration: "none",
-    // Controls fire click without the double-tap delay, and a long press does not select their label.
     touchAction: "manipulation",
     userSelect: "none",
     WebkitTapHighlightColor: "transparent",
@@ -34,7 +33,6 @@ export const reset = stylex.create({
     margin: 0,
     padding: 0,
   },
-  // A thin rounded scrollbar for mouse and trackpad; touch screens hide it.
   scrollbar: {
     scrollbarColor: {
       default: null,

@@ -42,7 +42,6 @@ export function MobileStatus({
   wallet,
 }: {
   onClose: () => void;
-  // Names the dialog; this step has no other heading.
   titleId: string;
   wallet: WalletConnector;
 }) {

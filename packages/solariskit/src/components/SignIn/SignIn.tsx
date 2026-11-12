@@ -53,7 +53,6 @@ export function SignIn({
 }: {
   onClose: () => void;
   onCloseModal: () => void;
-  // Names the dialog; this step has no other heading.
   titleId: string;
 }) {
   const [{ status, ...state }, setState] = React.useState<{

@@ -17,7 +17,6 @@ const styles = stylex.create({
   },
   small: { fontSize: 14, height: 36, paddingInline: 14 },
   medium: { fontSize: 15, height: 44, paddingInline: 20 },
-  // Touch size on small screens; the same as medium on large screens.
   large: {
     fontSize: { default: 16, [media.largeScreen]: 15 },
     height: { default: 48, [media.largeScreen]: 44 },

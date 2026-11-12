@@ -33,7 +33,7 @@ const styles = stylex.create({
   disabled: {
     pointerEvents: "none",
   },
-  // Long network names truncate instead of pushing the account button. Only the x axis clips, so the trimmed text box keeps its descenders.
+  // Only the x axis clips, so descenders stay visible.
   name: {
     maxWidth: 160,
     overflowX: "clip",

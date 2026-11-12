@@ -38,12 +38,11 @@ const slideDown = stylex.keyframes({
   to: { transform: "translateY(100%)" },
 });
 
-// Excludes reduced motion, so it never competes with media.reducedMotion. No `screen` type: lightningcss rewrites it into an invalid query here.
+// No `screen` type: lightningcss rewrites it into an invalid query here.
 const largeScreenMotion = "@media (min-width: 768px) and (prefers-reduced-motion: no-preference)";
 
 const bleed = 200;
 
-// Small screens get a bottom sheet; large screens get a dialog anchored near the top.
 const styles = stylex.create({
   overlay: {
     alignItems: { default: "flex-end", [media.largeScreen]: "flex-start" },
@@ -81,8 +80,7 @@ const styles = stylex.create({
     animationTimingFunction: { default: motion.easeDrawer, [media.largeScreen]: motion.easeOut },
     display: "flex",
     flexDirection: "column",
-    // A fixed top edge keeps the dialog still when its height changes, such as while filtering the network list.
-    // The offset centers a 560px dialog, the tallest one, and keeps 16px on short screens.
+    // A fixed top edge keeps the dialog still when its height changes. The offset centers a 560px dialog.
     marginTop: { default: null, [media.largeScreen]: "max(16px, calc(50vh - 280px))" },
     maxWidth: "100vw",
     position: "relative",

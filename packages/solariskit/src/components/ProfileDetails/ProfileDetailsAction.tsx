@@ -6,7 +6,6 @@ import { press } from "../../css/press";
 import { reset } from "../../css/reset";
 import { colors, media, motion, radii } from "../../css/vars.stylex";
 
-// Copy and Copied icons crossfade instead of swapping.
 const iconIn = stylex.keyframes({
   from: { opacity: 0, transform: "scale(0.95)" },
   to: { opacity: 1, transform: "none" },
@@ -61,7 +60,7 @@ interface ProfileDetailsActionProps {
 }
 
 export function ProfileDetailsAction({ action, icon, label, success = false, testId }: ProfileDetailsActionProps) {
-  // The icon fades only when it changes, not each time the modal opens.
+  // Animate only on change, not when the modal opens.
   const [shownSuccess, setShownSuccess] = useState(success);
   const [iconChanged, setIconChanged] = useState(false);
   if (success !== shownSuccess) {
@@ -78,7 +77,6 @@ export function ProfileDetailsAction({ action, icon, label, success = false, tes
     >
       <span
         {...stylex.props(styles.icon, iconChanged && styles.iconChanged, success && styles.success)}
-        // A new key replays the fade when the icon changes.
         key={String(success)}
       >
         {icon}
