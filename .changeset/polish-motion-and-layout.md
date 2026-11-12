@@ -4,6 +4,9 @@
 
 Polish the modal layout, motion, and touch behavior.
 
+- The Verify Account step always shows a full-width Cancel button. Its buttons are 48px tall below 768px and 44px from 768px.
+- The network modal uses larger icons, hides the scrollbar, and does not focus the search on touch screens (`pointer: coarse`) instead of on mobile user agents.
+- Fix: the connect button fetches the balance whenever `showBalance` shows it at any screen size, and CSS shows or hides it by width. Before, an iPad or a wide phone in landscape left the balance empty, because the fetch followed the user agent.
 - Screen width now chooses the layout, not the user agent. Screens narrower than 768px get the bottom sheet; wider screens get the dialog. An iPad now gets a 360px dialog instead of a full-width sheet, and a narrow desktop window gets the sheet.
 - On wider screens the dialog has a fixed top edge instead of being centered, so it does not move when its height changes, for example while you filter the network list.
 - Dialog exits use a strong ease-out curve instead of `ease-in`. The mobile sheet uses an iOS-style sheet curve.

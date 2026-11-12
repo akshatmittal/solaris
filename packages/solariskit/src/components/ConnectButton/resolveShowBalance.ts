@@ -1,9 +1,7 @@
 import { type ResponsiveValue, normalizeResponsiveValue } from "../../css/responsive";
-import { isMobile } from "../../utils/isMobile";
-
 /**
- * Resolves the responsive `showBalance` prop for the current screen size.
- * Single source of truth for the EVM and Solana connect buttons.
+ * Whether the EVM and Solana connect buttons fetch the balance. A responsive value fetches it when any screen size
+ * shows it; the button's CSS shows or hides it by screen width.
  */
 export function resolveShowBalance(showBalance: ResponsiveValue<boolean> | undefined): boolean {
   if (typeof showBalance === "boolean") {
@@ -11,7 +9,8 @@ export function resolveShowBalance(showBalance: ResponsiveValue<boolean> | undef
   }
 
   if (showBalance) {
-    return normalizeResponsiveValue(showBalance)[isMobile() ? "smallScreen" : "largeScreen"];
+    const { largeScreen, smallScreen } = normalizeResponsiveValue(showBalance);
+    return smallScreen || largeScreen;
   }
 
   return true;

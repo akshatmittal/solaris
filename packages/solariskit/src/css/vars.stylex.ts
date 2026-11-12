@@ -79,4 +79,5 @@ export const media = stylex.defineConsts({
   // Touch screens keep :hover after a tap, so hover styles apply only to a mouse or trackpad.
   hover: "@media (hover: hover) and (pointer: fine)",
   reducedMotion: "@media (prefers-reduced-motion: reduce)",
+  coarsePointer: "@media (pointer: coarse)",
 });

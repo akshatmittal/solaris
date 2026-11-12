@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 
-import { colors } from "./vars.stylex";
+import { colors, media } from "./vars.stylex";
 
 // Neutralizes host-page element styles on the native elements we render.
 export const reset = stylex.create({
@@ -34,13 +34,19 @@ export const reset = stylex.create({
     margin: 0,
     padding: 0,
   },
+  // A thin rounded scrollbar for mouse and trackpad; touch screens hide it.
   scrollbar: {
     scrollbarColor: {
       default: null,
       "@supports not selector(::-webkit-scrollbar)": `${colors.modalTextDim} transparent`,
     },
-    scrollbarWidth: { default: null, "@supports not selector(::-webkit-scrollbar)": "thin" },
+    scrollbarWidth: {
+      default: null,
+      "@supports not selector(::-webkit-scrollbar)": "thin",
+      [media.coarsePointer]: "none",
+    },
     "::-webkit-scrollbar": {
+      display: { default: null, [media.coarsePointer]: "none" },
       width: 10,
     },
     "::-webkit-scrollbar-thumb": {

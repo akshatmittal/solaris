@@ -4,11 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 import { UserRejectedRequestError } from "viem";
 import { useConnection, useSignMessage } from "wagmi";
 
-import { press } from "../../css/press";
-import { reset } from "../../css/reset";
-import { colors, media } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { ActionButton } from "../Button/ActionButton";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { SignatureIcon } from "../Icons/FeatureIcons";
@@ -47,16 +43,6 @@ const styles = stylex.create({
     flexDirection: "column",
     gap: 8,
     paddingInline: 8,
-  },
-  cancel: {
-    alignSelf: "center",
-    borderRadius: 9999,
-    color: colors.modalText,
-    fontSize: 15,
-    fontWeight: 500,
-    minHeight: 44,
-    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.7 } },
-    paddingInline: 12,
   },
 });
 
@@ -103,7 +89,6 @@ export function SignIn({
     getNonce();
   }, [getNonce]);
 
-  const mobile = isMobile();
   const { address, chain: activeChain } = useConnection();
   const { mutateAsync: signMessage } = useSignMessage();
   const canRetryNonce = status === "idle" && !state.nonce && !!state.errorMessage;
@@ -248,26 +233,16 @@ export function SignIn({
                     : t("sign_in.message.send")
           }
           onClick={canRetryNonce ? getNonce : signIn}
-          size={mobile ? "large" : "medium"}
+          size="large"
           testId="auth-message-button"
         />
-        {mobile ? (
-          <ActionButton
-            fullWidth
-            label={t("sign_in.message.cancel")}
-            onClick={onClose}
-            size="large"
-            type="secondary"
-          />
-        ) : (
-          <button
-            {...stylex.props(reset.button, styles.cancel, press.scale)}
-            onClick={onClose}
-            type="button"
-          >
-            {t("sign_in.message.cancel")}
-          </button>
-        )}
+        <ActionButton
+          fullWidth
+          label={t("sign_in.message.cancel")}
+          onClick={onClose}
+          size="large"
+          type="secondary"
+        />
       </div>
     </div>
   );

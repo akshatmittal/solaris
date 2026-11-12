@@ -7,7 +7,6 @@ import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 import { reset } from "../../css/reset";
 import { colors, motion, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent } from "../Dialog/DialogContent";
@@ -65,12 +64,6 @@ const styles = stylex.create({
     maxHeight: 456,
     overflowX: "hidden",
     overflowY: "auto",
-  },
-  listMobile: {
-    scrollbarWidth: "none",
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
   },
   name: {
     flexGrow: 1,
@@ -147,8 +140,9 @@ export function NetworkModalView({
   // useId keeps the heading id unique when several ecosystems (EVM + Solana)
   // mount their network modals on the same page.
   const titleId = `rk_chain_modal_title_${React.useId()}`;
-  const mobile = isMobile();
-  const chainIconSize = mobile ? 32 : 28;
+  // Touch screens get larger icons, and the search does not take focus there because focus opens the keyboard over the list.
+  const coarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const chainIconSize = coarsePointer ? 32 : 28;
   const shouldShowSearch = networks.length > searchThreshold;
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const filteredNetworks = networks.filter(({ id, name }) => {
@@ -196,8 +190,7 @@ export function NetworkModalView({
               {...stylex.props(styles.search)}
               aria-label={t("chains.search.label")}
               autoComplete="off"
-              // Focus the search on open, but not on phones, where focus opens the keyboard over the list.
-              data-auto-focus={!mobile || undefined}
+              data-auto-focus={!coarsePointer || undefined}
               inputMode="search"
               name="network-search"
               onChange={(event) => setSearchQuery(event.target.value)}
@@ -206,7 +199,7 @@ export function NetworkModalView({
               value={searchQuery}
             />
           )}
-          <div {...stylex.props(styles.list, mobile ? styles.listMobile : reset.scrollbar)}>
+          <div {...stylex.props(styles.list, reset.scrollbar)}>
             {filteredNetworks.map(({ iconBackground, iconUrl, id, name }) => {
               const isCurrentNetwork = currentNetworkId === id;
 
