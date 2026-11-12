@@ -105,6 +105,8 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
     const stopWatching = sWallet.watchQrCodeUri((uri) => {
       clearTimeout(qrTimeout);
       setQrCodeUri(uri);
+      // A QR code that loads after the timeout still shows.
+      setConnectionError((error) => (error === "qr_timeout" ? null : error));
     });
     stopQrCodeRef.current = () => {
       clearTimeout(qrTimeout);
@@ -180,7 +182,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       );
       headerLabel =
         selectedWallet?.qrCode &&
-        (qrCodeUri || !connectionError) &&
+        !connectionError &&
         (selectedWallet.name === "WalletConnect"
           ? t("connect_scan.fallback_title")
           : t("connect_scan.title", {
