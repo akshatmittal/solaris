@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
   transpilePackages: ["solariskit"],
+  allowedDevOrigins: ["*.onamp.dev"],
   turbopack: {
     resolveAlias: {
       // @solana/connector lazy-imports @solana/web3.js only for legacy web3.js transaction objects; the Kit signer never takes that path.
