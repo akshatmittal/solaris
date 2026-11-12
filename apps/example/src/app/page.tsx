@@ -57,10 +57,7 @@ function EthereumCard() {
     >
       <p className="eyebrow">Ethereum</p>
       <h2 id="ethereum-heading">EVM wallets</h2>
-      <p className="card-copy">
-        Uses <code>solariskit</code> with Wagmi. Set <code>NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID</code> to test
-        WalletConnect flows.
-      </p>
+      <p className="card-copy">Solaris with Wagmi</p>
       <div className="actions">
         <div className="wallet-actions">
           <ChainSelectButton />
@@ -148,9 +145,7 @@ function SolanaCard() {
     >
       <p className="eyebrow">Solana</p>
       <h2 id="solana-heading">Solana wallets</h2>
-      <p className="card-copy">
-        Uses <code>solariskit/solana</code>, built on ConnectorKit, with Solana Kit-compatible hooks.
-      </p>
+      <p className="card-copy">Solaris with Solana Kit</p>
       <div className="actions">
         <div className="wallet-actions">
           <SolanaChainSelectButton />
