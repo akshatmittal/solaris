@@ -57,7 +57,6 @@ export function SolanaConnectButton({
       buttonReady={hydrated}
       isConnected={wallet.isConnected}
       label={label}
-      mounted={hydrated}
       onOpenAccountModal={openAccountModal ?? noop}
       onOpenConnectModal={openConnectModal ?? noop}
       showBalance={showBalance}

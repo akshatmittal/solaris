@@ -4,7 +4,6 @@ import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
 import { colors } from "../../css/vars.stylex";
-import { t } from "../../translations";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
@@ -109,7 +108,7 @@ export function ConnectModalShellView({
             <DialogHeader
               onClose={onClose}
               testId="connect-header-label"
-              title={t("connect.title")}
+              title="Connect Wallet"
               titleId={titleId}
             />
           </div>
@@ -129,9 +128,9 @@ export function ConnectModalShellView({
                   size="14"
                   weight="regular"
                 >
-                  {t("connect.new_to_ethereum.description")}
+                  New to wallets?
                 </Text>
-                <TextLink href={getWalletUrl}>{t("intro.get.label")}</TextLink>
+                <TextLink href={getWalletUrl}>Get a Wallet</TextLink>
               </div>
             ))}
         </div>

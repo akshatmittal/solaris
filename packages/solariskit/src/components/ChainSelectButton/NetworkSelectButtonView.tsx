@@ -7,7 +7,6 @@ import type { ChainStatus } from "./ChainSelectButton";
 import { reset } from "../../css/reset";
 import { type ResponsiveValue, responsiveDisplay } from "../../css/responsive";
 import { colors } from "../../css/vars.stylex";
-import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { triggerStyles } from "../ConnectButton/ConnectButtonView";
 import { DropdownIcon } from "../Icons/Dropdown";
@@ -79,7 +78,7 @@ export function NetworkSelectButtonView({
       type="button"
     >
       {unsupportedNetwork ? (
-        t("connect_wallet.wrong_network.label")
+        "Wrong Network"
       ) : (
         <>
           {network.hasIcon ? (

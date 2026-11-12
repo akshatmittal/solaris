@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { t } from "../../translations";
 import { ModalSelection } from "../ModalSelection/ModalSelection";
 import { Text } from "../Text/Text";
 
@@ -36,11 +35,6 @@ export interface WalletListViewProps {
   selectedWalletId?: string;
 }
 
-const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others", "Installed"];
-
-export const groupLabel = (groupName: string) =>
-  supportedGroupNames.includes(groupName) ? t(`connector_group.${groupName.toLowerCase()}`) : groupName;
-
 export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletId }: WalletListViewProps) {
   return (
     <>
@@ -56,7 +50,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
                   weight="medium"
                   xstyle={styles.groupLabel}
                 >
-                  {groupLabel(groupName)}
+                  {groupName}
                 </Text>
               ) : null}
               <div {...stylex.props(styles.group)}>

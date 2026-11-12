@@ -16,13 +16,11 @@ export const colors = stylex.defineConsts({
     "color-mix(in srgb, var(--rk-colors-connectButtonTextError) 8%, var(--rk-colors-connectButtonBackgroundError))",
   connectButtonHover:
     "color-mix(in srgb, var(--rk-colors-connectButtonText) 8%, var(--rk-colors-connectButtonBackground))",
-  connectButtonInnerBackground: "var(--rk-colors-connectButtonInnerBackground)",
   connectButtonText: "var(--rk-colors-connectButtonText)",
   connectButtonTextError: "var(--rk-colors-connectButtonTextError)",
   connectionIndicator: "var(--rk-colors-connectionIndicator)",
   error: "var(--rk-colors-error)",
   generalBorder: "var(--rk-colors-generalBorder)",
-  generalBorderDim: "var(--rk-colors-generalBorderDim)",
   menuItemBackground: "var(--rk-colors-menuItemBackground)",
   modalBackdrop: "var(--rk-colors-modalBackdrop)",
   modalBackground: "var(--rk-colors-modalBackground)",
@@ -52,7 +50,6 @@ export const radii = stylex.defineConsts({
 export const shadows = stylex.defineConsts({
   connectButton: "var(--rk-shadows-connectButton)",
   dialog: "var(--rk-shadows-dialog)",
-  walletLogo: "var(--rk-shadows-walletLogo)",
 });
 
 export const blurs = stylex.defineConsts({

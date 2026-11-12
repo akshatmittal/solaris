@@ -7,7 +7,6 @@ import { reset } from "../../css/reset";
 import { colors, motion } from "../../css/vars.stylex";
 import { useClearRecentTransactions } from "../../transactions/useClearRecentTransactions";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
-import { t } from "../../translations";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { AppContext } from "../RainbowKitProvider/AppContext";
@@ -80,7 +79,7 @@ export function TxList({ address }: TxListProps) {
             size="13"
             weight="medium"
           >
-            {t("profile.transactions.recent.title")}
+            Recent Transactions
           </Text>
           {visibleTxs.length > 0 && (
             <button
@@ -88,7 +87,7 @@ export function TxList({ address }: TxListProps) {
               onClick={clearRecentTransactions}
               type="button"
             >
-              {t("profile.transactions.clear.label")}
+              Clear All
             </button>
           )}
         </div>
@@ -106,11 +105,7 @@ export function TxList({ address }: TxListProps) {
               size="14"
               weight="regular"
             >
-              {appName
-                ? t("profile.transactions.description", {
-                    appName,
-                  })
-                : t("profile.transactions.description_fallback")}
+              {appName ? `${appName} transactions will appear here.` : "Your transactions will appear here."}
             </Text>
           </div>
         )}
@@ -121,7 +116,7 @@ export function TxList({ address }: TxListProps) {
             href={`${explorerLink}/address/${address}`}
             tall
           >
-            {t("profile.explorer.label")}
+            View on Explorer
             <ExternalLinkIcon />
           </TextLink>
         </div>

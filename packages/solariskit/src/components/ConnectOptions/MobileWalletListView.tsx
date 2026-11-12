@@ -4,7 +4,6 @@ import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
 import { colors } from "../../css/vars.stylex";
-import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
@@ -163,7 +162,7 @@ export function MobileWalletItemView({
                 size="12"
                 weight="medium"
               >
-                {t("connect.recent")}
+                Recent
               </Text>
             )}
           </span>
@@ -216,7 +215,7 @@ export function MobileWalletListView({
       <div {...stylex.props(styles.header)}>
         <DialogHeader
           onClose={onClose}
-          title={t("connect.title")}
+          title="Connect Wallet"
           titleId={titleId}
         />
       </div>
@@ -231,7 +230,7 @@ export function MobileWalletListView({
             size="14"
             weight="medium"
           >
-            {t("connect.status.declined")}
+            Connection declined
           </Text>
         </div>
       )}
@@ -241,9 +240,9 @@ export function MobileWalletListView({
           size="14"
           weight="regular"
         >
-          {t("connect.new_to_ethereum.description")}
+          New to wallets?
         </Text>
-        <TextLink href={getWalletUrl}>{t("intro.get.label")}</TextLink>
+        <TextLink href={getWalletUrl}>Get a Wallet</TextLink>
       </div>
       {Disclaimer && (
         <div {...stylex.props(styles.disclaimer)}>

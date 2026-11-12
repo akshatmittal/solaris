@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
-import { t } from "../../translations";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
@@ -68,9 +67,7 @@ export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet:
           size="18"
           weight="semibold"
         >
-          {t("connect.status.connect_mobile", {
-            wallet: wallet.name,
-          })}
+          Continue in {wallet.name}
         </Text>
         <Text
           align="center"
@@ -78,9 +75,7 @@ export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet:
           size="15"
           weight="regular"
         >
-          {t("connect.status.confirm_mobile", {
-            wallet: wallet.name,
-          })}
+          Accept connection request in the wallet
         </Text>
       </div>
       <span {...stylex.props(styles.spinner)}>

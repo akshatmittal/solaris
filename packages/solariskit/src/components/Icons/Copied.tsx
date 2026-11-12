@@ -9,7 +9,7 @@ export const CopiedIcon = () => (
   >
     <title>Copied</title>
     <path
-      d="M3 8.5L6.5 12L13 4.5"
+      d="M3 8.5 6.5 12 13 4.5"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"

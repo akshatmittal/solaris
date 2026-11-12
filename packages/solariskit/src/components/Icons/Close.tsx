@@ -9,7 +9,7 @@ export const CloseIcon = () => (
     width="20"
   >
     <path
-      d="M5.5 5.5L14.5 14.5M14.5 5.5L5.5 14.5"
+      d="m5.5 5.5 9 9m0-9-9 9"
       stroke="currentColor"
       strokeLinecap="round"
       strokeWidth="2"

@@ -9,7 +9,7 @@ export const ExternalLinkIcon = () => (
     width="16"
   >
     <path
-      d="M4.5 11.5L11.5 4.5M5.5 4.5H11.5V10.5"
+      d="m4.5 11.5 7-7m-6 0h6v6"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"

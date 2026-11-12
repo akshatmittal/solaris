@@ -2,7 +2,6 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { ActionButton } from "../Button/ActionButton";
@@ -69,8 +68,8 @@ export function ConnectDetail({
     onClick?: () => void;
   } | null = showWalletConnectModal
     ? {
-        description: t("connect.walletconnect.description"),
-        label: t("connect.walletconnect.open.label"),
+        description: "Need the WalletConnect modal?",
+        label: "Open",
         onClick: () => {
           onClose();
           showWalletConnectModal();
@@ -78,11 +77,9 @@ export function ConnectDetail({
       }
     : hasQrCode
       ? {
-          description: t("connect.secondary_action.get.description", {
-            wallet: shortName ?? name,
-          }),
+          description: `Don’t have ${shortName ?? name}?`,
           href: GET_WALLET_URL,
-          label: t("connect.secondary_action.get.label", { wallet: shortName ?? name }),
+          label: `Get ${shortName ?? name}`,
         }
       : null;
 
