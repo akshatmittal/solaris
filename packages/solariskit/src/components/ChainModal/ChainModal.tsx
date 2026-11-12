@@ -23,9 +23,11 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
       onMutate: ({ chainId: _chainId }) => {
         setPendingChainId(_chainId);
       },
+      onSuccess: () => {
+        onClose();
+      },
       onSettled: () => {
         setPendingChainId(null);
-        onClose();
       },
     },
   });
