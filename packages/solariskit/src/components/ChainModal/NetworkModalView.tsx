@@ -16,6 +16,11 @@ import { DisconnectSqIcon } from "../Icons/DisconnectSq";
 import { MenuButton } from "../MenuButton/MenuButton";
 import { Text } from "../Text/Text";
 
+const appear = stylex.keyframes({
+  from: { opacity: 0, visibility: "hidden" },
+  to: { opacity: 1, visibility: "visible" },
+});
+
 const styles = stylex.create({
   container: {
     display: "flex",
@@ -81,7 +86,13 @@ const styles = stylex.create({
   connected: {
     color: colors.accentColor,
   },
+  // The delay hides the label when the wallet switches without a confirmation.
   pending: {
+    animationDelay: "300ms",
+    animationDuration: motion.fast,
+    animationFillMode: "backwards",
+    animationName: appear,
+    animationTimingFunction: "ease-out",
     color: colors.modalTextSecondary,
   },
   pendingDot: {
@@ -214,7 +225,7 @@ export function NetworkModalView({
                   {isCurrentNetwork && (
                     <span {...stylex.props(styles.status, styles.connected)}>{t("chains.connected")}</span>
                   )}
-                  {pendingNetworkId === id && (
+                  {pendingNetworkId === id && !isCurrentNetwork && (
                     <span {...stylex.props(styles.status, styles.pending)}>
                       {t("chains.confirm")}
                       <span {...stylex.props(styles.pendingDot)} />
