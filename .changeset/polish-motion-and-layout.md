@@ -9,7 +9,7 @@ Polish the modal layout, motion, and touch behavior.
 - Fix: the connect button fetches the balance whenever `showBalance` shows it at any screen size, and CSS shows or hides it by width. Before, an iPad or a wide phone in landscape left the balance empty, because the fetch followed the user agent.
 - Screen width now chooses the layout, not the user agent. Screens narrower than 768px get the bottom sheet; wider screens get the dialog. An iPad now gets a 360px dialog instead of a full-width sheet, and a narrow desktop window gets the sheet.
 - On wider screens the dialog has a fixed top edge instead of being centered, so it does not move when its height changes, for example while you filter the network list.
-- Fix: modals fit short screens, such as a phone in landscape. Content taller than the screen scrolls, and the network list shrinks so the title and search stay visible. Before, content outside the screen could not be reached.
+- Fix: modals fit short screens, such as a phone in landscape. Content taller than the screen scrolls with a thin scrollbar, and a new view starts at the top. The network list and the desktop wallet list shrink so the title, search, and footer stay visible. Before, content outside the screen could not be reached.
 - Dialog exits use a strong ease-out curve instead of `ease-in`. The mobile sheet uses an iOS-style sheet curve.
 - Buttons, triggers, wallet tiles, and links scale to 0.97 while pressed; network, transaction, and wallet rows darken past their hover color. Disabled controls do not react to a press. With reduced motion turned on, nothing scales.
 - Hover styles apply only to devices with a mouse or trackpad, so they no longer stick after a tap on touch screens.

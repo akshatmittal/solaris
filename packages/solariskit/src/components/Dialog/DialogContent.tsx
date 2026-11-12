@@ -1,7 +1,8 @@
-import React, { type ReactNode, useEffect, useRef, useState } from "react";
+import React, { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { reset } from "../../css/reset";
 import { colors, media, motion, radii, shadows } from "../../css/vars.stylex";
 import { isMobile } from "../../utils/isMobile";
 
@@ -44,7 +45,7 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     maxHeight: {
-      default: "calc(100dvh - 40px - env(safe-area-inset-bottom, 0px))",
+      default: "calc(100dvh - max(40px, env(safe-area-inset-top, 0px) + 8px) - env(safe-area-inset-bottom, 0px))",
       [media.largeScreen]: "calc(100dvh - max(16px, calc(50vh - 280px)) - 18px)",
     },
     overflowX: "hidden",
@@ -52,9 +53,22 @@ const styles = stylex.create({
   },
 });
 
-export function DialogContent({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
+export function DialogContent({
+  children,
+  view,
+  wide = false,
+}: {
+  children: ReactNode;
+  view?: string;
+  wide?: boolean;
+}) {
   const measureRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>();
+
+  // A new view starts at the top, not at the scroll position of the previous one.
+  useLayoutEffect(() => {
+    measureRef.current?.scrollTo(0, 0);
+  }, [view]);
 
   useEffect(() => {
     const measure = measureRef.current;
@@ -78,7 +92,7 @@ export function DialogContent({ children, wide = false }: { children: ReactNode;
       >
         <div
           ref={measureRef}
-          {...stylex.props(styles.measure)}
+          {...stylex.props(styles.measure, reset.scrollbar)}
         >
           {children}
         </div>

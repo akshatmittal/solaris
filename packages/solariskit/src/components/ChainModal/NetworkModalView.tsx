@@ -65,6 +65,8 @@ const styles = stylex.create({
     gap: 2,
     marginInline: -4,
     maxHeight: 456,
+    // Two rows stay visible; below that the dialog scrolls instead.
+    minHeight: 96,
     overflowX: "hidden",
     overflowY: "auto",
   },

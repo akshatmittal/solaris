@@ -21,8 +21,10 @@ const fadeIn = stylex.keyframes({
 });
 
 const styles = stylex.create({
+  // On short screens the shell shrinks to the dialog, so the wallet list scrolls and the header and footer stay visible.
   shell: {
     display: "flex",
+    minHeight: 0,
   },
   swap: {
     animationDuration: motion.enter,
