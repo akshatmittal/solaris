@@ -1,5 +1,27 @@
 # example
 
+## 0.0.10
+
+### Patch Changes
+
+- 3967211: Allow `*.onamp.dev` in `allowedDevOrigins`, so the example dev server works through an Amp portal URL.
+- f62dbf0: Use Inter through `next/font` for the example page, the same as CreateMyToken. The Solaris modals and buttons inherit it.
+- 7b282ca: Use a light page background and white cards in the example, matching CreateMyToken.
+- 97da3d4: Add Arbitrum, OP, Avalanche, and Unichain to the EVM example. With 8 networks, the network modal shows its search field.
+- 21999ee: Add a Light/Dark toggle to the example. It switches the SolarisKit theme for both cards. The page itself stays light. The choice is kept in the URL (`?theme=dark`) with `nuqs`, so a link opens the same preview.
+- 8d7c391: Add Sign-In with Ethereum to the EVM card so the sign-in modal can be previewed. The example creates the SIWE message with `viem/siwe` and verifies the signature in the browser, so it needs no backend.
+- 88f6ae2: Present Solaris as a standalone project. The READMEs, package metadata, and example app describe SolarisKit on its own, with a short note that it started as a fork of RainbowKit. The LICENSE keeps the original RainbowKit copyright notice.
+- Updated dependencies [39fff32]
+- Updated dependencies [aa507aa]
+- Updated dependencies [7868da3]
+- Updated dependencies [7868da3]
+- Updated dependencies [e5bb98f]
+- Updated dependencies [7fba85b]
+- Updated dependencies [3967211]
+- Updated dependencies [88f6ae2]
+- Updated dependencies [87ee57a]
+  - solariskit@1.8.0
+
 ## 0.0.9
 
 ### Patch Changes
