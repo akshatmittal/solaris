@@ -1,5 +1,68 @@
 # solariskit
 
+## 1.8.0
+
+### Minor Changes
+
+- e5bb98f: Remove legacy RainbowKit code.
+
+  - Remove the Rainbow enhanced-provider ENS fallback, its HTTP client, and its localStorage cache. ENS names come from wagmi `useEnsName` when mainnet is configured.
+  - Stop writing `rk-version` to localStorage.
+  - Remove the `__private__` export.
+  - Remove `@tanstack/react-query` from the peer dependencies. The package no longer imports it. wagmi still needs it.
+  - Remove unused helpers.
+  - Remove the wide connect modal and the `modalSize` prop from `RainbowKitProvider` and `SolanaKitProvider`. The connect modal is always the 360px compact layout on desktop and the bottom sheet on mobile.
+  - Wallet grouping uses `Object.groupBy`. This needs Chrome 117, Firefox 119, or Safari 17.4 or later.
+
+- 3967211: Make the bundle smaller. An app with the provider, `ConnectButton`, and `getDefaultConfig` now adds about 104 kB minified (38 kB gzip) instead of 115 kB (40 kB gzip).
+
+  - Ship the library as one file per module instead of one bundle per entry, so bundlers drop the code that the app does not import. An import of the themes only now adds about 3 kB instead of 14 kB.
+  - Remove the theme variables that no component uses: the colors `actionButtonBorder`, `actionButtonBorderMobile`, `connectButtonInnerBackground`, `downloadBottomCardBackground`, `downloadTopCardBackground`, `generalBorderDim`, and `selectedOptionBorder`, and the shadows `profileDetailsAction`, `selectedOption`, `selectedWallet`, and `walletLogo`. Remove these keys from custom themes that set them.
+  - Minify `styles.css`.
+  - Optimize the wallet icons and the inline icon paths.
+
+- 87ee57a: Replace vanilla-extract with StyleX and redesign the UI.
+
+  Styles now compile at build time to one atomic stylesheet. `solariskit/styles.css` is smaller (about 27 kB, 5 kB gzip, down from 45 kB), and the runtime sprinkles class map is no longer in the JavaScript bundle. The `@vanilla-extract/*` and `clsx` dependencies are replaced by `@stylexjs/stylex`. The package is now marked `sideEffects: false`. Consumers still import `solariskit/styles.css` and need no StyleX build plugin.
+
+  The theme API does not change. `lightTheme`, `darkTheme`, `midnightTheme`, `cssStringFromTheme`, and `cssObjectFromTheme` keep their signatures, and themes still set the same `--rk-*` CSS variables.
+
+  The modals and buttons keep the same elements and layout, with a cleaner design:
+
+  - The modals and buttons use the page font by default (new `fontStack: "inherit"`, now the default). `fontStack: "system"` and `"rounded"` still give a fixed font stack. Typography uses a 400/500/600 weight scale. Dialog titles, section titles, and buttons use Title Case ("Connect Wallet", "Switch Network", "Verify Account", "Copy Address"). Descriptions and status text use sentence case.
+  - The default blue accent uses the Apple system blues with white text: `#007AFF` in the light theme, and `#0A84FF` in the dark and midnight themes.
+  - Scrolling wallet and network lists use a thin rounded scrollbar in the dim text color, with no arrows or track. The mobile network list still hides its scrollbar.
+  - Wallet and network rows are transparent with a hover fill. The selected network has a 10% accent tint and a "Connected" label. Wallet and network icons have no border. MetaMask Mobile uses the same fox icon as the MetaMask extension.
+  - All modals are 360px wide with a 24px content inset.
+  - The connecting views show a small spinner under the text, in the place where Retry appears after a decline. The wallet icon has no ring. The icon, text, and spinner or Retry are centered in the card together and do not move between the two states. Mobile wallet tiles show the same spinner in place of the label while connecting.
+  - The "What is a wallet?" screen and the compact Info button are removed. The compact footer and the mobile sheet link straight to the get-wallet page with "New to wallets? Get a Wallet".
+  - The QR code has no border card in light mode, and its modules align with the content edge. Its button reads "Get <wallet>".
+  - The account modal has clearer actions, a green "Copied" state, a "Clear All" link, and a pending-transaction dot on the avatar.
+  - The sign-in view and the empty state use line icons instead of images. When verification fails, the sign-in view drops the used nonce and shows Retry, which fetches a new one.
+  - The mobile sheet has a 4-column wallet grid with full names. It shows the same labelled groups as desktop, so installed wallets (EIP-6963) appear in an "Installed" group above "Popular". Screens narrower than 375px use 2 columns.
+  - The account button shows a loader while the balance loads, and hides the balance and its divider if loading fails or when `showBalance` hides it on small screens. `ConnectButton.Custom` gets `account.isBalanceLoading`.
+  - Trigger labels are trimmed to cap height, so names and balances center on their icons in every font.
+  - Buttons no longer grow on hover or shrink on press. On hover, the background fades over 100ms to an 8% tint of the text color, which also shows on dark and black backgrounds. Keyboard focus shows a visible outline.
+  - Dialogs animate out as well as in, including when a wallet connects or disconnects. With reduced motion, dialogs only fade.
+  - All motion uses one duration set: 100ms for hover and press, 150ms to open and 100ms to close dialogs, 200ms and 150ms for the mobile sheet, and 1s for every loading loop.
+
+### Patch Changes
+
+- 39fff32: Align the Solana and EVM connect flows.
+
+  - The Solana connect modal now uses the EVM status view on desktop. Picking a wallet shows "Opening <wallet>…" with a spinner and a back button, and a declined connection shows "Connection declined" with Retry.
+  - The Solana connect modal no longer closes when the wallet declines the connection, and it no longer shows the raw wallet error when it opens again.
+  - On mobile, EVM wallet tiles now show a spinner while connecting, and both EVM and Solana sheets show "Connection declined" when the wallet declines.
+  - On desktop, an EVM wallet that declines at once (within 50ms) now shows Retry instead of a spinner that never stops.
+
+- aa507aa: Modals now animate their height when the content changes, for example from the wallet list to the connecting status, to the sign-in step, or while filtering networks. The width stays fixed. The animation uses the 150ms enter duration, does not run when a modal first opens, and is off with reduced motion.
+- 7868da3: Keep the network modal open when the network switch fails, for example when the user rejects the request in the wallet. The modal now closes only after a successful switch.
+- 7868da3: Fix the status flash on a network row for wallets that switch the network without a confirmation. A row that shows "Connected" no longer shows "Confirm in wallet" also, and "Confirm in wallet" now shows after a delay of 300 ms.
+- 7fba85b: Simplify the build. The `[data-rk]` selector prefix now comes from the Lightning CSS step in the StyleX plugin, so PostCSS, Autoprefixer, `postcss-prefix-selector`, and `@rollup/plugin-replace` are no longer dev dependencies. `styles.css` drops vendor prefixes that the default browserslist does not need, such as `-moz-appearance` and `::-moz-placeholder`. The package version is set with tsdown `define`, and translations load as JSON.
+- 88f6ae2: Present Solaris as a standalone project. The READMEs, package metadata, and example app describe SolarisKit on its own, with a short note that it started as a fork of RainbowKit. The LICENSE keeps the original RainbowKit copyright notice.
+- Updated dependencies [88f6ae2]
+  - @akshatmittal/polycons@1.1.1
+
 ## 1.7.0
 
 ### Minor Changes
