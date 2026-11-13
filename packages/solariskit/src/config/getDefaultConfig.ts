@@ -8,7 +8,7 @@ import type { RainbowKitWalletConnectParameters, WalletList } from "../wallets/W
 
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
-import { base, injectedWallet, metaMaskWallet, safeWallet, walletConnectWallet } from "../wallets/walletConnectors";
+import { base, injectedWallet, safeWallet, walletConnectWallet } from "../wallets/walletConnectors";
 
 export type _chains = readonly [RainbowKitChain, ...RainbowKitChain[]];
 
@@ -67,7 +67,7 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
     wallets || [
       {
         groupName: "Popular",
-        wallets: [safeWallet, injectedWallet, base, metaMaskWallet, walletConnectWallet],
+        wallets: [injectedWallet, safeWallet, base, walletConnectWallet],
       },
     ],
     {

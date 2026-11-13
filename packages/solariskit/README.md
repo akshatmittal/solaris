@@ -26,20 +26,20 @@ In an existing React app:
 npm install solariskit wagmi@^3 viem@^2 @tanstack/react-query@^5
 ```
 
-The default EVM wallet list includes Safe, injected browser wallets, Base, MetaMask Mobile, and WalletConnect.
+The default EVM wallet list includes injected browser wallets, Safe, Base, and WalletConnect.
 Install the optional peers used by that list:
 
 ```bash
 npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @safe-global/safe-apps-provider@^0.18.6 @safe-global/safe-apps-sdk@^9.1.0
 ```
 
-| Integration                       | Additional dependencies                                         |
-| --------------------------------- | --------------------------------------------------------------- |
-| Injected browser wallets          | None                                                            |
-| WalletConnect and MetaMask Mobile | `@walletconnect/ethereum-provider`                              |
-| Base Account                      | `@base-org/account`                                             |
-| Safe                              | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
-| Solana                            | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
+| Integration              | Additional dependencies                                         |
+| ------------------------ | --------------------------------------------------------------- |
+| Injected browser wallets | None                                                            |
+| WalletConnect            | `@walletconnect/ethereum-provider`                              |
+| Base Account             | `@base-org/account`                                             |
+| Safe                     | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
+| Solana                   | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
 
 These peers are optional at the package level, but required when using the corresponding integration.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
@@ -117,9 +117,8 @@ Use browser-safe RPC credentials and restrict them at your RPC provider; never e
 
 ### Custom wallet lists
 
-The wallet factories exported by `solariskit/wallets` are `base`, `injectedWallet`, `metaMaskWallet`, `safeWallet`, and
-`walletConnectWallet`. `metaMaskWallet` is the MetaMask Mobile integration; browser extension wallets are discovered
-through the injected wallet flow.
+The wallet factories exported by `solariskit/wallets` are `base`, `injectedWallet`, `safeWallet`, and
+`walletConnectWallet`. Browser extension wallets, such as MetaMask, are discovered through the injected wallet flow.
 
 For an injected-only setup with no optional wallet SDKs or WalletConnect project:
 
@@ -167,7 +166,7 @@ import { darkTheme, RainbowKitProvider } from "solariskit";
 - `ChainSelectButton`: `chainStatus` (`"full"`, `"icon"`, `"name"`, or `"none"`).
 - `accountStatus`, `showBalance`, and `chainStatus` also accept responsive values such as
   `{ smallScreen: "icon", largeScreen: "full" }` for `chainStatus`.
-- `WalletButton` connects to a specific configured wallet, for example `<WalletButton wallet="metaMask" />`.
+- `WalletButton` connects to a specific configured wallet, for example `<WalletButton wallet="base" />`.
 - `ConnectButton.Custom` and `WalletButton.Custom` expose render-prop APIs for custom buttons.
 
 ### Open modals from your own buttons

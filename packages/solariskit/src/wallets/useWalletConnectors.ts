@@ -124,7 +124,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     }
   }
 
-  // WalletConnect wallets (WalletConnect, MetaMask Mobile) share one provider, and it reports each new URI only to the
+  // WalletConnect wallets share one provider, and it reports each new URI only to the
   // connector that connected first. Listen on all of them, so a second wallet still gets its URI.
   const watchWalletConnectUri = (
     connector: Connector,
