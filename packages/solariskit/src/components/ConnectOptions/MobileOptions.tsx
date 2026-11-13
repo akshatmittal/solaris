@@ -45,8 +45,7 @@ export async function connectMobile(wallet: WalletConnector, onClose: () => void
 
   // If the id is "walletConnect" then "showWalletConnectModal" will always be true
   if (showWalletConnectModal) {
-    showWalletConnectModal();
-    onClose?.();
+    await showWalletConnectModal(onClose);
     return;
   }
 

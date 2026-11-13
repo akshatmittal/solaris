@@ -72,8 +72,7 @@ export function ConnectDetail({
         description: t("connect.walletconnect.description"),
         label: t("connect.walletconnect.open.label"),
         onClick: () => {
-          onClose();
-          showWalletConnectModal();
+          showWalletConnectModal(onClose);
         },
       }
     : showQrCode
