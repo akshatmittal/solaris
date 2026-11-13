@@ -1,13 +1,14 @@
-name: Publish Example
+name: Example
 
 on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: github-pages
+  group: example-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -39,6 +40,7 @@ jobs:
         run: touch apps/example/out/.nojekyll
 
       - name: Upload Pages Artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: apps/example/out
@@ -46,6 +48,7 @@ jobs:
   deploy:
     runs-on: ubuntu-26.04
     needs: build
+    if: github.event_name != 'pull_request'
     permissions:
       pages: write
       id-token: write
