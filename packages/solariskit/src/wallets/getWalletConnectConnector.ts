@@ -150,7 +150,12 @@ function createWalletConnectConnector({
         const provider = await connector.getProvider();
         let modalPromise = walletConnectModals.get(provider);
         if (!modalPromise) {
-          modalPromise = createWalletConnectModal(provider, projectId, config.chains, walletConnectParameters);
+          modalPromise = createWalletConnectModal(provider, projectId, config.chains, walletConnectParameters).catch(
+            (error: unknown) => {
+              walletConnectModals.delete(provider);
+              throw error;
+            },
+          );
           walletConnectModals.set(provider, modalPromise);
         }
         const modal = await modalPromise;

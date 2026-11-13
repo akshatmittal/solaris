@@ -41,7 +41,7 @@ npm install @walletconnect/ethereum-provider@^2.21.1 @reown/appkit@^1.8.19 @base
 | Safe                     | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
 | Solana                   | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
 
-These peers are optional at the package level, but required when using the corresponding integration. WalletConnect needs `@reown/appkit` only for the "Open" button, which shows the official WalletConnect modal; without it, the QR code still works and the button shows an error.
+These peers are optional at the package level, but required when using the corresponding integration. WalletConnect uses `@reown/appkit` for the official WalletConnect modal: the "Open" button on desktop, and the wallet list on mobile.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
 
 ## EVM quick start
