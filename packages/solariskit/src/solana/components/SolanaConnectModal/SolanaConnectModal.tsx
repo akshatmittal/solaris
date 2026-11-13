@@ -107,7 +107,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
       open={open}
       titleId={titleId}
     >
-      <DialogContent>
+      <DialogContent view={showStatus ? "status" : "list"}>
         <ConnectModalShellView
           getWalletUrl={SOLANA_GET_WALLET_URL}
           hideFooter={!mobile && wallets.length === 0}

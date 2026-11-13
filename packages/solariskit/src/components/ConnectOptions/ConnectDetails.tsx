@@ -129,13 +129,15 @@ export function ConnectDetail({
       )}
       {ready && secondaryAction && (
         <div {...stylex.props(styles.secondaryAction)}>
-          <Text
-            color={secondaryAction.error ? "error" : "modalTextSecondary"}
-            size="14"
-            weight="regular"
-          >
-            {secondaryAction.description}
-          </Text>
+          <div aria-live="polite">
+            <Text
+              color={secondaryAction.error ? "error" : "modalTextSecondary"}
+              size="14"
+              weight="regular"
+            >
+              {secondaryAction.description}
+            </Text>
+          </div>
           <ActionButton
             disabled={secondaryAction.busy}
             href={secondaryAction.href}
