@@ -176,10 +176,13 @@ function createWalletConnectConnector({
         return {
           shown,
           close: () => {
-            closedByUs = true;
-            cancelError = undefined;
             unsubscribe();
-            void modal.close();
+            // A replaced session must not clear the error or close the modal of the session that replaced it.
+            if (isActive()) {
+              cancelError = undefined;
+              void modal.close();
+            }
+            closedByUs = true;
           },
         };
       },
