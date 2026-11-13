@@ -10,6 +10,6 @@ Rename every RainbowKit name to Solaris. The old names are removed, so update yo
 - The `RainbowKitWalletConnectParameters` type is now `SolarisWalletConnectParameters`.
 - A custom `Wallet`'s `createConnector` now receives `walletDetails.solarisDetails` instead of `walletDetails.rkDetails`.
 - The theme CSS custom properties are now `--solaris-*` instead of `--rk-*`. The provider root attribute is now `data-solaris` instead of `data-rk`. Update any CSS that reads these.
-- `data-testid` values now start with `solaris-` instead of `rk-`.
+- The components no longer render `data-testid` attributes.
 
 Saved wallet and transaction state in `localStorage` keeps its keys, so recent wallets and pending transactions survive the upgrade.

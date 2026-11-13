@@ -136,7 +136,6 @@ export function ProfileDetailsView({
             action={onDisconnect}
             icon={<DisconnectIcon />}
             label={t("profile.disconnect.label")}
-            testId="disconnect-button"
           />
         </div>
       </div>

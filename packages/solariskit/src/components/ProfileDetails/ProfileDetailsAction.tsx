@@ -56,10 +56,9 @@ interface ProfileDetailsActionProps {
   action?: () => void;
   icon: JSX.Element;
   success?: boolean;
-  testId?: string;
 }
 
-export function ProfileDetailsAction({ action, icon, label, success = false, testId }: ProfileDetailsActionProps) {
+export function ProfileDetailsAction({ action, icon, label, success = false }: ProfileDetailsActionProps) {
   // Animate only on change, not when the modal opens.
   const [shownSuccess, setShownSuccess] = useState(success);
   const [iconChanged, setIconChanged] = useState(false);
@@ -71,7 +70,6 @@ export function ProfileDetailsAction({ action, icon, label, success = false, tes
   return (
     <button
       {...stylex.props(reset.button, styles.action, success && styles.successAction, press.scale)}
-      data-testid={testId ? `solaris-${testId}` : undefined}
       onClick={action}
       type="button"
     >

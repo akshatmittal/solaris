@@ -61,7 +61,6 @@ export function SolanaConnectButton({
       onOpenAccountModal={openAccountModal ?? noop}
       onOpenConnectModal={openConnectModal ?? noop}
       showBalance={showBalance}
-      testIdPrefix="solana-"
     />
   );
 }

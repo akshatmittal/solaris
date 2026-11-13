@@ -49,7 +49,6 @@ export function ActionButton({
   label,
   onClick,
   size = "medium",
-  testId,
   type = "primary",
 }: {
   disabled?: boolean;
@@ -58,20 +57,16 @@ export function ActionButton({
   label: string;
   onClick?: () => void;
   size?: "small" | "medium" | "large";
-  testId?: string;
   type?: "primary" | "secondary";
 }) {
-  const props = {
-    ...stylex.props(
-      reset.button,
-      styles.base,
-      styles[size],
-      disabled ? styles.disabled : styles[type],
-      fullWidth && styles.fullWidth,
-      press.scale,
-    ),
-    "data-testid": testId ? `solaris-${testId}` : undefined,
-  };
+  const props = stylex.props(
+    reset.button,
+    styles.base,
+    styles[size],
+    disabled ? styles.disabled : styles[type],
+    fullWidth && styles.fullWidth,
+    press.scale,
+  );
 
   return href && !disabled ? (
     <a

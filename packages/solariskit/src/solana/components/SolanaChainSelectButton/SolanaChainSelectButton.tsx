@@ -41,7 +41,6 @@ export function SolanaChainSelectButton({
       }
       networkCount={clusters.length}
       onOpenNetworkModal={openChainModal}
-      testIdPrefix="solana-"
     />
   );
 }

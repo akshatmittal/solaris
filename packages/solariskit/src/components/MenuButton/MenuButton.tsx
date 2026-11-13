@@ -47,7 +47,6 @@ export function MenuButton({
   danger = false,
   disabled,
   onClick,
-  testId,
 }: {
   busy: boolean;
   children: React.ReactNode;
@@ -55,14 +54,12 @@ export function MenuButton({
   danger?: boolean;
   disabled: boolean;
   onClick?: () => void;
-  testId?: string;
 }) {
   return (
     <button
       {...stylex.props(reset.button, styles.row, currentlySelected && styles.selected, danger && styles.danger)}
       aria-busy={busy || undefined}
       aria-current={currentlySelected || undefined}
-      data-testid={testId ? `solaris-${testId}` : undefined}
       disabled={currentlySelected || disabled}
       onClick={onClick}
       type="button"

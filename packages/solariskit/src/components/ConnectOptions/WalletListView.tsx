@@ -78,7 +78,6 @@ export function WalletListView({
                     name={wallet.name}
                     onClick={() => onSelectWallet(wallet)}
                     recent={wallet.recent}
-                    testId={`wallet-option-${wallet.id}`}
                     isSolarisConnector={wallet.isSolarisConnector}
                   />
                 ))}

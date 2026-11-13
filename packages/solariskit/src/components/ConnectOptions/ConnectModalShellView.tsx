@@ -118,7 +118,6 @@ export function ConnectModalShellView({
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               onClose={onClose}
-              testId="connect-header-label"
               title={t("connect.title")}
               titleId={titleId}
             />

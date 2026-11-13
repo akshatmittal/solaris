@@ -233,7 +233,6 @@ export function SignIn({
           }
           onClick={canRetryNonce ? getNonce : signIn}
           size="large"
-          testId="auth-message-button"
         />
         <ActionButton
           fullWidth

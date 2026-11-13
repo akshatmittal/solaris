@@ -35,7 +35,6 @@ type Props = {
   name: string;
   iconUrl: string | (() => Promise<string>);
   iconBackground?: string;
-  testId?: string;
   isSolarisConnector?: boolean;
   // The wallet SDK loads; the row cannot be selected.
   loading: boolean;
@@ -53,14 +52,12 @@ export const ModalSelection = ({
   name,
   onClick,
   recent,
-  testId,
 }: Props) => (
   <MenuButton
     busy={loading || connecting}
     currentlySelected={currentlySelected}
     disabled={loading}
     onClick={onClick}
-    testId={testId}
   >
     <AsyncImage
       background={iconBackground}

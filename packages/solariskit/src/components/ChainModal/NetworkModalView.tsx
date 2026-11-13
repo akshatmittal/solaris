@@ -213,7 +213,6 @@ export function NetworkModalView({
                   currentlySelected={isCurrentNetwork}
                   key={String(id)}
                   onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(id)}
-                  testId={`chain-option-${String(id)}`}
                 >
                   {iconUrl && (
                     <AsyncImage
@@ -222,7 +221,6 @@ export function NetworkModalView({
                       radius="full"
                       size={chainIconSize}
                       src={iconUrl}
-                      testId={`chain-option-${String(id)}-icon`}
                     />
                   )}
                   <span {...stylex.props(styles.name)}>{name ?? id}</span>
@@ -254,7 +252,6 @@ export function NetworkModalView({
                 disabled={false}
                 danger
                 onClick={onDisconnectUnsupported}
-                testId="chain-option-disconnect"
               >
                 <span {...stylex.props(styles.disconnectIcon)}>
                   <DisconnectSqIcon size={chainIconSize} />
