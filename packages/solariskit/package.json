@@ -1,6 +1,6 @@
 {
   "name": "solariskit",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "React wallet connection UI for EVM chains and Solana",
   "keywords": [
     "ethereum",
