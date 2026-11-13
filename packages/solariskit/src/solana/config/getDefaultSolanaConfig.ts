@@ -5,14 +5,14 @@ import {
   getDefaultMobileConfig as getConnectorDefaultMobileConfig,
 } from "@solana/connector/headless";
 
-import type { SolanaKitConfig, SolanaNetwork } from "../types";
+import type { SolarisSolanaConfig, SolanaNetwork } from "../types";
 
 /** ConnectorKit's default-config options, minus WalletConnect (unsupported here). */
 export type SolanaDefaultConfigOptions = Omit<DefaultConfigOptions, "walletConnect"> & {
   walletConnect?: never;
 };
 
-export type SolanaDefaultConfig = SolanaKitConfig;
+export type SolanaDefaultConfig = SolarisSolanaConfig;
 
 export type SolanaDefaultConnectorConfig = SolanaDefaultConfig;
 

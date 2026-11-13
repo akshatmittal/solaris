@@ -291,14 +291,17 @@ instance, as above. Wallet controls appear after client hydration.
 Replace imports from `@rainbow-me/rainbowkit` with `solariskit`, including `solariskit/styles.css` and `solariskit/wallets`.
 Then rename these APIs:
 
-| RainbowKit                                     | Solaris                          |
-| ---------------------------------------------- | -------------------------------- |
-| `RainbowKitProvider`                           | `SolarisEthereumProvider`        |
-| `RainbowKitAuthenticationProvider`             | `SolarisAuthenticationProvider`  |
-| `RainbowKitWalletConnectParameters`            | `SolarisWalletConnectParameters` |
-| `walletDetails.rkDetails` in a custom `Wallet` | `walletDetails.solarisDetails`   |
-| `--rk-*` CSS custom properties                 | `--solaris-*`                    |
-| `[data-rk]` selector                           | `[data-solaris]`                 |
+| RainbowKit                                                                   | Solaris                          |
+| ---------------------------------------------------------------------------- | -------------------------------- |
+| `RainbowKitProvider`                                                         | `SolarisEthereumProvider`        |
+| `RainbowKitProviderProps`                                                    | `SolarisEthereumProviderProps`   |
+| `RainbowKitAuthenticationProvider`                                           | `SolarisAuthenticationProvider`  |
+| `RainbowKitWalletConnectParameters`                                          | `SolarisWalletConnectParameters` |
+| `walletDetails.rkDetails` in a custom `Wallet`                               | `walletDetails.solarisDetails`   |
+| `isRainbowKitConnector` (wallet details and `WalletButton.Custom` connector) | `isSolarisConnector`             |
+| `--rk-*` CSS custom properties                                               | `--solaris-*`                    |
+| `[data-rk]` selector                                                         | `[data-solaris]`                 |
+| `data-testid="rk-*"` attributes                                              | Removed                          |
 
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.

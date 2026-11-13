@@ -46,7 +46,7 @@ export type SolanaConnectorConfig = Omit<ConnectorConfig, "walletConnect"> & {
   walletConnect?: never;
 };
 
-export type SolanaKitConfig = Omit<ExtendedConnectorConfig, "walletConnect"> & {
+export type SolarisSolanaConfig = Omit<ExtendedConnectorConfig, "walletConnect"> & {
   mobile?: NonNullable<AppProviderProps["mobile"]>;
   walletConnect?: never;
 };
@@ -69,7 +69,7 @@ export interface SolarisSolanaProviderProps {
   };
   avatar?: AvatarComponent;
   children: React.ReactNode;
-  config?: SolanaKitConfig;
+  config?: SolarisSolanaConfig;
   id?: string;
   theme?: Theme | null;
 }
