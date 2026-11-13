@@ -8,8 +8,8 @@ import { isMobile } from "../../utils/isMobile";
 import { addLatestWalletId, clearLatestWalletId, getLatestWalletId } from "../../wallets/latestWalletId";
 import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
-import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { useConnectModal, useModalState } from "../SolarisEthereumProvider/ModalContext";
+import { WalletButtonContext } from "../SolarisEthereumProvider/WalletButtonContext";
 
 export interface WalletButtonRendererProps {
   wallet?: string;
@@ -35,8 +35,8 @@ export function WalletButtonRenderer({
   const { connectModalOpen } = useModalState();
   const { connector, setConnector } = useContext(WalletButtonContext);
   const [firstConnector] = useWalletConnectors()
-    .filter((wallet) => wallet.isRainbowKitConnector)
-    // RainbowKit/wagmi connector ids can differ in casing, so normalize the comparison.
+    .filter((wallet) => wallet.isSolarisConnector)
+    // Solaris/wagmi connector ids can differ in casing, so normalize the comparison.
     .filter(
       (_wallet) =>
         _wallet.id.toLowerCase() === wallet.toLowerCase() ||
@@ -126,7 +126,7 @@ export function WalletButtonRenderer({
 
           // If openConnectModal is true and user is on mobile or
           // if user hasn't installed the connector then we prompt them
-          // to rainbowkit connect modal
+          // to Solaris connect modal
           if (mobile || isNotSupported) {
             openConnectModal?.();
             setConnector(firstConnector);

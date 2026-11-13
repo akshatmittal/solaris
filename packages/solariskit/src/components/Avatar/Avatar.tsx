@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
-import { AvatarContext } from "../RainbowKitProvider/AvatarContext";
+import { AvatarContext } from "../SolarisEthereumProvider/AvatarContext";
 
 const styles = stylex.create({
   container: {

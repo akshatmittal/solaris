@@ -6,10 +6,10 @@ import {
   NetworkSelectButtonView,
   defaultNetworkSelectChainStatus,
 } from "../../../components/ChainSelectButton/NetworkSelectButtonView";
-import { getChainIconUrl } from "../../../components/RainbowKitProvider/provideRainbowKitChains";
+import { getChainIconUrl } from "../../../components/SolarisEthereumProvider/provideSolarisChains";
 import { useHydrated } from "../../../hooks/useHydrated";
 import { useSolanaCluster } from "../../hooks";
-import { useSolanaChainModal } from "../SolanaKitProvider/SolanaModalContext";
+import { useSolanaChainModal } from "../SolarisSolanaProvider/SolanaModalContext";
 
 const solanaIconUrl = getChainIconUrl("solana");
 
@@ -41,7 +41,6 @@ export function SolanaChainSelectButton({
       }
       networkCount={clusters.length}
       onOpenNetworkModal={openChainModal}
-      testIdPrefix="solana-"
     />
   );
 }

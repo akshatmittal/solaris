@@ -1,4 +1,4 @@
-import type { RainbowKitWalletConnectParameters } from "./Wallet";
+import type { SolarisWalletConnectParameters } from "./Wallet";
 
 interface ComputeMetaDataParameters {
   appName: string;
@@ -12,7 +12,7 @@ export const computeWalletConnectMetaData = ({
   appDescription,
   appUrl,
   appIcon,
-}: ComputeMetaDataParameters): NonNullable<RainbowKitWalletConnectParameters["metadata"]> => {
+}: ComputeMetaDataParameters): NonNullable<SolarisWalletConnectParameters["metadata"]> => {
   return {
     name: appName,
     description: appDescription ?? appName,

@@ -3,14 +3,14 @@ import type { Transport } from "viem";
 import { http, type CreateConfigParameters } from "wagmi";
 import { createConfig } from "wagmi";
 
-import type { RainbowKitChain } from "../components/RainbowKitProvider/RainbowKitChainContext";
-import type { RainbowKitWalletConnectParameters, WalletList } from "../wallets/Wallet";
+import type { SolarisChain } from "../components/SolarisEthereumProvider/SolarisChainContext";
+import type { SolarisWalletConnectParameters, WalletList } from "../wallets/Wallet";
 
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
 import { base, injectedWallet, safeWallet, walletConnectWallet } from "../wallets/walletConnectors";
 
-export type _chains = readonly [RainbowKitChain, ...RainbowKitChain[]];
+export type _chains = readonly [SolarisChain, ...SolarisChain[]];
 
 // Define the '_transports' type as a Record
 // It maps each 'Chain' id to a 'Transport'
@@ -29,7 +29,7 @@ interface GetDefaultConfigParameters<chains extends _chains, transports extends 
   appIcon?: string;
   wallets?: WalletList;
   projectId: string;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
+  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 const createDefaultTransports = <chains extends _chains, transports extends _transports>(

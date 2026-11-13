@@ -9,7 +9,7 @@ import type { useProfile } from "../../hooks/useProfile";
 import { abbreviateETHBalance } from "../ConnectButton/abbreviateETHBalance";
 import { formatAddress } from "../ConnectButton/formatAddress";
 import { formatENS } from "../ConnectButton/formatENS";
-import { ShowRecentTransactionsContext } from "../RainbowKitProvider/ShowRecentTransactionsContext";
+import { ShowRecentTransactionsContext } from "../SolarisEthereumProvider/ShowRecentTransactionsContext";
 import { TxList } from "../Txs/TxList";
 import { ProfileDetailsView } from "./ProfileDetailsView";
 

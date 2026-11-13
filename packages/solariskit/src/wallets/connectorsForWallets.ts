@@ -1,6 +1,6 @@
 import type { CreateConnectorFn } from "wagmi";
 
-import type { RainbowKitWalletConnectParameters, Wallet, WalletDetailsParams, WalletList } from "./Wallet";
+import type { SolarisWalletConnectParameters, Wallet, WalletDetailsParams, WalletList } from "./Wallet";
 
 import { isHexString } from "../utils/colors";
 import { omitUndefinedValues } from "../utils/omitUndefinedValues";
@@ -19,7 +19,7 @@ export interface ConnectorsForWalletsParameters {
   appDescription?: string;
   appUrl?: string;
   appIcon?: string;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
+  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 export const connectorsForWallets = (
@@ -111,19 +111,22 @@ export const connectorsForWallets = (
 
     const walletMetaData = (
       // For now we should only use these as the additional parameters
-      additionalRkParams?: Pick<WalletDetailsParams["rkDetails"], "isWalletConnectModalConnector" | "showQrModal">,
+      additionalSolarisParams?: Pick<
+        WalletDetailsParams["solarisDetails"],
+        "isWalletConnectModalConnector" | "showQrModal"
+      >,
     ) => {
       return {
-        rkDetails: omitUndefinedValues({
+        solarisDetails: omitUndefinedValues({
           ...walletMeta,
           groupIndex,
           groupName,
-          isRainbowKitConnector: true,
-          // These additional params will be used in rainbowkit react tree to
+          isSolarisConnector: true,
+          // These additional params will be used in Solaris react tree to
           // merge `walletConnectWallet` and `walletConnect` connector from wagmi with
           // showQrModal: true. This way we can let the user choose if they want to
           // connect via QR code or open the official walletConnect modal instead
-          ...(additionalRkParams ? additionalRkParams : {}),
+          ...(additionalSolarisParams ? additionalSolarisParams : {}),
         }),
       };
     };

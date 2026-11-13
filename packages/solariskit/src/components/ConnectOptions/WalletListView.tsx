@@ -24,7 +24,7 @@ export interface WalletListViewItem {
   iconBackground?: string;
   iconUrl: string | (() => Promise<string>);
   id: string;
-  isRainbowKitConnector?: boolean;
+  isSolarisConnector?: boolean;
   loading: boolean;
   name: string;
   ready?: boolean;
@@ -78,8 +78,7 @@ export function WalletListView({
                     name={wallet.name}
                     onClick={() => onSelectWallet(wallet)}
                     recent={wallet.recent}
-                    testId={`wallet-option-${wallet.id}`}
-                    isRainbowKitConnector={wallet.isRainbowKitConnector}
+                    isSolarisConnector={wallet.isSolarisConnector}
                   />
                 ))}
               </div>

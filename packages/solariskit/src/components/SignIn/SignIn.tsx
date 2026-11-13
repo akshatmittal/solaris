@@ -9,7 +9,7 @@ import { ActionButton } from "../Button/ActionButton";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { SignatureIcon } from "../Icons/FeatureIcons";
 import { IconTile } from "../Icons/IconTile";
-import { useAuthenticationAdapter } from "../RainbowKitProvider/AuthenticationContext";
+import { useAuthenticationAdapter } from "../SolarisEthereumProvider/AuthenticationContext";
 import { Text } from "../Text/Text";
 
 const styles = stylex.create({
@@ -233,7 +233,6 @@ export function SignIn({
           }
           onClick={canRetryNonce ? getNonce : signIn}
           size="large"
-          testId="auth-message-button"
         />
         <ActionButton
           fullWidth

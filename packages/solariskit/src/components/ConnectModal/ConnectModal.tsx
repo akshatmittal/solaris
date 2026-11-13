@@ -16,7 +16,7 @@ export interface ConnectModalProps {
 export function ConnectModal({ onClose, open }: ConnectModalProps) {
   // Unique per instance so two connect modals (e.g. EVM + Solana islands)
   // never share a DOM id for their aria-labelledby headings.
-  const titleId = `rk_connect_title_${React.useId()}`;
+  const titleId = `solaris_connect_title_${React.useId()}`;
   const connectionStatus = useConnectionStatus();
 
   const { mutate: disconnect } = useDisconnect();

@@ -10,7 +10,7 @@ import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
 import { DisclaimerText } from "../Disclaimer/DisclaimerText";
 import { IconButton } from "../IconButton/IconButton";
 import { BackIcon } from "../Icons/Back";
-import { AppContext } from "../RainbowKitProvider/AppContext";
+import { AppContext } from "../SolarisEthereumProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 
@@ -118,7 +118,6 @@ export function ConnectModalShellView({
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               onClose={onClose}
-              testId="connect-header-label"
               title={t("connect.title")}
               titleId={titleId}
             />

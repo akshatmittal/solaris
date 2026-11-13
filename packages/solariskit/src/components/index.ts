@@ -1,5 +1,5 @@
-export { RainbowKitProvider } from "./RainbowKitProvider/RainbowKitProvider";
-export type { RainbowKitProviderProps } from "./RainbowKitProvider/RainbowKitProvider";
+export { SolarisEthereumProvider } from "./SolarisEthereumProvider/SolarisEthereumProvider";
+export type { SolarisEthereumProviderProps } from "./SolarisEthereumProvider/SolarisEthereumProvider";
 
 export { ConnectButton } from "./ConnectButton/ConnectButton";
 export type { ConnectButtonProps } from "./ConnectButton/ConnectButton";
@@ -14,7 +14,7 @@ export { Avatar } from "./Avatar/Avatar";
 export type { AvatarProps } from "./Avatar/Avatar";
 
 export { EmojiAvatar } from "./Avatar/EmojiAvatar";
-export type { AvatarComponentProps as EmojiAvatarProps } from "./RainbowKitProvider/AvatarContext";
+export type { AvatarComponentProps as EmojiAvatarProps } from "./SolarisEthereumProvider/AvatarContext";
 
 export { AccountModal } from "./AccountModal/AccountModal";
 export type { AccountModalProps } from "./AccountModal/AccountModal";

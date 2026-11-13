@@ -1,13 +1,13 @@
 import { mainnet } from "wagmi/chains";
 
-import { useRainbowKitChains } from "../components/RainbowKitProvider/RainbowKitChainContext";
+import { useSolarisChains } from "../components/SolarisEthereumProvider/SolarisChainContext";
 
 export function useIsMainnetConfigured() {
-  const rainbowKitChains = useRainbowKitChains();
+  const solarisChains = useSolarisChains();
 
   const chainId = mainnet.id;
 
-  const configured = rainbowKitChains.some((rainbowKitChain) => rainbowKitChain.id === chainId);
+  const configured = solarisChains.some((solarisChain) => solarisChain.id === chainId);
 
   return configured;
 }

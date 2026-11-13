@@ -34,11 +34,10 @@ interface AsyncImageProps {
   radius?: number | "full";
   size: number;
   src: string | AsyncImageSrc | undefined;
-  testId?: string;
   useAsImage?: boolean;
 }
 
-export function AsyncImage({ alt, background, radius = 0, size, src: srcProp, testId, useAsImage }: AsyncImageProps) {
+export function AsyncImage({ alt, background, radius = 0, size, src: srcProp, useAsImage }: AsyncImageProps) {
   const src = useAsyncImage(srcProp);
   const isRemoteImage = src?.startsWith("http") ?? false;
   const [isRemoteImageLoaded, setRemoteImageLoaded] = useReducer(() => true, false);
@@ -47,7 +46,6 @@ export function AsyncImage({ alt, background, radius = 0, size, src: srcProp, te
     <div
       {...stylex.props(styles.container)}
       aria-label={alt}
-      data-testid={testId ? `rk-${testId}` : undefined}
       role="img"
       style={{
         background,

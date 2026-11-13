@@ -1,10 +1,10 @@
-import type { RainbowKitWalletConnectParameters, Wallet } from "../../Wallet";
+import type { SolarisWalletConnectParameters, Wallet } from "../../Wallet";
 
 import { getWalletConnectConnector } from "../../getWalletConnectConnector";
 
 export interface WalletConnectWalletOptions {
   projectId: string;
-  options?: RainbowKitWalletConnectParameters;
+  options?: SolarisWalletConnectParameters;
 }
 
 export const walletConnectWallet = ({ projectId, options }: WalletConnectWalletOptions): Wallet => {

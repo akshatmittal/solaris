@@ -35,8 +35,7 @@ type Props = {
   name: string;
   iconUrl: string | (() => Promise<string>);
   iconBackground?: string;
-  testId?: string;
-  isRainbowKitConnector?: boolean;
+  isSolarisConnector?: boolean;
   // The wallet SDK loads; the row cannot be selected.
   loading: boolean;
   // The wallet connects; the row stays selectable, so the user can reopen or repeat it.
@@ -48,19 +47,17 @@ export const ModalSelection = ({
   currentlySelected = false,
   iconBackground,
   iconUrl,
-  isRainbowKitConnector,
+  isSolarisConnector,
   loading,
   name,
   onClick,
   recent,
-  testId,
 }: Props) => (
   <MenuButton
     busy={loading || connecting}
     currentlySelected={currentlySelected}
     disabled={loading}
     onClick={onClick}
-    testId={testId}
   >
     <AsyncImage
       background={iconBackground}
@@ -68,7 +65,7 @@ export const ModalSelection = ({
       size={32}
       src={iconUrl}
       // EIP-6963 icons render more reliably as a plain <img />.
-      useAsImage={!isRainbowKitConnector}
+      useAsImage={!isSolarisConnector}
     />
     <span {...stylex.props(styles.label)}>
       <span {...stylex.props(styles.name)}>{name}</span>

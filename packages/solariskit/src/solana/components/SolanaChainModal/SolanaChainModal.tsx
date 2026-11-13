@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { type NetworkModalId, NetworkModalView } from "../../../components/ChainModal/NetworkModalView";
-import { getChainIconUrl } from "../../../components/RainbowKitProvider/provideRainbowKitChains";
+import { getChainIconUrl } from "../../../components/SolarisEthereumProvider/provideSolarisChains";
 import { useSolanaCluster } from "../../hooks";
 
 export interface SolanaChainModalProps {

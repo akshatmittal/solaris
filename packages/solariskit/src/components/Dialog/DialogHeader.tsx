@@ -20,13 +20,11 @@ const styles = stylex.create({
 export function DialogHeader({
   left,
   onClose,
-  testId,
   title,
   titleId,
 }: {
   left?: ReactNode;
   onClose?: () => void;
-  testId?: string;
   title?: ReactNode;
   titleId?: string;
 }) {
@@ -40,7 +38,6 @@ export function DialogHeader({
           color="modalText"
           id={titleId}
           size="18"
-          testId={testId}
           weight="semibold"
         >
           {title}

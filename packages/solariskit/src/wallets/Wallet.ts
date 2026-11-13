@@ -3,7 +3,7 @@ import type { WalletConnectParameters } from "wagmi/connectors";
 
 import type { WalletConnectWalletOptions } from "./walletConnectors/walletConnectWallet/walletConnectWallet";
 
-type RainbowKitConnector = {
+type SolarisConnector = {
   mobile?: {
     getUri?: (uri: string) => string;
   };
@@ -27,11 +27,11 @@ export type Wallet = {
   installed?: boolean;
   hidden?: () => boolean;
   createConnector: (walletDetails: WalletDetailsParams) => CreateConnectorFn;
-} & RainbowKitConnector;
+} & SolarisConnector;
 
 export interface DefaultWalletOptions {
   projectId: string;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
+  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 type WalletAppOptions = {
@@ -51,34 +51,34 @@ export type WalletList = {
 }[];
 
 // We don't want users to pass in `showQrModal` or `projectId`.
-// Those two values are handled by rainbowkit. The rest of WalletConnect
+// Those two values are handled by Solaris. The rest of WalletConnect
 // parameters can be passed with no issue
-export type RainbowKitWalletConnectParameters = Omit<WalletConnectParameters, "showQrModal" | "projectId">;
+export type SolarisWalletConnectParameters = Omit<WalletConnectParameters, "showQrModal" | "projectId">;
 
-export type RainbowKitDetails = Omit<Wallet, "createConnector" | "hidden"> & {
+export type SolarisDetails = Omit<Wallet, "createConnector" | "hidden"> & {
   index: number;
   groupIndex: number;
   groupName: string;
   isWalletConnectModalConnector?: boolean;
-  isRainbowKitConnector: boolean;
+  isSolarisConnector: boolean;
   walletConnectModalConnector?: Connector;
   // Used specifically in `connectorsForWallets` logic
-  // to make sure we can also get WalletConnect modal in rainbowkit
+  // to make sure we can also get WalletConnect modal in Solaris
   showQrModal?: true;
 };
 
-export type WalletDetailsParams = { rkDetails: RainbowKitDetails };
+export type WalletDetailsParams = { solarisDetails: SolarisDetails };
 
-export type CreateConnector = (walletDetails: { rkDetails: RainbowKitDetails }) => CreateConnectorFn;
+export type CreateConnector = (walletDetails: { solarisDetails: SolarisDetails }) => CreateConnectorFn;
 
 // This is the default connector you get at first from wagmi
-// "Connector" + rainbowkit details we inject into the connector
+// "Connector" + Solaris details we inject into the connector
 export type WagmiConnectorInstance = Connector & {
   // this is optional since we only get
-  // rkDetails if we use rainbowkit connectors
-  rkDetails?: RainbowKitDetails;
+  // solarisDetails if we use Solaris connectors
+  solarisDetails?: SolarisDetails;
 };
 
 // This will be the wallet instance we will return
-// in the rainbowkit connect modal
-export type WalletInstance = Connector & RainbowKitDetails;
+// in the Solaris connect modal
+export type WalletInstance = Connector & SolarisDetails;

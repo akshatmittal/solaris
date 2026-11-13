@@ -2,16 +2,16 @@ import { type Connector, useChainId as useWagmiChainId, useConnect, useConnector
 
 import type { WagmiConnectorInstance, WalletInstance } from "./Wallet";
 
-import { useWalletConnectOpenState } from "../components/RainbowKitProvider/ModalContext";
+import { useWalletConnectOpenState } from "../components/SolarisEthereumProvider/ModalContext";
 import { isChainIdSupported } from "../utils/isChainIdSupported";
 import { isNotNullish } from "../utils/isNotNullish";
-import { useInitialChainId, useRainbowKitChains } from "./../components/RainbowKitProvider/RainbowKitChainContext";
+import { useInitialChainId, useSolarisChains } from "./../components/SolarisEthereumProvider/SolarisChainContext";
 import {
   connectorsWithRecentWallets,
   isEIP6963Connector,
-  isRainbowKitConnector,
+  isSolarisConnector,
   isRecentWallet,
-  rainbowKitConnectorWithWalletConnect,
+  solarisConnectorWithWalletConnect,
 } from "./groupedWallets";
 import { requestWalletSdk } from "./lazyConnector";
 import { addRecentWalletId, getRecentWalletIds } from "./recentWalletIds";
@@ -28,8 +28,8 @@ export interface WalletConnector extends WalletInstance {
   getMobileUri?: () => Promise<string>;
 }
 
-export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): WalletConnector[] {
-  const rainbowKitChains = useRainbowKitChains();
+export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): WalletConnector[] {
+  const solarisChains = useSolarisChains();
   const initialChainId = useInitialChainId();
   const selectedChainId = useWagmiChainId();
   const { mutateAsync: connect } = useConnect();
@@ -41,10 +41,10 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
 
   const defaultConnectors = defaultCreatedConnectors.map((connector) => ({
     ...connector,
-    // rkDetails is optional it does not exist in eip6963 connectors.
-    // We only inject `rkDetails` in `connectorsForWallets` when we
+    // solarisDetails is optional it does not exist in eip6963 connectors.
+    // We only inject `solarisDetails` in `connectorsForWallets` when we
     // want to have additional information in the connector.
-    ...connector.rkDetails,
+    ...connector.solarisDetails,
   })) as WalletInstance[];
 
   async function connectWallet(
@@ -61,9 +61,9 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       // for callers rendered before that effect runs.
       initialChainId ??
       // Otherwise, if the wallet is already on a supported chain, use that to avoid a chain switch prompt.
-      (isChainIdSupported(rainbowKitChains, walletChainId) ? walletChainId : undefined) ??
-      // Finally, fall back to the first chain provided to RainbowKitProvider.
-      rainbowKitChains[0]?.id;
+      (isChainIdSupported(solarisChains, walletChainId) ? walletChainId : undefined) ??
+      // Finally, fall back to the first chain provided to SolarisEthereumProvider.
+      solarisChains[0]?.id;
 
     let result = await connect({
       ...parameters,
@@ -174,19 +174,19 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     };
   });
 
-  const rainbowKitConnectors = defaultConnectors
-    .filter(isRainbowKitConnector)
+  const solarisConnectors = defaultConnectors
+    .filter(isSolarisConnector)
     .filter((wallet) => !wallet.isWalletConnectModalConnector)
     .filter((wallet) => {
-      if (!mergeEIP6963WithRkConnectors) return true;
+      if (!mergeEIP6963WithSolarisConnectors) return true;
 
       const existsInEIP6963Connectors = eip6963Connectors.some((eip6963) => eip6963.id === wallet.rdns);
 
       return !existsInEIP6963Connectors;
     })
-    .map((wallet) => rainbowKitConnectorWithWalletConnect(wallet, walletConnectModalConnector!));
+    .map((wallet) => solarisConnectorWithWalletConnect(wallet, walletConnectModalConnector!));
 
-  const combinedConnectors = [...eip6963Connectors, ...rainbowKitConnectors];
+  const combinedConnectors = [...eip6963Connectors, ...solarisConnectors];
 
   const walletInstanceById = new Map(combinedConnectors.map((walletInstance) => [walletInstance.id, walletInstance]));
 

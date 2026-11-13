@@ -5,7 +5,7 @@ import { isSafari } from "../../utils/browsers";
 import { addLatestWalletId } from "../../wallets/latestWalletId";
 import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { WalletButtonContext } from "../RainbowKitProvider/WalletButtonContext";
+import { WalletButtonContext } from "../SolarisEthereumProvider/WalletButtonContext";
 import { ConnectDetail } from "./ConnectDetails";
 import { ConnectModalShellView } from "./ConnectModalShellView";
 import { type ConnectionError } from "./ConnectStatus";
@@ -35,13 +35,13 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
   const { connector } = useContext(WalletButtonContext);
 
   // The `WalletButton` component made the connect modal appear empty when trying to connect.
-  // This happened because of a mix up between EIP-6963 and RainbowKit connectors.
-  // The problem was finding the correct `wallet.id`. `WalletButton` uses RainbowKit's id,
-  // but EIP-6963 uses `rdns` for its id. We now don't merge EIP-6963 and RainbowKit
+  // This happened because of a mix up between EIP-6963 and Solaris connectors.
+  // The problem was finding the correct `wallet.id`. `WalletButton` uses Solaris's id,
+  // but EIP-6963 uses `rdns` for its id. We now don't merge EIP-6963 and Solaris
   // connectors if user interacts with `WalletButton` component.
-  const mergeEIP6963WithRkConnectors = !connector;
+  const mergeEIP6963WithSolarisConnectors = !connector;
 
-  const wallets = useWalletConnectors(mergeEIP6963WithRkConnectors)
+  const wallets = useWalletConnectors(mergeEIP6963WithSolarisConnectors)
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
   const loadingSdks = useWalletSdks(wallets);

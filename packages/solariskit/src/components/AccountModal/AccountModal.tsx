@@ -21,7 +21,7 @@ export function AccountModal({ onClose, open }: AccountModalProps) {
   const { mutate: disconnect } = useDisconnect();
   // Unique per instance so the Dialog's aria-labelledby resolves to THIS
   // modal's heading even when several ecosystems mount account modals.
-  const titleId = `rk_account_modal_title_${React.useId()}`;
+  const titleId = `solaris_account_modal_title_${React.useId()}`;
 
   return (
     <Dialog

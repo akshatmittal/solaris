@@ -11,20 +11,20 @@ export const isRecentWallet = (recentWallets: WalletInstance[], walletId: string
   return recentWallets.some((recentWallet) => recentWallet.id === walletId);
 };
 
-export const isRainbowKitConnector = (wallet: WalletInstance) => {
-  return !!wallet.isRainbowKitConnector;
+export const isSolarisConnector = (wallet: WalletInstance) => {
+  return !!wallet.isSolarisConnector;
 };
 
 export const isEIP6963Connector = (wallet: WalletInstance) => {
   return !!(
-    !wallet.isRainbowKitConnector &&
+    !wallet.isSolarisConnector &&
     wallet.icon?.replace(/\n/g, "").startsWith("data:image") &&
     wallet.uid &&
     wallet.name
   );
 };
 
-export const rainbowKitConnectorWithWalletConnect = (
+export const solarisConnectorWithWalletConnect = (
   wallet: WalletInstance,
   walletConnectModalConnector: WalletInstance,
 ) => {

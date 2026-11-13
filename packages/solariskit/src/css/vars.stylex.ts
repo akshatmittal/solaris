@@ -1,59 +1,59 @@
 import * as stylex from "@stylexjs/stylex";
 
-// Theme values live in `--rk-*` custom properties set by the provider (see cssObjectFromTheme).
+// Theme values live in `--solaris-*` custom properties set by the provider (see cssObjectFromTheme).
 export const colors = stylex.defineConsts({
-  accentColor: "var(--rk-colors-accentColor)",
-  accentColorForeground: "var(--rk-colors-accentColorForeground)",
-  accentSoft: "color-mix(in srgb, var(--rk-colors-accentColor) 10%, transparent)",
+  accentColor: "var(--solaris-colors-accentColor)",
+  accentColorForeground: "var(--solaris-colors-accentColorForeground)",
+  accentSoft: "color-mix(in srgb, var(--solaris-colors-accentColor) 10%, transparent)",
   // Trigger hover fills: the surface with 8% of its text color mixed in.
-  accentHover: "color-mix(in srgb, var(--rk-colors-accentColorForeground) 8%, var(--rk-colors-accentColor))",
-  actionButtonSecondaryBackground: "var(--rk-colors-actionButtonSecondaryBackground)",
-  closeButton: "var(--rk-colors-closeButton)",
-  closeButtonBackground: "var(--rk-colors-closeButtonBackground)",
-  connectButtonBackground: "var(--rk-colors-connectButtonBackground)",
-  connectButtonBackgroundError: "var(--rk-colors-connectButtonBackgroundError)",
+  accentHover: "color-mix(in srgb, var(--solaris-colors-accentColorForeground) 8%, var(--solaris-colors-accentColor))",
+  actionButtonSecondaryBackground: "var(--solaris-colors-actionButtonSecondaryBackground)",
+  closeButton: "var(--solaris-colors-closeButton)",
+  closeButtonBackground: "var(--solaris-colors-closeButtonBackground)",
+  connectButtonBackground: "var(--solaris-colors-connectButtonBackground)",
+  connectButtonBackgroundError: "var(--solaris-colors-connectButtonBackgroundError)",
   connectButtonErrorHover:
-    "color-mix(in srgb, var(--rk-colors-connectButtonTextError) 8%, var(--rk-colors-connectButtonBackgroundError))",
+    "color-mix(in srgb, var(--solaris-colors-connectButtonTextError) 8%, var(--solaris-colors-connectButtonBackgroundError))",
   connectButtonHover:
-    "color-mix(in srgb, var(--rk-colors-connectButtonText) 8%, var(--rk-colors-connectButtonBackground))",
-  connectButtonText: "var(--rk-colors-connectButtonText)",
-  connectButtonTextError: "var(--rk-colors-connectButtonTextError)",
-  connectionIndicator: "var(--rk-colors-connectionIndicator)",
-  error: "var(--rk-colors-error)",
-  generalBorder: "var(--rk-colors-generalBorder)",
-  menuItemBackground: "var(--rk-colors-menuItemBackground)",
-  modalBackdrop: "var(--rk-colors-modalBackdrop)",
-  modalBackground: "var(--rk-colors-modalBackground)",
-  modalBorder: "var(--rk-colors-modalBorder)",
-  modalText: "var(--rk-colors-modalText)",
-  modalTextDim: "var(--rk-colors-modalTextDim)",
-  modalTextSecondary: "var(--rk-colors-modalTextSecondary)",
-  profileAction: "var(--rk-colors-profileAction)",
-  profileActionHover: "var(--rk-colors-profileActionHover)",
-  profileForeground: "var(--rk-colors-profileForeground)",
-  standby: "var(--rk-colors-standby)",
+    "color-mix(in srgb, var(--solaris-colors-connectButtonText) 8%, var(--solaris-colors-connectButtonBackground))",
+  connectButtonText: "var(--solaris-colors-connectButtonText)",
+  connectButtonTextError: "var(--solaris-colors-connectButtonTextError)",
+  connectionIndicator: "var(--solaris-colors-connectionIndicator)",
+  error: "var(--solaris-colors-error)",
+  generalBorder: "var(--solaris-colors-generalBorder)",
+  menuItemBackground: "var(--solaris-colors-menuItemBackground)",
+  modalBackdrop: "var(--solaris-colors-modalBackdrop)",
+  modalBackground: "var(--solaris-colors-modalBackground)",
+  modalBorder: "var(--solaris-colors-modalBorder)",
+  modalText: "var(--solaris-colors-modalText)",
+  modalTextDim: "var(--solaris-colors-modalTextDim)",
+  modalTextSecondary: "var(--solaris-colors-modalTextSecondary)",
+  profileAction: "var(--solaris-colors-profileAction)",
+  profileActionHover: "var(--solaris-colors-profileActionHover)",
+  profileForeground: "var(--solaris-colors-profileForeground)",
+  standby: "var(--solaris-colors-standby)",
   success: "#16A34A",
 });
 
 export const fonts = stylex.defineConsts({
-  body: "var(--rk-fonts-body)",
+  body: "var(--solaris-fonts-body)",
 });
 
 export const radii = stylex.defineConsts({
-  actionButton: "var(--rk-radii-actionButton)",
-  connectButton: "var(--rk-radii-connectButton)",
-  menuButton: "var(--rk-radii-menuButton)",
-  modal: "var(--rk-radii-modal)",
-  modalMobile: "var(--rk-radii-modalMobile)",
+  actionButton: "var(--solaris-radii-actionButton)",
+  connectButton: "var(--solaris-radii-connectButton)",
+  menuButton: "var(--solaris-radii-menuButton)",
+  modal: "var(--solaris-radii-modal)",
+  modalMobile: "var(--solaris-radii-modalMobile)",
 });
 
 export const shadows = stylex.defineConsts({
-  connectButton: "var(--rk-shadows-connectButton)",
-  dialog: "var(--rk-shadows-dialog)",
+  connectButton: "var(--solaris-shadows-connectButton)",
+  dialog: "var(--solaris-shadows-dialog)",
 });
 
 export const blurs = stylex.defineConsts({
-  modalOverlay: "var(--rk-blurs-modalOverlay)",
+  modalOverlay: "var(--solaris-blurs-modalOverlay)",
 });
 
 // One duration set for every transition and animation. Exits are faster than entries.

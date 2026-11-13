@@ -7,7 +7,7 @@ import { useHydrated } from "../../../hooks/useHydrated";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
 import { addRecentSolanaWalletId } from "../../wallets/recentSolanaWalletIds";
-import { useSolanaConnectModal } from "../SolanaKitProvider/SolanaModalContext";
+import { useSolanaConnectModal } from "../SolarisSolanaProvider/SolanaModalContext";
 
 export interface SolanaWalletButtonRendererProps {
   connectorId?: string;

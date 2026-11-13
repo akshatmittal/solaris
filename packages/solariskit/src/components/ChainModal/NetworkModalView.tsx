@@ -142,7 +142,7 @@ export function NetworkModalView({
   const [searchQuery, setSearchQuery] = useState("");
   // useId keeps the heading id unique when several ecosystems (EVM + Solana)
   // mount their network modals on the same page.
-  const titleId = `rk_chain_modal_title_${React.useId()}`;
+  const titleId = `solaris_chain_modal_title_${React.useId()}`;
   // On touch screens, focus would open the keyboard over the list.
   const coarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   const chainIconSize = coarsePointer ? 32 : 28;
@@ -213,7 +213,6 @@ export function NetworkModalView({
                   currentlySelected={isCurrentNetwork}
                   key={String(id)}
                   onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(id)}
-                  testId={`chain-option-${String(id)}`}
                 >
                   {iconUrl && (
                     <AsyncImage
@@ -222,7 +221,6 @@ export function NetworkModalView({
                       radius="full"
                       size={chainIconSize}
                       src={iconUrl}
-                      testId={`chain-option-${String(id)}-icon`}
                     />
                   )}
                   <span {...stylex.props(styles.name)}>{name ?? id}</span>
@@ -254,7 +252,6 @@ export function NetworkModalView({
                 disabled={false}
                 danger
                 onClick={onDisconnectUnsupported}
-                testId="chain-option-disconnect"
               >
                 <span {...stylex.props(styles.disconnectIcon)}>
                   <DisconnectSqIcon size={chainIconSize} />

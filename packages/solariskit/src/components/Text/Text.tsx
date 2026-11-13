@@ -45,22 +45,11 @@ export type TextProps = {
   color: keyof typeof colorStyles;
   id?: string;
   size: keyof typeof sizeStyles;
-  testId?: string;
   weight: keyof typeof weightStyles;
   xstyle?: stylex.StyleXStyles;
 };
 
-export function Text({
-  align = "inherit",
-  as: Tag = "div",
-  children,
-  color,
-  id,
-  size,
-  testId,
-  weight,
-  xstyle,
-}: TextProps) {
+export function Text({ align = "inherit", as: Tag = "div", children, color, id, size, weight, xstyle }: TextProps) {
   return (
     <Tag
       {...stylex.props(
@@ -71,7 +60,6 @@ export function Text({
         alignStyles[align],
         xstyle,
       )}
-      data-testid={testId ? `rk-${testId}` : undefined}
       id={id}
     >
       {children}

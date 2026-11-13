@@ -1,4 +1,7 @@
-export { SolanaKitProvider, type SolanaKitProviderProps } from "./components/SolanaKitProvider/SolanaKitProvider";
+export {
+  SolarisSolanaProvider,
+  type SolarisSolanaProviderProps,
+} from "./components/SolarisSolanaProvider/SolarisSolanaProvider";
 export { SolanaConnectButton } from "./components/SolanaConnectButton/SolanaConnectButton";
 export { SolanaChainSelectButton } from "./components/SolanaChainSelectButton/SolanaChainSelectButton";
 export {
@@ -9,7 +12,7 @@ export {
   useSolanaAccountModal,
   useSolanaChainModal,
   useSolanaConnectModal,
-} from "./components/SolanaKitProvider/SolanaModalContext";
+} from "./components/SolarisSolanaProvider/SolanaModalContext";
 export { getDefaultSolanaConfig } from "./config/getDefaultSolanaConfig";
 export {
   useSolanaBalance,
@@ -37,7 +40,7 @@ export type {
   SolanaConnectOptions,
   SolanaConnectorConfig,
   SolanaDisconnectWalletReturn,
-  SolanaKitConfig,
+  SolarisSolanaConfig,
   SolanaKitTransactionSignerOptions,
   SolanaKitTransactionSignerReturn,
   SolanaMobileWalletAdapterConfig,

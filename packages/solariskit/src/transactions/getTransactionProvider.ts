@@ -1,6 +1,6 @@
 import type { PublicClient } from "viem";
 
-const transactionWatcherKey = "rk-transactions";
+const transactionWatcherKey = "solaris-transactions";
 
 export function getTransactionProvider(provider: PublicClient): PublicClient {
   const uid = `${provider.uid}.${transactionWatcherKey}`;

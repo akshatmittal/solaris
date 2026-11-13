@@ -11,7 +11,7 @@ import { useRecentTransactions } from "../../transactions/useRecentTransactions"
 import { t } from "../../translations";
 import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
-import { AppContext } from "../RainbowKitProvider/AppContext";
+import { AppContext } from "../SolarisEthereumProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 import { TxItem } from "./TxItem";

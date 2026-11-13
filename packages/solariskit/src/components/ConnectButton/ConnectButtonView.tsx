@@ -120,8 +120,6 @@ export interface ConnectButtonViewProps {
   onOpenAccountModal: () => void;
   onOpenConnectModal: () => void;
   showBalance: ResponsiveValue<boolean>;
-  /** Distinguishes testIds when multiple ecosystems render this view on one page. */
-  testIdPrefix?: string;
 }
 
 export function ConnectButtonView({
@@ -134,7 +132,6 @@ export function ConnectButtonView({
   onOpenAccountModal,
   onOpenConnectModal,
   showBalance,
-  testIdPrefix = "",
 }: ConnectButtonViewProps) {
   const hasBalance = Boolean(account?.displayBalance) || Boolean(account?.isBalanceLoading);
 
@@ -146,7 +143,6 @@ export function ConnectButtonView({
       {buttonReady && account && isConnected ? (
         <button
           {...stylex.props(reset.button, triggerStyles.button, styles.account, press.scale)}
-          data-testid={`rk-${testIdPrefix}account-button`}
           onClick={onOpenAccountModal}
           title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
           type="button"
@@ -185,7 +181,6 @@ export function ConnectButtonView({
       ) : (
         <button
           {...stylex.props(reset.button, triggerStyles.button, styles.connect, press.scale)}
-          data-testid={`rk-${testIdPrefix}connect-button`}
           key="connect"
           onClick={onOpenConnectModal}
           type="button"

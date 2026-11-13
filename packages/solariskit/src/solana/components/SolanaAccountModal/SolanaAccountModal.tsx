@@ -18,7 +18,7 @@ export function SolanaAccountModal({ onClose, open }: SolanaAccountModalProps) {
   const { lastUpdated, solBalance } = useSolanaBalance({ enabled: open && wallet.isConnected });
   // Unique per instance so the EVM and Solana account modals never share a
   // DOM id for their aria-labelledby headings.
-  const titleId = `rk_account_modal_title_${React.useId()}`;
+  const titleId = `solaris_account_modal_title_${React.useId()}`;
 
   return (
     <Dialog
