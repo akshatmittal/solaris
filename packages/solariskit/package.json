@@ -67,7 +67,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@walletconnect/ethereum-provider": "^2.23.10",
+    "@walletconnect/ethereum-provider": "^2.26.0",
     "@workspace/typescript-config": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",

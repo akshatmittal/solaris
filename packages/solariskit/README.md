@@ -54,6 +54,7 @@ Configure the project's allowed origins for your app.
 "use client";
 
 import { useState, type PropsWithChildren } from "react";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ChainSelectButton, ConnectButton, getDefaultConfig, RainbowKitProvider } from "solariskit";
 import { WagmiProvider } from "wagmi";
