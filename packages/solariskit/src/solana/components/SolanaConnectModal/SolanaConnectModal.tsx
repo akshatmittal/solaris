@@ -95,7 +95,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
     }
   };
 
-  // Mobile browsers have no extensions, so only the wallets in an in-app browser show, and connecting shows no status pane.
+  // Mobile browsers have no extensions, so only the wallets of an in-app browser show.
   const mobile = isMobile();
   const readyWallets = wallets.filter((wallet) => wallet.ready);
   const shownWallets = mobile ? readyWallets : wallets;
@@ -108,7 +108,6 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
     >
       <DialogContent>
         <ConnectModalShellView
-          declined={mobile && declined}
           getWalletUrl={SOLANA_GET_WALLET_URL}
           hideFooter={!mobile && wallets.length === 0}
           onClose={onClose}
@@ -118,14 +117,15 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             selectedWallet && (
               <ConnectStatus
                 connectionError={declined ? "declined" : null}
+                mobile={mobile}
                 onRetry={() => selectWallet(selectedWallet)}
                 titleId={titleId}
                 wallet={selectedWallet}
               />
             )
           }
-          showRightPane={!mobile && showStatus}
-          showSidebar={mobile || !showStatus}
+          showRightPane={showStatus}
+          showSidebar={!showStatus}
           titleId={titleId}
           walletList={
             shownWallets.length > 0 ? (

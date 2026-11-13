@@ -44,10 +44,6 @@ const styles = stylex.create({
     paddingBottom: 12,
     paddingInline: 12,
   },
-  error: {
-    paddingBottom: 12,
-    paddingInline: 24,
-  },
   footer: {
     alignItems: "center",
     minHeight: 52,
@@ -81,7 +77,6 @@ const styles = stylex.create({
 });
 
 export interface ConnectModalShellViewProps {
-  declined?: boolean;
   hideFooter?: boolean;
   getWalletUrl: string;
   onClose: () => void;
@@ -100,7 +95,6 @@ export interface ConnectModalShellViewProps {
  * parameterize this shell.
  */
 export function ConnectModalShellView({
-  declined = false,
   getWalletUrl,
   hideFooter = false,
   onClose,
@@ -130,20 +124,6 @@ export function ConnectModalShellView({
             />
           </div>
           <div {...stylex.props(styles.list, reset.scrollbar)}>{walletList}</div>
-          {declined && (
-            <div
-              {...stylex.props(styles.error)}
-              role="alert"
-            >
-              <Text
-                color="error"
-                size="14"
-                weight="medium"
-              >
-                {t("connect.status.declined")}
-              </Text>
-            </div>
-          )}
           {!hideFooter &&
             (Disclaimer ? (
               <div {...stylex.props(styles.footer, styles.footerDisclaimer)}>

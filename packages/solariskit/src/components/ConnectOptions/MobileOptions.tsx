@@ -4,6 +4,7 @@ import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
 import { ConnectModalShellView } from "./ConnectModalShellView";
+import { ConnectStatus } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
 import { WalletListView } from "./WalletListView";
 
@@ -64,10 +65,13 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
   // The latest attempt; a late result from an earlier attempt does not change it.
   const [attempt, setAttempt] = useState<{ declined: boolean; id: string; key: number }>();
   const attemptKey = useRef(0);
+  // The wallet whose status pane shows; Back clears it.
+  const [statusWallet, setStatusWallet] = useState<WalletConnector>();
 
   const selectWallet = async (wallet: WalletConnector) => {
     const key = ++attemptKey.current;
     setAttempt({ declined: false, id: wallet.id, key });
+    setStatusWallet(wallet);
     try {
       await connectMobile(wallet, onClose);
       setAttempt((current) => (current?.key === key ? undefined : current));
@@ -78,12 +82,22 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
 
   return (
     <ConnectModalShellView
-      declined={attempt?.declined ?? false}
       getWalletUrl={GET_WALLET_URL}
       onClose={onClose}
-      rightPaneContent={null}
-      showRightPane={false}
-      showSidebar
+      onRightPaneBack={() => setStatusWallet(undefined)}
+      rightPaneContent={
+        statusWallet && (
+          <ConnectStatus
+            connectionError={attempt?.id === statusWallet.id && attempt.declined ? "declined" : null}
+            mobile
+            onRetry={() => selectWallet(statusWallet)}
+            titleId={titleId}
+            wallet={statusWallet}
+          />
+        )
+      }
+      showRightPane={statusWallet !== undefined}
+      showSidebar={statusWallet === undefined}
       titleId={titleId}
       walletList={
         <WalletListView

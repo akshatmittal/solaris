@@ -43,11 +43,14 @@ const styles = stylex.create({
 
 export function ConnectStatus({
   connectionError,
+  mobile,
   onRetry,
   titleId,
   wallet,
 }: {
   connectionError: ConnectionError | null;
+  // The wallet app confirms the connection instead of a browser extension.
+  mobile: boolean;
   onRetry: () => void;
   // Names the dialog while the wallet list and its heading are hidden.
   titleId: string;
@@ -83,7 +86,9 @@ export function ConnectStatus({
             size="14"
             weight="regular"
           >
-            {connectionError ? t(`connect.status.${connectionError}_description`) : t("connect.status.confirm")}
+            {connectionError
+              ? t(`connect.status.${connectionError}_description`)
+              : t(mobile ? "connect.status.confirm_mobile" : "connect.status.confirm")}
           </Text>
         )}
       </div>

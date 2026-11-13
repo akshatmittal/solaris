@@ -100,6 +100,7 @@ export function ConnectDetail({
       ) : (
         <ConnectStatus
           connectionError={connectionError}
+          mobile={false}
           onRetry={() => {
             if (isDesktopDeepLinkAvailable) {
               onDesktopUri();
