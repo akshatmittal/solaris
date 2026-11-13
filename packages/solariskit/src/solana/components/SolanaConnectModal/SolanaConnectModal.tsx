@@ -22,7 +22,7 @@ export interface SolanaConnectModalProps {
 export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
   // Unique per instance so the EVM and Solana connect modals never share a
   // DOM id for their aria-labelledby headings.
-  const titleId = `rk_connect_title_${React.useId()}`;
+  const titleId = `solaris_connect_title_${React.useId()}`;
   const connectors = useSolanaWalletConnectors();
   const walletState = useSolanaWallet();
   const { connect, error, isConnecting, resetError } = useSolanaConnectWallet();
@@ -49,7 +49,7 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
         groupName: connector.ready ? "Installed" : "Other",
         iconUrl: connector.icon || fallbackWalletIcon,
         id: connector.id,
-        isRainbowKitConnector: false,
+        isSolarisConnector: false,
         loading: false,
         name: connector.name,
         ready: connector.ready,

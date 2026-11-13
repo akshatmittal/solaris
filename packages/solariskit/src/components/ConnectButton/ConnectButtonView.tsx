@@ -146,7 +146,7 @@ export function ConnectButtonView({
       {buttonReady && account && isConnected ? (
         <button
           {...stylex.props(reset.button, triggerStyles.button, styles.account, press.scale)}
-          data-testid={`rk-${testIdPrefix}account-button`}
+          data-testid={`solaris-${testIdPrefix}account-button`}
           onClick={onOpenAccountModal}
           title={account.hasPendingTransactions ? t("connect_wallet.pending") : undefined}
           type="button"
@@ -185,7 +185,7 @@ export function ConnectButtonView({
       ) : (
         <button
           {...stylex.props(reset.button, triggerStyles.button, styles.connect, press.scale)}
-          data-testid={`rk-${testIdPrefix}connect-button`}
+          data-testid={`solaris-${testIdPrefix}connect-button`}
           key="connect"
           onClick={onOpenConnectModal}
           type="button"

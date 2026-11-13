@@ -6,7 +6,7 @@ import { t } from "../../translations";
 import { ActionButton } from "../Button/ActionButton";
 import { WalletIcon } from "../Icons/FeatureIcons";
 import { IconTile } from "../Icons/IconTile";
-import { AppContext } from "../RainbowKitProvider/AppContext";
+import { AppContext } from "../SolarisEthereumProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 

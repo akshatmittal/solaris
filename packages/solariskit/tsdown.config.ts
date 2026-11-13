@@ -23,9 +23,9 @@ export default defineConfig({
       lightningcssOptions: {
         minify: true,
         visitor: {
-          // Scope every rule under the provider's `data-rk` root.
+          // Scope every rule under the provider's `data-solaris` root.
           Selector: (selector) => [
-            { type: "attribute", name: "data-rk" },
+            { type: "attribute", name: "data-solaris" },
             { type: "combinator", value: "descendant" },
             ...selector,
           ],

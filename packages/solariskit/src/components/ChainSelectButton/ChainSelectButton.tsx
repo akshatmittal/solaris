@@ -9,8 +9,8 @@ import { useHydrated } from "../../hooks/useHydrated";
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
-import { useChainModal } from "../RainbowKitProvider/ModalContext";
-import { useRainbowKitChains, useRainbowKitChainsById } from "../RainbowKitProvider/RainbowKitChainContext";
+import { useChainModal } from "../SolarisEthereumProvider/ModalContext";
+import { useSolarisChains, useSolarisChainsById } from "../SolarisEthereumProvider/SolarisChainContext";
 import { NetworkSelectButtonView, defaultNetworkSelectChainStatus } from "./NetworkSelectButtonView";
 
 export type ChainStatus = "full" | "icon" | "name" | "none";
@@ -20,8 +20,8 @@ export interface ChainSelectButtonProps {
 }
 
 export function ChainSelectButton({ chainStatus = defaultNetworkSelectChainStatus }: ChainSelectButtonProps) {
-  const chains = useRainbowKitChains();
-  const chainsById = useRainbowKitChainsById();
+  const chains = useSolarisChains();
+  const chainsById = useSolarisChainsById();
   const connectionStatus = useConnectionStatus();
   const { openChainModal } = useChainModal();
   const { chainId: connectedChainId } = useConnection();

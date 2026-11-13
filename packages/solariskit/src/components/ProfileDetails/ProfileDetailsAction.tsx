@@ -71,7 +71,7 @@ export function ProfileDetailsAction({ action, icon, label, success = false, tes
   return (
     <button
       {...stylex.props(reset.button, styles.action, success && styles.successAction, press.scale)}
-      data-testid={testId ? `rk-${testId}` : undefined}
+      data-testid={testId ? `solaris-${testId}` : undefined}
       onClick={action}
       type="button"
     >

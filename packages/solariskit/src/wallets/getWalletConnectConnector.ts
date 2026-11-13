@@ -3,29 +3,24 @@ import type { CreateConnectorFn } from "wagmi";
 import { createConnector } from "wagmi";
 import { mock, type WalletConnectParameters, walletConnect } from "wagmi/connectors";
 
-import type {
-  CreateConnector,
-  RainbowKitDetails,
-  RainbowKitWalletConnectParameters,
-  WalletDetailsParams,
-} from "./Wallet";
+import type { CreateConnector, SolarisDetails, SolarisWalletConnectParameters, WalletDetailsParams } from "./Wallet";
 
 interface GetWalletConnectConnectorParams {
   projectId: string;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
+  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 interface CreateWalletConnectConnectorParams {
   projectId: string;
   walletDetails: WalletDetailsParams;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
+  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 interface GetOrCreateWalletConnectInstanceParams {
   projectId: string;
-  walletConnectParameters?: RainbowKitWalletConnectParameters;
-  rkDetailsShowQrModal?: RainbowKitDetails["showQrModal"];
-  rkDetailsIsWalletConnectModalConnector?: RainbowKitDetails["isWalletConnectModalConnector"];
+  walletConnectParameters?: SolarisWalletConnectParameters;
+  solarisDetailsShowQrModal?: SolarisDetails["showQrModal"];
+  solarisDetailsIsWalletConnectModalConnector?: SolarisDetails["isWalletConnectModalConnector"];
 }
 
 const isServer = typeof window === "undefined";
@@ -36,8 +31,8 @@ const walletConnectInstances = new Map<string, ReturnType<typeof walletConnect>>
 const getOrCreateWalletConnectInstance = ({
   projectId,
   walletConnectParameters,
-  rkDetailsShowQrModal,
-  rkDetailsIsWalletConnectModalConnector,
+  solarisDetailsShowQrModal,
+  solarisDetailsIsWalletConnectModalConnector,
 }: GetOrCreateWalletConnectInstanceParams): CreateConnectorFn => {
   // Return mock connector on server-side to avoid SSR errors
   // WalletConnect relies on browser-only APIs that aren't available during SSR
@@ -53,8 +48,8 @@ const getOrCreateWalletConnectInstance = ({
     showQrModal: false, // Required. Otherwise WalletConnect modal (Web3Modal) will popup during time of connection for a wallet
   };
 
-  // `rkDetailsShowQrModal` should always be `true`
-  if (rkDetailsShowQrModal) {
+  // `solarisDetailsShowQrModal` should always be `true`
+  if (solarisDetailsShowQrModal) {
     config = { ...config, showQrModal: true };
   }
 
@@ -62,7 +57,7 @@ const getOrCreateWalletConnectInstance = ({
   if (!("customStoragePrefix" in config)) {
     config = {
       ...config,
-      customStoragePrefix: rkDetailsIsWalletConnectModalConnector ? "clientOne" : "clientTwo",
+      customStoragePrefix: solarisDetailsIsWalletConnectModalConnector ? "clientOne" : "clientTwo",
     };
   }
 
@@ -94,9 +89,9 @@ function createWalletConnectConnector({
       projectId,
       walletConnectParameters,
       // Used in `connectorsForWallets` to add another
-      // walletConnect wallet into rainbowkit with modal popup option
-      rkDetailsShowQrModal: walletDetails.rkDetails.showQrModal,
-      rkDetailsIsWalletConnectModalConnector: walletDetails.rkDetails.isWalletConnectModalConnector,
+      // walletConnect wallet into Solaris with modal popup option
+      solarisDetailsShowQrModal: walletDetails.solarisDetails.showQrModal,
+      solarisDetailsIsWalletConnectModalConnector: walletDetails.solarisDetails.isWalletConnectModalConnector,
     })(config),
     ...walletDetails,
   }));

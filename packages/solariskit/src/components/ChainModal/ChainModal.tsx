@@ -5,7 +5,7 @@ import { useConfig } from "wagmi";
 
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
-import { useChainSearchThreshold, useRainbowKitChains } from "../RainbowKitProvider/RainbowKitChainContext";
+import { useChainSearchThreshold, useSolarisChains } from "../SolarisEthereumProvider/SolarisChainContext";
 import { type NetworkModalId, NetworkModalView } from "./NetworkModalView";
 
 export interface ChainModalProps {
@@ -33,7 +33,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
   });
   const { mutate: disconnect } = useDisconnect();
   const isConnectedToUnsupportedChain = isConnected && !isChainIdSupported(chains, connectedChainId);
-  const rainbowkitChains = useRainbowKitChains();
+  const solarisChains = useSolarisChains();
   const chainSearchThreshold = useChainSearchThreshold();
   const onSelectNetwork = (networkId: NetworkModalId) => {
     if (typeof networkId !== "number") return;
@@ -44,7 +44,7 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
     <NetworkModalView
       currentNetworkId={currentChainId ?? undefined}
       isConnectedToUnsupportedNetwork={isConnectedToUnsupportedChain}
-      networks={rainbowkitChains.map(({ iconBackground, iconUrl, id, name }) => ({
+      networks={solarisChains.map(({ iconBackground, iconUrl, id, name }) => ({
         iconBackground,
         iconUrl,
         id,

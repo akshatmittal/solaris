@@ -6,10 +6,10 @@ import { abbreviateETHBalance } from "../../../components/ConnectButton/abbrevia
 import { ConnectButtonView, defaultConnectButtonProps } from "../../../components/ConnectButton/ConnectButtonView";
 import { formatAddress } from "../../../components/ConnectButton/formatAddress";
 import { resolveShowBalance } from "../../../components/ConnectButton/resolveShowBalance";
-import { useShowBalance } from "../../../components/RainbowKitProvider/ShowBalanceContext";
+import { useShowBalance } from "../../../components/SolarisEthereumProvider/ShowBalanceContext";
 import { useHydrated } from "../../../hooks/useHydrated";
 import { useSolanaBalance, useSolanaWallet } from "../../hooks";
-import { useSolanaAccountModal, useSolanaConnectModal } from "../SolanaKitProvider/SolanaModalContext";
+import { useSolanaAccountModal, useSolanaConnectModal } from "../SolarisSolanaProvider/SolanaModalContext";
 
 const noop = () => {};
 

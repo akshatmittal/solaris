@@ -56,7 +56,7 @@ Configure the project's allowed origins for your app.
 import { useState, type PropsWithChildren } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ChainSelectButton, ConnectButton, getDefaultConfig, RainbowKitProvider } from "solariskit";
+import { ChainSelectButton, ConnectButton, getDefaultConfig, SolarisEthereumProvider } from "solariskit";
 import { WagmiProvider } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
 import "solariskit/styles.css";
@@ -74,7 +74,7 @@ export function Providers({ children }: PropsWithChildren) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
+        <SolarisEthereumProvider>{children}</SolarisEthereumProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
@@ -90,7 +90,7 @@ export default function App() {
 }
 ```
 
-The provider is named **`RainbowKitProvider`**, not `SolarisKitProvider`. `ConnectButton` handles wallet connection and
+The EVM provider is **`SolarisEthereumProvider`**. `ConnectButton` handles wallet connection and
 account details; render `ChainSelectButton` separately for network selection. Use Wagmi hooks for EVM account state,
 contract reads, and transaction submission.
 
@@ -143,9 +143,9 @@ parameters also returns its connectors. The `Wallet` and `WalletList` types supp
 ## Customize the UI
 
 ```tsx
-import { darkTheme, RainbowKitProvider } from "solariskit";
+import { darkTheme, SolarisEthereumProvider } from "solariskit";
 
-<RainbowKitProvider
+<SolarisEthereumProvider
   theme={darkTheme({
     accentColor: "#6366f1",
     accentColorForeground: "white",
@@ -155,7 +155,7 @@ import { darkTheme, RainbowKitProvider } from "solariskit";
   })}
 >
   {children}
-</RainbowKitProvider>;
+</SolarisEthereumProvider>;
 ```
 
 - Fonts: `fontStack` is `"inherit"` by default, so the modals and buttons use the page font. Use `"system"` or `"rounded"` for a fixed font stack.
@@ -195,12 +195,12 @@ wallet UI inside the providers shown in the quick start.
 
 ### Recent transactions and authentication
 
-To display recent EVM transactions, enable `showRecentTransactions` on `RainbowKitProvider`. Call
+To display recent EVM transactions, enable `showRecentTransactions` on `SolarisEthereumProvider`. Call
 `useAddRecentTransaction()` inside a connected component, then call the returned function after submitting a transaction
 with `{ hash, description }` (and optionally `confirmations`). This tracks a submitted transaction; it does not send one.
 
 For signature-based authentication, `createAuthenticationAdapter` accepts `getNonce`, `createMessage`, `verify`, and
-`signOut` callbacks. Wrap `RainbowKitProvider` in `RainbowKitAuthenticationProvider` inside the Wagmi/Query providers,
+`signOut` callbacks. Wrap `SolarisEthereumProvider` in `SolarisAuthenticationProvider` inside the Wagmi/Query providers,
 passing `adapter` and `status` (`"loading"`, `"unauthenticated"`, or `"authenticated"`). Its optional `enabled` flag
 defaults to `true`. Your backend must issue nonces, validate signatures and message contents, and manage sessions;
 connecting a wallet alone does not authenticate a user.
@@ -222,7 +222,7 @@ import {
   getDefaultSolanaConfig,
   SolanaChainSelectButton,
   SolanaConnectButton,
-  SolanaKitProvider,
+  SolarisSolanaProvider,
 } from "solariskit/solana";
 import "solariskit/solana/styles.css";
 
@@ -238,10 +238,10 @@ const config = getDefaultSolanaConfig({
 
 export default function SolanaApp() {
   return (
-    <SolanaKitProvider config={config}>
+    <SolarisSolanaProvider config={config}>
       <SolanaChainSelectButton />
       <SolanaConnectButton />
-    </SolanaKitProvider>
+    </SolarisSolanaProvider>
   );
 }
 ```
@@ -275,7 +275,7 @@ The Solana entry point also exports:
 - `useSolanaBalance`, `useSolanaCluster`, `useSolanaClient`, and `useSolanaKitTransactionSigner`.
 - Public configuration, cluster, wallet, and hook return types.
 
-Use these under `SolanaKitProvider`. It accepts `theme`, `appInfo`, `avatar`, and `id` for customization.
+Use these under `SolarisSolanaProvider`. It accepts `theme`, `appInfo`, `avatar`, and `id` for customization.
 EVM and Solana providers can coexist in one app; give them distinct IDs. Both CSS entry points resolve to the same
 stylesheet, so import it only once.
 
@@ -289,7 +289,16 @@ instance, as above. Wallet controls appear after client hydration.
 ## Migrating from RainbowKit
 
 Replace imports from `@rainbow-me/rainbowkit` with `solariskit`, including `solariskit/styles.css` and `solariskit/wallets`.
-Retain names such as `RainbowKitProvider` and `RainbowKitAuthenticationProvider`.
+Then rename these APIs:
+
+| RainbowKit                                     | Solaris                          |
+| ---------------------------------------------- | -------------------------------- |
+| `RainbowKitProvider`                           | `SolarisEthereumProvider`        |
+| `RainbowKitAuthenticationProvider`             | `SolarisAuthenticationProvider`  |
+| `RainbowKitWalletConnectParameters`            | `SolarisWalletConnectParameters` |
+| `walletDetails.rkDetails` in a custom `Wallet` | `walletDetails.solarisDetails`   |
+| `--rk-*` CSS custom properties                 | `--solaris-*`                    |
+| `[data-rk]` selector                           | `[data-solaris]`                 |
 
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.

@@ -1,6 +1,6 @@
 import { useConnection } from "wagmi";
 
-import { useAuthenticationStatus } from "../components/RainbowKitProvider/AuthenticationContext";
+import { useAuthenticationStatus } from "../components/SolarisEthereumProvider/AuthenticationContext";
 
 export type ConnectionStatus = "disconnected" | "loading" | "unauthenticated" | "connected";
 

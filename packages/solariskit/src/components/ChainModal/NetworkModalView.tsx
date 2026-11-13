@@ -142,7 +142,7 @@ export function NetworkModalView({
   const [searchQuery, setSearchQuery] = useState("");
   // useId keeps the heading id unique when several ecosystems (EVM + Solana)
   // mount their network modals on the same page.
-  const titleId = `rk_chain_modal_title_${React.useId()}`;
+  const titleId = `solaris_chain_modal_title_${React.useId()}`;
   // On touch screens, focus would open the keyboard over the list.
   const coarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   const chainIconSize = coarsePointer ? 32 : 28;

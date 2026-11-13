@@ -3,18 +3,18 @@ import { useCallback, useEffect } from "react";
 import { isNotNullish } from "../../utils/isNotNullish";
 import { useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { loadImages } from "../AsyncImage/useAsyncImage";
-import { useRainbowKitChains } from "./RainbowKitChainContext";
+import { useSolarisChains } from "./SolarisChainContext";
 
 export function usePreloadImages() {
-  const rainbowKitChains = useRainbowKitChains();
+  const solarisChains = useSolarisChains();
   const walletConnectors = useWalletConnectors();
 
   const preloadImages = useCallback(() => {
     loadImages(
       ...walletConnectors.map((wallet) => wallet.iconUrl),
-      ...rainbowKitChains.map((chain) => chain.iconUrl).filter(isNotNullish),
+      ...solarisChains.map((chain) => chain.iconUrl).filter(isNotNullish),
     );
-  }, [walletConnectors, rainbowKitChains]);
+  }, [walletConnectors, solarisChains]);
 
   useEffect(() => {
     preloadImages();

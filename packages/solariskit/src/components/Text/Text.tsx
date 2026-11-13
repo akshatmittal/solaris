@@ -71,7 +71,7 @@ export function Text({
         alignStyles[align],
         xstyle,
       )}
-      data-testid={testId ? `rk-${testId}` : undefined}
+      data-testid={testId ? `solaris-${testId}` : undefined}
       id={id}
     >
       {children}

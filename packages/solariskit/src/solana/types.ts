@@ -5,9 +5,9 @@ import type { AppProviderProps } from "@solana/connector/react";
 
 import type { ChainStatus } from "../components/ChainSelectButton/ChainSelectButton";
 import type { AccountStatus } from "../components/ConnectButton/ConnectButtonView";
-import type { DisclaimerComponent } from "../components/RainbowKitProvider/AppContext";
-import type { AvatarComponent } from "../components/RainbowKitProvider/AvatarContext";
-import type { Theme } from "../components/RainbowKitProvider/RainbowKitProvider";
+import type { DisclaimerComponent } from "../components/SolarisEthereumProvider/AppContext";
+import type { AvatarComponent } from "../components/SolarisEthereumProvider/AvatarContext";
+import type { Theme } from "../components/SolarisEthereumProvider/SolarisEthereumProvider";
 import type { ResponsiveValue } from "../css/responsive";
 
 // The Solana-prefixed public names are aliases of the @solana/connector
@@ -61,7 +61,7 @@ export interface SolanaWalletConnector {
   ready: boolean;
 }
 
-export interface SolanaKitProviderProps {
+export interface SolarisSolanaProviderProps {
   appInfo?: {
     appName?: string;
     learnMoreUrl?: string;

@@ -1,6 +1,6 @@
 import React, { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo } from "react";
 
-import { useModalStateValue } from "../../../components/RainbowKitProvider/ModalContext";
+import { useModalStateValue } from "../../../components/SolarisEthereumProvider/ModalContext";
 import { useSolanaCluster, useSolanaWallet } from "../../hooks";
 import { SolanaAccountModal } from "../SolanaAccountModal/SolanaAccountModal";
 import { SolanaChainModal } from "../SolanaChainModal/SolanaChainModal";

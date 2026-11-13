@@ -47,7 +47,7 @@ export function AsyncImage({ alt, background, radius = 0, size, src: srcProp, te
     <div
       {...stylex.props(styles.container)}
       aria-label={alt}
-      data-testid={testId ? `rk-${testId}` : undefined}
+      data-testid={testId ? `solaris-${testId}` : undefined}
       role="img"
       style={{
         background,

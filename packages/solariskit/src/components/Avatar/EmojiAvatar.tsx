@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { polyconDataUri } from "@akshatmittal/polycons";
 import * as stylex from "@stylexjs/stylex";
 
-import type { AvatarComponent } from "../RainbowKitProvider/AvatarContext";
+import type { AvatarComponent } from "../SolarisEthereumProvider/AvatarContext";
 
 import { colors } from "../../css/vars.stylex";
 import { SpinnerIcon } from "../Icons/Spinner";

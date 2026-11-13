@@ -1,12 +1,12 @@
 import React, { createContext, type ReactNode, useContext, useId, useMemo } from "react";
 
-import type { Theme } from "./RainbowKitProvider";
+import type { Theme } from "./SolarisEthereumProvider";
 
 import { cssStringFromTheme } from "../../css/cssStringFromTheme";
 
 const ThemeIdContext = createContext<string | undefined>(undefined);
 
-const attr = "data-rk";
+const attr = "data-solaris";
 
 export const createThemeRootProps = (id: string | undefined) => ({ [attr]: id || "" });
 
@@ -28,14 +28,14 @@ export const useThemeRootProps = () => {
 };
 
 /**
- * Shared provider-shell theming used by both RainbowKitProvider and
- * SolanaKitProvider. When no id is given, a hydration-stable unique id is
+ * Shared provider-shell theming used by both SolarisEthereumProvider and
+ * SolarisSolanaProvider. When no id is given, a hydration-stable unique id is
  * generated so two providers on one page (e.g. an EVM and a Solana island)
  * scope their CSS variables to their own subtree instead of both emitting
- * the bare [data-rk] selector and stomping each other's theme.
+ * the bare [data-solaris] selector and stomping each other's theme.
  */
 export function useThemeRoot(id: string | undefined, theme: Theme | null | undefined) {
-  const autoId = `rk${useId().replace(/\W/g, "")}`;
+  const autoId = `solaris${useId().replace(/\W/g, "")}`;
   const themeId = id ?? autoId;
 
   const themeCss = useMemo(() => {

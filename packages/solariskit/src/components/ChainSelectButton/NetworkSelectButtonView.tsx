@@ -90,7 +90,7 @@ export function NetworkSelectButtonView({
       )}
       aria-hidden={!buttonReady || undefined}
       aria-label={t("chains.selector")}
-      data-testid={`rk-${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
+      data-testid={`solaris-${testIdPrefix}${unsupportedNetwork ? "wrong-network-button" : "chain-button"}`}
       disabled={!buttonReady || !onOpenNetworkModal}
       key={unsupportedNetwork ? "unsupported" : "supported"}
       onClick={buttonReady ? onOpenNetworkModal : undefined}

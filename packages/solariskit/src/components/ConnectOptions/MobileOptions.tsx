@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { t } from "../../translations";
 import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
-import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
+import { setWalletConnectDeepLink } from "../SolarisEthereumProvider/walletConnectDeepLink";
 import { ConnectModalShellView } from "./ConnectModalShellView";
 import { ConnectStatus } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";

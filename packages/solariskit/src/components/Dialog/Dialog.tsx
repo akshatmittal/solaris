@@ -5,7 +5,7 @@ import { RemoveScroll } from "react-remove-scroll";
 import * as stylex from "@stylexjs/stylex";
 
 import { blurs, colors, fonts, media, motion } from "../../css/vars.stylex";
-import { useThemeRootProps } from "../RainbowKitProvider/ThemeRootContext";
+import { useThemeRootProps } from "../SolarisEthereumProvider/ThemeRootContext";
 import { FocusTrap } from "./FocusTrap";
 
 const fadeIn = stylex.keyframes({
@@ -110,7 +110,7 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
   useEffect(() => {
     if (!open) return;
 
-    const token = Symbol("rk-dialog");
+    const token = Symbol("solaris-dialog");
     openDialogStack.push(token);
 
     const handleEscape = (event: KeyboardEvent) => {

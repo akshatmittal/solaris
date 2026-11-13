@@ -72,7 +72,7 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
   return (
     <button
       {...stylex.props(reset.button, styles.button, isDisabled && styles.disabled, press.scale)}
-      data-testid={`rk-wallet-button-${connector.id}`}
+      data-testid={`solaris-wallet-button-${connector.id}`}
       disabled={isDisabled}
       onClick={onConnect}
       type="button"
@@ -89,7 +89,7 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
           />
         )}
       </span>
-      <span data-testid={`rk-wallet-button-label-${connector.id}`}>
+      <span data-testid={`solaris-wallet-button-label-${connector.id}`}>
         {loading
           ? t("connect.status.connecting", {
               wallet: connector.name,

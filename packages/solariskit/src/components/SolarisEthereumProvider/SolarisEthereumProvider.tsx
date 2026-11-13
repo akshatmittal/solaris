@@ -11,9 +11,9 @@ import { TransactionStoreProvider } from "../../transactions/TransactionStoreCon
 import { AppContext, type DisclaimerComponent, defaultAppInfo } from "./AppContext";
 import { type AvatarComponent, AvatarContext, defaultAvatar } from "./AvatarContext";
 import { ModalProvider } from "./ModalContext";
-import { RainbowKitChainProvider } from "./RainbowKitChainContext";
 import { ShowBalanceProvider } from "./ShowBalanceContext";
 import { ShowRecentTransactionsContext } from "./ShowRecentTransactionsContext";
+import { SolarisChainProvider } from "./SolarisChainContext";
 import { ThemeIdProvider, ThemeRootStyle, useThemeRoot } from "./ThemeRootContext";
 import { usePreloadImages } from "./usePreloadImages";
 import { WalletButtonProvider } from "./WalletButtonContext";
@@ -26,7 +26,7 @@ export type Theme =
       darkMode: ThemeVars;
     };
 
-export interface RainbowKitProviderProps {
+export interface SolarisEthereumProviderProps {
   initialChain?: Chain | number;
   chainSearchThreshold?: number;
   id?: string;
@@ -43,7 +43,7 @@ export interface RainbowKitProviderProps {
 
 const defaultTheme = lightTheme();
 
-export function RainbowKitProvider({
+export function SolarisEthereumProvider({
   appInfo,
   avatar,
   chainSearchThreshold,
@@ -52,7 +52,7 @@ export function RainbowKitProvider({
   initialChain,
   showRecentTransactions = false,
   theme = defaultTheme,
-}: RainbowKitProviderProps) {
+}: SolarisEthereumProviderProps) {
   usePreloadImages();
 
   useConnectionEffect({ onDisconnect: clearWalletConnectDeepLink });
@@ -70,7 +70,7 @@ export function RainbowKitProvider({
   const avatarContext = avatar ?? defaultAvatar;
 
   return (
-    <RainbowKitChainProvider
+    <SolarisChainProvider
       chainSearchThreshold={chainSearchThreshold}
       initialChain={initialChain}
     >
@@ -96,6 +96,6 @@ export function RainbowKitProvider({
           </TransactionStoreProvider>
         </ShowRecentTransactionsContext.Provider>
       </WalletButtonProvider>
-    </RainbowKitChainProvider>
+    </SolarisChainProvider>
   );
 }

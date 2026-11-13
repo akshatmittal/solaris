@@ -8,11 +8,16 @@ import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
-import { type AuthenticationStatus, useAuthenticationStatus } from "../RainbowKitProvider/AuthenticationContext";
-import { useAccountModal, useChainModal, useConnectModal, useModalState } from "../RainbowKitProvider/ModalContext";
-import { useRainbowKitChainsById } from "../RainbowKitProvider/RainbowKitChainContext";
-import { useShowBalance } from "../RainbowKitProvider/ShowBalanceContext";
-import { ShowRecentTransactionsContext } from "../RainbowKitProvider/ShowRecentTransactionsContext";
+import { type AuthenticationStatus, useAuthenticationStatus } from "../SolarisEthereumProvider/AuthenticationContext";
+import {
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+  useModalState,
+} from "../SolarisEthereumProvider/ModalContext";
+import { useShowBalance } from "../SolarisEthereumProvider/ShowBalanceContext";
+import { ShowRecentTransactionsContext } from "../SolarisEthereumProvider/ShowRecentTransactionsContext";
+import { useSolarisChainsById } from "../SolarisEthereumProvider/SolarisChainContext";
 import { abbreviateETHBalance } from "./abbreviateETHBalance";
 import { formatAddress } from "./formatAddress";
 import { formatENS } from "./formatENS";
@@ -60,12 +65,12 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
   const { chains: wagmiChains } = useConfig();
   const isConnectedChainSupported = connectedChainId ? isChainIdSupported(wagmiChains, connectedChainId) : true;
 
-  const rainbowkitChainsById = useRainbowKitChainsById();
+  const solarisChainsById = useSolarisChainsById();
   const authenticationStatus = useAuthenticationStatus() ?? undefined;
-  const rainbowKitChain = chainId ? rainbowkitChainsById[chainId] : undefined;
-  const chainName = rainbowKitChain?.name ?? undefined;
-  const chainIconUrl = rainbowKitChain?.iconUrl ?? undefined;
-  const chainIconBackground = rainbowKitChain?.iconBackground ?? undefined;
+  const solarisChain = chainId ? solarisChainsById[chainId] : undefined;
+  const chainName = solarisChain?.name ?? undefined;
+  const chainIconUrl = solarisChain?.iconUrl ?? undefined;
+  const chainIconBackground = solarisChain?.iconBackground ?? undefined;
   const resolvedChainIconUrl = useAsyncImage(chainIconUrl);
 
   const showRecentTransactions = useContext(ShowRecentTransactionsContext);

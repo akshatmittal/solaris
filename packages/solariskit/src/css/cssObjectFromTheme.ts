@@ -5,7 +5,7 @@ const resolveThemeVars = (theme: ThemeVars | (() => ThemeVars)) => (typeof theme
 const toCssVars = (theme: ThemeVars): Record<string, string> =>
   Object.fromEntries(
     Object.entries(theme).flatMap(([group, values]) =>
-      Object.entries<string>(values).map(([key, value]) => [`--rk-${group}-${key}`, value]),
+      Object.entries<string>(values).map(([key, value]) => [`--solaris-${group}-${key}`, value]),
     ),
   );
 

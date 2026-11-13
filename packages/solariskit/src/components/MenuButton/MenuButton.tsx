@@ -62,7 +62,7 @@ export function MenuButton({
       {...stylex.props(reset.button, styles.row, currentlySelected && styles.selected, danger && styles.danger)}
       aria-busy={busy || undefined}
       aria-current={currentlySelected || undefined}
-      data-testid={testId ? `rk-${testId}` : undefined}
+      data-testid={testId ? `solaris-${testId}` : undefined}
       disabled={currentlySelected || disabled}
       onClick={onClick}
       type="button"

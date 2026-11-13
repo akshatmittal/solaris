@@ -70,7 +70,7 @@ export function ActionButton({
       fullWidth && styles.fullWidth,
       press.scale,
     ),
-    "data-testid": testId ? `rk-${testId}` : undefined,
+    "data-testid": testId ? `solaris-${testId}` : undefined,
   };
 
   return href && !disabled ? (

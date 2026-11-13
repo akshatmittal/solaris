@@ -5,15 +5,15 @@ import { useState, type PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
 import {
-  RainbowKitAuthenticationProvider,
-  RainbowKitProvider,
+  SolarisAuthenticationProvider,
+  SolarisEthereumProvider,
   createAuthenticationAdapter,
   darkTheme,
   getDefaultConfig,
   lightTheme,
   type AuthenticationStatus,
 } from "solariskit";
-import { SolanaKitProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
+import { SolarisSolanaProvider, getDefaultSolanaConfig, type SolanaCluster } from "solariskit/solana";
 import { isHex } from "viem";
 import { createSiweMessage, generateSiweNonce, parseSiweMessage } from "viem/siwe";
 import { http, WagmiProvider } from "wagmi";
@@ -120,17 +120,17 @@ export function EthereumProviders({ children }: PropsWithChildren) {
   return (
     <WagmiProvider config={ethereumConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitAuthenticationProvider
+        <SolarisAuthenticationProvider
           adapter={authAdapter}
           status={authStatus}
         >
-          <RainbowKitProvider
+          <SolarisEthereumProvider
             id="ethereum"
             theme={kitThemes[theme]}
           >
             {children}
-          </RainbowKitProvider>
-        </RainbowKitAuthenticationProvider>
+          </SolarisEthereumProvider>
+        </SolarisAuthenticationProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
@@ -140,12 +140,12 @@ export function SolanaProviders({ children }: PropsWithChildren) {
   const [{ theme }] = useQueryStates(kitSettings);
 
   return (
-    <SolanaKitProvider
+    <SolarisSolanaProvider
       config={solanaConfig}
       id="solana"
       theme={kitThemes[theme]}
     >
       {children}
-    </SolanaKitProvider>
+    </SolarisSolanaProvider>
   );
 }

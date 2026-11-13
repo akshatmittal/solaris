@@ -34,17 +34,17 @@ export function createAuthenticationAdapter<Message extends SignableMessage>(ada
 
 const AuthenticationContext = createContext<AuthenticationConfig<SignableMessage> | null>(null);
 
-interface RainbowKitAuthenticationProviderProps<Message extends SignableMessage> extends AuthenticationConfig<Message> {
+interface SolarisAuthenticationProviderProps<Message extends SignableMessage> extends AuthenticationConfig<Message> {
   enabled?: boolean;
   children: ReactNode;
 }
 
-export function RainbowKitAuthenticationProvider<Message extends SignableMessage = SignableMessage>({
+export function SolarisAuthenticationProvider<Message extends SignableMessage = SignableMessage>({
   adapter,
   children,
   enabled = true,
   status,
-}: RainbowKitAuthenticationProviderProps<Message>) {
+}: SolarisAuthenticationProviderProps<Message>) {
   // When the wallet is disconnected, we want to tell the auth
   // adapter that the user session is no longer active.
   const { connector } = useConnection();

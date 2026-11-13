@@ -63,7 +63,7 @@ export function ConnectStatus({
         radius={16}
         size={64}
         src={wallet.iconUrl}
-        useAsImage={!wallet.isRainbowKitConnector}
+        useAsImage={!wallet.isSolarisConnector}
       />
       <div
         {...stylex.props(styles.text)}

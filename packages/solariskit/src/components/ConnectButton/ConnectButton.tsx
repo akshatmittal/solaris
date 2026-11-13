@@ -4,7 +4,7 @@ import type { ResponsiveValue } from "../../css/responsive";
 
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { useHydrated } from "../../hooks/useHydrated";
-import { useShowBalance } from "../RainbowKitProvider/ShowBalanceContext";
+import { useShowBalance } from "../SolarisEthereumProvider/ShowBalanceContext";
 import { ConnectButtonRenderer } from "./ConnectButtonRenderer";
 import { type AccountStatus, ConnectButtonView, defaultConnectButtonProps } from "./ConnectButtonView";
 

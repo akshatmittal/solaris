@@ -5,35 +5,31 @@ import type { Chain } from "wagmi/chains";
 import { useChainId as useWagmiChainId, useConfig, useConnection, useSwitchChain } from "wagmi";
 
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
-import { provideRainbowKitChains } from "./provideRainbowKitChains";
+import { provideSolarisChains } from "./provideSolarisChains";
 
-export interface RainbowKitChain extends Chain {
+export interface SolarisChain extends Chain {
   iconUrl?: string | (() => Promise<string>) | null;
   iconBackground?: string;
 }
 
-interface RainbowKitChainContextValue {
-  chains: RainbowKitChain[];
+interface SolarisChainContextValue {
+  chains: SolarisChain[];
   initialChainId?: number;
   chainSearchThreshold: number;
 }
 
-const RainbowKitChainContext = createContext<RainbowKitChainContextValue>({
+const SolarisChainContext = createContext<SolarisChainContextValue>({
   chains: [],
   chainSearchThreshold: 5,
 });
 
-interface RainbowKitChainProviderProps {
+interface SolarisChainProviderProps {
   initialChain?: Chain | number;
   chainSearchThreshold?: number;
   children: ReactNode;
 }
 
-export function RainbowKitChainProvider({
-  chainSearchThreshold = 5,
-  children,
-  initialChain,
-}: RainbowKitChainProviderProps) {
+export function SolarisChainProvider({ chainSearchThreshold = 5, children, initialChain }: SolarisChainProviderProps) {
   const { chains } = useConfig();
   const { status } = useConnection();
   const wagmiChainId = useWagmiChainId();
@@ -54,10 +50,10 @@ export function RainbowKitChainProvider({
   }, [configuredInitialChainId, status, switchChain, wagmiChainId]);
 
   return (
-    <RainbowKitChainContext.Provider
+    <SolarisChainContext.Provider
       value={useMemo(
         () => ({
-          chains: provideRainbowKitChains(chains),
+          chains: provideSolarisChains(chains),
           chainSearchThreshold,
           initialChainId,
         }),
@@ -65,26 +61,26 @@ export function RainbowKitChainProvider({
       )}
     >
       {children}
-    </RainbowKitChainContext.Provider>
+    </SolarisChainContext.Provider>
   );
 }
 
-export const useRainbowKitChains = () => useContext(RainbowKitChainContext).chains;
+export const useSolarisChains = () => useContext(SolarisChainContext).chains;
 
-export const useChainSearchThreshold = () => useContext(RainbowKitChainContext).chainSearchThreshold;
+export const useChainSearchThreshold = () => useContext(SolarisChainContext).chainSearchThreshold;
 
-export const useInitialChainId = () => useContext(RainbowKitChainContext).initialChainId;
+export const useInitialChainId = () => useContext(SolarisChainContext).initialChainId;
 
-export const useRainbowKitChainsById = () => {
-  const rainbowkitChains = useRainbowKitChains();
+export const useSolarisChainsById = () => {
+  const solarisChains = useSolarisChains();
 
   return useMemo(() => {
-    const rainbowkitChainsById: Record<number, RainbowKitChain> = {};
+    const solarisChainsById: Record<number, SolarisChain> = {};
 
-    for (const rkChain of rainbowkitChains) {
-      rainbowkitChainsById[rkChain.id] = rkChain;
+    for (const solarisChain of solarisChains) {
+      solarisChainsById[solarisChain.id] = solarisChain;
     }
 
-    return rainbowkitChainsById;
-  }, [rainbowkitChains]);
+    return solarisChainsById;
+  }, [solarisChains]);
 };
