@@ -59,12 +59,7 @@ export type SolarisDetails = Omit<Wallet, "createConnector" | "hidden"> & {
   index: number;
   groupIndex: number;
   groupName: string;
-  isWalletConnectModalConnector?: boolean;
   isSolarisConnector: boolean;
-  walletConnectModalConnector?: Connector;
-  // Used specifically in `connectorsForWallets` logic
-  // to make sure we can also get WalletConnect modal in Solaris
-  showQrModal?: true;
 };
 
 export type WalletDetailsParams = { solarisDetails: SolarisDetails };
@@ -77,8 +72,16 @@ export type WagmiConnectorInstance = Connector & {
   // this is optional since we only get
   // solarisDetails if we use Solaris connectors
   solarisDetails?: SolarisDetails;
+  // Opens the WalletConnect modal (Reown AppKit) on this connector's provider. Only the WalletConnect connector has it.
+  openWalletConnectModal?: () => Promise<WalletConnectModalSession>;
+};
+
+export type WalletConnectModalSession = {
+  // Resolves when the modal shows its UI.
+  shown: Promise<void>;
+  close: () => void;
 };
 
 // This will be the wallet instance we will return
 // in the Solaris connect modal
-export type WalletInstance = Connector & SolarisDetails;
+export type WalletInstance = Connector & SolarisDetails & Pick<WagmiConnectorInstance, "openWalletConnectModal">;

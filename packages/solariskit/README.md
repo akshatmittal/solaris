@@ -30,18 +30,18 @@ The default EVM wallet list includes injected browser wallets, WalletConnect, an
 Install the optional peers used by that list:
 
 ```bash
-npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1
+npm install @walletconnect/ethereum-provider@^2.21.1 @reown/appkit@^1.8.19 @base-org/account@^2.5.1
 ```
 
 | Integration              | Additional dependencies                                         |
 | ------------------------ | --------------------------------------------------------------- |
 | Injected browser wallets | None                                                            |
-| WalletConnect            | `@walletconnect/ethereum-provider`                              |
+| WalletConnect            | `@walletconnect/ethereum-provider`, `@reown/appkit`             |
 | Base Account             | `@base-org/account`                                             |
 | Safe                     | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
 | Solana                   | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
 
-These peers are optional at the package level, but required when using the corresponding integration.
+These peers are optional at the package level, but required when using the corresponding integration. WalletConnect needs `@reown/appkit` only for the "Open" button, which shows the official WalletConnect modal; without it, the QR code still works and the button shows an error.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
 
 ## EVM quick start
@@ -100,7 +100,7 @@ contract reads, and transaction submission.
 
 - `appDescription`, `appUrl`, and `appIcon` for wallet connection metadata.
 - `wallets` for a custom grouped wallet list.
-- `walletConnectParameters` for WalletConnect options.
+- `walletConnectParameters` for WalletConnect options. `qrModalOptions` styles the official WalletConnect modal. The modal has analytics, email, and social login turned off.
 - Wagmi configuration such as `ssr` and `transports` (not `client` or `connectors`, which SolarisKit manages).
 
 Without `transports`, each chain uses Wagmi's `http()` transport and the chain's default public RPC. For production,

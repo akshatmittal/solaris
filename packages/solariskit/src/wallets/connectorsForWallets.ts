@@ -1,6 +1,6 @@
 import type { CreateConnectorFn } from "wagmi";
 
-import type { SolarisWalletConnectParameters, Wallet, WalletDetailsParams, WalletList } from "./Wallet";
+import type { SolarisWalletConnectParameters, Wallet, WalletList } from "./Wallet";
 
 import { isHexString } from "../utils/colors";
 import { omitUndefinedValues } from "../utils/omitUndefinedValues";
@@ -109,44 +109,16 @@ export const connectorsForWallets = (
       }
     }
 
-    const walletMetaData = (
-      // For now we should only use these as the additional parameters
-      additionalSolarisParams?: Pick<
-        WalletDetailsParams["solarisDetails"],
-        "isWalletConnectModalConnector" | "showQrModal"
-      >,
-    ) => {
-      return {
-        solarisDetails: omitUndefinedValues({
-          ...walletMeta,
-          groupIndex,
-          groupName,
-          isSolarisConnector: true,
-          // These additional params will be used in Solaris react tree to
-          // merge `walletConnectWallet` and `walletConnect` connector from wagmi with
-          // showQrModal: true. This way we can let the user choose if they want to
-          // connect via QR code or open the official walletConnect modal instead
-          ...(additionalSolarisParams ? additionalSolarisParams : {}),
-        }),
-      };
+    const walletMetaData = {
+      solarisDetails: omitUndefinedValues({
+        ...walletMeta,
+        groupIndex,
+        groupName,
+        isSolarisConnector: true,
+      }),
     };
 
-    const isWalletConnectConnector = walletMeta.id === "walletConnect";
-
-    if (isWalletConnectConnector) {
-      connectors.push(
-        lazyConnector(
-          createConnector(
-            walletMetaData({
-              isWalletConnectModalConnector: true,
-              showQrModal: true,
-            }),
-          ),
-        ),
-      );
-    }
-
-    connectors.push(lazyConnector(createConnector(walletMetaData())));
+    connectors.push(lazyConnector(createConnector(walletMetaData)));
   }
 
   return connectors;
