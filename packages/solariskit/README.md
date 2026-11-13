@@ -26,11 +26,11 @@ In an existing React app:
 npm install solariskit wagmi@^3 viem@^2 @tanstack/react-query@^5
 ```
 
-The default EVM wallet list includes injected browser wallets, Safe, Base, and WalletConnect.
+The default EVM wallet list includes injected browser wallets, WalletConnect, and Base, in that order. Safe is not in the default list; add `safeWallet` to your own list to use it.
 Install the optional peers used by that list:
 
 ```bash
-npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1 @safe-global/safe-apps-provider@^0.18.6 @safe-global/safe-apps-sdk@^9.1.0
+npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1
 ```
 
 | Integration              | Additional dependencies                                         |

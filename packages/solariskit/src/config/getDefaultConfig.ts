@@ -8,7 +8,7 @@ import type { SolarisWalletConnectParameters, WalletList } from "../wallets/Wall
 
 import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
-import { base, injectedWallet, safeWallet, walletConnectWallet } from "../wallets/walletConnectors";
+import { base, injectedWallet, walletConnectWallet } from "../wallets/walletConnectors";
 
 export type _chains = readonly [SolarisChain, ...SolarisChain[]];
 
@@ -67,7 +67,7 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
     wallets || [
       {
         groupName: "Popular",
-        wallets: [injectedWallet, safeWallet, base, walletConnectWallet],
+        wallets: [injectedWallet, walletConnectWallet, base],
       },
     ],
     {
