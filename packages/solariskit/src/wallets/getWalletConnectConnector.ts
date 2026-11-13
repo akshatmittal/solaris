@@ -102,6 +102,8 @@ function createWalletConnectConnector({
     let cancelConnect: ((error: Error) => void) | undefined;
     // A modal that closes or fails before connect() starts rejects that connect() when it starts.
     let cancelError: Error | undefined;
+    // Only the latest modal session that is still open can cancel.
+    let sessionCount = 0;
     const cancel = (error: Error) => {
       if (cancelConnect) {
         cancelConnect(error);
@@ -152,19 +154,23 @@ function createWalletConnectConnector({
         }
         const modal = await modalPromise;
         cancelError = undefined;
+        const session = ++sessionCount;
 
         let opened = false;
         let closedByUs = false;
+        const isActive = () => !closedByUs && session === sessionCount;
         const unsubscribe = modal.subscribeState((state) => {
           if (state.open) {
             opened = true;
-          } else if (opened && !closedByUs && !provider.session) {
+          } else if (opened && isActive() && !provider.session) {
             cancel(new UserRejectedRequestError(new Error("The user closed the WalletConnect modal.")));
           }
         });
         const shown = modal.open();
         shown.catch((error: unknown) => {
-          cancel(error instanceof Error ? error : new Error("The WalletConnect modal failed to load."));
+          if (isActive()) {
+            cancel(error instanceof Error ? error : new Error("The WalletConnect modal failed to load."));
+          }
         });
 
         return {
