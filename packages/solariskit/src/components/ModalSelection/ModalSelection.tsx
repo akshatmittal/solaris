@@ -37,10 +37,14 @@ type Props = {
   iconBackground?: string;
   testId?: string;
   isRainbowKitConnector?: boolean;
+  // The wallet SDK loads; the row cannot be selected.
   loading: boolean;
+  // The wallet connects; the row stays selectable, so the user can reopen or repeat it.
+  connecting: boolean;
 };
 
 export const ModalSelection = ({
+  connecting,
   currentlySelected = false,
   iconBackground,
   iconUrl,
@@ -52,8 +56,9 @@ export const ModalSelection = ({
   testId,
 }: Props) => (
   <MenuButton
+    busy={loading || connecting}
     currentlySelected={currentlySelected}
-    loading={loading}
+    disabled={loading}
     onClick={onClick}
     testId={testId}
   >
@@ -78,7 +83,7 @@ export const ModalSelection = ({
         </Text>
       )}
     </span>
-    {loading && (
+    {(loading || connecting) && (
       <span {...stylex.props(styles.spinner)}>
         <SpinnerIcon />
       </span>

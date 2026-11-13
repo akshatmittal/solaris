@@ -81,11 +81,12 @@ export function WalletListView({
                 <div {...stylex.props(styles.group)}>
                   {wallets.map((wallet) => (
                     <ModalSelection
+                      connecting={wallet.id === connectingWalletId}
                       currentlySelected={wallet.id === selectedWalletId}
                       iconBackground={wallet.iconBackground}
                       iconUrl={wallet.iconUrl}
                       key={wallet.id}
-                      loading={wallet.loading || wallet.id === connectingWalletId}
+                      loading={wallet.loading}
                       name={wallet.name}
                       onClick={() => onSelectWallet(wallet)}
                       recent={wallet.recent}

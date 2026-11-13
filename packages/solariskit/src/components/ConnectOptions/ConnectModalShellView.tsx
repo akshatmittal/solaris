@@ -3,7 +3,7 @@ import React, { type ReactNode, useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors, motion } from "../../css/vars.stylex";
+import { colors, media, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
@@ -46,7 +46,7 @@ const styles = stylex.create({
   },
   error: {
     paddingBottom: 12,
-    paddingInline: 20,
+    paddingInline: { default: 20, [media.largeScreen]: 24 },
   },
   footer: {
     alignItems: "center",

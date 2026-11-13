@@ -41,27 +41,29 @@ const styles = stylex.create({
 });
 
 export function MenuButton({
+  busy,
   children,
   currentlySelected = false,
   danger = false,
-  loading,
+  disabled,
   onClick,
   testId,
 }: {
+  busy: boolean;
   children: React.ReactNode;
   currentlySelected?: boolean;
   danger?: boolean;
-  loading: boolean;
+  disabled: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
   return (
     <button
       {...stylex.props(reset.button, styles.row, currentlySelected && styles.selected, danger && styles.danger)}
-      aria-busy={loading || undefined}
+      aria-busy={busy || undefined}
       aria-current={currentlySelected || undefined}
       data-testid={testId ? `rk-${testId}` : undefined}
-      disabled={currentlySelected || loading}
+      disabled={currentlySelected || disabled}
       onClick={onClick}
       type="button"
     >

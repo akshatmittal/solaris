@@ -28,16 +28,25 @@ const styles = stylex.create({
     flexDirection: "column",
     gap: 8,
   },
+  // The spinner covers the hidden label, so the tile keeps its height.
   itemSpinner: {
+    alignItems: "center",
     color: colors.accentColor,
     display: "flex",
-    height: 20,
+    inset: 0,
+    justifyContent: "center",
+    position: "absolute",
+    visibility: "visible",
+  },
+  itemLabelBusy: {
+    visibility: "hidden",
   },
   // Labels may use half of each 8px grid gap, so names like "WalletConnect" stay on one line.
   itemLabel: {
     display: "flex",
     flexDirection: "column",
     marginInline: -4,
+    position: "relative",
     width: "calc(100% + 8px)",
   },
   itemName: {
@@ -52,7 +61,7 @@ const styles = stylex.create({
     display: "grid",
     // As many columns as fit: 3 at 320px, 4 on most phones, up to 8 just below the dialog breakpoint.
     columnGap: 8,
-    gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(78px, 1fr))",
     rowGap: 20,
     paddingBottom: 24,
     paddingInline: 4,
@@ -72,7 +81,7 @@ function WalletGridItem({
     <button
       {...stylex.props(reset.button, styles.item, wallet.loading && styles.itemDisabled, press.scale)}
       aria-busy={connecting || wallet.loading || undefined}
-      // The spinner replaces the name.
+      // The spinner hides the name.
       aria-label={connecting || wallet.loading ? wallet.name : undefined}
       data-testid={`rk-wallet-option-${wallet.id}`}
       disabled={wallet.loading}
@@ -86,33 +95,32 @@ function WalletGridItem({
           size={56}
           src={wallet.iconUrl}
         />
-        {connecting || wallet.loading ? (
-          <span {...stylex.props(styles.itemSpinner)}>
-            <SpinnerIcon />
-          </span>
-        ) : (
-          <span {...stylex.props(styles.itemLabel)}>
+        <span {...stylex.props(styles.itemLabel, (connecting || wallet.loading) && styles.itemLabelBusy)}>
+          <Text
+            as="span"
+            color="modalText"
+            size="13"
+            weight="medium"
+            xstyle={styles.itemName}
+          >
+            {wallet.shortName ?? wallet.name}
+          </Text>
+          {wallet.recent && (
             <Text
               as="span"
-              color="modalText"
-              size="13"
+              color="accentColor"
+              size="12"
               weight="medium"
-              xstyle={styles.itemName}
             >
-              {wallet.shortName ?? wallet.name}
+              {t("connect.recent")}
             </Text>
-            {wallet.recent && (
-              <Text
-                as="span"
-                color="accentColor"
-                size="12"
-                weight="medium"
-              >
-                {t("connect.recent")}
-              </Text>
-            )}
-          </span>
-        )}
+          )}
+          {(connecting || wallet.loading) && (
+            <span {...stylex.props(styles.itemSpinner)}>
+              <SpinnerIcon />
+            </span>
+          )}
+        </span>
       </span>
     </button>
   );
