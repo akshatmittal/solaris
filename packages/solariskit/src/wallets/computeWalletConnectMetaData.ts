@@ -1,4 +1,4 @@
-import type { SolarisWalletConnectParameters } from "./Wallet";
+import type { DefaultWalletOptions } from "./Wallet";
 
 interface ComputeMetaDataParameters {
   appName: string;
@@ -12,7 +12,7 @@ export const computeWalletConnectMetaData = ({
   appDescription,
   appUrl,
   appIcon,
-}: ComputeMetaDataParameters): NonNullable<SolarisWalletConnectParameters["metadata"]> => {
+}: ComputeMetaDataParameters): DefaultWalletOptions["metadata"] => {
   return {
     name: appName,
     description: appDescription ?? appName,

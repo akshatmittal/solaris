@@ -4,9 +4,8 @@ import { http, type CreateConfigParameters } from "wagmi";
 import { createConfig } from "wagmi";
 
 import type { SolarisChain } from "../components/SolarisEthereumProvider/SolarisChainContext";
-import type { SolarisWalletConnectParameters, WalletList } from "../wallets/Wallet";
+import type { WalletList } from "../wallets/Wallet";
 
-import { computeWalletConnectMetaData } from "../wallets/computeWalletConnectMetaData";
 import { connectorsForWallets } from "../wallets/connectorsForWallets";
 import { base, injectedWallet, walletConnectWallet } from "../wallets/walletConnectors";
 
@@ -29,7 +28,6 @@ interface GetDefaultConfigParameters<chains extends _chains, transports extends 
   appIcon?: string;
   wallets?: WalletList;
   projectId: string;
-  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 const createDefaultTransports = <chains extends _chains, transports extends _transports>(
@@ -51,17 +49,9 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
   appIcon,
   wallets,
   projectId,
-  walletConnectParameters,
   ...wagmiParameters
 }: GetDefaultConfigParameters<chains, transports>) => {
   const { transports, chains, ...restWagmiParameters } = wagmiParameters;
-
-  const metadata = computeWalletConnectMetaData({
-    appName,
-    appDescription,
-    appUrl,
-    appIcon,
-  });
 
   const connectors = connectorsForWallets(
     wallets || [
@@ -76,7 +66,6 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
       appDescription,
       appUrl,
       appIcon,
-      walletConnectParameters: { metadata, ...walletConnectParameters },
     },
   );
 

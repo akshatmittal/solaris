@@ -98,9 +98,8 @@ contract reads, and transaction submission.
 
 `getDefaultConfig` returns a Wagmi config. It requires `appName`, `projectId`, and a non-empty `chains` list. It also accepts:
 
-- `appDescription`, `appUrl`, and `appIcon` for wallet connection metadata.
+- `appDescription`, `appUrl`, and `appIcon` for wallet connection metadata. SolarisKit builds the WalletConnect metadata from these and `appName`. WalletConnect telemetry is off, and the official WalletConnect modal has analytics, email, and social login turned off.
 - `wallets` for a custom grouped wallet list.
-- `walletConnectParameters` for WalletConnect options. `qrModalOptions` styles the official WalletConnect modal. The modal has analytics, email, and social login turned off.
 - Wagmi configuration such as `ssr` and `transports` (not `client` or `connectors`, which SolarisKit manages).
 
 Without `transports`, each chain uses Wagmi's `http()` transport and the chain's default public RPC. For production,
@@ -291,17 +290,17 @@ instance, as above. Wallet controls appear after client hydration.
 Replace imports from `@rainbow-me/rainbowkit` with `solariskit`, including `solariskit/styles.css` and `solariskit/wallets`.
 Then rename these APIs:
 
-| RainbowKit                                                                   | Solaris                          |
-| ---------------------------------------------------------------------------- | -------------------------------- |
-| `RainbowKitProvider`                                                         | `SolarisEthereumProvider`        |
-| `RainbowKitProviderProps`                                                    | `SolarisEthereumProviderProps`   |
-| `RainbowKitAuthenticationProvider`                                           | `SolarisAuthenticationProvider`  |
-| `RainbowKitWalletConnectParameters`                                          | `SolarisWalletConnectParameters` |
-| `walletDetails.rkDetails` in a custom `Wallet`                               | `walletDetails.solarisDetails`   |
-| `isRainbowKitConnector` (wallet details and `WalletButton.Custom` connector) | `isSolarisConnector`             |
-| `--rk-*` CSS custom properties                                               | `--solaris-*`                    |
-| `[data-rk]` selector                                                         | `[data-solaris]`                 |
-| `data-testid="rk-*"` attributes                                              | Removed                          |
+| RainbowKit                                                                   | Solaris                         |
+| ---------------------------------------------------------------------------- | ------------------------------- |
+| `RainbowKitProvider`                                                         | `SolarisEthereumProvider`       |
+| `RainbowKitProviderProps`                                                    | `SolarisEthereumProviderProps`  |
+| `RainbowKitAuthenticationProvider`                                           | `SolarisAuthenticationProvider` |
+| `RainbowKitWalletConnectParameters` and `walletConnectParameters`            | Removed                         |
+| `walletDetails.rkDetails` in a custom `Wallet`                               | `walletDetails.solarisDetails`  |
+| `isRainbowKitConnector` (wallet details and `WalletButton.Custom` connector) | `isSolarisConnector`            |
+| `--rk-*` CSS custom properties                                               | `--solaris-*`                   |
+| `[data-rk]` selector                                                         | `[data-solaris]`                |
+| `data-testid="rk-*"` attributes                                              | Removed                         |
 
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.

@@ -1,6 +1,6 @@
 import type { CreateConnectorFn } from "wagmi";
 
-import type { SolarisWalletConnectParameters, Wallet, WalletList } from "./Wallet";
+import type { Wallet, WalletList } from "./Wallet";
 
 import { isHexString } from "../utils/colors";
 import { omitUndefinedValues } from "../utils/omitUndefinedValues";
@@ -19,12 +19,11 @@ export interface ConnectorsForWalletsParameters {
   appDescription?: string;
   appUrl?: string;
   appIcon?: string;
-  walletConnectParameters?: SolarisWalletConnectParameters;
 }
 
 export const connectorsForWallets = (
   walletList: WalletList,
-  { projectId, walletConnectParameters, appName, appDescription, appUrl, appIcon }: ConnectorsForWalletsParameters,
+  { projectId, appName, appDescription, appUrl, appIcon }: ConnectorsForWalletsParameters,
 ): CreateConnectorFn[] => {
   if (!walletList.length) {
     throw new Error("No wallet list was provided");
@@ -42,7 +41,7 @@ export const connectorsForWallets = (
   const visibleWallets: WalletListItem[] = [];
   const potentiallyHiddenWallets: WalletListItem[] = [];
 
-  const walletConnectMetaData = computeWalletConnectMetaData({
+  const metadata = computeWalletConnectMetaData({
     appName,
     appDescription,
     appUrl,
@@ -53,22 +52,7 @@ export const connectorsForWallets = (
     for (const createWallet of wallets) {
       index++;
 
-      const wallet = createWallet({
-        projectId,
-        appName,
-        appIcon,
-        // `option` is being used only for `walletConnectWallet` wallet
-        options: {
-          metadata: walletConnectMetaData,
-          ...walletConnectParameters,
-        },
-        // Every other wallet that supports walletConnect flow and is not
-        // `walletConnectWallet` wallet will have `walletConnectParameters` property
-        walletConnectParameters: {
-          metadata: walletConnectMetaData,
-          ...walletConnectParameters,
-        },
-      });
+      const wallet = createWallet({ projectId, metadata, appName, appIcon });
 
       // guard against non-hex values for `iconAccent`
       if (wallet?.iconAccent && !isHexString(wallet?.iconAccent)) {

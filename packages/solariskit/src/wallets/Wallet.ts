@@ -1,8 +1,6 @@
 import type { Connector, CreateConnectorFn } from "wagmi";
 import type { WalletConnectParameters } from "wagmi/connectors";
 
-import type { WalletConnectWalletOptions } from "./walletConnectors/walletConnectWallet/walletConnectWallet";
-
 type SolarisConnector = {
   mobile?: {
     getUri?: (uri: string) => string;
@@ -31,7 +29,8 @@ export type Wallet = {
 
 export interface DefaultWalletOptions {
   projectId: string;
-  walletConnectParameters?: SolarisWalletConnectParameters;
+  // Built from appName, appDescription, appUrl, and appIcon.
+  metadata: NonNullable<WalletConnectParameters["metadata"]>;
 }
 
 type WalletAppOptions = {
@@ -42,18 +41,13 @@ type WalletAppOptions = {
 export type CreateWalletFn = (
   // These parameters will be used when creating a wallet. If injected
   // wallet doesn't have parameters it will just ignore these passed in parameters
-  createWalletParams: WalletAppOptions & Omit<WalletConnectWalletOptions, "projectId"> & DefaultWalletOptions,
+  createWalletParams: WalletAppOptions & DefaultWalletOptions,
 ) => Wallet;
 
 export type WalletList = {
   groupName: string;
   wallets: CreateWalletFn[];
 }[];
-
-// We don't want users to pass in `showQrModal` or `projectId`.
-// Those two values are handled by Solaris. The rest of WalletConnect
-// parameters can be passed with no issue
-export type SolarisWalletConnectParameters = Omit<WalletConnectParameters, "showQrModal" | "projectId">;
 
 export type SolarisDetails = Omit<Wallet, "createConnector" | "hidden"> & {
   index: number;
@@ -77,7 +71,7 @@ export type WagmiConnectorInstance = Connector & {
 };
 
 export type WalletConnectModalSession = {
-  // Resolves when the modal shows its UI.
+  // Resolves when the modal shows its UI. Closing the modal or a failed load rejects the pending connect().
   shown: Promise<void>;
   close: () => void;
 };

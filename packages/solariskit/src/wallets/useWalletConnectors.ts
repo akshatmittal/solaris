@@ -95,11 +95,14 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
       requestWalletSdk(connector);
       const modal = await openWalletConnectModal();
       let pending = true;
-      modal.shown.then(() => {
-        if (pending) {
-          onOpen();
-        }
-      });
+      modal.shown.then(
+        () => {
+          if (pending) {
+            onOpen();
+          }
+        },
+        () => {},
+      );
       try {
         await connectWallet(connector);
       } finally {
@@ -107,10 +110,7 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
         modal.close();
       }
     } catch (err) {
-      // Closing the modal aborts the pairing, which rejects the connect.
-      const isUserRejection =
-        err instanceof Error && (err.name === "UserRejectedRequestError" || /abort/i.test(err.message));
-      if (!isUserRejection) {
+      if (!(err instanceof Error && err.name === "UserRejectedRequestError")) {
         throw err;
       }
     } finally {
