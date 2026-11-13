@@ -1,13 +1,14 @@
-name: Publish Example
+name: Example
 
 on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: github-pages
+  group: example-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -15,25 +16,19 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       pages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Enable Corepack
-        run: corepack enable pnpm
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - name: Setup pnpm, Node, and Dependencies
+        uses: pnpm/setup@v3
         with:
-          node-version: "24"
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+          cache: true
+          require-lockfile: true
 
       - name: Build Example
         run: pnpm build
@@ -45,13 +40,15 @@ jobs:
         run: touch apps/example/out/.nojekyll
 
       - name: Upload Pages Artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:
           path: apps/example/out
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: build
+    if: github.event_name != 'pull_request'
     permissions:
       pages: write
       id-token: write
