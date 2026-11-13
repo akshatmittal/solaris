@@ -6,6 +6,7 @@ import { WalletListEmptyState } from "../../../components/ConnectOptions/WalletL
 import { WalletListView, type WalletListViewItem } from "../../../components/ConnectOptions/WalletListView";
 import { Dialog } from "../../../components/Dialog/Dialog";
 import { DialogContent } from "../../../components/Dialog/DialogContent";
+import { t } from "../../../translations";
 import { isMobile } from "../../../utils/isMobile";
 import fallbackWalletIcon from "../../../wallets/walletConnectors/injectedWallet/injectedWallet.svg";
 import { useSolanaConnectWallet, useSolanaWallet, useSolanaWalletConnectors } from "../../hooks";
@@ -116,8 +117,8 @@ export function SolanaConnectModal({ onClose, open }: SolanaConnectModalProps) {
             showStatus &&
             selectedWallet && (
               <ConnectStatus
+                confirm={t(mobile ? "connect.status.confirm_mobile" : "connect.status.confirm")}
                 connectionError={declined ? "declined" : null}
-                mobile={mobile}
                 onRetry={() => selectWallet(selectedWallet)}
                 titleId={titleId}
                 wallet={selectedWallet}

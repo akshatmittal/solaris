@@ -49,7 +49,8 @@
     "walletconnect": {
       "description": "Need the WalletConnect modal?",
       "open": {
-        "label": "Open"
+        "label": "Open",
+        "loading": "Opening…"
       }
     }
   },

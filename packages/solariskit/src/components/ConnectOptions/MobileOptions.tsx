@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { t } from "../../translations";
 import { useWalletSdks } from "../../wallets/lazyConnector";
 import { type WalletConnector, useWalletConnectors } from "../../wallets/useWalletConnectors";
 import { setWalletConnectDeepLink } from "../RainbowKitProvider/walletConnectDeepLink";
@@ -68,11 +69,21 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
   const [statusWallet, setStatusWallet] = useState<WalletConnector>();
 
   const selectWallet = async (wallet: WalletConnector) => {
+    // A second connect while the first is open in the wallet can be rejected, so only show its status again.
+    if (attempt?.id === wallet.id && !attempt.declined) {
+      setStatusWallet(wallet);
+      return;
+    }
     const key = ++attemptKey.current;
     setAttempt({ declined: false, id: wallet.id, key });
     setStatusWallet(wallet);
     try {
-      await connectMobile(wallet, onClose);
+      // A late WalletConnect modal does not close the connect modal after the user picked another wallet.
+      await connectMobile(wallet, () => {
+        if (attemptKey.current === key) {
+          onClose();
+        }
+      });
       setAttempt((current) => (current?.key === key ? undefined : current));
     } catch {
       setAttempt((current) => (current?.key === key ? { declined: true, id: wallet.id, key } : current));
@@ -87,8 +98,8 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
       rightPaneContent={
         statusWallet && (
           <ConnectStatus
+            confirm={statusWallet.showWalletConnectModal ? null : t("connect.status.confirm_mobile")}
             connectionError={attempt?.id === statusWallet.id && attempt.declined ? "declined" : null}
-            mobile
             onRetry={() => selectWallet(statusWallet)}
             titleId={titleId}
             wallet={statusWallet}
