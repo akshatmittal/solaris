@@ -19,7 +19,7 @@ export function getDefaultWallets(parameters?: ConnectorsForWalletsParameters) {
   const wallets: WalletList = [
     {
       groupName: "Popular",
-      wallets: [safeWallet, injectedWallet, base, walletConnectWallet],
+      wallets: [injectedWallet, safeWallet, base, walletConnectWallet],
     },
   ];
 

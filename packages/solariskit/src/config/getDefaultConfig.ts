@@ -67,7 +67,7 @@ export const getDefaultConfig = <chains extends _chains, transports extends _tra
     wallets || [
       {
         groupName: "Popular",
-        wallets: [safeWallet, injectedWallet, base, walletConnectWallet],
+        wallets: [injectedWallet, safeWallet, base, walletConnectWallet],
       },
     ],
     {
