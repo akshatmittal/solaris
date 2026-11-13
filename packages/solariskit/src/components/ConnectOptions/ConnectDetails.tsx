@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
@@ -56,6 +56,7 @@ export function ConnectDetail({
   const isDesktopDeepLinkAvailable = !!getDesktopUri;
   const safari = isSafari();
   const showQrCode = qrCode && !connectionError;
+  const [walletConnectModal, setWalletConnectModal] = useState<"idle" | "opening" | "failed">("idle");
 
   const onDesktopUri = async () => {
     const uri = await getDesktopUri?.();
@@ -63,24 +64,39 @@ export function ConnectDetail({
   };
 
   const secondaryAction: {
+    busy: boolean;
     description: string;
+    error: boolean;
     href?: string;
     label: string;
     onClick?: () => void;
   } | null = showWalletConnectModal
     ? {
-        description: t("connect.walletconnect.description"),
-        label: t("connect.walletconnect.open.label"),
-        onClick: () => {
-          onClose();
-          showWalletConnectModal();
+        busy: walletConnectModal === "opening",
+        description:
+          walletConnectModal === "failed" ? t("connect.status.declined") : t("connect.walletconnect.description"),
+        error: walletConnectModal === "failed",
+        label:
+          walletConnectModal === "opening"
+            ? t("connect.walletconnect.open.loading")
+            : t("connect.walletconnect.open.label"),
+        onClick: async () => {
+          setWalletConnectModal("opening");
+          try {
+            await showWalletConnectModal(onClose);
+            setWalletConnectModal("idle");
+          } catch {
+            setWalletConnectModal("failed");
+          }
         },
       }
     : showQrCode
       ? {
+          busy: false,
           description: t("connect.secondary_action.get.description", {
             wallet: shortName ?? name,
           }),
+          error: false,
           href: GET_WALLET_URL,
           label: t("connect.secondary_action.get.label", { wallet: shortName ?? name }),
         }
@@ -99,6 +115,7 @@ export function ConnectDetail({
         </div>
       ) : (
         <ConnectStatus
+          confirm={t("connect.status.confirm")}
           connectionError={connectionError}
           onRetry={() => {
             if (isDesktopDeepLinkAvailable) {
@@ -112,14 +129,17 @@ export function ConnectDetail({
       )}
       {ready && secondaryAction && (
         <div {...stylex.props(styles.secondaryAction)}>
-          <Text
-            color="modalTextSecondary"
-            size="14"
-            weight="regular"
-          >
-            {secondaryAction.description}
-          </Text>
+          <div aria-live="polite">
+            <Text
+              color={secondaryAction.error ? "error" : "modalTextSecondary"}
+              size="14"
+              weight="regular"
+            >
+              {secondaryAction.description}
+            </Text>
+          </div>
           <ActionButton
+            disabled={secondaryAction.busy}
             href={secondaryAction.href}
             label={secondaryAction.label}
             onClick={secondaryAction.onClick}

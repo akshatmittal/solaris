@@ -4,10 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 import { UserRejectedRequestError } from "viem";
 import { useConnection, useSignMessage } from "wagmi";
 
-import { reset } from "../../css/reset";
-import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { ActionButton } from "../Button/ActionButton";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { SignatureIcon } from "../Icons/FeatureIcons";
@@ -47,22 +44,17 @@ const styles = stylex.create({
     gap: 8,
     paddingInline: 8,
   },
-  cancel: {
-    alignSelf: "center",
-    borderRadius: 9999,
-    color: colors.modalText,
-    fontSize: 15,
-    fontWeight: 500,
-    minHeight: 44,
-    opacity: { default: 1, ":hover": 0.7 },
-    paddingInline: 12,
-    transitionDuration: motion.fast,
-    transitionProperty: "opacity",
-    transitionTimingFunction: "ease-out",
-  },
 });
 
-export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onCloseModal: () => void }) {
+export function SignIn({
+  onClose,
+  onCloseModal,
+  titleId,
+}: {
+  onClose: () => void;
+  onCloseModal: () => void;
+  titleId: string;
+}) {
   const [{ status, ...state }, setState] = React.useState<{
     status: "idle" | "creatingMessage" | "signing" | "verifying";
     errorMessage?: string;
@@ -96,7 +88,6 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
     getNonce();
   }, [getNonce]);
 
-  const mobile = isMobile();
   const { address, chain: activeChain } = useConnection();
   const { mutateAsync: signMessage } = useSignMessage();
   const canRetryNonce = status === "idle" && !state.nonce && !!state.errorMessage;
@@ -197,7 +188,9 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
         <div {...stylex.props(styles.text)}>
           <Text
             align="center"
+            as="h1"
             color="modalText"
+            id={titleId}
             size="18"
             weight="semibold"
           >
@@ -239,26 +232,16 @@ export function SignIn({ onClose, onCloseModal }: { onClose: () => void; onClose
                     : t("sign_in.message.send")
           }
           onClick={canRetryNonce ? getNonce : signIn}
-          size={mobile ? "large" : "medium"}
+          size="large"
           testId="auth-message-button"
         />
-        {mobile ? (
-          <ActionButton
-            fullWidth
-            label={t("sign_in.message.cancel")}
-            onClick={onClose}
-            size="large"
-            type="secondary"
-          />
-        ) : (
-          <button
-            {...stylex.props(reset.button, styles.cancel)}
-            onClick={onClose}
-            type="button"
-          >
-            {t("sign_in.message.cancel")}
-          </button>
-        )}
+        <ActionButton
+          fullWidth
+          label={t("sign_in.message.cancel")}
+          onClick={onClose}
+          size="large"
+          type="secondary"
+        />
       </div>
     </div>
   );

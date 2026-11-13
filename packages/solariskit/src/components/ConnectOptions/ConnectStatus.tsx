@@ -42,11 +42,14 @@ const styles = stylex.create({
 });
 
 export function ConnectStatus({
+  confirm,
   connectionError,
   onRetry,
   titleId,
   wallet,
 }: {
+  // Where to confirm the connection; null while nothing waits for the user, such as while the WalletConnect modal loads.
+  confirm: string | null;
   connectionError: ConnectionError | null;
   onRetry: () => void;
   // Names the dialog while the wallet list and its heading are hidden.
@@ -77,13 +80,13 @@ export function ConnectStatus({
             ? t(`connect.status.${connectionError}`)
             : t("connect.status.opening", { wallet: wallet.name })}
         </Text>
-        {wallet.ready && (
+        {wallet.ready && (connectionError || confirm) && (
           <Text
             color="modalTextSecondary"
             size="14"
             weight="regular"
           >
-            {connectionError ? t(`connect.status.${connectionError}_description`) : t("connect.status.confirm")}
+            {connectionError ? t(`connect.status.${connectionError}_description`) : confirm}
           </Text>
         )}
       </div>

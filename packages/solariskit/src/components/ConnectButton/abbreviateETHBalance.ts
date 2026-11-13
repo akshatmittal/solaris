@@ -1,36 +1,8 @@
-/**
- * Adapted from https://github.com/domharrington/js-number-abbreviate
- */
-const units = ["k", "m", "b", "t"];
-
-export function toPrecision(number: number, precision = 1) {
-  return number
-    .toString()
-    .replace(new RegExp(`(.+\\.\\d{${precision}})\\d+`), "$1")
-    .replace(/(\.[1-9]*)0+$/, "$1")
-    .replace(/\.$/, "");
-}
-
+// Truncates, so balances below 0.001 show as 0 and a balance never shows more than the account holds.
 export function abbreviateETHBalance(number: number): string {
-  if (number < 1) return toPrecision(number, 3);
-  if (number < 10 ** 2) return toPrecision(number, 2);
-  if (number < 10 ** 4) return new Intl.NumberFormat().format(Number.parseFloat(toPrecision(number, 1)));
-
-  const decimalsDivisor = 10 ** 1; // 1 decimal place
-
-  let result = String(number);
-
-  for (let i = units.length - 1; i >= 0; i--) {
-    const size = 10 ** ((i + 1) * 3);
-
-    if (size <= number) {
-      const abbreviatedNumber = (number * decimalsDivisor) / size / decimalsDivisor;
-
-      result = toPrecision(abbreviatedNumber, 1) + units[i];
-
-      break;
-    }
-  }
-
-  return result;
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: number < 1 ? 3 : number < 100 ? 2 : 1,
+    notation: number < 10_000 ? "standard" : "compact",
+    roundingMode: "trunc",
+  }).format(number);
 }

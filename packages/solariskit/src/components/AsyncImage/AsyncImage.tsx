@@ -19,7 +19,7 @@ const styles = stylex.create({
     top: 0,
     transitionDuration: motion.fast,
     transitionProperty: "opacity",
-    transitionTimingFunction: "ease-out",
+    transitionTimingFunction: motion.easeOut,
     userSelect: "none",
     WebkitTouchCallout: "none",
     WebkitUserSelect: "none",

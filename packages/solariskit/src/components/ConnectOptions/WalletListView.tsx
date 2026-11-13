@@ -32,6 +32,7 @@ export interface WalletListViewItem {
 }
 
 export interface WalletListViewProps {
+  connectingWalletId?: string;
   groupedWallets: Partial<Record<string, WalletListViewItem[]>>;
   onSelectWallet: (wallet: WalletListViewItem) => void;
   selectedWalletId?: string;
@@ -42,7 +43,12 @@ const supportedGroupNames = ["Recommended", "Other", "Popular", "More", "Others"
 export const groupLabel = (groupName: string) =>
   supportedGroupNames.includes(groupName) ? t(`connector_group.${groupName.toLowerCase()}`) : groupName;
 
-export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletId }: WalletListViewProps) {
+export function WalletListView({
+  connectingWalletId,
+  groupedWallets,
+  onSelectWallet,
+  selectedWalletId,
+}: WalletListViewProps) {
   return (
     <>
       {Object.entries(groupedWallets).map(
@@ -63,6 +69,7 @@ export function WalletListView({ groupedWallets, onSelectWallet, selectedWalletI
               <div {...stylex.props(styles.group)}>
                 {wallets.map((wallet) => (
                   <ModalSelection
+                    connecting={wallet.id === connectingWalletId}
                     currentlySelected={wallet.id === selectedWalletId}
                     iconBackground={wallet.iconBackground}
                     iconUrl={wallet.iconUrl}

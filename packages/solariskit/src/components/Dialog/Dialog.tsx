@@ -4,8 +4,7 @@ import { RemoveScroll } from "react-remove-scroll";
 
 import * as stylex from "@stylexjs/stylex";
 
-import { blurs, colors, fonts, motion } from "../../css/vars.stylex";
-import { isMobile } from "../../utils/isMobile";
+import { blurs, colors, fonts, media, motion } from "../../css/vars.stylex";
 import { useThemeRootProps } from "../RainbowKitProvider/ThemeRootContext";
 import { FocusTrap } from "./FocusTrap";
 
@@ -39,16 +38,17 @@ const slideDown = stylex.keyframes({
   to: { transform: "translateY(100%)" },
 });
 
-const reducedMotion = "@media (prefers-reduced-motion: reduce)";
+// No `screen` type: lightningcss rewrites it into an invalid query here.
+const largeScreenMotion = "@media (min-width: 768px) and (prefers-reduced-motion: no-preference)";
 
 const bleed = 200;
 
 const styles = stylex.create({
   overlay: {
-    alignItems: "center",
-    animationDuration: motion.enter,
+    alignItems: { default: "flex-end", [media.largeScreen]: "flex-start" },
+    animationDuration: { default: motion.sheetEnter, [media.largeScreen]: motion.enter },
     animationName: fadeIn,
-    animationTimingFunction: "ease-out",
+    animationTimingFunction: motion.easeOut,
     backdropFilter: blurs.modalOverlay,
     backgroundColor: colors.modalBackdrop,
     bottom: -bleed,
@@ -68,38 +68,27 @@ const styles = stylex.create({
     // Just below nested wallet SDK modals (Coinbase uses 2147483647).
     zIndex: 2147483646,
   },
-  overlayMobile: {
-    alignItems: "flex-end",
-  },
   overlayClosing: {
-    animationDuration: motion.exit,
+    animationDuration: { default: motion.sheetExit, [media.largeScreen]: motion.exit },
     animationFillMode: "forwards",
     animationName: fadeOut,
-    animationTimingFunction: "ease-in",
     pointerEvents: "none",
   },
   content: {
-    animationDuration: motion.enter,
-    animationName: { default: riseIn, [reducedMotion]: fadeIn },
-    animationTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    animationDuration: { default: motion.sheetEnter, [media.largeScreen]: motion.enter },
+    animationName: { default: slideUp, [media.reducedMotion]: fadeIn, [largeScreenMotion]: riseIn },
+    animationTimingFunction: { default: motion.easeDrawer, [media.largeScreen]: motion.easeOut },
     display: "flex",
     flexDirection: "column",
+    // A fixed top edge keeps the dialog still when its height changes. The offset centers a 560px dialog.
+    marginTop: { default: null, [media.largeScreen]: "max(16px, calc(50vh - 280px))" },
     maxWidth: "100vw",
     position: "relative",
   },
-  contentMobile: {
-    animationDuration: motion.sheetEnter,
-    animationName: { default: slideUp, [reducedMotion]: fadeIn },
-  },
   contentClosing: {
-    animationDuration: motion.exit,
+    animationDuration: { default: motion.sheetExit, [media.largeScreen]: motion.exit },
     animationFillMode: "forwards",
-    animationName: { default: riseOut, [reducedMotion]: fadeOut },
-    animationTimingFunction: "ease-in",
-  },
-  contentMobileClosing: {
-    animationDuration: motion.sheetExit,
-    animationName: { default: slideDown, [reducedMotion]: fadeOut },
+    animationName: { default: slideDown, [media.reducedMotion]: fadeOut, [largeScreenMotion]: riseOut },
   },
 });
 
@@ -164,7 +153,6 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
 
   const handleBackdropClick = useCallback(() => onClose(), [onClose]);
   const themeRootProps = useThemeRootProps();
-  const mobile = isMobile();
 
   return (
     <>
@@ -174,19 +162,14 @@ export function Dialog({ children, onClose, open, titleId }: DialogProps) {
               <div {...themeRootProps}>
                 <div
                   {...themeRootProps}
-                  {...stylex.props(styles.overlay, mobile && styles.overlayMobile, closing && styles.overlayClosing)}
+                  {...stylex.props(styles.overlay, closing && styles.overlayClosing)}
                   aria-labelledby={titleId}
                   aria-modal
                   onClick={handleBackdropClick}
                   role="dialog"
                 >
                   <FocusTrap
-                    {...stylex.props(
-                      styles.content,
-                      mobile && styles.contentMobile,
-                      closing && styles.contentClosing,
-                      closing && mobile && styles.contentMobileClosing,
-                    )}
+                    {...stylex.props(styles.content, closing && styles.contentClosing)}
                     onClick={stopPropagation}
                     role="document"
                   >

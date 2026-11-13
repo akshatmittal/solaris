@@ -9,7 +9,7 @@ import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { SpinnerIcon } from "../Icons/Spinner";
 import { Text } from "../Text/Text";
-import { useMobileConnect } from "./MobileOptions";
+import { connectMobile } from "./MobileOptions";
 
 const styles = stylex.create({
   container: {
@@ -36,19 +36,26 @@ const styles = stylex.create({
   },
 });
 
-export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet: WalletConnector }) {
-  const onConnect = useMobileConnect(wallet, onClose);
+export function MobileStatus({
+  onClose,
+  titleId,
+  wallet,
+}: {
+  onClose: () => void;
+  titleId: string;
+  wallet: WalletConnector;
+}) {
   const started = useRef(false);
 
   useEffect(() => {
     // StrictMode runs effects twice in development; connect only once.
     if (!started.current) {
       started.current = true;
-      onConnect().catch(() => {
+      connectMobile(wallet, onClose).catch(() => {
         // This view has no Retry; the user closes it and picks a wallet again.
       });
     }
-  }, [onConnect]);
+  }, [wallet, onClose]);
 
   return (
     <div {...stylex.props(styles.container)}>
@@ -64,7 +71,9 @@ export function MobileStatus({ onClose, wallet }: { onClose: () => void; wallet:
       <div {...stylex.props(styles.text)}>
         <Text
           align="center"
+          as="h1"
           color="modalText"
+          id={titleId}
           size="18"
           weight="semibold"
         >

@@ -61,12 +61,21 @@ export const motion = stylex.defineConsts({
   enter: "150ms",
   exit: "100ms",
   fast: "100ms",
+  press: "160ms",
   sheetEnter: "200ms",
   // The longest exit. The unmount timer in Dialog.tsx uses the same value.
   sheetExit: "150ms",
-  spin: "1s",
+  pulse: "1s",
+  spin: "750ms",
+  easeOut: "cubic-bezier(0.23, 1, 0.32, 1)",
+  // iOS sheet curve.
+  easeDrawer: "cubic-bezier(0.32, 0.72, 0, 1)",
 });
 
 export const media = stylex.defineConsts({
   largeScreen: "@media screen and (min-width: 768px)",
+  // Touch screens keep :hover after a tap.
+  hover: "@media (hover: hover) and (pointer: fine)",
+  reducedMotion: "@media (prefers-reduced-motion: reduce)",
+  coarsePointer: "@media (pointer: coarse)",
 });

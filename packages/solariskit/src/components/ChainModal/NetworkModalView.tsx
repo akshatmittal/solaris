@@ -7,7 +7,6 @@ import type { AsyncImageSrc } from "../AsyncImage/useAsyncImage";
 import { reset } from "../../css/reset";
 import { colors, motion, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { isMobile } from "../../utils/isMobile";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent } from "../Dialog/DialogContent";
@@ -26,6 +25,7 @@ const styles = stylex.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
+    minHeight: 0,
     padding: 16,
     paddingBottom: 12,
   },
@@ -38,6 +38,7 @@ const styles = stylex.create({
     borderWidth: 1,
     boxSizing: "border-box",
     color: colors.modalText,
+    flexShrink: 0,
     fontFamily: "inherit",
     fontSize: 16,
     height: 44,
@@ -46,11 +47,15 @@ const styles = stylex.create({
     paddingInline: 14,
     transitionDuration: motion.fast,
     transitionProperty: "border-color",
-    transitionTimingFunction: "ease-out",
+    transitionTimingFunction: motion.easeOut,
     width: "100%",
     "::placeholder": {
       color: colors.modalTextSecondary,
       opacity: 1,
+    },
+    // The native clear button ignores the theme.
+    "::-webkit-search-cancel-button": {
+      display: "none",
     },
   },
   list: {
@@ -59,14 +64,9 @@ const styles = stylex.create({
     gap: 2,
     marginInline: -4,
     maxHeight: 456,
+    minHeight: 96,
     overflowX: "hidden",
     overflowY: "auto",
-  },
-  listMobile: {
-    scrollbarWidth: "none",
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
   },
   name: {
     flexGrow: 1,
@@ -92,7 +92,7 @@ const styles = stylex.create({
     animationDuration: motion.fast,
     animationFillMode: "backwards",
     animationName: appear,
-    animationTimingFunction: "ease-out",
+    animationTimingFunction: motion.easeOut,
     color: colors.modalTextSecondary,
   },
   pendingDot: {
@@ -143,8 +143,9 @@ export function NetworkModalView({
   // useId keeps the heading id unique when several ecosystems (EVM + Solana)
   // mount their network modals on the same page.
   const titleId = `rk_chain_modal_title_${React.useId()}`;
-  const mobile = isMobile();
-  const chainIconSize = mobile ? 32 : 28;
+  // On touch screens, focus would open the keyboard over the list.
+  const coarsePointer = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+  const chainIconSize = coarsePointer ? 32 : 28;
   const shouldShowSearch = networks.length > searchThreshold;
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const filteredNetworks = networks.filter(({ id, name }) => {
@@ -192,6 +193,7 @@ export function NetworkModalView({
               {...stylex.props(styles.search)}
               aria-label={t("chains.search.label")}
               autoComplete="off"
+              data-auto-focus={!coarsePointer || undefined}
               inputMode="search"
               name="network-search"
               onChange={(event) => setSearchQuery(event.target.value)}
@@ -200,13 +202,14 @@ export function NetworkModalView({
               value={searchQuery}
             />
           )}
-          <div {...stylex.props(styles.list, mobile ? styles.listMobile : reset.scrollbar)}>
+          <div {...stylex.props(styles.list, reset.scrollbar)}>
             {filteredNetworks.map(({ iconBackground, iconUrl, id, name }) => {
               const isCurrentNetwork = currentNetworkId === id;
 
               return (
                 <MenuButton
-                  loading={false}
+                  busy={false}
+                  disabled={false}
                   currentlySelected={isCurrentNetwork}
                   key={String(id)}
                   onClick={isCurrentNetwork ? undefined : () => onSelectNetwork(id)}
@@ -247,7 +250,8 @@ export function NetworkModalView({
             )}
             {isConnectedToUnsupportedNetwork && onDisconnectUnsupported && (
               <MenuButton
-                loading={false}
+                busy={false}
+                disabled={false}
                 danger
                 onClick={onDisconnectUnsupported}
                 testId="chain-option-disconnect"

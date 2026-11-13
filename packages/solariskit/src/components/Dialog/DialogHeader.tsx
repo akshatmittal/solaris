@@ -2,6 +2,7 @@ import React, { type ReactNode } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { t } from "../../translations";
 import { IconButton } from "../IconButton/IconButton";
 import { CloseIcon } from "../Icons/Close";
 import { Text } from "../Text/Text";
@@ -49,7 +50,7 @@ export function DialogHeader({
       )}
       {onClose ? (
         <IconButton
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={onClose}
         >
           <CloseIcon />

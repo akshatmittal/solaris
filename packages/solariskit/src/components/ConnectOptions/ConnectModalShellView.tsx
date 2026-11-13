@@ -3,7 +3,7 @@ import React, { type ReactNode, useContext } from "react";
 import * as stylex from "@stylexjs/stylex";
 
 import { reset } from "../../css/reset";
-import { colors } from "../../css/vars.stylex";
+import { colors, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisclaimerLink } from "../Disclaimer/DisclaimerLink";
@@ -14,9 +14,20 @@ import { AppContext } from "../RainbowKitProvider/AppContext";
 import { Text } from "../Text/Text";
 import { TextLink } from "../TextLink/TextLink";
 
+const fadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
 const styles = stylex.create({
   shell: {
     display: "flex",
+    minHeight: 0,
+  },
+  swap: {
+    animationDuration: motion.enter,
+    animationName: fadeIn,
+    animationTimingFunction: motion.easeOut,
   },
   sidebar: {
     display: "flex",
@@ -79,9 +90,8 @@ export interface ConnectModalShellViewProps {
 }
 
 /**
- * Chain-agnostic desktop connect-modal chrome: the wallet-list sidebar
- * (with compact-mode footer) plus the right-hand pane with its back/label/close
- * header. The EVM DesktopOptions and the Solana connect modal both
+ * Chain-agnostic connect-modal chrome for the desktop and mobile flows: the wallet list with its footer, plus the
+ * wallet pane with its back/label/close header. The EVM connect options and the Solana connect modal both
  * parameterize this shell.
  */
 export function ConnectModalShellView({
@@ -104,7 +114,7 @@ export function ConnectModalShellView({
       style={{ maxHeight: 520 }}
     >
       {showSidebar && (
-        <div {...stylex.props(styles.sidebar)}>
+        <div {...stylex.props(styles.sidebar, styles.swap)}>
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               onClose={onClose}
@@ -137,13 +147,13 @@ export function ConnectModalShellView({
         </div>
       )}
       {showRightPane && (
-        <div {...stylex.props(styles.pane)}>
+        <div {...stylex.props(styles.pane, styles.swap)}>
           <div {...stylex.props(styles.header)}>
             <DialogHeader
               left={
                 onRightPaneBack && (
                   <IconButton
-                    aria-label="Back"
+                    aria-label={t("common.back")}
                     onClick={onRightPaneBack}
                   >
                     <BackIcon />

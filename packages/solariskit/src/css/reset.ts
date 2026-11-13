@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 
-import { colors } from "./vars.stylex";
+import { colors, media } from "./vars.stylex";
 
 // Neutralizes host-page element styles on the native elements we render.
 export const reset = stylex.create({
@@ -20,7 +20,10 @@ export const reset = stylex.create({
     padding: 0,
     textAlign: "inherit",
     textDecoration: "none",
+    touchAction: "manipulation",
+    userSelect: "none",
     WebkitTapHighlightColor: "transparent",
+    WebkitUserSelect: "none",
     outlineColor: colors.accentColor,
     outlineOffset: 2,
     outlineStyle: { default: "none", ":focus-visible": "solid" },
@@ -35,8 +38,13 @@ export const reset = stylex.create({
       default: null,
       "@supports not selector(::-webkit-scrollbar)": `${colors.modalTextDim} transparent`,
     },
-    scrollbarWidth: { default: null, "@supports not selector(::-webkit-scrollbar)": "thin" },
+    scrollbarWidth: {
+      default: null,
+      "@supports not selector(::-webkit-scrollbar)": "thin",
+      [media.coarsePointer]: "none",
+    },
     "::-webkit-scrollbar": {
+      display: { default: null, [media.coarsePointer]: "none" },
       width: 10,
     },
     "::-webkit-scrollbar-thumb": {

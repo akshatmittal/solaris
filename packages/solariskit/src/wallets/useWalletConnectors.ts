@@ -19,7 +19,8 @@ import { addRecentWalletId, getRecentWalletIds } from "./recentWalletIds";
 export interface WalletConnector extends WalletInstance {
   ready?: boolean;
   connect: WalletInstance["connect"];
-  showWalletConnectModal?: () => void;
+  // onOpen runs when the WalletConnect modal opens, so the caller can close its own modal then.
+  showWalletConnectModal?: (onOpen: () => void) => Promise<void>;
   recent: boolean;
   getDesktopUri?: () => Promise<string>;
   // Calls onUri with each new QR code URI until the returned function is called.
@@ -90,12 +91,23 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
     return result as Awaited<ReturnType<WalletInstance["connect"]>>;
   }
 
-  async function connectToWalletConnectModal(walletConnectModalConnector: Connector) {
+  async function connectToWalletConnectModal(walletConnectModalConnector: Connector, onOpen: () => void) {
     try {
       setIsWalletConnectModalOpen(true);
       // The modal connector is not in the wallet list, so no connect UI requested its SDK.
       requestWalletSdk(walletConnectModalConnector);
-      await connectWallet(walletConnectModalConnector);
+      // The WalletConnect modal (Reown AppKit) loads its UI after it opens and defines <w3m-modal> when the UI can show.
+      let pending = true;
+      customElements.whenDefined("w3m-modal").then(() => {
+        if (pending) {
+          onOpen();
+        }
+      });
+      try {
+        await connectWallet(walletConnectModalConnector);
+      } finally {
+        pending = false;
+      }
       setIsWalletConnectModalOpen(false);
     } catch (err) {
       const isUserRejection =
@@ -224,7 +236,7 @@ export function useWalletConnectors(mergeEIP6963WithRkConnectors = false): Walle
       getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
       recent,
       showWalletConnectModal: wallet.walletConnectModalConnector
-        ? () => connectToWalletConnectModal(wallet.walletConnectModalConnector!)
+        ? (onOpen) => connectToWalletConnectModal(wallet.walletConnectModalConnector!, onOpen)
         : undefined,
     });
   }

@@ -2,8 +2,9 @@ import React from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, fonts, motion, radii, shadows } from "../../css/vars.stylex";
+import { colors, fonts, media, radii, shadows } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { AsyncImage } from "../AsyncImage/AsyncImage";
 import { SpinnerIcon } from "../Icons/Spinner";
@@ -11,7 +12,10 @@ import { SpinnerIcon } from "../Icons/Spinner";
 const styles = stylex.create({
   button: {
     alignItems: "center",
-    backgroundColor: { default: colors.connectButtonBackground, ":hover": colors.connectButtonHover },
+    backgroundColor: {
+      default: colors.connectButtonBackground,
+      ":hover": { default: null, [media.hover]: colors.connectButtonHover },
+    },
     borderColor: colors.generalBorder,
     borderRadius: radii.menuButton,
     borderStyle: "solid",
@@ -28,9 +32,6 @@ const styles = stylex.create({
     paddingBlock: 6,
     paddingLeft: 6,
     paddingRight: 14,
-    transitionDuration: motion.fast,
-    transitionProperty: "background-color",
-    transitionTimingFunction: "ease-out",
     WebkitFontSmoothing: "antialiased",
   },
   disabled: {
@@ -70,7 +71,7 @@ export function WalletButtonView({ connected, connector, loading, mounted, onCon
 
   return (
     <button
-      {...stylex.props(reset.button, styles.button, isDisabled && styles.disabled)}
+      {...stylex.props(reset.button, styles.button, isDisabled && styles.disabled, press.scale)}
       data-testid={`rk-wallet-button-${connector.id}`}
       disabled={isDisabled}
       onClick={onConnect}

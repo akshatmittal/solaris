@@ -13,6 +13,7 @@ export default function ConnectOptions({ onClose, titleId }: { onClose: () => vo
     connector ? (
       <MobileStatus
         onClose={onClose}
+        titleId={titleId}
         wallet={connector}
       />
     ) : (
