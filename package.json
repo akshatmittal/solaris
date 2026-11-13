@@ -25,6 +25,13 @@
     "turbo": "^2.11.11",
     "typescript": "catalog:"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^26",
+      "onFail": "download"
+    }
+  },
   "engines": {
     "node": ">=26"
   },
