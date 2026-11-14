@@ -14,6 +14,7 @@ export function useCopyToClipboard(value: string | undefined) {
 
   const copy = () => {
     if (value) {
+      setAttempt(undefined);
       try {
         void navigator.clipboard.writeText(value).then(
           () => setAttempt({ result: "copied", value }),

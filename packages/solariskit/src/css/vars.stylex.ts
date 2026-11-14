@@ -4,6 +4,7 @@ import * as stylex from "@stylexjs/stylex";
 export const colors = stylex.defineConsts({
   accentColor: "var(--solaris-colors-accentColor)",
   accentColorForeground: "var(--solaris-colors-accentColorForeground)",
+  accentText: "color-mix(in srgb, var(--solaris-colors-accentColor) 85%, var(--solaris-colors-modalText))",
   accentSoft: "color-mix(in srgb, var(--solaris-colors-accentColor) 10%, transparent)",
   // Trigger hover fills: the surface with 8% of its text color mixed in.
   accentHover: "color-mix(in srgb, var(--solaris-colors-accentColorForeground) 8%, var(--solaris-colors-accentColor))",

@@ -6,7 +6,7 @@ import { colors } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   link: {
-    color: colors.accentColor,
+    color: colors.accentText,
     textDecoration: "none",
   },
 });

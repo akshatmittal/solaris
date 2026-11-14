@@ -33,10 +33,10 @@ const styles = stylex.create({
     animationTimingFunction: motion.easeOut,
   },
   copied: {
-    color: colors.success,
+    color: `color-mix(in srgb, ${colors.success} 85%, ${colors.modalText})`,
   },
   failed: {
-    color: colors.error,
+    color: `color-mix(in srgb, ${colors.error} 85%, ${colors.modalText})`,
   },
   message: {
     clipPath: "inset(50%)",
