@@ -84,7 +84,7 @@
     "@safe-global/safe-apps-sdk": "^9.1.0",
     "@solana/connector": "^0.3.0",
     "@solana/kit": "^8.6.0",
-    "@walletconnect/ethereum-provider": "^2.21.1",
+    "@walletconnect/ethereum-provider": "^2.26.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19",
     "viem": "^2.0.0",

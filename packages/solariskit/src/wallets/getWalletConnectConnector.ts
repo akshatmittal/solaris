@@ -54,8 +54,9 @@ async function createWalletConnectModal(
   let createAppKit: typeof import("@reown/appkit/core").createAppKit;
   try {
     ({ createAppKit } = await import(/* turbopackOptional: true */ "@reown/appkit/core"));
-  } catch {
-    throw new Error("The WalletConnect modal needs the @reown/appkit package.");
+  } catch (error) {
+    console.error(error);
+    throw new Error("The WalletConnect modal needs the @reown/appkit package.", { cause: error });
   }
   const toNetwork = (chain: Chain) => ({
     ...chain,
@@ -113,9 +114,65 @@ function createWalletConnectConnector({
     };
     const connect: ReturnType<CreateConnectorFn>["connect"] = connector.connect;
 
+    const openWalletConnectModal = async (): Promise<WalletConnectModalSession> => {
+      const provider = await connector.getProvider();
+      let modalPromise = walletConnectModals.get(provider);
+      if (!modalPromise) {
+        modalPromise = createWalletConnectModal(provider, projectId, config.chains, metadata).catch(
+          (error: unknown) => {
+            walletConnectModals.delete(provider);
+            throw error;
+          },
+        );
+        walletConnectModals.set(provider, modalPromise);
+      }
+      const modal = await modalPromise;
+      // The modal cancels only the connect() that starts after it opens, not an earlier one such as the QR code's.
+      cancelConnect = undefined;
+      cancelError = undefined;
+      const session = ++sessionCount;
+
+      let opened = false;
+      let closedByUs = false;
+      const isActive = () => !closedByUs && session === sessionCount;
+      const unsubscribe = modal.subscribeState((state) => {
+        if (state.open) {
+          opened = true;
+        } else if (opened && isActive() && !provider.session) {
+          cancel(new UserRejectedRequestError(new Error("The user closed the WalletConnect modal.")));
+        }
+      });
+      // AppKit's open() does nothing when it thinks a wallet is connected, for example from stale storage.
+      const shown = modal.open().then(() => {
+        if (!modal.isOpen()) {
+          throw new Error("The WalletConnect modal did not open.");
+        }
+      });
+      shown.catch((error: unknown) => {
+        if (isActive()) {
+          cancel(error instanceof Error ? error : new Error("The WalletConnect modal failed to load."));
+        }
+      });
+
+      return {
+        shown,
+        close: () => {
+          unsubscribe();
+          // A replaced session must not clear the error or close the modal of the session that replaced it.
+          if (isActive()) {
+            cancelError = undefined;
+            void modal.close();
+          }
+          closedByUs = true;
+        },
+      };
+    };
+
     return {
       ...connector,
       ...walletDetails,
+      // Only the WalletConnect wallet offers the official modal. Other wallets built on this connector use their own links.
+      ...(walletDetails.solarisDetails.id === "walletConnect" ? { openWalletConnectModal } : {}),
       async connect<withCapabilities extends boolean = false>(parameters?: {
         chainId?: number | undefined;
         isReconnecting?: boolean | undefined;
@@ -139,52 +196,6 @@ function createWalletConnectConnector({
             cancelConnect = undefined;
           }
         }
-      },
-      async openWalletConnectModal(): Promise<WalletConnectModalSession> {
-        const provider = await connector.getProvider();
-        let modalPromise = walletConnectModals.get(provider);
-        if (!modalPromise) {
-          modalPromise = createWalletConnectModal(provider, projectId, config.chains, metadata).catch(
-            (error: unknown) => {
-              walletConnectModals.delete(provider);
-              throw error;
-            },
-          );
-          walletConnectModals.set(provider, modalPromise);
-        }
-        const modal = await modalPromise;
-        cancelError = undefined;
-        const session = ++sessionCount;
-
-        let opened = false;
-        let closedByUs = false;
-        const isActive = () => !closedByUs && session === sessionCount;
-        const unsubscribe = modal.subscribeState((state) => {
-          if (state.open) {
-            opened = true;
-          } else if (opened && isActive() && !provider.session) {
-            cancel(new UserRejectedRequestError(new Error("The user closed the WalletConnect modal.")));
-          }
-        });
-        const shown = modal.open();
-        shown.catch((error: unknown) => {
-          if (isActive()) {
-            cancel(error instanceof Error ? error : new Error("The WalletConnect modal failed to load."));
-          }
-        });
-
-        return {
-          shown,
-          close: () => {
-            unsubscribe();
-            // A replaced session must not clear the error or close the modal of the session that replaced it.
-            if (isActive()) {
-              cancelError = undefined;
-              void modal.close();
-            }
-            closedByUs = true;
-          },
-        };
       },
     };
   });

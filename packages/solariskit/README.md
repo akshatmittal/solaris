@@ -30,7 +30,7 @@ The default EVM wallet list includes injected browser wallets, WalletConnect, an
 Install the optional peers used by that list:
 
 ```bash
-npm install @walletconnect/ethereum-provider@^2.21.1 @reown/appkit@^1.8.19 @base-org/account@^2.5.1
+npm install @walletconnect/ethereum-provider@^2.26.0 @reown/appkit@^1.8.19 @base-org/account@^2.5.1
 ```
 
 | Integration              | Additional dependencies                                         |
@@ -312,7 +312,7 @@ TypeScript declarations rather than assuming all RainbowKit APIs are available.
 - **Unstyled UI:** import `solariskit/styles.css` (or the Solana CSS alias) once in your app.
 - **Missing provider/context:** check provider order and ensure controls use the provider for their ecosystem.
 - **Missing wallet SDK module:** install the optional peers for every wallet in your configured list, or remove that wallet.
-- **WalletConnect cannot connect:** use a real project ID, check allowed origins, and install its Ethereum provider peer.
+- **WalletConnect cannot connect:** use a real project ID, check allowed origins, and install its peers, `@walletconnect/ethereum-provider` and `@reown/appkit`.
 - **Balances or network requests fail:** check RPC reachability, rate limits, and the selected chain/cluster.
 - **A wallet import is missing:** only the wallet factories documented here are shipped; use injected discovery
   or implement a custom `Wallet` for other integrations.
