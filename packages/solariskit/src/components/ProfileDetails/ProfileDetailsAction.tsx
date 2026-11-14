@@ -75,6 +75,7 @@ export function ProfileDetailsAction({ action, icon, label, success = false }: P
     >
       <span
         {...stylex.props(styles.icon, iconChanged && styles.iconChanged, success && styles.success)}
+        aria-hidden
         key={String(success)}
       >
         {icon}

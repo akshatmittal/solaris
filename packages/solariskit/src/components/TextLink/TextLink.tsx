@@ -9,14 +9,15 @@ import { colors, media } from "../../css/vars.stylex";
 const styles = stylex.create({
   link: {
     alignItems: "center",
-    color: colors.accentColor,
+    // Mixing in the text color keeps the accent at 4.5:1 or more on the modal background.
+    color: `color-mix(in srgb, ${colors.accentColor} 85%, ${colors.modalText})`,
     display: "inline-flex",
     fontSize: 14,
     fontWeight: 500,
     gap: 4,
     lineHeight: "20px",
-    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.75 } },
-    textDecoration: "none",
+    textDecoration: { default: "none", ":hover": { default: null, [media.hover]: "underline" } },
+    textUnderlineOffset: 3,
   },
   // Keeps a 44px touch target without changing the visual size.
   tall: {
