@@ -133,7 +133,7 @@ export function ProfileDetailsView({
               <ProfileDetailsAction
                 href={explorer.url}
                 icon={<ExternalLinkIcon />}
-                label={t("profile.explorer.view_on", { explorer: explorer.name })}
+                label={t("profile.explorer.label", { explorer: explorer.name })}
               />
             </div>
           )}

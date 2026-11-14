@@ -55,7 +55,7 @@ export function ProfileDetails({
       onClose={onClose}
       onDisconnect={onDisconnect}
       titleId={titleId}
-      transactions={showRecentTransactions ? <TxList address={address} /> : undefined}
+      transactions={showRecentTransactions ? <TxList /> : undefined}
     />
   );
 }
