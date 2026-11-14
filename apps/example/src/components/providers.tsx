@@ -120,26 +120,18 @@ export function EthereumProviders({ children }: PropsWithChildren) {
   return (
     <WagmiProvider config={ethereumConfig}>
       <QueryClientProvider client={queryClient}>
-        {siwe ? (
-          <SolarisAuthenticationProvider
-            adapter={authAdapter}
-            status={authStatus}
-          >
-            <SolarisEthereumProvider
-              id="ethereum"
-              theme={kitThemes[theme]}
-            >
-              {children}
-            </SolarisEthereumProvider>
-          </SolarisAuthenticationProvider>
-        ) : (
+        <SolarisAuthenticationProvider
+          adapter={authAdapter}
+          enabled={siwe}
+          status={authStatus}
+        >
           <SolarisEthereumProvider
             id="ethereum"
             theme={kitThemes[theme]}
           >
             {children}
           </SolarisEthereumProvider>
-        )}
+        </SolarisAuthenticationProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
