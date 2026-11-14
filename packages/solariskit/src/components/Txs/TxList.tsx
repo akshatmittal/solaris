@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 
 import * as stylex from "@stylexjs/stylex";
-import { useConnection } from "wagmi";
 
 import { press } from "../../css/press";
 import { reset } from "../../css/reset";
@@ -9,11 +8,8 @@ import { colors, media } from "../../css/vars.stylex";
 import { useClearRecentTransactions } from "../../transactions/useClearRecentTransactions";
 import { useRecentTransactions } from "../../transactions/useRecentTransactions";
 import { t } from "../../translations";
-import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
-import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { AppContext } from "../SolarisEthereumProvider/AppContext";
 import { Text } from "../Text/Text";
-import { TextLink } from "../TextLink/TextLink";
 import { TxItem } from "./TxItem";
 
 const NUMBER_OF_VISIBLE_TXS = 3;
@@ -47,83 +43,56 @@ const styles = stylex.create({
     paddingBlock: 8,
     paddingInline: 12,
   },
-  footer: {
-    borderTopColor: colors.generalBorder,
-    borderTopStyle: "solid",
-    borderTopWidth: 1,
-    display: "flex",
-    justifyContent: "center",
-    paddingBlock: 4,
-  },
 });
 
-interface TxListProps {
-  address: ReturnType<typeof useConnection>["address"];
-}
-
-export function TxList({ address }: TxListProps) {
+export function TxList() {
   const recentTransactions = useRecentTransactions();
   const clearRecentTransactions = useClearRecentTransactions();
-  const { chain: activeChain } = useConnection();
-  const explorerLink = chainToExplorerUrl(activeChain);
   const visibleTxs = recentTransactions.slice(0, NUMBER_OF_VISIBLE_TXS);
   const { appName } = useContext(AppContext);
 
   return (
-    <>
-      <div {...stylex.props(styles.container)}>
-        <div {...stylex.props(styles.header)}>
-          <Text
-            color="modalTextSecondary"
-            size="13"
-            weight="medium"
+    <div {...stylex.props(styles.container)}>
+      <div {...stylex.props(styles.header)}>
+        <Text
+          color="modalTextSecondary"
+          size="13"
+          weight="medium"
+        >
+          {t("profile.transactions.recent.title")}
+        </Text>
+        {visibleTxs.length > 0 && (
+          <button
+            {...stylex.props(reset.button, styles.clear, press.scale)}
+            onClick={clearRecentTransactions}
+            type="button"
           >
-            {t("profile.transactions.recent.title")}
-          </Text>
-          {visibleTxs.length > 0 && (
-            <button
-              {...stylex.props(reset.button, styles.clear, press.scale)}
-              onClick={clearRecentTransactions}
-              type="button"
-            >
-              {t("profile.transactions.clear.label")}
-            </button>
-          )}
-        </div>
-        {visibleTxs.length > 0 ? (
-          visibleTxs.map((tx) => (
-            <TxItem
-              key={tx.hash}
-              tx={tx}
-            />
-          ))
-        ) : (
-          <div {...stylex.props(styles.empty)}>
-            <Text
-              color="modalTextSecondary"
-              size="14"
-              weight="regular"
-            >
-              {appName
-                ? t("profile.transactions.description", {
-                    appName,
-                  })
-                : t("profile.transactions.description_fallback")}
-            </Text>
-          </div>
+            {t("profile.transactions.clear.label")}
+          </button>
         )}
       </div>
-      {explorerLink && (
-        <div {...stylex.props(styles.footer)}>
-          <TextLink
-            href={`${explorerLink}/address/${address}`}
-            tall
+      {visibleTxs.length > 0 ? (
+        visibleTxs.map((tx) => (
+          <TxItem
+            key={tx.hash}
+            tx={tx}
+          />
+        ))
+      ) : (
+        <div {...stylex.props(styles.empty)}>
+          <Text
+            color="modalTextSecondary"
+            size="14"
+            weight="regular"
           >
-            {t("profile.explorer.label")}
-            <ExternalLinkIcon />
-          </TextLink>
+            {appName
+              ? t("profile.transactions.description", {
+                  appName,
+                })
+              : t("profile.transactions.description_fallback")}
+          </Text>
         </div>
       )}
-    </>
+    </div>
   );
 }

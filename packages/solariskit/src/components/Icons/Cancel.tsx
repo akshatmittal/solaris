@@ -1,11 +1,11 @@
 import React from "react";
 
-export const CancelIcon = () => (
+export const CancelIcon = ({ height = 19, width = 20 }: { width?: string | number; height?: string | number }) => (
   <svg
     fill="none"
-    height="19"
+    height={height}
     viewBox="0 0 20 19"
-    width="20"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
     <title>Cancel</title>

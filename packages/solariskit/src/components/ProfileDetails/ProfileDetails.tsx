@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 
 import type { GetEnsNameReturnType } from "viem";
 import type { GetEnsAvatarReturnType } from "viem/actions";
-import type { useConnection } from "wagmi";
+
+import { useConnection } from "wagmi";
 
 import type { useProfile } from "../../hooks/useProfile";
 
@@ -33,6 +34,8 @@ export function ProfileDetails({
   titleId,
 }: ProfileDetailsProps) {
   const showRecentTransactions = useContext(ShowRecentTransactionsContext);
+  const { chain } = useConnection();
+  const blockExplorer = chain?.blockExplorers?.default;
 
   if (!address) {
     return null;
@@ -48,10 +51,11 @@ export function ProfileDetails({
       address={address}
       avatarImageUrl={ensAvatar ?? undefined}
       balanceLabel={balance && displayBalance ? `${displayBalance} ${balance.symbol}` : undefined}
+      explorer={blockExplorer && { name: blockExplorer.name, url: `${blockExplorer.url}/address/${address}` }}
       onClose={onClose}
       onDisconnect={onDisconnect}
       titleId={titleId}
-      transactions={showRecentTransactions ? <TxList address={address} /> : undefined}
+      transactions={showRecentTransactions ? <TxList /> : undefined}
     />
   );
 }

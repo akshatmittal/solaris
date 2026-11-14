@@ -49,12 +49,14 @@
     "walletconnect": {
       "description": "Need the WalletConnect modal?",
       "open": {
-        "label": "Open",
-        "loading": "Opening…"
+        "label": "Open"
       }
     }
   },
   "connect_scan": {
+    "copy": {
+      "label": "Copy Link"
+    },
     "fallback_title": "Scan with Your Phone",
     "title": "Scan with %{wallet}"
   },
@@ -73,6 +75,10 @@
     "popular": "Popular",
     "recommended": "Recommended"
   },
+  "copy": {
+    "copied": "Copied",
+    "failed": "Couldn’t copy"
+  },
   "intro": {
     "get": {
       "label": "Get a Wallet"
@@ -83,14 +89,13 @@
   },
   "profile": {
     "copy_address": {
-      "copied": "Copied",
       "label": "Copy Address"
     },
     "disconnect": {
       "label": "Disconnect"
     },
     "explorer": {
-      "label": "View on Explorer"
+      "label": "View on %{explorer}"
     },
     "transactions": {
       "clear": {
