@@ -1,13 +1,8 @@
-import type { SolarisWalletConnectParameters, Wallet } from "../../Wallet";
+import type { DefaultWalletOptions, Wallet } from "../../Wallet";
 
 import { getWalletConnectConnector } from "../../getWalletConnectConnector";
 
-export interface WalletConnectWalletOptions {
-  projectId: string;
-  options?: SolarisWalletConnectParameters;
-}
-
-export const walletConnectWallet = ({ projectId, options }: WalletConnectWalletOptions): Wallet => {
+export const walletConnectWallet = ({ projectId, metadata }: DefaultWalletOptions): Wallet => {
   const getUri = (uri: string) => uri;
 
   return {
@@ -17,9 +12,6 @@ export const walletConnectWallet = ({ projectId, options }: WalletConnectWalletO
     iconUrl: async () => (await import("./walletConnectWallet.svg")).default,
     iconBackground: "#3b99fc",
     qrCode: { getUri },
-    createConnector: getWalletConnectConnector({
-      projectId,
-      walletConnectParameters: options,
-    }),
+    createConnector: getWalletConnectConnector({ projectId, metadata }),
   };
 };

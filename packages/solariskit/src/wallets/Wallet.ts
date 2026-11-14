@@ -1,8 +1,6 @@
 import type { Connector, CreateConnectorFn } from "wagmi";
 import type { WalletConnectParameters } from "wagmi/connectors";
 
-import type { WalletConnectWalletOptions } from "./walletConnectors/walletConnectWallet/walletConnectWallet";
-
 type SolarisConnector = {
   mobile?: {
     getUri?: (uri: string) => string;
@@ -31,7 +29,7 @@ export type Wallet = {
 
 export interface DefaultWalletOptions {
   projectId: string;
-  walletConnectParameters?: SolarisWalletConnectParameters;
+  metadata: NonNullable<WalletConnectParameters["metadata"]>;
 }
 
 type WalletAppOptions = {
@@ -42,7 +40,7 @@ type WalletAppOptions = {
 export type CreateWalletFn = (
   // These parameters will be used when creating a wallet. If injected
   // wallet doesn't have parameters it will just ignore these passed in parameters
-  createWalletParams: WalletAppOptions & Omit<WalletConnectWalletOptions, "projectId"> & DefaultWalletOptions,
+  createWalletParams: WalletAppOptions & DefaultWalletOptions,
 ) => Wallet;
 
 export type WalletList = {
@@ -50,21 +48,11 @@ export type WalletList = {
   wallets: CreateWalletFn[];
 }[];
 
-// We don't want users to pass in `showQrModal` or `projectId`.
-// Those two values are handled by Solaris. The rest of WalletConnect
-// parameters can be passed with no issue
-export type SolarisWalletConnectParameters = Omit<WalletConnectParameters, "showQrModal" | "projectId">;
-
 export type SolarisDetails = Omit<Wallet, "createConnector" | "hidden"> & {
   index: number;
   groupIndex: number;
   groupName: string;
-  isWalletConnectModalConnector?: boolean;
   isSolarisConnector: boolean;
-  walletConnectModalConnector?: Connector;
-  // Used specifically in `connectorsForWallets` logic
-  // to make sure we can also get WalletConnect modal in Solaris
-  showQrModal?: true;
 };
 
 export type WalletDetailsParams = { solarisDetails: SolarisDetails };
@@ -77,8 +65,14 @@ export type WagmiConnectorInstance = Connector & {
   // this is optional since we only get
   // solarisDetails if we use Solaris connectors
   solarisDetails?: SolarisDetails;
+  openWalletConnectModal?: () => Promise<WalletConnectModalSession>;
+};
+
+export type WalletConnectModalSession = {
+  shown: Promise<void>;
+  close: () => void;
 };
 
 // This will be the wallet instance we will return
 // in the Solaris connect modal
-export type WalletInstance = Connector & SolarisDetails;
+export type WalletInstance = Connector & SolarisDetails & Pick<WagmiConnectorInstance, "openWalletConnectModal">;

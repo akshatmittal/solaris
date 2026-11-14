@@ -24,16 +24,6 @@ export const isEIP6963Connector = (wallet: WalletInstance) => {
   );
 };
 
-export const solarisConnectorWithWalletConnect = (
-  wallet: WalletInstance,
-  walletConnectModalConnector: WalletInstance,
-) => {
-  // Check if we should use the walletConnectModalConnector for this instance
-  const shouldUseWalletConnectModal = wallet.id === "walletConnect" && walletConnectModalConnector;
-
-  // Include the walletConnectModalConnector in the result
-  return shouldUseWalletConnectModal ? { ...wallet, walletConnectModalConnector } : wallet;
-};
 interface ConnectorsWithWalletsParams {
   wallets: WalletInstance[];
   recentWallets: WalletInstance[];

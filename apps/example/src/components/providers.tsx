@@ -74,7 +74,7 @@ const solanaConfig = getDefaultSolanaConfig({
 
 export function EthereumProviders({ children }: PropsWithChildren) {
   const [queryClient] = useState(() => new QueryClient());
-  const [{ theme }] = useQueryStates(kitSettings);
+  const [{ siwe, theme }] = useQueryStates(kitSettings);
   const [authStatus, setAuthStatus] = useState<AuthenticationStatus>("unauthenticated");
   // Sign-In with Ethereum, verified in the browser so the example needs no backend.
   const [authAdapter] = useState(() => {
@@ -122,6 +122,7 @@ export function EthereumProviders({ children }: PropsWithChildren) {
       <QueryClientProvider client={queryClient}>
         <SolarisAuthenticationProvider
           adapter={authAdapter}
+          enabled={siwe}
           status={authStatus}
         >
           <SolarisEthereumProvider

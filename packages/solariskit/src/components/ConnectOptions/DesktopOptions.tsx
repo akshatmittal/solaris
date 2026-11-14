@@ -17,7 +17,15 @@ export enum WalletStep {
   Connect = "CONNECT",
 }
 
-export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
+export function DesktopOptions({
+  onClose,
+  onCloseModal,
+  titleId,
+}: {
+  onClose: () => void;
+  onCloseModal: () => void;
+  titleId: string;
+}) {
   const [selectedOptionId, setSelectedOptionId] = useState<string | undefined>();
   const [selectedWallet, setSelectedWallet] = useState<WalletConnector>();
   const [qrCodeUri, setQrCodeUri] = useState<string>();
@@ -174,7 +182,7 @@ export function DesktopOptions({ onClose, titleId }: { onClose: () => void; titl
       walletContent = selectedWallet && (
         <ConnectDetail
           connectionError={connectionError}
-          onClose={onClose}
+          onCloseModal={onCloseModal}
           qrCodeUri={qrCodeUri}
           reconnect={(wallet) => {
             onQrCode(wallet);

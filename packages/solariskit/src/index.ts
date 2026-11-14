@@ -15,7 +15,7 @@ export {
   SolarisAuthenticationProvider,
   createAuthenticationAdapter,
 } from "./components/SolarisEthereumProvider/AuthenticationContext";
-export type { Wallet, WalletList, WalletDetailsParams, SolarisWalletConnectParameters } from "./wallets/Wallet";
+export type { Wallet, WalletList, WalletDetailsParams } from "./wallets/Wallet";
 export type { Theme } from "./components/SolarisEthereumProvider/SolarisEthereumProvider";
 export type { ChainSelectButtonProps, ChainStatus } from "./components/ChainSelectButton/ChainSelectButton";
 export type {

@@ -80,7 +80,12 @@ export function ModalProvider({ children }: ModalProviderProps) {
   const isUnauthenticated = useAuthenticationStatus() === "unauthenticated";
 
   useConnectionEffect({
-    onConnect: () => closeModals({ keepConnectModalOpen: isUnauthenticated }),
+    onConnect: () => {
+      closeModals({ keepConnectModalOpen: isUnauthenticated });
+      if (isUnauthenticated && isWalletConnectModalOpen) {
+        openConnectModal();
+      }
+    },
     onDisconnect: () => closeModals(),
   });
 

@@ -30,18 +30,18 @@ The default EVM wallet list includes injected browser wallets, WalletConnect, an
 Install the optional peers used by that list:
 
 ```bash
-npm install @walletconnect/ethereum-provider@^2.21.1 @base-org/account@^2.5.1
+npm install @walletconnect/ethereum-provider@^2.26.0 @reown/appkit@^1.8.19 @base-org/account@^2.5.1
 ```
 
 | Integration              | Additional dependencies                                         |
 | ------------------------ | --------------------------------------------------------------- |
 | Injected browser wallets | None                                                            |
-| WalletConnect            | `@walletconnect/ethereum-provider`                              |
+| WalletConnect            | `@walletconnect/ethereum-provider`, `@reown/appkit`             |
 | Base Account             | `@base-org/account`                                             |
 | Safe                     | `@safe-global/safe-apps-provider`, `@safe-global/safe-apps-sdk` |
 | Solana                   | `@solana/connector@^0.3.0`, `@solana/kit@^8.6.0`                |
 
-These peers are optional at the package level, but required when using the corresponding integration.
+These peers are optional at the package level, but required when using the corresponding integration. WalletConnect uses `@reown/appkit` for the official WalletConnect modal: the "Open" button on desktop, and the wallet list on mobile.
 To omit an integration and its dependencies, supply your own wallet list instead of using the default list.
 
 ## EVM quick start
@@ -98,9 +98,8 @@ contract reads, and transaction submission.
 
 `getDefaultConfig` returns a Wagmi config. It requires `appName`, `projectId`, and a non-empty `chains` list. It also accepts:
 
-- `appDescription`, `appUrl`, and `appIcon` for wallet connection metadata.
+- `appDescription`, `appUrl`, and `appIcon` for wallet connection metadata. SolarisKit builds the WalletConnect metadata from these and `appName`. WalletConnect telemetry is off, and the official WalletConnect modal has analytics, email, and social login turned off.
 - `wallets` for a custom grouped wallet list.
-- `walletConnectParameters` for WalletConnect options.
 - Wagmi configuration such as `ssr` and `transports` (not `client` or `connectors`, which SolarisKit manages).
 
 Without `transports`, each chain uses Wagmi's `http()` transport and the chain's default public RPC. For production,
@@ -291,17 +290,17 @@ instance, as above. Wallet controls appear after client hydration.
 Replace imports from `@rainbow-me/rainbowkit` with `solariskit`, including `solariskit/styles.css` and `solariskit/wallets`.
 Then rename these APIs:
 
-| RainbowKit                                                                   | Solaris                          |
-| ---------------------------------------------------------------------------- | -------------------------------- |
-| `RainbowKitProvider`                                                         | `SolarisEthereumProvider`        |
-| `RainbowKitProviderProps`                                                    | `SolarisEthereumProviderProps`   |
-| `RainbowKitAuthenticationProvider`                                           | `SolarisAuthenticationProvider`  |
-| `RainbowKitWalletConnectParameters`                                          | `SolarisWalletConnectParameters` |
-| `walletDetails.rkDetails` in a custom `Wallet`                               | `walletDetails.solarisDetails`   |
-| `isRainbowKitConnector` (wallet details and `WalletButton.Custom` connector) | `isSolarisConnector`             |
-| `--rk-*` CSS custom properties                                               | `--solaris-*`                    |
-| `[data-rk]` selector                                                         | `[data-solaris]`                 |
-| `data-testid="rk-*"` attributes                                              | Removed                          |
+| RainbowKit                                                                   | Solaris                         |
+| ---------------------------------------------------------------------------- | ------------------------------- |
+| `RainbowKitProvider`                                                         | `SolarisEthereumProvider`       |
+| `RainbowKitProviderProps`                                                    | `SolarisEthereumProviderProps`  |
+| `RainbowKitAuthenticationProvider`                                           | `SolarisAuthenticationProvider` |
+| `RainbowKitWalletConnectParameters` and `walletConnectParameters`            | Removed                         |
+| `walletDetails.rkDetails` in a custom `Wallet`                               | `walletDetails.solarisDetails`  |
+| `isRainbowKitConnector` (wallet details and `WalletButton.Custom` connector) | `isSolarisConnector`            |
+| `--rk-*` CSS custom properties                                               | `--solaris-*`                   |
+| `[data-rk]` selector                                                         | `[data-solaris]`                |
+| `data-testid="rk-*"` attributes                                              | Removed                         |
 
 This is not a complete drop-in replacement: it requires Wagmi 3, includes only the wallet factories listed above,
 and separates network selection into `ChainSelectButton` rather than a `chainStatus` prop on `ConnectButton`.
@@ -313,7 +312,7 @@ TypeScript declarations rather than assuming all RainbowKit APIs are available.
 - **Unstyled UI:** import `solariskit/styles.css` (or the Solana CSS alias) once in your app.
 - **Missing provider/context:** check provider order and ensure controls use the provider for their ecosystem.
 - **Missing wallet SDK module:** install the optional peers for every wallet in your configured list, or remove that wallet.
-- **WalletConnect cannot connect:** use a real project ID, check allowed origins, and install its Ethereum provider peer.
+- **WalletConnect cannot connect:** use a real project ID, check allowed origins, and install its peers, `@walletconnect/ethereum-provider` and `@reown/appkit`.
 - **Balances or network requests fail:** check RPC reachability, rate limits, and the selected chain/cluster.
 - **A wallet import is missing:** only the wallet factories documented here are shipped; use injected discovery
   or implement a custom `Wallet` for other integrations.

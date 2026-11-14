@@ -38,10 +38,12 @@ const styles = stylex.create({
 
 export function MobileStatus({
   onClose,
+  onCloseModal,
   titleId,
   wallet,
 }: {
   onClose: () => void;
+  onCloseModal: () => void;
   titleId: string;
   wallet: WalletConnector;
 }) {
@@ -51,11 +53,11 @@ export function MobileStatus({
     // StrictMode runs effects twice in development; connect only once.
     if (!started.current) {
       started.current = true;
-      connectMobile(wallet, onClose).catch(() => {
+      connectMobile(wallet, onCloseModal).catch(() => {
         // This view has no Retry; the user closes it and picks a wallet again.
       });
     }
-  }, [wallet, onClose]);
+  }, [wallet, onCloseModal]);
 
   return (
     <div {...stylex.props(styles.container)}>

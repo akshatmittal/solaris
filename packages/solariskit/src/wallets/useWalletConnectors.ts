@@ -6,13 +6,7 @@ import { useWalletConnectOpenState } from "../components/SolarisEthereumProvider
 import { isChainIdSupported } from "../utils/isChainIdSupported";
 import { isNotNullish } from "../utils/isNotNullish";
 import { useInitialChainId, useSolarisChains } from "./../components/SolarisEthereumProvider/SolarisChainContext";
-import {
-  connectorsWithRecentWallets,
-  isEIP6963Connector,
-  isSolarisConnector,
-  isRecentWallet,
-  solarisConnectorWithWalletConnect,
-} from "./groupedWallets";
+import { connectorsWithRecentWallets, isEIP6963Connector, isSolarisConnector, isRecentWallet } from "./groupedWallets";
 import { requestWalletSdk } from "./lazyConnector";
 import { addRecentWalletId, getRecentWalletIds } from "./recentWalletIds";
 
@@ -91,36 +85,36 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
     return result as Awaited<ReturnType<WalletInstance["connect"]>>;
   }
 
-  async function connectToWalletConnectModal(walletConnectModalConnector: Connector, onOpen: () => void) {
+  async function connectToWalletConnectModal(
+    connector: Connector,
+    openWalletConnectModal: NonNullable<WalletInstance["openWalletConnectModal"]>,
+    onOpen: () => void,
+  ) {
+    setIsWalletConnectModalOpen(true);
     try {
-      setIsWalletConnectModalOpen(true);
-      // The modal connector is not in the wallet list, so no connect UI requested its SDK.
-      requestWalletSdk(walletConnectModalConnector);
-      // The WalletConnect modal (Reown AppKit) loads its UI after it opens and defines <w3m-modal> when the UI can show.
+      requestWalletSdk(connector);
+      const modal = await openWalletConnectModal();
       let pending = true;
-      customElements.whenDefined("w3m-modal").then(() => {
-        if (pending) {
-          onOpen();
-        }
-      });
+      modal.shown.then(
+        () => {
+          if (pending) {
+            onOpen();
+          }
+        },
+        () => {},
+      );
       try {
-        await connectWallet(walletConnectModalConnector);
+        await connectWallet(connector);
       } finally {
         pending = false;
+        modal.close();
       }
-      setIsWalletConnectModalOpen(false);
     } catch (err) {
-      const isUserRejection =
-        // @ts-expect-error - Web3Modal v1 error name
-        err.name === "UserRejectedRequestError" ||
-        // @ts-expect-error - Web3Modal v2 error message on desktop
-        err.message === "Connection request reset. Please try again.";
-
-      setIsWalletConnectModalOpen(false);
-
-      if (!isUserRejection) {
+      if (!(err instanceof Error && err.name === "UserRejectedRequestError")) {
         throw err;
       }
+    } finally {
+      setIsWalletConnectModalOpen(false);
     }
   }
 
@@ -135,7 +129,6 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
       connector.type === "walletConnect"
         ? defaultConnectors
             .filter((walletConnector) => walletConnector.type === "walletConnect")
-            .filter((walletConnector) => !walletConnector.isWalletConnectModalConnector)
             .map((walletConnector) => walletConnector.emitter)
         : [connector.emitter];
 
@@ -163,10 +156,6 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
       });
     });
 
-  const walletConnectModalConnector = defaultConnectors.find(
-    (connector) => connector.id === "walletConnect" && connector.isWalletConnectModalConnector,
-  );
-
   const eip6963Connectors = defaultConnectors.filter(isEIP6963Connector).map((connector) => {
     return {
       ...connector,
@@ -174,17 +163,13 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
     };
   });
 
-  const solarisConnectors = defaultConnectors
-    .filter(isSolarisConnector)
-    .filter((wallet) => !wallet.isWalletConnectModalConnector)
-    .filter((wallet) => {
-      if (!mergeEIP6963WithSolarisConnectors) return true;
+  const solarisConnectors = defaultConnectors.filter(isSolarisConnector).filter((wallet) => {
+    if (!mergeEIP6963WithSolarisConnectors) return true;
 
-      const existsInEIP6963Connectors = eip6963Connectors.some((eip6963) => eip6963.id === wallet.rdns);
+    const existsInEIP6963Connectors = eip6963Connectors.some((eip6963) => eip6963.id === wallet.rdns);
 
-      return !existsInEIP6963Connectors;
-    })
-    .map((wallet) => solarisConnectorWithWalletConnect(wallet, walletConnectModalConnector!));
+    return !existsInEIP6963Connectors;
+  });
 
   const combinedConnectors = [...eip6963Connectors, ...solarisConnectors];
 
@@ -224,6 +209,7 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
       continue;
     }
 
+    const { openWalletConnectModal } = wallet;
     walletConnectors.push({
       ...wallet,
       ready: wallet.installed ?? true,
@@ -235,8 +221,8 @@ export function useWalletConnectors(mergeEIP6963WithSolarisConnectors = false): 
       getDesktopUri: wallet.desktop?.getUri ? () => getWalletConnectUri(wallet, wallet.desktop!.getUri!) : undefined,
       getMobileUri: wallet.mobile?.getUri ? () => getWalletConnectUri(wallet, wallet.mobile!.getUri!) : undefined,
       recent,
-      showWalletConnectModal: wallet.walletConnectModalConnector
-        ? (onOpen) => connectToWalletConnectModal(wallet.walletConnectModalConnector!, onOpen)
+      showWalletConnectModal: openWalletConnectModal
+        ? (onOpen) => connectToWalletConnectModal(wallet, openWalletConnectModal, onOpen)
         : undefined,
     });
   }
