@@ -39,14 +39,14 @@ const styles = stylex.create({
 
 export function ConnectDetail({
   connectionError,
-  onClose,
+  onCloseModal,
   qrCodeUri,
   reconnect,
   titleId,
   wallet,
 }: {
   connectionError: ConnectionError | null;
-  onClose: () => void;
+  onCloseModal: () => void;
   qrCodeUri?: string;
   reconnect: (wallet: WalletConnector) => void;
   titleId: string;
@@ -83,7 +83,7 @@ export function ConnectDetail({
         onClick: async () => {
           setWalletConnectModal("opening");
           try {
-            await showWalletConnectModal(onClose);
+            await showWalletConnectModal(onCloseModal);
             setWalletConnectModal("idle");
           } catch {
             setWalletConnectModal("failed");

@@ -10,7 +10,7 @@ import { GET_WALLET_URL } from "./constants";
 import { WalletListView } from "./WalletListView";
 
 // Opens the wallet app through its deep link, then connects.
-export async function connectMobile(wallet: WalletConnector, onClose: () => void) {
+export async function connectMobile(wallet: WalletConnector, onWalletConnectModalOpen: () => void) {
   const { connect, getMobileUri, id, name, showWalletConnectModal } = wallet;
 
   const onMobileUri = async () => {
@@ -46,14 +46,22 @@ export async function connectMobile(wallet: WalletConnector, onClose: () => void
 
   // If the id is "walletConnect" then "showWalletConnectModal" will always be true
   if (showWalletConnectModal) {
-    await showWalletConnectModal(onClose);
+    await showWalletConnectModal(onWalletConnectModalOpen);
     return;
   }
 
   await connect?.();
 }
 
-export function MobileOptions({ onClose, titleId }: { onClose: () => void; titleId: string }) {
+export function MobileOptions({
+  onClose,
+  onCloseModal,
+  titleId,
+}: {
+  onClose: () => void;
+  onCloseModal: () => void;
+  titleId: string;
+}) {
   const wallets = useWalletConnectors()
     .filter((wallet) => wallet.ready)
     .sort((a, b) => a.groupIndex - b.groupIndex);
@@ -81,7 +89,7 @@ export function MobileOptions({ onClose, titleId }: { onClose: () => void; title
       // A late WalletConnect modal does not close the connect modal after the user picked another wallet.
       await connectMobile(wallet, () => {
         if (attemptKey.current === key) {
-          onClose();
+          onCloseModal();
         }
       });
       setAttempt((current) => (current?.key === key ? undefined : current));

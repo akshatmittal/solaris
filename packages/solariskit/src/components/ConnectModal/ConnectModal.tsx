@@ -56,6 +56,7 @@ export function ConnectModal({ onClose, open }: ConnectModalProps) {
         ) : (
           <ConnectOptions
             onClose={onConnectModalCancel}
+            onCloseModal={onClose}
             titleId={titleId}
           />
         )}

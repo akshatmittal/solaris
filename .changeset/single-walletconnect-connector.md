@@ -8,4 +8,5 @@ WalletConnect now uses one connector and one WalletConnect client. Before, the w
 - The modal has analytics, email, and social login turned off. Reown AppKit still sends one `INITIALIZE` event when it first opens.
 - Removed the `walletConnectParameters` option from `getDefaultConfig` and `connectorsForWallets`, the `options` parameter of `walletConnectWallet`, and the `SolarisWalletConnectParameters` type. SolarisKit builds the WalletConnect metadata from `appName`, `appDescription`, `appUrl`, and `appIcon`, and keeps WalletConnect telemetry off. `getWalletConnectConnector` and custom wallets now get `{ projectId, metadata }`.
 - WalletConnect now uses its default storage prefix. Existing WalletConnect sessions do not restore, so those users connect again once.
+- With Sign-In with Ethereum, a connect through the official modal now opens the Solaris sign-in step right away. Before, the user had to click the connect button again. Opening the modal also no longer disconnects the pending connect.
 - Removed from `SolarisDetails`: `isWalletConnectModalConnector`, `walletConnectModalConnector`, and `showQrModal`.
