@@ -10,7 +10,7 @@
     },
     "selector": "Chain Selector",
     "title": "Switch Network",
-    "wrong_network": "Wrong network detected, switch or disconnect to continue."
+    "wrong_network": "Your wallet is on a network this app doesn’t support. Switch to a network below, or disconnect."
   },
   "common": {
     "back": "Back",
