@@ -12,7 +12,6 @@ export default function ConnectOptions({
   titleId,
 }: {
   onClose: () => void;
-  // Closes the modal without cancelling a pending connect, for when the WalletConnect modal takes over.
   onCloseModal: () => void;
   titleId: string;
 }) {

@@ -29,7 +29,6 @@ export type Wallet = {
 
 export interface DefaultWalletOptions {
   projectId: string;
-  // Built from appName, appDescription, appUrl, and appIcon.
   metadata: NonNullable<WalletConnectParameters["metadata"]>;
 }
 
@@ -66,12 +65,10 @@ export type WagmiConnectorInstance = Connector & {
   // this is optional since we only get
   // solarisDetails if we use Solaris connectors
   solarisDetails?: SolarisDetails;
-  // Opens the WalletConnect modal (Reown AppKit) on this connector's provider. Only the WalletConnect connector has it.
   openWalletConnectModal?: () => Promise<WalletConnectModalSession>;
 };
 
 export type WalletConnectModalSession = {
-  // Resolves when the modal shows its UI. Closing the modal or a failed load rejects the pending connect().
   shown: Promise<void>;
   close: () => void;
 };

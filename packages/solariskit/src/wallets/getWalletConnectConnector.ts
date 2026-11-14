@@ -24,7 +24,6 @@ const getOrCreateWalletConnectInstance = ({
     telemetryEnabled: false,
     metadata,
     projectId,
-    // Solaris shows its own QR code, and opens the WalletConnect modal itself with openWalletConnectModal.
     showQrModal: false,
   };
 
@@ -43,8 +42,7 @@ type WalletConnectProvider = InstanceType<typeof EthereumProvider>;
 
 const walletConnectModals = new WeakMap<WalletConnectProvider, Promise<AppKit>>();
 
-// Creates the WalletConnect modal (Reown AppKit) on the provider's own WalletConnect client, so the modal and the
-// Solaris QR code share one session. The modal shows the URI of the next connect() on that client.
+// AppKit runs on the provider's own WalletConnect client, so the modal and the Solaris QR code share one session.
 async function createWalletConnectModal(
   provider: WalletConnectProvider,
   projectId: string,
@@ -98,12 +96,9 @@ function createWalletConnectConnector({
 
   return createConnector((config) => {
     const connector = getOrCreateWalletConnectInstance({ projectId, metadata })(config);
-    // Rejects the pending connect() when the WalletConnect modal closes or fails to load. The provider has no way to
-    // cancel a pairing, so its own connect() stays pending until the pairing expires or the next connect() replaces it.
+    // The provider cannot cancel a pairing (abortPairingAttempt is a no-op), so closing the modal rejects connect() here.
     let cancelConnect: ((error: Error) => void) | undefined;
-    // A modal that closes or fails before connect() starts rejects that connect() when it starts.
     let cancelError: Error | undefined;
-    // Only the latest modal session that is still open can cancel.
     let sessionCount = 0;
     const cancel = (error: Error) => {
       if (cancelConnect) {
@@ -127,7 +122,6 @@ function createWalletConnectConnector({
         walletConnectModals.set(provider, modalPromise);
       }
       const modal = await modalPromise;
-      // The modal cancels only the connect() that starts after it opens, not an earlier one such as the QR code's.
       cancelConnect = undefined;
       cancelError = undefined;
       const session = ++sessionCount;
@@ -158,7 +152,6 @@ function createWalletConnectConnector({
         shown,
         close: () => {
           unsubscribe();
-          // A replaced session must not clear the error or close the modal of the session that replaced it.
           if (isActive()) {
             cancelError = undefined;
             void modal.close();
@@ -171,7 +164,6 @@ function createWalletConnectConnector({
     return {
       ...connector,
       ...walletDetails,
-      // Only the WalletConnect wallet offers the official modal. Other wallets built on this connector use their own links.
       ...(walletDetails.solarisDetails.id === "walletConnect" ? { openWalletConnectModal } : {}),
       async connect<withCapabilities extends boolean = false>(parameters?: {
         chainId?: number | undefined;
@@ -191,7 +183,6 @@ function createWalletConnectConnector({
         try {
           return await Promise.race([(connect<withCapabilities>).call(this, parameters), cancelled]);
         } finally {
-          // An earlier connect() can settle after a newer one started, so it clears only its own cancel.
           if (cancelConnect === reject) {
             cancelConnect = undefined;
           }
