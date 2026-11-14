@@ -5,6 +5,7 @@ import * as stylex from "@stylexjs/stylex";
 import { press } from "../../css/press";
 import { reset } from "../../css/reset";
 import { colors, media, radii } from "../../css/vars.stylex";
+import { SpinnerIcon } from "../Icons/Spinner";
 
 const styles = stylex.create({
   base: {
@@ -13,7 +14,16 @@ const styles = stylex.create({
     display: "flex",
     fontWeight: 600,
     justifyContent: "center",
+    position: "relative",
     whiteSpace: "nowrap",
+  },
+  hiddenLabel: { opacity: 0 },
+  spinner: {
+    alignItems: "center",
+    display: "flex",
+    inset: 0,
+    justifyContent: "center",
+    position: "absolute",
   },
   small: { fontSize: 14, height: 36, paddingInline: 14 },
   medium: { fontSize: 15, height: 44, paddingInline: 20 },
@@ -47,6 +57,7 @@ export function ActionButton({
   fullWidth = false,
   href,
   label,
+  loading = false,
   onClick,
   size = "medium",
   type = "primary",
@@ -55,6 +66,8 @@ export function ActionButton({
   fullWidth?: boolean;
   href?: string;
   label: string;
+  // Keeps the button's width and shows a spinner in place of the label.
+  loading?: boolean;
   onClick?: () => void;
   size?: "small" | "medium" | "large";
   type?: "primary" | "secondary";
@@ -81,11 +94,29 @@ export function ActionButton({
   ) : (
     <button
       {...props}
-      disabled={disabled}
+      aria-busy={loading || undefined}
+      disabled={disabled || loading}
       onClick={onClick}
       type="button"
     >
-      {label}
+      {loading ? (
+        <>
+          <span
+            {...stylex.props(styles.hiddenLabel)}
+            aria-hidden
+          >
+            {label}
+          </span>
+          <span {...stylex.props(styles.spinner)}>
+            <SpinnerIcon
+              height={16}
+              width={16}
+            />
+          </span>
+        </>
+      ) : (
+        label
+      )}
     </button>
   );
 }
