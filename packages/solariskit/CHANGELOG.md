@@ -1,5 +1,28 @@
 # solariskit
 
+## 1.12.0
+
+### Minor Changes
+
+- 19b2666: The account modal has a "View on <explorer>" button below Copy Address and Disconnect. It opens the address on the default block explorer of the connected chain (`chain.blockExplorers.default`), for example "View on Etherscan". It does not show when the chain has no block explorer, or on Solana. The "View on Explorer" link at the bottom of the recent transactions list is removed, because this button replaces it.
+- 67c1af6: WalletConnect now uses one connector and one WalletConnect client. Before, the wallet list made a second WalletConnect connector for the official WalletConnect modal, with its own client and session storage. Now the "Open" button shows the official modal (Reown AppKit) on the same client as the Solaris QR code, so a page loads one WalletConnect client instead of two.
+
+  - The `@walletconnect/ethereum-provider` peer is now `^2.26.0`. Install `@reown/appkit@^1.8.19` when you use WalletConnect. The official modal uses it: the "Open" button on desktop, and the wallet list on mobile. `@walletconnect/ethereum-provider` already depends on it, but strict package managers such as pnpm need it as a direct dependency.
+  - The modal has analytics, email, and social login turned off. Reown AppKit still sends one `INITIALIZE` event when it first opens.
+  - Removed the `walletConnectParameters` option from `getDefaultConfig` and `connectorsForWallets`, the `options` parameter of `walletConnectWallet`, and the `SolarisWalletConnectParameters` type. SolarisKit builds the WalletConnect metadata from `appName`, `appDescription`, `appUrl`, and `appIcon`, and keeps WalletConnect telemetry off. `getWalletConnectConnector` and custom wallets now get `{ projectId, metadata }`.
+  - WalletConnect now uses its default storage prefix. Existing WalletConnect sessions do not restore, so those users connect again once.
+  - With Sign-In with Ethereum, a connect through the official modal now opens the Solaris sign-in step right away. Before, the user had to click the connect button again. Opening the modal also no longer disconnects the pending connect.
+  - Removed from `SolarisDetails`: `isWalletConnectModalConnector`, `walletConnectModalConnector`, and `showQrModal`.
+
+- ddddf8a: The QR step now has a "Copy Link" button under the QR code. It copies the link that the QR code shows. While the WalletConnect modal loads, the "Open" button now shows a spinner instead of "Opening…", and keeps its width, name and keyboard focus.
+
+  Copy Link and Copy Address now behave the same: the label stays the same, and for 1.5 seconds the icon changes to a green check, or to a red cross if the copy fails. Screen readers announce "Copied" or "Couldn’t copy". Copy Address no longer changes its label to "Copied" or tints its background green.
+
+### Patch Changes
+
+- 5166f97: Text links, such as "Get a Wallet", now have a 4.5:1 contrast ratio with the default themes, and show an underline on hover instead of fading. Screen readers now read "Copy Address" once instead of "Copy Copy Address".
+- 1749e86: Copy feedback icons now have at least 3:1 contrast in the default themes, also on hover, and a repeat copy within 1.5 seconds shows and announces the result again, also when the copy fails. "Clear All" and disclaimer links use the same accessible link color as other text links. Explorer links no longer contain `//` when the chain's explorer URL ends with a slash, and long explorer names in the account modal wrap centered with padding. Recent transaction rows no longer read the status icon's name to screen readers. The "Wrong Network" button no longer draws the light 1px ring of the connect button on its red fill, so its corners are crisp. The network modal now says "This app doesn’t support your wallet’s network. Switch below, or disconnect." instead of "Wrong network detected, switch or disconnect to continue."
+
 ## 1.11.0
 
 ### Minor Changes
