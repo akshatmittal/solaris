@@ -95,7 +95,8 @@
       "label": "Disconnect"
     },
     "explorer": {
-      "label": "View on Explorer"
+      "label": "View on Explorer",
+      "view_on": "View on %{explorer}"
     },
     "transactions": {
       "clear": {

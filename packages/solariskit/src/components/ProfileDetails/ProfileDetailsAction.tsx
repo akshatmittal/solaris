@@ -33,16 +33,14 @@ const styles = stylex.create({
 interface ProfileDetailsActionProps {
   label: string;
   action?: () => void;
+  href?: string;
   icon: JSX.Element;
 }
 
-export function ProfileDetailsAction({ action, icon, label }: ProfileDetailsActionProps) {
-  return (
-    <button
-      {...stylex.props(reset.button, styles.action, press.scale)}
-      onClick={action}
-      type="button"
-    >
+export function ProfileDetailsAction({ action, href, icon, label }: ProfileDetailsActionProps) {
+  const props = stylex.props(reset.button, styles.action, press.scale);
+  const content = (
+    <>
       <span
         {...stylex.props(styles.icon)}
         aria-hidden
@@ -50,6 +48,25 @@ export function ProfileDetailsAction({ action, icon, label }: ProfileDetailsActi
         {icon}
       </span>
       {label}
+    </>
+  );
+
+  return href ? (
+    <a
+      {...props}
+      href={href}
+      rel="noreferrer noopener"
+      target="_blank"
+    >
+      {content}
+    </a>
+  ) : (
+    <button
+      {...props}
+      onClick={action}
+      type="button"
+    >
+      {content}
     </button>
   );
 }

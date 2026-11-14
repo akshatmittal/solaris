@@ -9,6 +9,7 @@ import { Avatar } from "../Avatar/Avatar";
 import { CopyStatusIcon, CopyStatusMessage } from "../CopyStatus/CopyStatus";
 import { DialogHeader } from "../Dialog/DialogHeader";
 import { DisconnectIcon } from "../Icons/Disconnect";
+import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { Text } from "../Text/Text";
 import { ProfileDetailsAction } from "./ProfileDetailsAction";
 
@@ -41,8 +42,13 @@ const styles = stylex.create({
   },
   actions: {
     display: "flex",
+    flexDirection: "column",
     gap: 8,
     marginInline: 8,
+  },
+  actionRow: {
+    display: "flex",
+    gap: 8,
   },
   transactions: {
     borderTopColor: colors.generalBorder,
@@ -56,6 +62,7 @@ export interface ProfileDetailsViewProps {
   address: string;
   avatarImageUrl?: string;
   balanceLabel?: string;
+  explorer?: { name: string; url: string };
   onClose: () => void;
   onDisconnect: () => void;
   /** Heading id the surrounding Dialog's aria-labelledby points at. */
@@ -68,6 +75,7 @@ export function ProfileDetailsView({
   address,
   avatarImageUrl,
   balanceLabel,
+  explorer,
   onClose,
   onDisconnect,
   titleId,
@@ -107,17 +115,28 @@ export function ProfileDetailsView({
           </div>
         </div>
         <div {...stylex.props(styles.actions)}>
-          <ProfileDetailsAction
-            action={copyAddress}
-            icon={<CopyStatusIcon result={copyResult} />}
-            label={t("profile.copy_address.label")}
-          />
-          <ProfileDetailsAction
-            action={onDisconnect}
-            icon={<DisconnectIcon />}
-            label={t("profile.disconnect.label")}
-          />
-          <CopyStatusMessage result={copyResult} />
+          <div {...stylex.props(styles.actionRow)}>
+            <ProfileDetailsAction
+              action={copyAddress}
+              icon={<CopyStatusIcon result={copyResult} />}
+              label={t("profile.copy_address.label")}
+            />
+            <ProfileDetailsAction
+              action={onDisconnect}
+              icon={<DisconnectIcon />}
+              label={t("profile.disconnect.label")}
+            />
+            <CopyStatusMessage result={copyResult} />
+          </div>
+          {explorer && (
+            <div {...stylex.props(styles.actionRow)}>
+              <ProfileDetailsAction
+                href={explorer.url}
+                icon={<ExternalLinkIcon />}
+                label={t("profile.explorer.view_on", { explorer: explorer.name })}
+              />
+            </div>
+          )}
         </div>
       </div>
       {transactions ? <div {...stylex.props(styles.transactions)}>{transactions}</div> : null}
