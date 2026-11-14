@@ -56,7 +56,8 @@
   "connect_scan": {
     "copy": {
       "copied": "Copied",
-      "label": "Copy link"
+      "failed": "Couldn’t copy",
+      "label": "Copy Link"
     },
     "fallback_title": "Scan with Your Phone",
     "title": "Scan with %{wallet}"

@@ -2,17 +2,28 @@ import React, { useEffect, useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { colors, media, motion } from "../../css/vars.stylex";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { ActionButton } from "../Button/ActionButton";
+import { CancelIcon } from "../Icons/Cancel";
 import { CopiedIcon } from "../Icons/Copied";
 import { CopyIcon } from "../Icons/Copy";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
-import { TextLink } from "../TextLink/TextLink";
 import { type ConnectionError, ConnectStatus } from "./ConnectStatus";
 import { GET_WALLET_URL } from "./constants";
+
+const iconIn = stylex.keyframes({
+  from: { opacity: 0, transform: "scale(0.95)" },
+  to: { opacity: 1, transform: "none" },
+});
+
+const iconFadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
 
 const styles = stylex.create({
   container: {
@@ -36,8 +47,31 @@ const styles = stylex.create({
     justifyContent: "center",
     marginTop: -8,
   },
+  // The copy icon is 17px wide and the result icons are 16px, so a fixed width keeps the button width.
   icon: {
+    color: colors.modalTextSecondary,
     display: "flex",
+    justifyContent: "center",
+    width: 17,
+  },
+  iconChanged: {
+    animationDuration: motion.enter,
+    animationName: { default: iconIn, [media.reducedMotion]: iconFadeIn },
+    animationTimingFunction: motion.easeOut,
+  },
+  copied: {
+    color: colors.success,
+  },
+  failed: {
+    color: colors.error,
+  },
+  status: {
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    whiteSpace: "nowrap",
+    width: 1,
   },
   secondaryAction: {
     alignItems: "center",
@@ -68,21 +102,27 @@ export function ConnectDetail({
   const safari = isSafari();
   const showQrCode = qrCode && !connectionError;
   const [walletConnectModal, setWalletConnectModal] = useState<"idle" | "opening" | "failed">("idle");
-  const [copied, setCopied] = useState(false);
+  // A new object on each copy restarts the timer. The result shows only for the URI it was copied from.
+  const [copyResult, setCopyResult] = useState<{ copied: boolean; uri: string }>();
+  const copy = copyResult && copyResult.uri === qrCodeUri ? copyResult : undefined;
 
   useEffect(() => {
-    if (copied) {
-      const timer = setTimeout(() => setCopied(false), 1500);
+    if (copyResult) {
+      const timer = setTimeout(() => setCopyResult(undefined), 1500);
       return () => clearTimeout(timer);
     }
-  }, [copied]);
+  }, [copyResult]);
 
   const copyUri = () => {
     if (qrCodeUri) {
-      navigator.clipboard.writeText(qrCodeUri).then(
-        () => setCopied(true),
-        () => setCopied(false),
-      );
+      try {
+        void navigator.clipboard.writeText(qrCodeUri).then(
+          () => setCopyResult({ copied: true, uri: qrCodeUri }),
+          () => setCopyResult({ copied: false, uri: qrCodeUri }),
+        );
+      } catch {
+        setCopyResult({ copied: false, uri: qrCodeUri });
+      }
     }
   };
 
@@ -140,18 +180,41 @@ export function ConnectDetail({
             />
           </div>
           <div {...stylex.props(styles.copy)}>
-            <TextLink
+            <ActionButton
               disabled={!qrCodeUri}
+              icon={
+                <span
+                  {...stylex.props(
+                    styles.icon,
+                    copy && styles.iconChanged,
+                    copy && (copy.copied ? styles.copied : styles.failed),
+                  )}
+                  aria-hidden
+                  key={copy ? String(copy.copied) : "idle"}
+                >
+                  {!copy ? (
+                    <CopyIcon />
+                  ) : copy.copied ? (
+                    <CopiedIcon />
+                  ) : (
+                    <CancelIcon
+                      height={16}
+                      width={16}
+                    />
+                  )}
+                </span>
+              }
+              label={t("connect_scan.copy.label")}
               onClick={copyUri}
+              size="small"
+              type="secondary"
+            />
+            <span
+              {...stylex.props(styles.status)}
+              role="status"
             >
-              <span
-                {...stylex.props(styles.icon)}
-                aria-hidden
-              >
-                {copied ? <CopiedIcon /> : <CopyIcon />}
-              </span>
-              {copied ? t("connect_scan.copy.copied") : t("connect_scan.copy.label")}
-            </TextLink>
+              {copy ? (copy.copied ? t("connect_scan.copy.copied") : t("connect_scan.copy.failed")) : ""}
+            </span>
           </div>
         </>
       ) : (

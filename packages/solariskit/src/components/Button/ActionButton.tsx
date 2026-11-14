@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
@@ -13,11 +13,17 @@ const styles = stylex.create({
     borderRadius: radii.actionButton,
     display: "flex",
     fontWeight: 600,
+    gap: 6,
     justifyContent: "center",
     position: "relative",
     whiteSpace: "nowrap",
   },
-  hiddenLabel: { opacity: 0 },
+  hiddenLabel: {
+    alignItems: "center",
+    display: "flex",
+    gap: 6,
+    opacity: 0,
+  },
   spinner: {
     alignItems: "center",
     display: "flex",
@@ -49,6 +55,9 @@ const styles = stylex.create({
     color: colors.modalTextSecondary,
     pointerEvents: "none",
   },
+  loading: {
+    pointerEvents: "none",
+  },
   fullWidth: { width: "100%" },
 });
 
@@ -56,6 +65,7 @@ export function ActionButton({
   disabled = false,
   fullWidth = false,
   href,
+  icon,
   label,
   loading = false,
   onClick,
@@ -65,8 +75,9 @@ export function ActionButton({
   disabled?: boolean;
   fullWidth?: boolean;
   href?: string;
+  icon?: ReactNode;
   label: string;
-  // Keeps the button's width and shows a spinner in place of the label.
+  // Keeps the button's width, name and focus, and shows a spinner in place of the label.
   loading?: boolean;
   onClick?: () => void;
   size?: "small" | "medium" | "large";
@@ -77,11 +88,18 @@ export function ActionButton({
     styles.base,
     styles[size],
     disabled ? styles.disabled : styles[type],
+    loading && styles.loading,
     fullWidth && styles.fullWidth,
     press.scale,
   );
+  const content = (
+    <>
+      {icon}
+      {label}
+    </>
+  );
 
-  return href && !disabled ? (
+  return href && !disabled && !loading ? (
     <a
       {...props}
       href={href}
@@ -89,25 +107,24 @@ export function ActionButton({
       rel="noreferrer noopener"
       target="_blank"
     >
-      {label}
+      {content}
     </a>
   ) : (
     <button
       {...props}
       aria-busy={loading || undefined}
-      disabled={disabled || loading}
-      onClick={onClick}
+      aria-disabled={loading || undefined}
+      disabled={disabled}
+      onClick={loading ? undefined : onClick}
       type="button"
     >
       {loading ? (
         <>
+          <span {...stylex.props(styles.hiddenLabel)}>{content}</span>
           <span
-            {...stylex.props(styles.hiddenLabel)}
+            {...stylex.props(styles.spinner)}
             aria-hidden
           >
-            {label}
-          </span>
-          <span {...stylex.props(styles.spinner)}>
             <SpinnerIcon
               height={16}
               width={16}
@@ -115,7 +132,7 @@ export function ActionButton({
           </span>
         </>
       ) : (
-        label
+        content
       )}
     </button>
   );

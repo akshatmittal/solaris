@@ -18,10 +18,6 @@ const styles = stylex.create({
     opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.75 } },
     textDecoration: "none",
   },
-  disabled: {
-    opacity: 0.5,
-    pointerEvents: "none",
-  },
   // Keeps a 44px touch target without changing the visual size.
   tall: {
     minHeight: 44,
@@ -30,18 +26,16 @@ const styles = stylex.create({
 
 export function TextLink({
   children,
-  disabled = false,
   href,
   onClick,
   tall = false,
 }: {
   children: ReactNode;
-  disabled?: boolean;
   href?: string;
   onClick?: () => void;
   tall?: boolean;
 }) {
-  const props = stylex.props(reset.button, styles.link, tall && styles.tall, press.scale, disabled && styles.disabled);
+  const props = stylex.props(reset.button, styles.link, tall && styles.tall, press.scale);
 
   return href ? (
     <a
@@ -55,7 +49,6 @@ export function TextLink({
   ) : (
     <button
       {...props}
-      disabled={disabled}
       onClick={onClick}
       type="button"
     >
