@@ -1,13 +1,13 @@
-import React, { type ReactNode, useCallback, useEffect, useState } from "react";
+import React, { type ReactNode } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
+import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
+import { CopyStatusIcon, CopyStatusMessage } from "../CopyStatus/CopyStatus";
 import { DialogHeader } from "../Dialog/DialogHeader";
-import { CopiedIcon } from "../Icons/Copied";
-import { CopyIcon } from "../Icons/Copy";
 import { DisconnectIcon } from "../Icons/Disconnect";
 import { Text } from "../Text/Text";
 import { ProfileDetailsAction } from "./ProfileDetailsAction";
@@ -73,26 +73,7 @@ export function ProfileDetailsView({
   titleId,
   transactions,
 }: ProfileDetailsViewProps) {
-  const [copiedAddress, setCopiedAddress] = useState(false);
-  const copyAddressAction = useCallback(() => {
-    try {
-      void navigator.clipboard.writeText(address).then(
-        () => setCopiedAddress(true),
-        () => setCopiedAddress(false),
-      );
-    } catch {
-      setCopiedAddress(false);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (copiedAddress) {
-      const timer = setTimeout(() => {
-        setCopiedAddress(false);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [copiedAddress]);
+  const { copy: copyAddress, result: copyResult } = useCopyToClipboard(address);
 
   return (
     <div {...stylex.props(styles.container)}>
@@ -127,16 +108,16 @@ export function ProfileDetailsView({
         </div>
         <div {...stylex.props(styles.actions)}>
           <ProfileDetailsAction
-            action={copyAddressAction}
-            icon={copiedAddress ? <CopiedIcon /> : <CopyIcon />}
-            success={copiedAddress}
-            label={copiedAddress ? t("profile.copy_address.copied") : t("profile.copy_address.label")}
+            action={copyAddress}
+            icon={<CopyStatusIcon result={copyResult} />}
+            label={t("profile.copy_address.label")}
           />
           <ProfileDetailsAction
             action={onDisconnect}
             icon={<DisconnectIcon />}
             label={t("profile.disconnect.label")}
           />
+          <CopyStatusMessage result={copyResult} />
         </div>
       </div>
       {transactions ? <div {...stylex.props(styles.transactions)}>{transactions}</div> : null}

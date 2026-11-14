@@ -1,20 +1,10 @@
-import React, { type JSX, useState } from "react";
+import React, { type JSX } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
 import { press } from "../../css/press";
 import { reset } from "../../css/reset";
-import { colors, media, motion, radii } from "../../css/vars.stylex";
-
-const iconIn = stylex.keyframes({
-  from: { opacity: 0, transform: "scale(0.95)" },
-  to: { opacity: 1, transform: "none" },
-});
-
-const iconFadeIn = stylex.keyframes({
-  from: { opacity: 0 },
-  to: { opacity: 1 },
-});
+import { colors, media, radii } from "../../css/vars.stylex";
 
 const styles = stylex.create({
   action: {
@@ -38,45 +28,24 @@ const styles = stylex.create({
     color: colors.modalTextSecondary,
     display: "flex",
   },
-  iconChanged: {
-    animationDuration: motion.enter,
-    animationName: { default: iconIn, [media.reducedMotion]: iconFadeIn },
-    animationTimingFunction: motion.easeOut,
-  },
-  success: {
-    color: colors.success,
-  },
-  successAction: {
-    backgroundColor: `color-mix(in srgb, ${colors.success} 10%, transparent)`,
-  },
 });
 
 interface ProfileDetailsActionProps {
   label: string;
   action?: () => void;
   icon: JSX.Element;
-  success?: boolean;
 }
 
-export function ProfileDetailsAction({ action, icon, label, success = false }: ProfileDetailsActionProps) {
-  // Animate only on change, not when the modal opens.
-  const [shownSuccess, setShownSuccess] = useState(success);
-  const [iconChanged, setIconChanged] = useState(false);
-  if (success !== shownSuccess) {
-    setShownSuccess(success);
-    setIconChanged(true);
-  }
-
+export function ProfileDetailsAction({ action, icon, label }: ProfileDetailsActionProps) {
   return (
     <button
-      {...stylex.props(reset.button, styles.action, success && styles.successAction, press.scale)}
+      {...stylex.props(reset.button, styles.action, press.scale)}
       onClick={action}
       type="button"
     >
       <span
-        {...stylex.props(styles.icon, iconChanged && styles.iconChanged, success && styles.success)}
+        {...stylex.props(styles.icon)}
         aria-hidden
-        key={String(success)}
       >
         {icon}
       </span>

@@ -55,8 +55,6 @@
   },
   "connect_scan": {
     "copy": {
-      "copied": "Copied",
-      "failed": "Couldn’t copy",
       "label": "Copy Link"
     },
     "fallback_title": "Scan with Your Phone",
@@ -77,6 +75,10 @@
     "popular": "Popular",
     "recommended": "Recommended"
   },
+  "copy": {
+    "copied": "Copied",
+    "failed": "Couldn’t copy"
+  },
   "intro": {
     "get": {
       "label": "Get a Wallet"
@@ -87,7 +89,6 @@
   },
   "profile": {
     "copy_address": {
-      "copied": "Copied",
       "label": "Copy Address"
     },
     "disconnect": {

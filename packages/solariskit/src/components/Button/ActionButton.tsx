@@ -77,7 +77,6 @@ export function ActionButton({
   href?: string;
   icon?: ReactNode;
   label: string;
-  // Keeps the button's width, name and focus, and shows a spinner in place of the label.
   loading?: boolean;
   onClick?: () => void;
   size?: "small" | "medium" | "large";
