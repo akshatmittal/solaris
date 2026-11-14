@@ -31,8 +31,9 @@ const styles = stylex.create({
     paddingInline: 12,
   },
   clear: {
-    color: colors.accentColor,
-    opacity: { default: 1, ":hover": { default: null, [media.hover]: 0.75 } },
+    color: colors.accentText,
+    textDecoration: { default: "none", ":hover": { default: null, [media.hover]: "underline" } },
+    textUnderlineOffset: 3,
     fontSize: 13,
     fontWeight: 500,
     lineHeight: "18px",

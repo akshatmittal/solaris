@@ -21,8 +21,11 @@ const styles = stylex.create({
     fontSize: 14,
     fontWeight: 500,
     gap: 8,
-    height: 44,
     justifyContent: "center",
+    minHeight: 44,
+    paddingBlock: 8,
+    paddingInline: 12,
+    textAlign: "center",
   },
   icon: {
     color: colors.modalTextSecondary,
@@ -30,12 +33,10 @@ const styles = stylex.create({
   },
 });
 
-interface ProfileDetailsActionProps {
-  label: string;
-  action?: () => void;
-  href?: string;
-  icon: JSX.Element;
-}
+type ProfileDetailsActionProps = { icon: JSX.Element; label: string } & (
+  | { action: () => void; href?: never }
+  | { action?: never; href: string }
+);
 
 export function ProfileDetailsAction({ action, href, icon, label }: ProfileDetailsActionProps) {
   const props = stylex.props(reset.button, styles.action, press.scale);

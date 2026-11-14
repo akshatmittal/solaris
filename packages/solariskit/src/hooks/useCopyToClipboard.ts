@@ -14,14 +14,11 @@ export function useCopyToClipboard(value: string | undefined) {
 
   const copy = () => {
     if (value) {
-      try {
-        void navigator.clipboard.writeText(value).then(
-          () => setAttempt({ result: "copied", value }),
-          () => setAttempt({ result: "failed", value }),
-        );
-      } catch {
-        setAttempt({ result: "failed", value });
-      }
+      setAttempt(undefined);
+      void new Promise<void>((resolve) => resolve(navigator.clipboard.writeText(value))).then(
+        () => setAttempt({ result: "copied", value }),
+        () => setAttempt({ result: "failed", value }),
+      );
     }
   };
 

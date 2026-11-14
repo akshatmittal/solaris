@@ -7,6 +7,7 @@ import { useConnection } from "wagmi";
 
 import type { useProfile } from "../../hooks/useProfile";
 
+import { chainToExplorer } from "../../utils/chainToExplorer";
 import { abbreviateETHBalance } from "../ConnectButton/abbreviateETHBalance";
 import { formatAddress } from "../ConnectButton/formatAddress";
 import { formatENS } from "../ConnectButton/formatENS";
@@ -35,7 +36,7 @@ export function ProfileDetails({
 }: ProfileDetailsProps) {
   const showRecentTransactions = useContext(ShowRecentTransactionsContext);
   const { chain } = useConnection();
-  const blockExplorer = chain?.blockExplorers?.default;
+  const explorer = chainToExplorer(chain);
 
   if (!address) {
     return null;
@@ -51,7 +52,7 @@ export function ProfileDetails({
       address={address}
       avatarImageUrl={ensAvatar ?? undefined}
       balanceLabel={balance && displayBalance ? `${displayBalance} ${balance.symbol}` : undefined}
-      explorer={blockExplorer && { name: blockExplorer.name, url: `${blockExplorer.url}/address/${address}` }}
+      explorer={explorer && { name: explorer.name, url: `${explorer.url}/address/${address}` }}
       onClose={onClose}
       onDisconnect={onDisconnect}
       titleId={titleId}

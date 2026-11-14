@@ -7,7 +7,7 @@ import type { Transaction } from "../../transactions/transactionStore";
 
 import { colors, media, motion, radii } from "../../css/vars.stylex";
 import { t } from "../../translations";
-import { chainToExplorerUrl } from "../../utils/chainToExplorerUrl";
+import { chainToExplorer } from "../../utils/chainToExplorer";
 import { CancelIcon } from "../Icons/Cancel";
 import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { SpinnerIcon } from "../Icons/Spinner";
@@ -71,11 +71,14 @@ const statusIcons = {
 export function TxItem({ tx }: { tx: Transaction }) {
   const Icon = statusIcons[tx.status];
   const { chain: activeChain } = useConnection();
-  const explorerLink = chainToExplorerUrl(activeChain);
+  const explorerLink = chainToExplorer(activeChain)?.url;
 
   const content = (
     <>
-      <span {...stylex.props(styles.icon, styles[tx.status])}>
+      <span
+        {...stylex.props(styles.icon, styles[tx.status])}
+        aria-hidden
+      >
         <Icon />
       </span>
       <span {...stylex.props(styles.text)}>

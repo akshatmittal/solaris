@@ -28,6 +28,7 @@ const styles = stylex.create({
       default: colors.connectButtonBackgroundError,
       ":hover": { default: null, [media.hover]: colors.connectButtonErrorHover },
     },
+    boxShadow: "none",
     color: colors.connectButtonTextError,
   },
   disabled: {

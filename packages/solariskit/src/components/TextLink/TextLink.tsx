@@ -9,7 +9,7 @@ import { colors, media } from "../../css/vars.stylex";
 const styles = stylex.create({
   link: {
     alignItems: "center",
-    color: `color-mix(in srgb, ${colors.accentColor} 85%, ${colors.modalText})`,
+    color: colors.accentText,
     display: "inline-flex",
     fontSize: 14,
     fontWeight: 500,
