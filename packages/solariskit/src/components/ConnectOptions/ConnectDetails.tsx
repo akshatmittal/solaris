@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
+import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { t } from "../../translations";
 import { isSafari } from "../../utils/browsers";
 import { type WalletConnector } from "../../wallets/useWalletConnectors";
 import { ActionButton } from "../Button/ActionButton";
+import { CopyStatusIcon, CopyStatusMessage } from "../CopyStatus/CopyStatus";
 import { QRCode } from "../QRCode/QRCode";
 import { Text } from "../Text/Text";
 import { type ConnectionError, ConnectStatus } from "./ConnectStatus";
@@ -27,6 +29,11 @@ const styles = stylex.create({
     justifyContent: "center",
     marginInline: -16,
     marginTop: -16,
+  },
+  copy: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: -8,
   },
   secondaryAction: {
     alignItems: "center",
@@ -57,6 +64,7 @@ export function ConnectDetail({
   const safari = isSafari();
   const showQrCode = qrCode && !connectionError;
   const [walletConnectModal, setWalletConnectModal] = useState<"idle" | "opening" | "failed">("idle");
+  const { copy: copyUri, result: copyResult } = useCopyToClipboard(qrCodeUri);
 
   const onDesktopUri = async () => {
     const uri = await getDesktopUri?.();
@@ -76,10 +84,7 @@ export function ConnectDetail({
         description:
           walletConnectModal === "failed" ? t("connect.status.declined") : t("connect.walletconnect.description"),
         error: walletConnectModal === "failed",
-        label:
-          walletConnectModal === "opening"
-            ? t("connect.walletconnect.open.loading")
-            : t("connect.walletconnect.open.label"),
+        label: t("connect.walletconnect.open.label"),
         onClick: async () => {
           setWalletConnectModal("opening");
           try {
@@ -105,14 +110,27 @@ export function ConnectDetail({
   return (
     <div {...stylex.props(styles.container)}>
       {showQrCode ? (
-        <div {...stylex.props(styles.qr)}>
-          <QRCode
-            logoBackground={iconBackground}
-            logoUrl={iconUrl}
-            size={344}
-            uri={qrCodeUri}
-          />
-        </div>
+        <>
+          <div {...stylex.props(styles.qr)}>
+            <QRCode
+              logoBackground={iconBackground}
+              logoUrl={iconUrl}
+              size={344}
+              uri={qrCodeUri}
+            />
+          </div>
+          <div {...stylex.props(styles.copy)}>
+            <ActionButton
+              disabled={!qrCodeUri}
+              icon={<CopyStatusIcon result={copyResult} />}
+              label={t("connect_scan.copy.label")}
+              onClick={copyUri}
+              size="small"
+              type="secondary"
+            />
+            <CopyStatusMessage result={copyResult} />
+          </div>
+        </>
       ) : (
         <ConnectStatus
           confirm={t("connect.status.confirm")}
@@ -139,9 +157,9 @@ export function ConnectDetail({
             </Text>
           </div>
           <ActionButton
-            disabled={secondaryAction.busy}
             href={secondaryAction.href}
             label={secondaryAction.label}
+            loading={secondaryAction.busy}
             onClick={secondaryAction.onClick}
             size="small"
             type="secondary"

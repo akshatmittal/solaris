@@ -1,14 +1,15 @@
-import React, { type ReactNode, useCallback, useEffect, useState } from "react";
+import React, { type ReactNode } from "react";
 
 import * as stylex from "@stylexjs/stylex";
 
 import { colors } from "../../css/vars.stylex";
+import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { t } from "../../translations";
 import { Avatar } from "../Avatar/Avatar";
+import { CopyStatusIcon, CopyStatusMessage } from "../CopyStatus/CopyStatus";
 import { DialogHeader } from "../Dialog/DialogHeader";
-import { CopiedIcon } from "../Icons/Copied";
-import { CopyIcon } from "../Icons/Copy";
 import { DisconnectIcon } from "../Icons/Disconnect";
+import { ExternalLinkIcon } from "../Icons/ExternalLink";
 import { Text } from "../Text/Text";
 import { ProfileDetailsAction } from "./ProfileDetailsAction";
 
@@ -41,8 +42,13 @@ const styles = stylex.create({
   },
   actions: {
     display: "flex",
+    flexDirection: "column",
     gap: 8,
     marginInline: 8,
+  },
+  actionRow: {
+    display: "flex",
+    gap: 8,
   },
   transactions: {
     borderTopColor: colors.generalBorder,
@@ -56,6 +62,7 @@ export interface ProfileDetailsViewProps {
   address: string;
   avatarImageUrl?: string;
   balanceLabel?: string;
+  explorer?: { name: string; url: string };
   onClose: () => void;
   onDisconnect: () => void;
   /** Heading id the surrounding Dialog's aria-labelledby points at. */
@@ -68,31 +75,13 @@ export function ProfileDetailsView({
   address,
   avatarImageUrl,
   balanceLabel,
+  explorer,
   onClose,
   onDisconnect,
   titleId,
   transactions,
 }: ProfileDetailsViewProps) {
-  const [copiedAddress, setCopiedAddress] = useState(false);
-  const copyAddressAction = useCallback(() => {
-    try {
-      void navigator.clipboard.writeText(address).then(
-        () => setCopiedAddress(true),
-        () => setCopiedAddress(false),
-      );
-    } catch {
-      setCopiedAddress(false);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (copiedAddress) {
-      const timer = setTimeout(() => {
-        setCopiedAddress(false);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [copiedAddress]);
+  const { copy: copyAddress, result: copyResult } = useCopyToClipboard(address);
 
   return (
     <div {...stylex.props(styles.container)}>
@@ -126,17 +115,28 @@ export function ProfileDetailsView({
           </div>
         </div>
         <div {...stylex.props(styles.actions)}>
-          <ProfileDetailsAction
-            action={copyAddressAction}
-            icon={copiedAddress ? <CopiedIcon /> : <CopyIcon />}
-            success={copiedAddress}
-            label={copiedAddress ? t("profile.copy_address.copied") : t("profile.copy_address.label")}
-          />
-          <ProfileDetailsAction
-            action={onDisconnect}
-            icon={<DisconnectIcon />}
-            label={t("profile.disconnect.label")}
-          />
+          <div {...stylex.props(styles.actionRow)}>
+            <ProfileDetailsAction
+              action={copyAddress}
+              icon={<CopyStatusIcon result={copyResult} />}
+              label={t("profile.copy_address.label")}
+            />
+            <ProfileDetailsAction
+              action={onDisconnect}
+              icon={<DisconnectIcon />}
+              label={t("profile.disconnect.label")}
+            />
+            <CopyStatusMessage result={copyResult} />
+          </div>
+          {explorer && (
+            <div {...stylex.props(styles.actionRow)}>
+              <ProfileDetailsAction
+                href={explorer.url}
+                icon={<ExternalLinkIcon />}
+                label={t("profile.explorer.label", { explorer: explorer.name })}
+              />
+            </div>
+          )}
         </div>
       </div>
       {transactions ? <div {...stylex.props(styles.transactions)}>{transactions}</div> : null}
