@@ -47,7 +47,8 @@
     "build:watch": "tsdown --watch",
     "clean": "rm -rf .turbo dist node_modules",
     "dev": "pnpm run build:watch",
-    "prepack": "pnpm run build",
+    "prepack": "pnpm run build && cp ../../README.md README.md",
+    "postpack": "rm README.md",
     "typecheck": "pnpm tsc --noEmit"
   },
   "dependencies": {

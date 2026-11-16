@@ -193,7 +193,7 @@ export default function HomePage() {
           <nav className="hero-links">
             <a href="https://github.com/akshatmittal/solaris">GitHub</a>
             <a href="https://www.npmjs.com/package/solariskit">npm</a>
-            <a href="https://github.com/akshatmittal/solaris/tree/main/packages/solariskit#readme">Docs</a>
+            <a href="https://github.com/akshatmittal/solaris/tree/main/docs#readme">Docs</a>
           </nav>
         </section>
 

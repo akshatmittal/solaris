@@ -26,6 +26,9 @@ worker-configuration.d.ts
 # Scratch copies
 .conductor/
 
+# Copied from the root README when solariskit is packed
+packages/solariskit/README.md
+
 # Logs
 *.log
 npm-debug.log*
