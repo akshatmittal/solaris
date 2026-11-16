@@ -2,7 +2,7 @@
 
 # Solaris
 
-### Wallet connection for Ethereum and Solana, in one React kit.
+### The best way to connect a wallet, on Ethereum and Solana.
 
 Your users get the same polished connect, account, and network flows on every chain they bring. You ship one provider per ecosystem, one theme, and no glue code between them.
 
