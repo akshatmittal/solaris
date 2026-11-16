@@ -8,6 +8,6 @@
 
 ## Checklist
 
-- [ ] `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` pass
+- [ ] `pnpm format:check`, `pnpm lint`, `pnpm build`, and `pnpm typecheck` pass
 - [ ] I added a changeset (`pnpm changeset`) for changes to a published package
 - [ ] I checked UI changes in the example app

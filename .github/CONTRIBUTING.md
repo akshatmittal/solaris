@@ -40,8 +40,8 @@ Every change to a published package (`solariskit` or `@akshatmittal/polycons`) n
 pnpm changeset
 ```
 
-Write the summary for users of the package: say what changed and what they must do. Mark breaking changes as `major`. The release workflow opens a "Version Packages" pull request and publishes to npm when it merges.
+Write the summary for users of the package: say what changed and what they must do. Mark breaking changes as `major`. Do not add a changeset for `apps/example`: it is private, and a changeset for it blocks the release. The release workflow opens a "Version Packages" pull request and publishes to npm when it merges.
 
 ## Commits and pull requests
 
-Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and pull request titles. Scope a change to one package with its name, for example `fix(solariskit): keep focus on the Open button`. Leave the scope out for changes across the repository, for example `docs: update the contributing guide`.
+Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and pull request titles. Scope a change to one package as `solariskit`, `polycons`, or `example`, for example `fix(solariskit): keep focus on the Open button`. Leave the scope out for changes across the repository, for example `docs: update the contributing guide`.

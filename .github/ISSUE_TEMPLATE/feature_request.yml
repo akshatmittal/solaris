@@ -1,15 +1,16 @@
 name: Feature request
-description: Suggest a new wallet, component, option, or behavior.
+description: Suggest a new wallet, component, option, or behavior for solariskit or polycons.
 labels: ["enhancement"]
 body:
   - type: dropdown
-    id: ecosystem
+    id: area
     attributes:
-      label: Ecosystem
+      label: Area
       options:
-        - EVM
-        - Solana
-        - Both
+        - EVM (solariskit)
+        - Solana (solariskit/solana)
+        - Both ecosystems
+        - Polycons (@akshatmittal/polycons)
     validations:
       required: true
   - type: textarea
