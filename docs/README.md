@@ -121,7 +121,7 @@ export function CustomConnectButton() {
 }
 ```
 
-`useAccountModal` and `useChainModal` work similarly. Each hook returns its modal's open state and open function. Open functions can be `undefined` when unavailable; disable the corresponding control. Render these hooks and all wallet UI inside the providers shown in the quick start.
+`useAccountModal` and `useChainModal` work similarly. Each hook returns its modal's open state and open function. Open functions can be `undefined` when unavailable; disable the corresponding control. Render these hooks and all wallet UI inside the providers shown in the [quick start](https://github.com/akshatmittal/solaris#quick-start).
 
 ### Recent transactions and authentication
 
