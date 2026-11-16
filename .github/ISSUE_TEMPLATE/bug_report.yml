@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in Solaris does not work as documented.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the report. Check the [troubleshooting section](https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/README.md#troubleshooting) and the [live demo](https://gh.akshatmittal.com/solaris/) first.
+  - type: dropdown
+    id: ecosystem
+    attributes:
+      label: Ecosystem
+      options:
+        - EVM
+        - Solana
+        - Both
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you expected, and what happened instead. Add screenshots or a recording for UI problems.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: A minimal repository or code sample is the fastest way to a fix.
+      placeholder: |
+        1. Configure `getDefaultConfig` with ...
+        2. Click "Connect Wallet"
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: solariskit version
+      placeholder: "1.12.0"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Framework and bundler, browser, wallet, and the versions of `wagmi`, `viem`, `@solana/connector`, or `@solana/kit` you use.
+      placeholder: |
+        Next.js 16 (Turbopack), Chrome 142, MetaMask 13
+        wagmi 3.7.11, viem 2.57.18
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output
+      description: Errors or warnings from the browser console.
+      render: shell
