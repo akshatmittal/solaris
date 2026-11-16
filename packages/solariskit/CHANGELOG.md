@@ -1,5 +1,13 @@
 # solariskit
 
+## 1.12.1
+
+### Patch Changes
+
+- d0c5d05: The npm page now shows the repository's root README, with the quick start for Ethereum and Solana. The reference documentation moved to [docs](https://github.com/akshatmittal/solaris/blob/main/docs/README.md).
+- Updated dependencies [7eabebd]
+  - @akshatmittal/polycons@1.1.2
+
 ## 1.12.0
 
 ### Minor Changes

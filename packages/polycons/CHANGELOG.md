@@ -1,5 +1,11 @@
 # @akshatmittal/polycons
 
+## 1.1.2
+
+### Patch Changes
+
+- 7eabebd: The npm page now shows a README with usage, the API, and examples.
+
 ## 1.1.1
 
 ### Patch Changes
