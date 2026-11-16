@@ -9,18 +9,18 @@ Solaris is a React wallet kit for EVM chains and Solana. Your users get the same
 [![npm version](https://img.shields.io/npm/v/solariskit?style=flat-square&color=007AFF&label=solariskit)](https://www.npmjs.com/package/solariskit)
 [![npm downloads](https://img.shields.io/npm/dm/solariskit?style=flat-square&color=007AFF)](https://www.npmjs.com/package/solariskit)
 [![CI](https://img.shields.io/github/actions/workflow/status/akshatmittal/solaris/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/akshatmittal/solaris/actions/workflows/ci.yml)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](./packages/solariskit/src)
-[![License: MIT](https://img.shields.io/github/license/akshatmittal/solaris?style=flat-square&color=007AFF)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://github.com/akshatmittal/solaris/tree/main/packages/solariskit/src)
+[![License: MIT](https://img.shields.io/github/license/akshatmittal/solaris?style=flat-square&color=007AFF)](https://github.com/akshatmittal/solaris/blob/main/LICENSE)
 
-[**Demo**](https://gh.akshatmittal.com/solaris/) · [Documentation](./packages/solariskit/README.md) · [npm](https://www.npmjs.com/package/solariskit) · [Changelog](./packages/solariskit/CHANGELOG.md)
+[**Demo**](https://gh.akshatmittal.com/solaris/) · [Documentation](https://github.com/akshatmittal/solaris/blob/main/docs/README.md) · [npm](https://www.npmjs.com/package/solariskit) · [Changelog](https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/CHANGELOG.md)
 
-Coming from RainbowKit? Most of the API keeps its shape: see the [migration guide](./packages/solariskit/README.md#migrating-from-rainbowkit).
+Coming from RainbowKit? Most of the API keeps its shape: see the [migration guide](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#migrating-from-rainbowkit).
 
 <br />
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/assets/hero-dark.png" />
-  <img alt="Solaris modals: EVM and Solana connect wallet lists, a WalletConnect QR code, and the network switcher, with connected EVM and Solana buttons" src="./.github/assets/hero-light.png" />
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/akshatmittal/solaris/main/.github/assets/hero-dark.png" />
+  <img alt="Solaris modals: EVM and Solana connect wallet lists, a WalletConnect QR code, and the network switcher, with connected EVM and Solana buttons" src="https://raw.githubusercontent.com/akshatmittal/solaris/main/.github/assets/hero-light.png" />
 </picture>
 
 </div>
@@ -36,10 +36,12 @@ Most wallet kits pick a side. Solaris takes both, and makes them feel like one p
 - **Made for phones.** On screens narrower than 768px the modals become a bottom sheet. On a phone, a tap opens the wallet app. Solana Mobile Wallet Adapter is on by default.
 - **Accessible modals.** Dialogs have a name, keep focus inside, and give it back when they close. Screen readers hear copy and connect results, text links clear 4.5:1 contrast with the default accent, and animation follows `prefers-reduced-motion`.
 - **Your brand, not ours.** Start from light, dark, or midnight, then set the accent, radius, font, and overlay blur. One prop follows the OS color scheme.
-- **A face for every address.** ENS names and avatars on Ethereum, and a deterministic [polycon](./packages/polycons) for every address without one.
+- **A face for every address.** ENS names and avatars on Ethereum, and a deterministic [polycon](https://github.com/akshatmittal/solaris/tree/main/packages/polycons) for every address without one.
 - **Ready for the Next.js App Router.** Every file ships with `"use client"`, and the EVM config renders on the server with `ssr: true`.
 
 ## Quick start
+
+Solaris needs React 18 or 19 and Node.js 24 or newer. It ships ESM and TypeScript declarations, with no CommonJS build.
 
 ### Ethereum
 
@@ -91,7 +93,7 @@ export function Header() {
 }
 ```
 
-`YOUR_PROJECT_ID` works for local testing. Before you ship, get your own WalletConnect project ID from the [Reown Dashboard](https://dashboard.reown.com/).
+`YOUR_PROJECT_ID` works for local testing. Before you ship, get your own WalletConnect project ID from the [Reown Dashboard](https://dashboard.reown.com/) and add your domain to its allowed origins. Also pass your own RPC URLs in [`transports`](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#configuration-and-rpc-endpoints): without them, each chain uses its public RPC, which is rate limited.
 
 With Next.js, also add `serverExternalPackages: ["@base-org/account"]` to `next.config.ts`. Without it, `next build` stops with `Can't resolve '@x402/core/client'`, because the Base Account SDK loads a server package whose optional peers are not installed.
 
@@ -120,11 +122,11 @@ export function SolanaHeader() {
 }
 ```
 
-For mainnet, set `network: "mainnet"` and pass your own RPC in `clusters`: the public mainnet endpoint refuses browser requests. With Next.js and Turbopack, also [alias `@solana/web3.js` to an empty module](./packages/solariskit/README.md#solana-quick-start).
+For mainnet, set `network: "mainnet"` and pass your own RPC in `clusters`: the public mainnet endpoint refuses browser requests. With Next.js and Turbopack, also [alias `@solana/web3.js` to an empty module](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#solana-quick-start).
 
 ### Go further
 
-Drop unused wallets and their peers with a [custom wallet list](./packages/solariskit/README.md#custom-wallet-lists), [theme the UI](./packages/solariskit/README.md#customize-the-ui), add [wallet sign-in and recent transactions](./packages/solariskit/README.md#recent-transactions-and-authentication), and set up [server rendering](./packages/solariskit/README.md#nextjs-and-server-rendering).
+Drop unused wallets and their peers with a [custom wallet list](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#custom-wallet-lists), [theme the UI](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#customize-the-ui), add [wallet sign-in and recent transactions](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#recent-transactions-and-authentication), and set up [server rendering](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#nextjs-and-server-rendering). To open the modals from your own buttons, see the [modal hooks](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#open-modals-from-your-own-buttons). If something fails, see [troubleshooting](https://github.com/akshatmittal/solaris/blob/main/docs/README.md#troubleshooting).
 
 ## Two ecosystems, one API shape
 
@@ -141,12 +143,13 @@ Drop unused wallets and their peers with a [custom wallet list](./packages/solar
 
 ## Inside this repo
 
-| Path                                                       | Package                                                                          | Description                                       |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
-| [`packages/solariskit`](./packages/solariskit)             | [`solariskit`](https://www.npmjs.com/package/solariskit)                         | Wallet connection UI and hooks for EVM and Solana |
-| [`packages/polycons`](./packages/polycons)                 | [`@akshatmittal/polycons`](https://www.npmjs.com/package/@akshatmittal/polycons) | Deterministic avatar images for addresses         |
-| [`apps/example`](./apps/example)                           | [Demo](https://gh.akshatmittal.com/solaris/)                                     | Next.js app with EVM and Solana side by side      |
-| [`tooling/typescript-config`](./tooling/typescript-config) | —                                                                                | Shared strict TypeScript config                   |
+| Path                                                                                                       | Package                                                                          | Description                                       |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [`packages/solariskit`](https://github.com/akshatmittal/solaris/tree/main/packages/solariskit)             | [`solariskit`](https://www.npmjs.com/package/solariskit)                         | Wallet connection UI and hooks for EVM and Solana |
+| [`packages/polycons`](https://github.com/akshatmittal/solaris/tree/main/packages/polycons)                 | [`@akshatmittal/polycons`](https://www.npmjs.com/package/@akshatmittal/polycons) | Deterministic avatar images for addresses         |
+| [`docs`](https://github.com/akshatmittal/solaris/tree/main/docs)                                           | —                                                                                | Reference documentation for `solariskit`          |
+| [`apps/example`](https://github.com/akshatmittal/solaris/tree/main/apps/example)                           | [Demo](https://gh.akshatmittal.com/solaris/)                                     | Next.js app with EVM and Solana side by side      |
+| [`tooling/typescript-config`](https://github.com/akshatmittal/solaris/tree/main/tooling/typescript-config) | —                                                                                | Shared strict TypeScript config                   |
 
 ## Development
 
@@ -161,8 +164,8 @@ pnpm lint
 pnpm typecheck
 ```
 
-To try WalletConnect locally, copy `apps/example/.env.example` to `apps/example/.env.local` and set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`. Run `pnpm changeset` for every change to a published package, and read the [contributing guide](./.github/CONTRIBUTING.md) before you open a pull request.
+To try WalletConnect locally, copy `apps/example/.env.example` to `apps/example/.env.local` and set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`. Run `pnpm changeset` for every change to a published package, and read the [contributing guide](https://github.com/akshatmittal/solaris/blob/main/.github/CONTRIBUTING.md) before you open a pull request.
 
 ## License
 
-[MIT](./LICENSE). Solaris began as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit), and owes a lot to the team at Rainbow.
+[MIT](https://github.com/akshatmittal/solaris/blob/main/LICENSE). Solaris began as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit), and owes a lot to the team at Rainbow.
