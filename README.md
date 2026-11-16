@@ -14,7 +14,7 @@ Solaris is a React wallet kit for EVM chains and Solana. Your users get the same
 
 [**Demo**](https://gh.akshatmittal.com/solaris/) · [Documentation](./packages/solariskit/README.md) · [npm](https://www.npmjs.com/package/solariskit) · [Changelog](./packages/solariskit/CHANGELOG.md)
 
-Coming from RainbowKit? Most of the API keeps its shape. The [migration guide](./packages/solariskit/README.md#migrating-from-rainbowkit) lists each rename and removal.
+Coming from RainbowKit? Most of the API keeps its shape: see the [migration guide](./packages/solariskit/README.md#migrating-from-rainbowkit).
 
 <br />
 
@@ -24,6 +24,20 @@ Coming from RainbowKit? Most of the API keeps its shape. The [migration guide](.
 </picture>
 
 </div>
+
+## Why Solaris
+
+Most wallet kits pick a side. Solaris takes both, and makes them feel like one product.
+
+- **One kit, two ecosystems.** Each EVM button and modal hook has a `Solana` twin with the same look and the same theme. Wagmi and Viem run one side, Solana Kit and Wallet Standard run the other.
+- **Wallet SDKs load on demand.** WalletConnect, Reown AppKit, and Base Account stay out of your first load. Each one loads when the connect modal opens, or at page load only if it was the last wallet used.
+- **One WalletConnect client, not two.** The Solaris QR code and the official WalletConnect modal share one connector and one session. WalletConnect telemetry is off, and so are the modal's analytics, email, and social login.
+- **Small and self-contained.** Four runtime dependencies and one static stylesheet, compiled by StyleX and scoped under `[data-solaris]`. Every wallet SDK is an optional peer, and Solana has its own `solariskit/solana` entry point.
+- **Made for phones.** On screens narrower than 768px the modals become a bottom sheet. On a phone, a tap opens the wallet app. Solana Mobile Wallet Adapter is on by default.
+- **Accessible modals.** Dialogs have a name, keep focus inside, and give it back when they close. Screen readers hear copy and connect results, text links clear 4.5:1 contrast with the default accent, and animation follows `prefers-reduced-motion`.
+- **Your brand, not ours.** Start from light, dark, or midnight, then set the accent, radius, font, and overlay blur. One prop follows the OS color scheme.
+- **A face for every address.** ENS names and avatars on Ethereum, and a deterministic [polycon](./packages/polycons) for every address without one.
+- **Ready for the Next.js App Router.** Every file ships with `"use client"`, and the EVM config renders on the server with `ssr: true`.
 
 ## Quick start
 
@@ -79,6 +93,8 @@ export function Header() {
 
 `YOUR_PROJECT_ID` works for local testing. Before you ship, get your own WalletConnect project ID from the [Reown Dashboard](https://dashboard.reown.com/).
 
+With Next.js, also add `serverExternalPackages: ["@base-org/account"]` to `next.config.ts`. Without it, `next build` stops with `Can't resolve '@x402/core/client'`, because the Base Account SDK loads a server package whose optional peers are not installed.
+
 ### Solana
 
 Solana needs one more provider, and no `WagmiProvider`, `QueryClientProvider`, or WalletConnect project ID. Add its peers to the core install above; `wagmi` and `viem` stay required peers, even in a Solana-only app.
@@ -109,20 +125,6 @@ For mainnet, set `network: "mainnet"` and pass your own RPC in `clusters`: the p
 ### Go further
 
 Drop unused wallets and their peers with a [custom wallet list](./packages/solariskit/README.md#custom-wallet-lists), [theme the UI](./packages/solariskit/README.md#customize-the-ui), add [wallet sign-in and recent transactions](./packages/solariskit/README.md#recent-transactions-and-authentication), and set up [server rendering](./packages/solariskit/README.md#nextjs-and-server-rendering).
-
-## Why Solaris
-
-Most wallet kits pick a side. Solaris takes both, and makes them feel like one product.
-
-- **One kit, two ecosystems.** Each EVM button and modal hook has a `Solana` twin with the same look and the same theme. Wagmi and Viem run one side, Solana Kit and Wallet Standard run the other.
-- **Wallet SDKs load on demand.** WalletConnect, Reown AppKit, and Base Account stay out of your first load. Each one loads when the connect modal opens, or at page load only if it was the last wallet used.
-- **One WalletConnect client, not two.** The Solaris QR code and the official WalletConnect modal share one connector and one session. WalletConnect telemetry is off, and so are the modal's analytics, email, and social login.
-- **Small and self-contained.** A few runtime dependencies and one static stylesheet, compiled by StyleX and scoped under `[data-solaris]`. Every wallet SDK is an optional peer, and Solana has its own `solariskit/solana` entry point.
-- **Made for phones.** On screens narrower than 768px the modals become a bottom sheet. On a phone, a tap opens the wallet app. Solana Mobile Wallet Adapter is on by default.
-- **Accessible modals.** Dialogs have a name, keep focus inside, and give it back when they close. Screen readers hear copy and connect results, text links clear 4.5:1 contrast with the default accent, and animation follows `prefers-reduced-motion`.
-- **Your brand, not ours.** Start from light, dark, or midnight, then set the accent, radius, font, and overlay blur. One prop follows the OS color scheme.
-- **A face for every address.** ENS names and avatars on Ethereum, and a deterministic [polycon](./packages/polycons) for every address without one.
-- **Ready for the Next.js App Router.** Every file ships with `"use client"`, and the EVM config renders on the server with `ssr: true`.
 
 ## Two ecosystems, one API shape
 
