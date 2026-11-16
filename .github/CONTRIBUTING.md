@@ -20,7 +20,7 @@ CI runs these on every pull request. Run them before you push:
 ```bash
 pnpm format:check
 pnpm lint
-pnpm build:lib
+pnpm build
 pnpm typecheck
 ```
 
