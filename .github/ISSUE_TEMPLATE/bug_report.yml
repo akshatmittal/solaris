@@ -4,7 +4,7 @@ labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: Thanks for the report. Check the [troubleshooting section](https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/README.md#troubleshooting) and the [live demo](https://gh.akshatmittal.com/solaris/) first.
+      value: Thanks for the report. Check the [troubleshooting section](https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/README.md#troubleshooting) and the [demo](https://gh.akshatmittal.com/solaris/) first.
   - type: dropdown
     id: ecosystem
     attributes:

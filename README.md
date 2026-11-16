@@ -12,7 +12,7 @@ Your users get the same polished connect, account, and network flows on every ch
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](./packages/solariskit/src)
 [![License: MIT](https://img.shields.io/github/license/akshatmittal/solaris?style=flat-square&color=0E76FD)](./LICENSE)
 
-[**Live demo**](https://gh.akshatmittal.com/solaris/) · [Documentation](./packages/solariskit/README.md) · [npm](https://www.npmjs.com/package/solariskit) · [Changelog](./packages/solariskit/CHANGELOG.md)
+[**Demo**](https://gh.akshatmittal.com/solaris/) · [Documentation](./packages/solariskit/README.md) · [npm](https://www.npmjs.com/package/solariskit) · [Changelog](./packages/solariskit/CHANGELOG.md)
 
 <br />
 
@@ -33,7 +33,7 @@ Most wallet kits pick a side. Solaris takes both, and makes them feel like one p
 - **Styles that stay in their lane.** StyleX compiles everything to one static stylesheet, scoped under `[data-solaris]`. No runtime CSS-in-JS, and nothing leaks into your app.
 - **Make it yours.** Start from light, dark, or midnight, then tune the accent, radius, font, and overlay blur. Follow the OS color scheme with a single prop.
 - **Accessible from the first click.** Focus stays inside the modal, screen readers hear copy and connect results, and text links clear 4.5:1 contrast in the default themes.
-- **Every address gets a face.** ENS names and avatars on Ethereum, and a deterministic [polycon](./packages/polycons) for every other address, on both chains.
+- **Every address gets a face.** ENS names and avatars on Ethereum, and a deterministic geometric [polycon](./packages/polycons) for every address without one.
 - **At home in Next.js.** `"use client"` is baked into the build and the EVM config is SSR-safe, so it drops straight into the App Router.
 - **Typed all the way down.** Configs, wallets, hooks, and themes ship with strict TypeScript declarations.
 
@@ -127,7 +127,7 @@ Don't need every default wallet? Pass your own list and skip their peers. The [d
 | --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `packages/solariskit`       | [`solariskit`](https://www.npmjs.com/package/solariskit)                         | Wallet connection UI and hooks for EVM and Solana |
 | `packages/polycons`         | [`@akshatmittal/polycons`](https://www.npmjs.com/package/@akshatmittal/polycons) | Deterministic avatar images for addresses         |
-| `apps/example`              | [Live demo](https://gh.akshatmittal.com/solaris/)                                | Next.js app with EVM and Solana side by side      |
+| `apps/example`              | [Demo](https://gh.akshatmittal.com/solaris/)                                     | Next.js app with EVM and Solana side by side      |
 | `tooling/typescript-config` | —                                                                                | Shared strict TypeScript config                   |
 
 ## Development
