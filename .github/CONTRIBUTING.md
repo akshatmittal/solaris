@@ -44,4 +44,4 @@ Write the summary for users of the package: say what changed and what they must 
 
 ## Commits and pull requests
 
-Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and pull request titles, scoped to the package, for example `fix(solariskit): keep focus on the Open button`.
+Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and pull request titles. Scope a change to one package with its name, for example `fix(solariskit): keep focus on the Open button`. Leave the scope out for changes across the repository, for example `docs: update the contributing guide`.

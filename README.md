@@ -52,6 +52,8 @@ Connect, account, and network modals, wallet buttons, and themes that look and b
 
 ```bash
 npm install solariskit wagmi@^3 viem@^2 @tanstack/react-query@^5
+# Peers for the default EVM wallet list: WalletConnect and Base
+npm install @walletconnect/ethereum-provider@^2.26.0 @reown/appkit@^1.8.19 @base-org/account@^2.5.1
 ```
 
 ```tsx
@@ -96,6 +98,10 @@ export function Header() {
 
 Solana is one provider away:
 
+```bash
+npm install @solana/connector@^0.3.0 @solana/kit@^8.6.0
+```
+
 ```tsx
 import { getDefaultSolanaConfig, SolanaConnectButton, SolarisSolanaProvider } from "solariskit/solana";
 import "solariskit/solana/styles.css";
@@ -107,7 +113,7 @@ const config = getDefaultSolanaConfig({ appName: "My App", network: "mainnet" })
 </SolarisSolanaProvider>;
 ```
 
-The default EVM wallet list needs a few optional peers, and Solana needs `@solana/connector` and `@solana/kit`. The [documentation](./packages/solariskit/README.md) covers every install option, theming, custom wallet lists, Sign-In with Ethereum, server rendering, and [migrating from RainbowKit](./packages/solariskit/README.md#migrating-from-rainbowkit).
+To skip a wallet and its peers, pass your own wallet list. The [documentation](./packages/solariskit/README.md) covers every install option, theming, custom wallet lists, Sign-In with Ethereum, server rendering, and [migrating from RainbowKit](./packages/solariskit/README.md#migrating-from-rainbowkit).
 
 ## Repository
 
