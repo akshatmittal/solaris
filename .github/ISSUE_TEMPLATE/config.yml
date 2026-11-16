@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/akshatmittal/solaris/blob/main/packages/solariskit/README.md
+    about: Installation, configuration, theming, and troubleshooting.
+  - name: Demo
+    url: https://gh.akshatmittal.com/solaris/
+    about: Try the EVM and Solana flows in your browser.
+  - name: Security report
+    url: https://github.com/akshatmittal/solaris/security/advisories/new
+    about: Report a vulnerability privately. Do not open a public issue.
