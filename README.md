@@ -2,9 +2,9 @@
 
 # Solaris
 
-**One React wallet kit for EVM chains and Solana.**
+### Wallet connection for Ethereum and Solana, in one React kit.
 
-Connect, account, and network modals, wallet buttons, and themes that look and behave the same in both ecosystems.
+Your users get the same polished connect, account, and network flows on every chain they bring. You ship one provider per ecosystem, one theme, and no glue code between them.
 
 [![npm version](https://img.shields.io/npm/v/solariskit?style=flat-square&color=0E76FD&label=solariskit)](https://www.npmjs.com/package/solariskit)
 [![npm downloads](https://img.shields.io/npm/dm/solariskit?style=flat-square&color=0E76FD)](https://www.npmjs.com/package/solariskit)
@@ -25,17 +25,21 @@ Connect, account, and network modals, wallet buttons, and themes that look and b
 
 ## Why Solaris
 
-- **Two ecosystems, one UI.** EVM (Wagmi and Viem) and Solana (Solana Kit and Wallet Standard) share the same modals, buttons, themes, and avatars. Run both side by side in one app.
-- **WalletConnect, done once.** One connector and one client drive both the Solaris QR code and the official WalletConnect modal, with telemetry, analytics, email, and social login turned off.
-- **Pay only for what you use.** Every wallet SDK is an optional peer, Solana lives in its own `solariskit/solana` entry point, and the ESM output is unbundled so your bundler drops what you do not import.
-- **Zero-runtime styles.** StyleX compiles to one static stylesheet. Every rule is scoped under the provider's `[data-solaris]` root, so nothing leaks into your app.
-- **Themes with real control.** Light, dark, and midnight themes, plus accent color, radius, font stack, and overlay blur. Follow the system color scheme with one prop.
-- **Accessible by default.** Focus trapping in modals, screen reader announcements for copy and connect status, and 4.5:1 text link contrast in the default themes.
-- **Identity built in.** ENS names and avatars on EVM, and deterministic [polycon](./packages/polycons) avatars for every other address.
-- **Next.js ready.** The `"use client"` directive ships in the build, and the EVM config is SSR-safe.
-- **Strict TypeScript.** Typed configs, wallets, hooks, and themes, with declarations in the package.
+Most wallet kits pick a side. Solaris takes both, and makes them feel like one product.
 
-## What you get
+- **Ethereum and Solana, side by side.** Same modals, same buttons, same avatars, same theme. Wagmi and Viem on one side, Solana Kit and Wallet Standard on the other, and your users never feel the seam.
+- **WalletConnect without the double load.** The Solaris QR code and the official WalletConnect modal run on one connector and one client. Telemetry, analytics, email, and social login stay off.
+- **Ships only what you import.** Every wallet SDK is an optional peer, Solana sits behind its own `solariskit/solana` entry point, and the unbundled ESM build lets your bundler drop the rest.
+- **Styles that stay in their lane.** StyleX compiles everything to one static stylesheet, scoped under `[data-solaris]`. No runtime CSS-in-JS, and nothing leaks into your app.
+- **Make it yours.** Start from light, dark, or midnight, then tune the accent, radius, font, and overlay blur. Follow the OS color scheme with a single prop.
+- **Accessible from the first click.** Focus stays inside the modal, screen readers hear copy and connect results, and text links clear 4.5:1 contrast in the default themes.
+- **Every address gets a face.** ENS names and avatars on Ethereum, and a deterministic [polycon](./packages/polycons) for every other address, on both chains.
+- **At home in Next.js.** `"use client"` is baked into the build and the EVM config is SSR-safe, so it drops straight into the App Router.
+- **Typed all the way down.** Configs, wallets, hooks, and themes ship with strict TypeScript declarations.
+
+## Two ecosystems, one API shape
+
+Learn it once. The Solana API follows the same shape as the EVM one.
 
 |                 | EVM                                                    | Solana                                                                  |
 | --------------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
@@ -49,6 +53,8 @@ Connect, account, and network modals, wallet buttons, and themes that look and b
 | **Custom UI**   | `ConnectButton.Custom`, `WalletButton.Custom`          | `SolanaWalletButton.Custom`                                             |
 
 ## Quick start
+
+A working connect button takes three providers and two components.
 
 ```bash
 npm install solariskit wagmi@^3 viem@^2 @tanstack/react-query@^5
@@ -96,7 +102,7 @@ export function Header() {
 }
 ```
 
-Solana is one provider away:
+Solana is one provider away. No Wagmi, no WalletConnect project ID:
 
 ```bash
 npm install @solana/connector@^0.3.0 @solana/kit@^8.6.0
@@ -113,9 +119,9 @@ const config = getDefaultSolanaConfig({ appName: "My App", network: "mainnet" })
 </SolarisSolanaProvider>;
 ```
 
-To skip a wallet and its peers, pass your own wallet list. The [documentation](./packages/solariskit/README.md) covers every install option, theming, custom wallet lists, Sign-In with Ethereum, server rendering, and [migrating from RainbowKit](./packages/solariskit/README.md#migrating-from-rainbowkit).
+Don't need every default wallet? Pass your own list and skip their peers. The [documentation](./packages/solariskit/README.md) goes deeper on theming, custom wallets, Sign-In with Ethereum, server rendering, and [moving over from RainbowKit](./packages/solariskit/README.md#migrating-from-rainbowkit).
 
-## Repository
+## Inside this repo
 
 | Path                        | Package                                                                          | Description                                       |
 | --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -126,7 +132,7 @@ To skip a wallet and its peers, pass your own wallet list. The [documentation](.
 
 ## Development
 
-Solaris uses Node 26, pnpm 12, Turborepo, tsdown, oxlint, oxfmt, and Changesets.
+A pnpm and Turborepo monorepo on Node 26, built with tsdown, linted with oxlint, formatted with oxfmt, and released with Changesets.
 
 ```bash
 pnpm install
@@ -141,4 +147,4 @@ Set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` in `apps/example/.env.local` to try W
 
 ## License
 
-[MIT](./LICENSE). Solaris started as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit) by Rainbow.
+[MIT](./LICENSE). Solaris began as a fork of [RainbowKit](https://github.com/rainbow-me/rainbowkit), and owes a lot to the team at Rainbow.
