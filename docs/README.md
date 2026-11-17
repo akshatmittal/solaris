@@ -123,6 +123,14 @@ export function CustomConnectButton() {
 
 `useAccountModal` and `useChainModal` work similarly. Each hook returns its modal's open state and open function. Open functions can be `undefined` when unavailable; disable the corresponding control. Render these hooks and all wallet UI inside the providers shown in the [quick start](https://github.com/akshatmittal/solaris#quick-start).
 
+`openChainModal` takes an optional `filter` to list only some of the configured chains, for example on a page that supports fewer chains than the app:
+
+```tsx
+openChainModal?.({ filter: (chain) => chain.id === base.id || chain.id === optimism.id });
+```
+
+The filter applies to that opening only. Calling `openChainModal()` without it, or `ChainSelectButton`, lists every configured chain again.
+
 ### Recent transactions and authentication
 
 To display recent EVM transactions, enable `showRecentTransactions` on `SolarisEthereumProvider`. Call `useAddRecentTransaction()` inside a connected component, then call the returned function after submitting a transaction with `{ hash, description }` (and optionally `confirmations`). This tracks a submitted transaction; it does not send one.

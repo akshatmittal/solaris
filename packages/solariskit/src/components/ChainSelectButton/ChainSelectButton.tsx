@@ -52,7 +52,7 @@ export function ChainSelectButton({ chainStatus = defaultNetworkSelectChainStatu
       chainStatus={chainStatus}
       network={chain}
       networkCount={chains.length}
-      onOpenNetworkModal={openChainModal}
+      onOpenNetworkModal={openChainModal ? () => openChainModal() : undefined}
     />
   );
 }

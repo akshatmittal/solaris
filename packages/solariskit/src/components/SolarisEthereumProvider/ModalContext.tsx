@@ -2,11 +2,18 @@ import React, { type ReactNode, createContext, useCallback, useContext, useEffec
 
 import { useConfig, useConnectionEffect } from "wagmi";
 
+import type { SolarisChain } from "./SolarisChainContext";
+
 import { useConnectionStatus } from "../../hooks/useConnectionStatus";
 import { AccountModal } from "../AccountModal/AccountModal";
 import { ChainModal } from "../ChainModal/ChainModal";
 import { ConnectModal } from "../ConnectModal/ConnectModal";
 import { useAuthenticationStatus } from "./AuthenticationContext";
+
+export interface ChainModalOptions {
+  /** Lists only the chains this returns `true` for, until the modal opens again. */
+  filter?: (chain: SolarisChain) => boolean;
+}
 
 export function useModalStateValue() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,7 +30,7 @@ interface ModalContextValue {
   chainModalOpen: boolean;
   connectModalOpen: boolean;
   openAccountModal?: () => void;
-  openChainModal?: () => void;
+  openChainModal?: (options?: ChainModalOptions) => void;
   openConnectModal?: () => void;
   isWalletConnectModalOpen: boolean;
   setIsWalletConnectModalOpen: (isWalletConnectModalOpen: boolean) => void;
@@ -55,6 +62,16 @@ export function ModalProvider({ children }: ModalProviderProps) {
   } = useModalStateValue();
 
   const { closeModal: closeChainModal, isModalOpen: chainModalOpen, openModal: openChainModal } = useModalStateValue();
+  const [chainModalFilter, setChainModalFilter] = useState<ChainModalOptions["filter"]>();
+
+  // The filter stays set after close so the list does not change during the exit animation.
+  const openChainModalWithOptions = useCallback(
+    (options?: ChainModalOptions) => {
+      setChainModalFilter(() => options?.filter);
+      openChainModal();
+    },
+    [openChainModal],
+  );
 
   const [isWalletConnectModalOpen, setIsWalletConnectModalOpen] = useState(false);
 
@@ -105,7 +122,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           connectModalOpen,
           isWalletConnectModalOpen,
           openAccountModal: connectionStatus === "connected" ? openAccountModal : undefined,
-          openChainModal: chains.length > 0 ? openChainModal : undefined,
+          openChainModal: chains.length > 0 ? openChainModalWithOptions : undefined,
           openConnectModal:
             connectionStatus === "disconnected" || connectionStatus === "unauthenticated"
               ? openConnectModal
@@ -118,7 +135,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
           chainModalOpen,
           connectModalOpen,
           openAccountModal,
-          openChainModal,
+          openChainModalWithOptions,
           openConnectModal,
           chains.length,
           isWalletConnectModalOpen,
@@ -135,6 +152,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
         open={accountModalOpen}
       />
       <ChainModal
+        filter={chainModalFilter}
         onClose={closeChainModal}
         open={chainModalOpen}
       />

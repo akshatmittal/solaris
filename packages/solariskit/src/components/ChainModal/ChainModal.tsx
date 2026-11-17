@@ -3,17 +3,20 @@ import React, { useState } from "react";
 import { useConnection, useDisconnect, useSwitchChain } from "wagmi";
 import { useConfig } from "wagmi";
 
+import type { ChainModalOptions } from "../SolarisEthereumProvider/ModalContext";
+
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { useChainSearchThreshold, useSolarisChains } from "../SolarisEthereumProvider/SolarisChainContext";
 import { type NetworkModalId, NetworkModalView } from "./NetworkModalView";
 
 export interface ChainModalProps {
+  filter: ChainModalOptions["filter"];
   open: boolean;
   onClose: () => void;
 }
 
-export function ChainModal({ onClose, open }: ChainModalProps) {
+export function ChainModal({ filter, onClose, open }: ChainModalProps) {
   const { chainId: connectedChainId, isConnected } = useConnection();
   const currentChainId = useSelectedChainId(connectedChainId);
   const { chains } = useConfig();
@@ -44,12 +47,14 @@ export function ChainModal({ onClose, open }: ChainModalProps) {
     <NetworkModalView
       currentNetworkId={currentChainId ?? undefined}
       isConnectedToUnsupportedNetwork={isConnectedToUnsupportedChain}
-      networks={solarisChains.map(({ iconBackground, iconUrl, id, name }) => ({
-        iconBackground,
-        iconUrl,
-        id,
-        name,
-      }))}
+      networks={(filter ? solarisChains.filter(filter) : solarisChains).map(
+        ({ iconBackground, iconUrl, id, name }) => ({
+          iconBackground,
+          iconUrl,
+          id,
+          name,
+        }),
+      )}
       onClose={onClose}
       onDisconnectUnsupported={() => disconnect()}
       onSelectNetwork={onSelectNetwork}

@@ -9,7 +9,12 @@ export { getDefaultConfig } from "./config/getDefaultConfig";
 export { getDefaultWallets } from "./wallets/getDefaultWallets";
 export { getWalletConnectConnector } from "./wallets/getWalletConnectConnector";
 export { connectorsForWallets } from "./wallets/connectorsForWallets";
-export { useAccountModal, useChainModal, useConnectModal } from "./components/SolarisEthereumProvider/ModalContext";
+export {
+  type ChainModalOptions,
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from "./components/SolarisEthereumProvider/ModalContext";
 export { useAddRecentTransaction } from "./transactions/useAddRecentTransaction";
 export {
   SolarisAuthenticationProvider,

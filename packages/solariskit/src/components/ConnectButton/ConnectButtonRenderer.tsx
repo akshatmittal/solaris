@@ -128,7 +128,7 @@ export function ConnectButtonRenderer({ children }: ConnectButtonRendererProps) 
         connectModalOpen,
         mounted: hydrated,
         openAccountModal: openAccountModal ?? noop,
-        openChainModal: openChainModal ?? noop,
+        openChainModal: openChainModal ? () => openChainModal() : noop,
         openConnectModal: openConnectModal ?? noop,
       })}
     </>
