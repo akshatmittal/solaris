@@ -9,7 +9,7 @@ import { useHydrated } from "../../hooks/useHydrated";
 import { useSelectedChainId } from "../../hooks/useSelectedChainId";
 import { isChainIdSupported } from "../../utils/isChainIdSupported";
 import { useAsyncImage } from "../AsyncImage/useAsyncImage";
-import { useChainModal } from "../SolarisEthereumProvider/ModalContext";
+import { type ChainModalOptions, useChainModal } from "../SolarisEthereumProvider/ModalContext";
 import { useSolarisChains, useSolarisChainsById } from "../SolarisEthereumProvider/SolarisChainContext";
 import { NetworkSelectButtonView, defaultNetworkSelectChainStatus } from "./NetworkSelectButtonView";
 
@@ -17,10 +17,19 @@ export type ChainStatus = "full" | "icon" | "name" | "none";
 
 export interface ChainSelectButtonProps {
   chainStatus?: ResponsiveValue<ChainStatus>;
+  /** Lists only the chains this returns `true` for in the chain modal this button opens. */
+  filter?: ChainModalOptions["filter"];
+  /** Stretches the button to the width of its container. */
+  fullWidth?: boolean;
 }
 
-export function ChainSelectButton({ chainStatus = defaultNetworkSelectChainStatus }: ChainSelectButtonProps) {
-  const chains = useSolarisChains();
+export function ChainSelectButton({
+  chainStatus = defaultNetworkSelectChainStatus,
+  filter,
+  fullWidth = false,
+}: ChainSelectButtonProps) {
+  const solarisChains = useSolarisChains();
+  const chains = filter ? solarisChains.filter(filter) : solarisChains;
   const chainsById = useSolarisChainsById();
   const connectionStatus = useConnectionStatus();
   const { openChainModal } = useChainModal();
@@ -50,9 +59,10 @@ export function ChainSelectButton({ chainStatus = defaultNetworkSelectChainStatu
     <NetworkSelectButtonView
       buttonReady={connectionStatus !== "loading"}
       chainStatus={chainStatus}
+      fullWidth={fullWidth}
       network={chain}
       networkCount={chains.length}
-      onOpenNetworkModal={openChainModal ? () => openChainModal() : undefined}
+      onOpenNetworkModal={openChainModal ? () => openChainModal({ filter }) : undefined}
     />
   );
 }

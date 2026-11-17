@@ -34,11 +34,20 @@ const styles = stylex.create({
   disabled: {
     pointerEvents: "none",
   },
+  fullWidth: {
+    justifyContent: "space-between",
+    width: "100%",
+  },
   // Only the x axis clips, so descenders stay visible.
   name: {
     maxWidth: 160,
     overflowX: "clip",
     textOverflow: "ellipsis",
+  },
+  fullWidthName: {
+    flexGrow: 1,
+    maxWidth: "none",
+    textAlign: "start",
   },
 });
 
@@ -54,6 +63,7 @@ export interface NetworkSelectButtonNetwork {
 export interface NetworkSelectButtonViewProps {
   buttonReady: boolean;
   chainStatus: ResponsiveValue<ChainStatus>;
+  fullWidth?: boolean;
   network?: NetworkSelectButtonNetwork;
   networkCount: number;
   onOpenNetworkModal?: () => void;
@@ -64,6 +74,7 @@ export const defaultNetworkSelectChainStatus = { largeScreen: "full", smallScree
 export function NetworkSelectButtonView({
   buttonReady,
   chainStatus,
+  fullWidth = false,
   network,
   networkCount,
   onOpenNetworkModal,
@@ -81,6 +92,7 @@ export function NetworkSelectButtonView({
         triggerStyles.button,
         styles.button,
         unsupportedNetwork && styles.unsupported,
+        fullWidth && styles.fullWidth,
         responsiveDisplay(chainStatus, (value) => value !== "none", "flex"),
         !buttonReady && triggerStyles.hidden,
         !onOpenNetworkModal && styles.disabled,
@@ -116,6 +128,7 @@ export function NetworkSelectButtonView({
             {...stylex.props(
               triggerStyles.label,
               styles.name,
+              fullWidth && styles.fullWidthName,
               responsiveDisplay(
                 chainStatus,
                 (value) => value === "full" || value === "name" || (value === "icon" && !network.iconUrl),

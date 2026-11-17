@@ -97,7 +97,7 @@ import { darkTheme, SolarisEthereumProvider } from "solariskit";
 - Themes: `lightTheme`, `darkTheme`, and `midnightTheme`. For system color-scheme switching, pass `theme={{ lightMode: lightTheme(), darkMode: darkTheme() }}`. `cssStringFromTheme` and `cssObjectFromTheme` are also exported.
 - Provider options: `initialChain`, `chainSearchThreshold`, `appInfo`, `avatar`, `showRecentTransactions`, and `id`. Use distinct `id` values for multiple independently themed providers on one page.
 - `ConnectButton`: `label`, `accountStatus` (`"full"`, `"avatar"`, or `"address"`), and `showBalance`.
-- `ChainSelectButton`: `chainStatus` (`"full"`, `"icon"`, `"name"`, or `"none"`).
+- `ChainSelectButton`: `chainStatus` (`"full"`, `"icon"`, `"name"`, or `"none"`), `filter` to list only some chains in the modal it opens (see `openChainModal` below), and `fullWidth` to stretch it to its container.
 - `accountStatus`, `showBalance`, and `chainStatus` also accept responsive values such as `{ smallScreen: "icon", largeScreen: "full" }` for `chainStatus`.
 - `WalletButton` connects to a specific configured wallet, for example `<WalletButton wallet="base" />`.
 - `ConnectButton.Custom` and `WalletButton.Custom` expose render-prop APIs for custom buttons.
@@ -129,7 +129,7 @@ export function CustomConnectButton() {
 openChainModal?.({ filter: (chain) => chain.id === base.id || chain.id === optimism.id });
 ```
 
-The filter applies to that opening only. Calling `openChainModal()` without it, or `ChainSelectButton`, lists every configured chain again.
+The filter applies to that opening only. Calling `openChainModal()` without it, or a `ChainSelectButton` without a `filter`, lists every configured chain again.
 
 ### Recent transactions and authentication
 
