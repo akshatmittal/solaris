@@ -28,8 +28,7 @@ export function ChainSelectButton({
   filter,
   fullWidth = false,
 }: ChainSelectButtonProps) {
-  const solarisChains = useSolarisChains();
-  const chains = filter ? solarisChains.filter(filter) : solarisChains;
+  const chains = useSolarisChains();
   const chainsById = useSolarisChainsById();
   const connectionStatus = useConnectionStatus();
   const { openChainModal } = useChainModal();

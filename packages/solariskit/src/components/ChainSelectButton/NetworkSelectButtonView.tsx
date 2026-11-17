@@ -45,7 +45,9 @@ const styles = stylex.create({
     textOverflow: "ellipsis",
   },
   fullWidthName: {
+    flexBasis: 0,
     flexGrow: 1,
+    minWidth: 0,
     maxWidth: "none",
     textAlign: "start",
   },
