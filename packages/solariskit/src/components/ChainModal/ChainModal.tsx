@@ -11,7 +11,7 @@ import { useChainSearchThreshold, useSolarisChains } from "../SolarisEthereumPro
 import { type NetworkModalId, NetworkModalView } from "./NetworkModalView";
 
 export interface ChainModalProps {
-  filter: ChainModalOptions["filter"];
+  filter?: ChainModalOptions["filter"];
   open: boolean;
   onClose: () => void;
 }
