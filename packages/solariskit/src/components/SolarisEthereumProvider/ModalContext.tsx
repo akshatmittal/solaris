@@ -33,7 +33,7 @@ interface ModalContextValue {
   // The zero-argument overload keeps `onClick={openChainModal}` type-checking.
   openChainModal?: {
     (): void;
-    (options: ChainModalOptions): void;
+    (options?: ChainModalOptions): void;
   };
   openConnectModal?: () => void;
   isWalletConnectModalOpen: boolean;
