@@ -97,7 +97,7 @@ import { darkTheme, SolarisEthereumProvider } from "solariskit";
 - Themes: `lightTheme`, `darkTheme`, and `midnightTheme`. For system color-scheme switching, pass `theme={{ lightMode: lightTheme(), darkMode: darkTheme() }}`. `cssStringFromTheme` and `cssObjectFromTheme` are also exported.
 - Provider options: `initialChain`, `chainSearchThreshold`, `appInfo`, `avatar`, `showRecentTransactions`, and `id`. Use distinct `id` values for multiple independently themed providers on one page.
 - `ConnectButton`: `label`, `accountStatus` (`"full"`, `"avatar"`, or `"address"`), and `showBalance`.
-- `ChainSelectButton`: `chainStatus` (`"full"`, `"icon"`, `"name"`, or `"none"`).
+- `ChainSelectButton`: `chainStatus` (`"full"`, `"icon"`, `"name"`, or `"none"`), `filter` to list only some chains in the modal it opens (see `openChainModal` below), and `fullWidth` to stretch it to its container.
 - `accountStatus`, `showBalance`, and `chainStatus` also accept responsive values such as `{ smallScreen: "icon", largeScreen: "full" }` for `chainStatus`.
 - `WalletButton` connects to a specific configured wallet, for example `<WalletButton wallet="base" />`.
 - `ConnectButton.Custom` and `WalletButton.Custom` expose render-prop APIs for custom buttons.
@@ -122,6 +122,14 @@ export function CustomConnectButton() {
 ```
 
 `useAccountModal` and `useChainModal` work similarly. Each hook returns its modal's open state and open function. Open functions can be `undefined` when unavailable; disable the corresponding control. Render these hooks and all wallet UI inside the providers shown in the [quick start](https://github.com/akshatmittal/solaris#quick-start).
+
+`openChainModal` takes an optional `filter` to list only some of the configured chains, for example on a page that supports fewer chains than the app:
+
+```tsx
+openChainModal?.({ filter: (chain) => chain.id === base.id || chain.id === optimism.id });
+```
+
+The filter applies to that opening only. Calling `openChainModal()` without it, or a `ChainSelectButton` without a `filter`, lists every configured chain again.
 
 ### Recent transactions and authentication
 
